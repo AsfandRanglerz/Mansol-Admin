@@ -6,6 +6,7 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Mail\CompanyLoginPassword;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 
@@ -100,7 +101,11 @@ class CompanyController extends Controller
 
     public function destroy($id)
     {
-        Company::destroy($id);
-        return redirect()->route('companies.index')->with(['message' => 'Company Deleted Successfully']);
+        try{
+            Company::destroy($id);
+            return redirect()->route('companies.index')->with(['message' => 'Company Deleted Successfully']);
+        } catch (QueryException $e){
+            return redirect()->route('companies.index')->with(['error' => 'This company cannot be deleted because it has assigned nominees.']);
+        }
     }
 }

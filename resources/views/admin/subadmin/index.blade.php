@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Sub-Admin')
+@section('title', 'Sub-Admins')
 @section('content')
     {{-- <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">

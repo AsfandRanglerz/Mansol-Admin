@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Project;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class ProjectsController extends Controller
@@ -130,9 +131,11 @@ class ProjectsController extends Controller
 
     public function destroy($id, Request $request)
     {
-        $company_id = $request->input('company_id');
-
-        Project::destroy($id);
-        return redirect()->route('project.index', ['id' => $company_id])->with(['message' => 'Project Deleted Successfully']);
+        try{
+            Project::destroy($id);
+            return redirect()->route('project.index', ['id' => $request->company_id])->with(['message' => 'Project Deleted Successfully']);
+        } catch(QueryException $e){
+            return redirect()->route('project.index', ['id' => $request->company_id])->with(['error' => 'This Project cannot be deleted because it has assigned nominees.']);
+        }
     }
 }

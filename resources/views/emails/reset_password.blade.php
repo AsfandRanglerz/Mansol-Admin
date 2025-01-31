@@ -2,7 +2,7 @@
     <div style="text-align:center;">
         <img src="{{ asset('public/admin/assets/images/mansol-01.png') }}" alt="App Icon"
             style="vertical-align: middle;margin-bottom: -3px;height: 125px;margin-bottom: 35px">
-        <h3>Welcome to Mansool</h3>
+        <h3>Welcome to Mansol</h3>
     </div>
     We have received reset password request, please click below button to reset password.
     @component('mail::button', ['url' => $detail['url']])

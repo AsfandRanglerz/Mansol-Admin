@@ -19,6 +19,6 @@ class ApprovedApplicantsController extends Controller
     {
         // return $id;
         HumanResource::destroy($id);
-        return redirect()->route('nominations.index')->with(['message' => 'Nomination Deleted Successfully']);
+        return redirect()->route('approved.applicants.index')->with(['message' => 'Nomination Deleted Successfully']);
     }
 }

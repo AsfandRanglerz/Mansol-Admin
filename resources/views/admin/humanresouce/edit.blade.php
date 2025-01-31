@@ -100,6 +100,15 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="medical_doc">Approval Document</label>
+                                                <input type="file" class="form-control" id="medical_doc" name="medical_doc">
+                                                @error('medical_doc')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -623,25 +632,7 @@
                                                     value="{{ old('district_of_domicile', $HumanResource->district_of_domicile) }}">
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="citizenship">Citizenship</label>
-                                                <select name="citizenship" class="form-control">
-                                                    <option value="" selected disabled>Select Citizenship</option>
-                                                    <option value="Pakistani" 
-                                                        {{ old('citizenship', $HumanResource->citizenship ?? '') == 'Pakistani' ? 'selected' : '' }}>
-                                                        Pakistani
-                                                    </option>
-                                                    <option value="Other" 
-                                                        {{ old('citizenship', $HumanResource->citizenship ?? '') == 'Other' ? 'selected' : '' }}>
-                                                        Other
-                                                    </option>
-                                                </select>
-                                                @error('citizenship')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        
                                         
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -809,6 +800,27 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="citizenship">Citizenship</label>
+                                                <select name="citizenship" class="form-control">
+                                                    <option value="" selected disabled>Select Citizenship</option>
+                                                    <option value="Pakistani" 
+                                                        {{ old('citizenship', $HumanResource->citizenship ?? '') == 'Pakistani' ? 'selected' : '' }}>
+                                                        Pakistani
+                                                    </option>
+                                                    <option value="Other" 
+                                                        {{ old('citizenship', $HumanResource->citizenship ?? '') == 'Other' ? 'selected' : '' }}>
+                                                        Other
+                                                    </option>
+                                                </select>
+                                                @error('citizenship')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="gender">Gender</label>

@@ -32,7 +32,7 @@
                                             <td>
                                                 Admin!
                                             </td>
-                                            <td>Welcome To Mansool!</td>
+                                            <td>Welcome To Mansol!</td>
                                         </tr>
                                     </tbody>
                                 </table>

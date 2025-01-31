@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Projects')
+@section('title', 'Demands')
 @section('content')
 
     {{-- Demand Create Model --}}
@@ -179,20 +179,20 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $project->project_name }} - Demands</h4>
+                                    <h4>{{ $company->name }} - {{ $project->project_name }} - (Demands)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
                                     data-target="#createDemandModal">
-                                    Create
+                                    Add Demand
                                 </a>
                                 <table class="table text-center" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Craft</th>
-                                            <th>Nominate</th>
+                                            <th>Nominees</th>
                                             <th>Man Power</th>
                                             <th>Salary</th>
                                             <th>Mobilization</th>

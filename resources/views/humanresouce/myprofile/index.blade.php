@@ -10,7 +10,17 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="col-12">
-                                <h4>Profile Status <span class="text-danger ml-2">( {{ $user->status == 0 ? 'Pending' : 'Active' }} )</span></h4>
+                                <h4>Profile Status <span class="text-danger ml-2">
+                                    @if ($user->status == 0)
+                                        ( Rejected )
+                                    @elseif ($user->status == 1)
+                                        ( Pending )
+                                    @elseif ($user->status == 2)
+                                        ( Approved )
+                                    @elseif ($user->status == 3)
+                                        ( Nominated )
+                                    @endif
+                                </span></h4>
                             </div>
                         </div>
                         <div class="card-body table-striped table-bordered table-responsive">
@@ -18,8 +28,26 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="registration">Registration #</label>
+                                            <label class="text-danger" for="registration">Id No.</label>
                                             <input type="text" class="form-control" value="{{ $user->registration }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger">Name</label>
+                                            <input type="text" class="form-control" value="{{ $user->name }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger">Application for Post</label>
+                                            <input type="text" class="form-control" value="{{ $MainCraft->name }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger">Sub-Craft</label>
+                                            <input type="text" class="form-control" value="{{ $SubCraft->name }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -30,20 +58,18 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger">Application for Post</label>
-                                            <input type="text" class="form-control" value="{{ $user->application_for_post }}" readonly>
+                                            <label class="text-danger">Approval</label>
+                                            <input type="text" class="form-control" value="{{ strtoupper($user->approvals) }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger">Optima #</label>
-                                            <input type="text" class="form-control" value="{{ $user->optima }}" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger">Name</label>
-                                            <input type="text" class="form-control" value="{{ $user->name }}" readonly>
+                                            <label class="text-danger">Approval Document</label>
+                                            @if ($user->medical_doc)
+                                            <a class="btn btn-primary form-control" href="{{ asset($user->medical_doc) }}" download="">Download</a>
+                                            @else
+                                            <span class="form-control">Document not found</span>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -78,14 +104,27 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger">CNIC/NICOP</label>
+                                            <label class="text-danger">CNIC</label>
                                             <input type="text" class="form-control" value="{{ $user->cnic }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger">CNIC/NICOP Expiry Date</label>
+                                            <label class="text-danger">CNIC Expiry Date</label>
                                             <input type="date" class="form-control" value="{{ $user->cnic_expiry_date }}" readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger">Passport #</label>
+                                            <input type="text" class="form-control" value="{{ $user->passport }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger">Passport Place Of Issue</label>
+                                            <input type="text" class="form-control" value="{{ $user->passport_issue_place }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -100,19 +139,6 @@
                                             <input type="date" class="form-control" value="{{ $user->doe }}" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger">Passport #</label>
-                                            <input type="text" class="form-control" value="{{ $user->passport }}" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger">Passport Place Of Issue</label>
-                                            <input type="text" class="form-control" value="{{ $user->passport_issue_place }}" readonly>
-                                        </div>
-                                    </div>
-                                    
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger">Religion</label>
@@ -139,7 +165,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger">CNIC</label>
+                                            <label class="text-danger">Kin CNIC</label>
                                             <input type="text" class="form-control" value="{{ $user->cnic }}" readonly>
                                         </div>
                                     </div>
@@ -158,7 +184,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger">Academic Qualification</label>
-                                            <input type="text" class="form-control" value="{{ $user->academic_qualification }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $user->acdemic_qualification }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -171,6 +197,12 @@
                                         <div class="form-group">
                                             <label class="text-danger">Profession</label>
                                             <input type="text" class="form-control" value="{{ $user->profession }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger">Years of Experience</label>
+                                            <input type="text" class="form-control" value="{{ $user->experience }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -247,16 +279,17 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger">Gender</label>
-                                            <input type="text" class="form-control" value="{{ $user->gender }}" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="text-danger">Citizenship</label>
                                             <input type="text" class="form-control" value="{{ $user->citizenship }}" readonly>
                                         </div>
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger">Gender</label>
+                                            <input type="text" class="form-control" value="{{ $user->gender }}" readonly>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger">Reference</label>

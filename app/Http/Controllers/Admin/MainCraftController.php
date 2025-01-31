@@ -73,7 +73,7 @@ class MainCraftController extends Controller
             MainCraft::destroy($id);
             return redirect()->route('maincraft.index')->with(['message' => 'MainCraft Deleted Successfully']);
         } catch (QueryException $e) {
-            return redirect()->route('maincraft.index')->with(['error' => 'Cannot Delete Because it is Used in Human Resource Or Company Demands']);
+            return redirect()->route('maincraft.index')->with(['error' => 'This MainCraft cannot be deleted as it is linked to Human Resources or Company Demands.']);
         }
     }
 

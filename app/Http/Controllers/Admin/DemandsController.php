@@ -6,7 +6,9 @@ use App\Models\Demand;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\MainCraft;
+use Illuminate\Database\QueryException;
 
 class DemandsController extends Controller
 {
@@ -15,7 +17,9 @@ class DemandsController extends Controller
         // dd($id);
         $project_id = $id;
         $project = Project::find($id);
-        // dd($project); 
+
+        $company = Company::where('id', $project->company_id)->first();
+        // dd($company); 
         $assignedCraftIds = Demand::where('project_id', $id)->pluck('craft_id');
         $crafts = MainCraft::where('status', 1)
             ->whereNotIn('id', $assignedCraftIds)
@@ -23,7 +27,7 @@ class DemandsController extends Controller
 
         $demands = Demand::with(['project', 'craft'])->where('project_id', $id)->orderBy('is_active', 'desc')->latest()->get();
         // dd($demands);
-        return view('admin.demands.index', compact('crafts', 'demands', 'project_id', 'project'));
+        return view('admin.demands.index', compact('crafts', 'demands', 'project_id', 'project', 'company'));
     }
 
     public function store(Request $request)
@@ -87,8 +91,11 @@ class DemandsController extends Controller
     public function destroy(Request $request, $id)
     {
         // dd($request);
-        Demand::destroy($id);
-
-        return redirect()->route('demands.index', ['id' => $request->project_id])->with(['message' => 'Demand Deleted Successfully']);
+        try{
+            Demand::destroy($id);
+            return redirect()->route('demands.index', ['id' => $request->project_id])->with(['message' => 'Demand Deleted Successfully']);
+        } catch(QueryException $e){
+            return redirect()->route('demands.index', ['id' => $request->project_id])->with(['error' => 'This Demand cannot be deleted because it has assigned nominees.']);
+        }
     }
 }

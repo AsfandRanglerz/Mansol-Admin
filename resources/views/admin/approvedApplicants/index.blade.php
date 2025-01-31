@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Nominations')
+@section('title', 'Approved Applicants')
 @section('content')
 
     <div class="main-content" style="min-height: 562px;">

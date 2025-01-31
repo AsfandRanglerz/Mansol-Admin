@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Nominate Human Resource')
+@section('title', 'Nominees')
 @section('content')
 
     {{-- Demand Create Model --}}
@@ -54,7 +54,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $project->project_name }} - Nominies</h4>
+                                    <h4>{{ $company->name }} - {{ $project->project_name }} - (Nominees)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
@@ -66,7 +66,7 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Nominy Name</th>
+                                            <th>Nominee Name</th>
                                             <th>Status</th>
                                             <th scope="col">Actions</th>
                                         </tr>

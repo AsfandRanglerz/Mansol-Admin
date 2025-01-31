@@ -67,7 +67,7 @@ class SubCraftController extends Controller
             SubCraft::destroy($id);
             return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['message' => 'SubCraft Deleted Successfully']);
         } catch (QueryException $e){
-            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['error' => 'Cannot Delete Because it is Used in Human Resource']);
+            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['error' => 'This SubCraft cannot be deleted as it is linked to Human Resources or Company Demands.']);
         }
     }
 }

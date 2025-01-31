@@ -16,7 +16,7 @@ class Nominate extends Model
     }
     public function project()
     {
-        return $this->belongsTo(project::class, 'project_id');
+        return $this->belongsTo(Project::class, 'project_id');
     }
     public function demand()
     {

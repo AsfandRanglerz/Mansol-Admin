@@ -362,7 +362,7 @@
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
                                     data-target="#createProjectModel">
-                                    Create
+                                    Add Project
                                 </a>
                                 <table class="table responsive" id="table_id_events">
                                     <thead>

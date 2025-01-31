@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Sub Craft')
+@section('title', 'Sub-Crafts')
 @section('content')
 
 

@@ -21,11 +21,11 @@
                                             <th>Sr.</th>
                                             <th>Applicant Id</th>
                                             <th>Project Id</th>
-                                            <th>Name</th>
-                                            <th>CNIC</th>
+                                            <th>Nominee Name</th>
+                                            <th>Nominee CNIC</th>
                                             <th>Approvals</th>
                                             <th>Craft</th>
-                                            <th>Project</th>
+                                            <th>Project Name</th>
                                             {{-- <th>Demand</th> --}}
                                             {{-- <th scope="col">Actions</th> --}}
                                         </tr>

@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Human Resource')
+@section('title', 'Human Resources')
 @section('content')
 
     <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -77,7 +77,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>Human Resource</h4>
+                                    <h4>Human Resources</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
