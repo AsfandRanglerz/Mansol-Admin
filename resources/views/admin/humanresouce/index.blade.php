@@ -1,6 +1,7 @@
 @extends('admin.layout.app')
 @section('title', 'Human Resource')
 @section('content')
+
     <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -66,6 +67,8 @@
             </div>
         </div>
     </div>
+
+
     <div class="main-content" style="min-height: 562px;">
         <section class="section">
             <div class="section-body">
@@ -79,9 +82,9 @@
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <a class="btn btn-primary mb-3 text-white" href="{{route('humanresource.create')}}">
-                                    Create
+                                    Add Human Recource
                                 </a>
-                                <table class="table text-center responsive" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -93,6 +96,7 @@
                                             <th>Appication for Post Craft</th>
                                             <th>Sub-Craft</th>
                                             <th>Approvals #</th>
+                                            <th>Approvals Document</th>
                                             <th>S/O</th>
                                             <th>Mother Name</th>
                                             <th>Date Of Birth</th>
@@ -145,6 +149,11 @@
                                                 {{ $HumanResource->SubCrafts->name ?? 'null' }}
                                             </td>
                                             <td>{{ $HumanResource->approvals ?? 'null' }}</td>
+                                            <td>
+                                                @if ($HumanResource->medical_doc)
+                                                    <a href="{{ asset($HumanResource->medical_doc) }}" download>Download File</a>
+                                                @endif
+                                            </td>
                                             <td>{{ $HumanResource->son_of ?? 'null' }}</td>
                                             <td>{{ $HumanResource->mother_name ?? 'null' }}</td>
                                             <td>{{ $HumanResource->date_of_birth ?? 'null' }}</td>
@@ -188,7 +197,7 @@
                                             <td>
                                                 <div class="d-flex gap-4">
                                                     <a href="{{ route('humanresource.edit', $HumanResource->id) }}"
-                                                        class="btn btn-primary" style="margin-left: 10px">Edit</a>
+                                                        class="btn btn-primary">Edit</a>
                                                     <form action="{{ route('humanresource.destroy', $HumanResource->id) }}"
                                                         method="POST" style="display:inline-block; margin-left: 10px">
                                                         @csrf

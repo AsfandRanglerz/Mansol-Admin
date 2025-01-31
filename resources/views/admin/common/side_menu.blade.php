@@ -30,7 +30,7 @@
                         Admins</span></a>
             </li>
             {{-- Main Craft --}}
-            <li class="dropdown {{ request()->is('admin/mainCraft*') ? 'active' : '' }}">
+            <li class="dropdown {{ request()->is('admin/mainCraft*') || request()->is('admin/Craftsub*') ? 'active' : '' }}">
                 <a href="{{ route('maincraft.index') }}" class="nav-link">
                     <span><i data-feather="scissors"></i> Main Crafts</span>
                 </a>
@@ -44,7 +44,7 @@
             {{-- approved-applicant --}}
             <li class="dropdown {{ request()->is('admin/approved-applicant*') ? 'active' : '' }}">
                 <a href="{{ route('approved.applicants.index') }}" class="nav-link px-2">
-                    <span><i class="fas fa-thumbs-up"></i> Approved Applicant</span>
+                    <span><i class="fas fa-thumbs-up"></i> Approved Applicants</span>
                 </a>
             </li>
             {{-- Nominations --}}
@@ -54,7 +54,7 @@
                 </a>
             </li>
             {{-- Company --}}
-            <li class="dropdown {{ request()->is('admin/companies*') || request()->is('admin/demands*') ? 'active' : '' }}">
+            <li class="dropdown {{ request()->is('admin/companies*') || request()->is('admin/demands*') || request()->is('admin/nominate*') ? 'active' : '' }}">
                 <a href="{{ route('companies.index') }}" class="nav-link">
                     <span><i data-feather="briefcase"></i>Companies</span>
                 </a>

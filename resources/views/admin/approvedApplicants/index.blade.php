@@ -15,7 +15,7 @@
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
 
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -24,8 +24,9 @@
                                             <th>Email</th>
                                             <th>CNIC/NICOP</th>
                                             <th>Application Date</th>
-                                            <th>Appication for Post</th>
-                                            <th>Approvals</th>
+                                            <th>Appication for Post Craft</th>
+                                            <th>Sub-Craft</th>
+                                            <th>Approvals #</th>
                                             <th>S/O</th>
                                             <th>Mother Name</th>
                                             <th>Date Of Birth</th>
@@ -71,8 +72,13 @@
                                             <td>{{ $HumanResource->email ?? 'null' }}</td>
                                             <td>{{ $HumanResource->cnic ?? 'null' }}</td>
                                             <td>{{ $HumanResource->application_date ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->application_for_post ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->optima ?? 'null' }}</td>
+                                            <td>
+                                                {{ $HumanResource->Crafts->name ?? 'null' }}
+                                            </td>
+                                            <td>
+                                                {{ $HumanResource->SubCrafts->name ?? 'null' }}
+                                            </td>
+                                            <td>{{ $HumanResource->approvals ?? 'null' }}</td>
                                             <td>{{ $HumanResource->son_of ?? 'null' }}</td>
                                             <td>{{ $HumanResource->mother_name ?? 'null' }}</td>
                                             <td>{{ $HumanResource->date_of_birth ?? 'null' }}</td>
@@ -111,7 +117,7 @@
                                             </td>
                                             <td>
                                                 <form action="{{ route('approved.applicant.destroy', $HumanResource->id) }}"
-                                                    method="POST" style="display:inline-block; margin-left: 10px">
+                                                    method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"

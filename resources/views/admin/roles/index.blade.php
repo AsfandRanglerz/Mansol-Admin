@@ -384,9 +384,8 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
-                                <a class="btn btn-primary mb-3 text-white" href="{{ route('roles.create') }}">Create</a>
-
-                                <table class="table text-center" id="table_id_events">
+                                <a class="btn btn-primary mb-3 text-white" href="{{ route('roles.create') }}">Add Role</a>
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -402,7 +401,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $role->title }}</td>
                                             <td><a href="{{ route('roles.edit', $role->id) }}"
-                                                class="btn btn-primary" style="margin-left: 10px">View</a></td>
+                                                class="btn btn-primary">View</a></td>
 
                                             <td>
                                                 @if ($role->status == 1)
@@ -416,7 +415,7 @@
                                                     {{-- <a href="{{ route('roles.edit', $role->id) }}"
                                                         class="btn btn-primary" style="margin-left: 10px">Edit</a> --}}
                                                     <form action="{{ route('roles.destroy', $role->id) }}"
-                                                        method="POST" style="display:inline-block; margin-left: 10px">
+                                                        method="POST" style="display:inline-block;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"

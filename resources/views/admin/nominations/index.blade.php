@@ -15,45 +15,48 @@
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
 
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Applicant Id</th>
                                             <th>Project Id</th>
                                             <th>Name</th>
-                                            <th>Email</th>
                                             <th>CNIC</th>
                                             <th>Approvals</th>
-                                            <th>Appication for Post</th>
-                                            <th>Sub-Craft</th>
+                                            <th>Craft</th>
                                             <th>Project</th>
-                                            <th>Demand</th>
-                                            <th>Status</th>
-                                            <th scope="col">Actions</th>
+                                            {{-- <th>Demand</th> --}}
+                                            {{-- <th scope="col">Actions</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($HumanResources as $HumanResource)
+                                        @foreach ($nominates as $HumanResource)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $HumanResource->registration ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->name ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->email ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->cnic ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->optima ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->application_for_post ?? 'null' }}</td>
-                                            
+                                            <td>{{ $HumanResource->humanResource->registration }}</td>
+                                            <td>{{ $HumanResource->project->project_code }}</td>
+                                            <td>{{ $HumanResource->humanResource->name }}</td>
+                                            <td>{{ $HumanResource->humanResource->cnic }}</td>
+                                            <td>{{ strtoupper($HumanResource->humanResource->approvals) }}</td>
                                             <td>
+                                                {{ $HumanResource->craft->name }}
+                                            </td>
+                                            <td>
+                                                {{ $HumanResource->project->project_name }}
+                                            </td>
+                                            {{-- <td>{{ $HumanResource->application_for_post ?? 'null' }}</td> --}}
+                                            
+                                            {{-- <td>
                                                 <form action="{{ route('nominations.destroy', $HumanResource->id) }}"
-                                                    method="POST" style="display:inline-block; margin-left: 10px">
+                                                    method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
                                                         class="btn btn-danger btn-flat show_confirm"
                                                         data-toggle="tooltip">Delete</button>
                                                 </form>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         @endforeach
                                     </tbody>

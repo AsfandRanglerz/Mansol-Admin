@@ -14,12 +14,16 @@ class DemandsController extends Controller
     {
         // dd($id);
         $project_id = $id;
-        $project_name = Project::find($id)->project_name;
-        // dd($project_name);
-        $crafts = MainCraft::where('status', 1)->get();
-        $demands = Demand::with(['project','craft'])->where('project_id', $id)->orderBy('is_active', 'desc')->latest()->get();
+        $project = Project::find($id);
+        // dd($project); 
+        $assignedCraftIds = Demand::where('project_id', $id)->pluck('craft_id');
+        $crafts = MainCraft::where('status', 1)
+            ->whereNotIn('id', $assignedCraftIds)
+            ->get();
+
+        $demands = Demand::with(['project', 'craft'])->where('project_id', $id)->orderBy('is_active', 'desc')->latest()->get();
         // dd($demands);
-        return view('admin.demands.index', compact('crafts', 'demands', 'project_id', 'project_name'));
+        return view('admin.demands.index', compact('crafts', 'demands', 'project_id', 'project'));
     }
 
     public function store(Request $request)

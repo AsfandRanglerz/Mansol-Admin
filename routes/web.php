@@ -9,11 +9,11 @@ use App\Http\Controllers\Admin\RolesController;
 
 use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\AboutusController;
-use App\Http\Controllers\Admin\ApprovedApplicantsController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\DemandsController;
 use App\Http\Controllers\Admin\OfficerController;
 use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\NominateController;
 use App\Http\Controllers\Admin\ProjectsController;
 use App\Http\Controllers\Admin\SubAdminController;
 use App\Http\Controllers\Admin\SubCraftController;
@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\HumanResourceController;
 use App\Http\Controllers\Admin\TermConditionController;
 use App\Http\Controllers\HumanResouce\HRProfileController;
+use App\Http\Controllers\Admin\ApprovedApplicantsController;
 use App\Http\Controllers\HumanResouce\HumanResouceController;
 use App\Http\Controllers\HumanResouce\HRNotificationController;
 use App\Http\Controllers\HumanResouce\HumanResouceAuthController;
@@ -141,6 +142,13 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::controller(NominationsController::class)->group(function () {
         Route::get('/nominations',  'index')->name('nominations.index');
         Route::delete('/nomination/{id}',  'destroy')->name('nominations.destroy');
+    });
+
+    // ############ Nominate from Demands #################
+    Route::controller(NominateController::class)->group(function () {
+        Route::get('/nominate/{craft_id}/{demand_id}/{project_id}',  'index')->name('nominate.index');
+        Route::post('/nominate-store',  'store')->name('nominate.store');
+        Route::delete('/nominate/{id}',  'destroy')->name('nominate.destroy');
     });
    // ############ Approved Applicant ################# 
     Route::controller(ApprovedApplicantsController::class)->group(function () {

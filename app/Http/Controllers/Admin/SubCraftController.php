@@ -6,6 +6,7 @@ use App\Models\SubCraft;
 use App\Models\MainCraft;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 
 class SubCraftController extends Controller
 {
@@ -62,7 +63,11 @@ class SubCraftController extends Controller
     public function destroy(Request $request, $id)
     {
         // return $id;
-        SubCraft::destroy($id);
-        return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['message' => 'SubCraft Deleted Successfully']);
+        try{
+            SubCraft::destroy($id);
+            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['message' => 'SubCraft Deleted Successfully']);
+        } catch (QueryException $e){
+            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['error' => 'Cannot Delete Because it is Used in Human Resource']);
+        }
     }
 }

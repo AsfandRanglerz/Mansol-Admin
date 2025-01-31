@@ -6,6 +6,7 @@ use App\Models\SubCraft;
 use App\Models\MainCraft;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 
 class MainCraftController extends Controller
 {
@@ -68,8 +69,12 @@ class MainCraftController extends Controller
     public function destroy($id)
     {
         // return $id;
-        MainCraft::destroy($id);
-        return redirect()->route('maincraft.index')->with(['message' => 'MainCraft Deleted Successfully']);
+        try{
+            MainCraft::destroy($id);
+            return redirect()->route('maincraft.index')->with(['message' => 'MainCraft Deleted Successfully']);
+        } catch (QueryException $e) {
+            return redirect()->route('maincraft.index')->with(['error' => 'Cannot Delete Because it is Used in Human Resource Or Company Demands']);
+        }
     }
 
     public function getSubCrafts(Request $request)

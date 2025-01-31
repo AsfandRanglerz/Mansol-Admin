@@ -13,8 +13,8 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
-                                <a class="btn btn-primary mb-3 text-white" href="{{ route('maincraft.create') }}">Create</a>
-                                <table class="table text-center" id="table_id_events">
+                                <a class="btn btn-primary mb-3 text-white" href="{{ route('maincraft.create') }}">Add Craft</a>
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -41,7 +41,7 @@
                                             <td>
                                                 <div class="d-flex gap-4">
                                                     <a href="{{ route('maincraft.edit', $mainCraft->id) }}"
-                                                    class="btn btn-primary" style="margin-left: 10px">Edit</a>
+                                                    class="btn btn-primary">Edit</a>
                                                     <form action="{{ route('maincraft.destroy', $mainCraft->id) }}"
                                                         method="POST" style="display:inline-block; margin-left: 10px">
                                                         @csrf

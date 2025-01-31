@@ -27,6 +27,7 @@ class CreateHumanResourcesTable extends Migration
             $table->string('registration')->unique();
             $table->date('application_date')->required();
             $table->string('approvals')->nullable();
+            $table->string('medical_doc')->nullable();
             $table->string('son_of')->required();
             $table->string('mother_name')->required();
             $table->string('blood_group')->required();

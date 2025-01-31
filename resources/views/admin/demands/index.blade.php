@@ -35,7 +35,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="manpower">Manpower</label>
-                                    <input type="text" class="form-control" id="manpower" name="manpower" required>
+                                    <input type="number" class="form-control" id="manpower" name="manpower" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
     </div>
 
 
-    @foreach ($demands as $demand)
+    @foreach ($demands as $demand) 
     {{-- Demand Edit Model --}}
     <div class="modal fade" id="editDemandModal-{{ $demand->id }}" tabindex="-1" role="dialog" aria-labelledby="demandModalLabel"
         aria-hidden="true">
@@ -179,7 +179,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $project_name }} - Demands</h4>
+                                    <h4>{{ $project->project_name }} - Demands</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
@@ -192,6 +192,7 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Craft</th>
+                                            <th>Nominate</th>
                                             <th>Man Power</th>
                                             <th>Salary</th>
                                             <th>Mobilization</th>
@@ -205,6 +206,9 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $demand->craft->name }}</td>
+                                                <td>
+                                                    <a class="btn btn-primary" href="{{ route('nominate.index', ['craft_id' => $demand->craft->id, 'demand_id' => $demand->id, 'project_id' => $project->id]) }}">Add</a>
+                                                </td>
                                                 <td>{{ $demand->manpower }}</td>
                                                 <td>{{ $demand->salary }}</td>
                                                 <td>{{ $demand->mobilization }}</td>

@@ -9,7 +9,7 @@
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createModalLabel">Create SubCraft</h5>
+                    <h5 class="modal-title" id="createModalLabel">Add Sub-Craft</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -59,7 +59,7 @@
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit SubCraft</h5>
+                    <h5 class="modal-title" id="editModalLabel">Edit Sub-Craft</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -107,12 +107,12 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $mainCraft->name }} - Sub Crafts</h4>
+                                    <h4>{{ $mainCraft->name }} - Sub-Crafts</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
-                                <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal" data-target="#createSubCraftModal">Create</a>
-                                <table class="table text-center" id="table_id_events">
+                                <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal" data-target="#createSubCraftModal">Add Sub-Craft</a>
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -134,9 +134,9 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex gap-4 justify-content-center">
+                                                    <div class="d-flex gap-4">
                                                         <a href="#" data-toggle="modal" data-target="#editSubCraftModal-{{ $subCraft->id }}"
-                                                            class="btn btn-primary" style="margin-left: 10px">Edit</a>
+                                                            class="btn btn-primary">Edit</a>
                                                         <form action="{{ route('subcraft.destroy', $subCraft->id) }}"
                                                             method="POST" style="display:inline-block; margin-left: 10px">
                                                             @csrf

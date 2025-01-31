@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\SubCraft;
+use App\Models\MainCraft;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\HumanResource;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\HumanResourceUserLoginPassword;
-use App\Models\MainCraft;
-use App\Models\SubCraft;
 
 class HumanResourceController extends Controller
 {
@@ -46,11 +47,12 @@ class HumanResourceController extends Controller
         $request->validate([
             'registration' => 'required|string|max:255',
             'application_date' => 'required|date',
-            'status' => 'required|string',
+            'status' => 'nullable|string',
             'experience' => 'nullable|string',
             'craft_id' => 'required|string|max:255',
             'sub_craft_id' => 'nullable|string|max:255',
             'approvals' => 'required|string|max:255',
+            'medical_doc' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'son_of' => 'required|string|max:255',
             'mother_name' => 'required|string|max:255',
@@ -92,6 +94,16 @@ class HumanResourceController extends Controller
             'comment' => 'nullable|string',
         ]);
 
+        if ($request->hasfile('medical_doc')) {
+            $file = $request->file('medical_doc');
+            $extension = $file->getClientOriginalExtension(); // getting image extension
+            $filename = time() . '.' . $extension;
+            $file->move(public_path('/admin/assets/medical_doc/'), $filename);
+            $medical_doc = 'public/admin/assets/medical_doc/' . $filename;
+        }else{
+            $medical_doc = null;
+        }
+
         /**generate random password */
         $password = random_int(10000000, 99999999);
 
@@ -106,6 +118,7 @@ class HumanResourceController extends Controller
             'sub_craft_id' => $request->sub_craft_id,
             'experience' => $request->experience,
             'approvals' => $request->approvals,
+            'medical_doc' => $medical_doc,
             'son_of' => $request->son_of,
             'mother_name' => $request->mother_name,
             'blood_group' => $request->blood_group,
@@ -174,6 +187,7 @@ class HumanResourceController extends Controller
             'craft_id' => 'nullable|string|max:255',
             'sub_craft_id' => 'nullable|string|max:255',
             'approvals' => 'nullable|string|max:255',
+            'medical_doc' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:2048',
             'experience' => 'nullable|string',
             'name' => 'required|string|max:255',
             'son_of' => 'nullable|string|max:255',
@@ -218,12 +232,28 @@ class HumanResourceController extends Controller
 
         $HumanResource = HumanResource::findOrFail($id);
 
+        if ($request->hasFile('medical_doc')) {
+            $destination = 'public/admin/assets/img/users/' . $HumanResource->medical_doc;
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+
+            $file = $request->file('medical_doc');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('public/admin/assets/medical_doc', $filename);
+            $medical_doc = 'public/admin/assets/medical_doc/' . $filename;
+        }else{
+            $medical_doc = null;
+        }
+
         $HumanResource->update([
             'registration' => $request->registration,
             'application_date' => $request->application_date,
             'craft_id' => $request->craft_id,
             'sub_craft_id' => $request->sub_craft_id,
             'approvals' => $request->approvals,
+            'medical_doc' => $medical_doc,
             'experience' => $request->experience,
             'name' => $request->name,
             'status' => $request->status,

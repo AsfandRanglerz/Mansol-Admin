@@ -5,10 +5,10 @@
     {{-- Create Company Model --}}
     <div class="modal fade" id="createCompanyModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createModalLabel">Create Company</h5>
+                    <h5 class="modal-title" id="createModalLabel">Add Company</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -75,7 +75,7 @@
     @foreach ($companies as $company)
         <div class="modal fade" id="editCompanyModal-{{ $company->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel">Edit Company</h5>
@@ -162,9 +162,9 @@
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
                                     data-target="#createCompanyModal">
-                                    Create
+                                    Add Company
                                 </a>
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>

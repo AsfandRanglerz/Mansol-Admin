@@ -31,7 +31,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="text-danger" for="project_code">Project Code</label>
-                                    <input type="number" class="form-control" id="project_code" name="project_code" required>
+                                    <input type="number" class="form-control" id="project_code" name="project_code" value="{{ $registration }}" readonly>
                                     @error('project_code')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -61,7 +61,12 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="text-danger" for="manpower_location">Man-Power Location City</label>
-                                    <input type="text" class="form-control" id="manpower_location" name="manpower_location" required>
+                                    <select name="manpower_location" id="manpower_location" class="form-control">
+                                        <option value="" selected disabled>Select City</option>
+                                        <option value="lahore">Lahore</option>
+                                        <option value="karachi">Karachi</option>
+                                        <option value="islamabad">Islamabad</option>
+                                    </select>
                                     @error('manpower_location')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -71,7 +76,10 @@
                                 <div class="form-group">
                                     <label class="text-danger" for="project_location">Project Location</label>
                                     <select name="project_location" class="form-control" id="project_location">
-                                        <option value="project_location">Select Location City</option>
+                                        <option value="" selected disabled>Select Location City</option>
+                                        <option value="lahore">Lahore</option>
+                                        <option value="karachi">Karachi</option>
+                                        <option value="islamabad">Islamabad</option>
                                     </select>
                                     @error('project_location')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -118,7 +126,9 @@
                                 <div class="form-group">
                                     <label class="text-danger" for="project_currency">Project Currency</label>
                                     <select name="project_currency" class="form-control" id="project_currency">
-                                        <option value="$">Select Currency</option>
+                                        <option value="" selected disabled>Select Currency</option>
+                                        <option value="$">$</option>
+                                        <option value="pkr">PKR</option>
                                     </select>
                                     @error('project_currency')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -354,7 +364,7 @@
                                     data-target="#createProjectModel">
                                     Create
                                 </a>
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -391,7 +401,7 @@
                                             <td>{{ $project->project_end_date ? $project->project_end_date->format('Y-m-d') : 'N/A' }}</td>
                                             <td>{{ $project->permission }}</td>
                                             <td>{{ $project->permission_date ? $project->permission_date->format('Y-m-d') : 'N/A' }}</td>
-                                            <td>{{ $project->project_currency }}</td>
+                                            <td>{{ strtoupper($project->project_currency) }}</td>
                                             <td>{{ $project->is_ongoing == 'checked' ? 'Yes' : 'No' }}</td>
                                             <td>{{ $project->poa_received == 'checked' ? 'Yes' : 'No' }}</td>
                                             <td>{{ $project->demand_letter_received == 'checked' ? 'Yes' : 'No' }}</td>

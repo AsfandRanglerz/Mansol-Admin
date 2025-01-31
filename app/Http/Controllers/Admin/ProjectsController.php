@@ -16,7 +16,18 @@ class ProjectsController extends Controller
         // dd($company_id);
         $company_name = Company::find($id)->name;
         $projects = Project::where('company_id', $company_id)->orderBy('is_active', 'desc')->latest()->get();
-        return view('admin.company.project', compact('company_id', 'projects', 'company_name'));
+
+        $lastReg = Project::pluck('project_code')->toArray();
+        $filteredValues = array_filter($lastReg, function ($value) {
+            return !is_null($value); // Remove null values
+        });
+        $integerValues = array_map('intval', $filteredValues);
+        $maxValue = !empty($integerValues) ? max($integerValues) : 2000;
+
+        $registration = $maxValue >= 2000 ? $maxValue + 1 : 2001;
+
+
+        return view('admin.company.project', compact('company_id', 'projects', 'company_name', 'registration'));
     }
 
     public function store(Request $request)
