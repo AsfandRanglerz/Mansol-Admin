@@ -187,7 +187,7 @@
                                     data-target="#createDemandModal">
                                     Add Demand
                                 </a>
-                                <table class="table text-center" id="table_id_events">
+                                <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
@@ -210,7 +210,7 @@
                                                     <a class="btn btn-primary" href="{{ route('nominate.index', ['craft_id' => $demand->craft->id, 'demand_id' => $demand->id, 'project_id' => $project->id]) }}">Add</a>
                                                 </td>
                                                 <td>{{ $demand->manpower }}</td>
-                                                <td>{{ $demand->salary }}</td>
+                                                <td>{{ $demand->salary }} {{ strtoupper($demand->project->project_currency) }}</td>
                                                 <td>{{ $demand->mobilization }}</td>
                                                 <td>{{ $demand->demobilization }}</td>
                                                 <td>
@@ -220,16 +220,18 @@
                                                         <div class="badge badge-danger badge-shadow">Deactivated</div>
                                                     @endif
                                                 </td>
-                                                <td class="d-flex">
-                                                    <a href="#" class="btn btn-success mr-2" data-toggle="modal"
-                                                    data-target="#editDemandModal-{{ $demand->id }}">Edit</a>
+                                                <td>
+                                                    <div class="d-flex gap-4">
+                                                        <a href="#" class="btn btn-success mr-2" data-toggle="modal"
+                                                        data-target="#editDemandModal-{{ $demand->id }}">Edit</a>
 
-                                                    <form action="{{ route('demand.destroy', $demand->id) }}" method="POST" >
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <input type="hidden"  name="project_id" value="{{ $demand->project->id }}">
-                                                        <button type="submit" class="btn btn-danger show_confirm">Delete</button>
-                                                    </form>
+                                                        <form action="{{ route('demand.destroy', $demand->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <input type="hidden"  name="project_id" value="{{ $demand->project->id }}">
+                                                            <button type="submit" class="btn btn-danger show_confirm">Delete</button>
+                                                        </form>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach

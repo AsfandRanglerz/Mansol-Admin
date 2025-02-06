@@ -1,5 +1,5 @@
 @extends('companypanel.layout.app')
-@section('title', 'Projects')
+@section('title', 'Demands')
 @section('content')
 
     <div class="main-content" style="min-height: 562px;">
@@ -10,7 +10,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>Projects</h4>
+                                    <h4>{{ $project->project_name }} - (Demands)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
@@ -19,29 +19,36 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Project Code</th>
-                                            <th>Projects</th>
-                                            <th>Demands</th>
+                                            <th>Craft</th>
+                                            <th>Man Power</th>
+                                            <th>Salary</th>
+                                            <th>Mobilization</th>
+                                            <th>Demobilization</th>
+                                            <th>Nominees</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($projects as $project)
+                                        @foreach ($demands as $demand)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $project->project_code }}</td>
-                                                <td>{{ $project->project_name }} </td>
+                                                <td>{{ $demand->craft->name }} </td>
+                                                <td>{{ $demand->manpower }} </td>
+                                                <td>{{ $demand->salary }} {{ strtoupper($demand->project->project_currency) }} </td>
+                                                <td>{{ $demand->mobilization }} </td>
+                                                <td>{{ $demand->demobilization }} </td>
                                                 <td>
                                                     <a href="
-                                                    {{ route('companydemands.index', $project->id) }}
+                                                    {{-- {{ route('companynominees.index', $demand->id) }} --}}
                                                      " class="btn btn-primary">View</a>
                                                 </td>
-                                                <td> @if ($project->is_active == 1)
+                                                <td> 
+                                                    @if ($demand->is_active == 1)
                                                     <div class="badge badge-success badge-shadow">Activated</div>
-                                                @else
-                                                    <div class="badge badge-danger badge-shadow">Deactivated</div>
-                                                @endif
-                                            </td>
+                                                    @else
+                                                        <div class="badge badge-danger badge-shadow">Deactivated</div>
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>

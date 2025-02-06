@@ -56,7 +56,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="sub_craft">Sub-Craft</label>
+                                                <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
                                                 <select name="sub_craft_id" class="form-control" id="sub_craft">
                                                     <option value="" selected disabled>Select Sub-Craft</option>
                                                 </select>
@@ -77,7 +77,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="approvals">Approvals</label>
+                                                <label class="text-danger" for="approvals">Approvals (Optional)</label>
                                                 <select name="approvals" id="" class="form-control">
                                                     <option value="">Select Company</option>
                                                     @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $company)
@@ -93,7 +93,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="medical_doc">Approval Document</label>
+                                                <label class="text-danger" for="medical_doc">Approval Document (Optional)</label>
                                                 <input type="file" class="form-control" id="medical_doc" name="medical_doc">
                                                 @error('medical_doc')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -362,7 +362,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="technical_qualification">Technical
-                                                    Qualification</label>
+                                                    Qualification (Optional)</label>
 
                                                 <select name="technical_qualification" id="qualification"
                                                     class="form-control">
@@ -861,7 +861,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="refference">Reference</label>
+                                                <label class="text-danger" for="refference">Reference (Optional)</label>
                                                 <input type="text" class="form-control" id="refference"
                                                     name="refference" value="{{ old('refference') }}">
                                                 @error('refference')
@@ -872,7 +872,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger"
-                                                    for="performance_appraisal">Performance-Appraisal Awarded %</label>
+                                                    for="performance_appraisal">Performance-Appraisal Awarded % (Optional)</label>
                                                 <input type="text" class="form-control" id="performance_appraisal"
                                                     name="performance_appraisal"
                                                     value="{{ old('performance_appraisal') }}">
@@ -894,7 +894,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="comment">Comment</label>
+                                                <label class="text-danger" for="comment">Comment (Optional)</label>
                                                 <input type="text" class="form-control" id="comment" name="comment"
                                                     value="{{ old('comment') }}">
                                                 @error('comment')

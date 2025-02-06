@@ -31,18 +31,21 @@ class NominateController extends Controller
             'craft_id' => 'required',
             'demand_id' => 'required',
             'project_id' => 'required',
-            'human_resource_id' => 'required',
+            'human_resource_id' => 'required|array',
         ]);
-        
-        $humanResource = HumanResource::findOrFail($request->human_resource_id);
-        $humanResource->update(['status' => 3]);
 
-        Nominate::create([
-            'craft_id' => $request->craft_id,
-            'demand_id' => $request->demand_id,
-            'project_id' => $request->project_id,
-            'human_resource_id' => $request->human_resource_id,
-        ]);
+        foreach($request->human_resource_id as $humanResourceId){
+            $humanResource = HumanResource::findOrFail($humanResourceId);
+            $humanResource->update(['status' => 3]);
+        }
+        foreach($request->human_resource_id as $humanResourceId){
+            Nominate::create([
+                'craft_id' => $request->craft_id,
+                'demand_id' => $request->demand_id,
+                'project_id' => $request->project_id,
+                'human_resource_id' => $humanResourceId,
+            ]);
+        }
 
         return redirect()->route('nominate.index', ['craft_id' => $request->craft_id, 'demand_id' => $request->demand_id, 'project_id' => $request->project_id])->with(['message' => 'Human Resource Assign Successfully']);
     }

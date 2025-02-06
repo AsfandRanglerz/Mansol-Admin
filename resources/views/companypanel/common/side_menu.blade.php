@@ -12,7 +12,7 @@
                             data-feather="home"></i>Dashboard</span></a>
             </li>
             {{-- Demands --}}
-            <li class="dropdown {{ request()->is('company/company-projects*') ? 'active' : '' }}">
+            <li class="dropdown {{ request()->is('company/company-projects*') || request()->is('company/project-demands*') || request()->is('company/demand-nominees*') ? 'active' : '' }}">
                 <a href="{{ route('companyProject.index') }}" class="nav-link px-2">
                     <span><i class="fas fa-tasks"></i> Projects</span>
                 </a>

@@ -22,10 +22,10 @@
                                             <th>Applicant Id</th>
                                             <th>Project Id</th>
                                             <th>Nominee Name</th>
-                                            <th>Nominee CNIC</th>
-                                            <th>Approvals</th>
-                                            <th>Craft</th>
                                             <th>Project Name</th>
+                                            <th>Craft</th>
+                                            <th>Approvals</th>
+                                            <th>Nominee CNIC</th>
                                             {{-- <th>Demand</th> --}}
                                             {{-- <th scope="col">Actions</th> --}}
                                         </tr>
@@ -37,14 +37,14 @@
                                             <td>{{ $HumanResource->humanResource->registration }}</td>
                                             <td>{{ $HumanResource->project->project_code }}</td>
                                             <td>{{ $HumanResource->humanResource->name }}</td>
-                                            <td>{{ $HumanResource->humanResource->cnic }}</td>
-                                            <td>{{ strtoupper($HumanResource->humanResource->approvals) }}</td>
-                                            <td>
-                                                {{ $HumanResource->craft->name }}
-                                            </td>
                                             <td>
                                                 {{ $HumanResource->project->project_name }}
                                             </td>
+                                            <td>
+                                                {{ $HumanResource->craft->name }}
+                                            </td>
+                                            <td>{{ strtoupper($HumanResource->humanResource->approvals) }}</td>
+                                            <td>{{ $HumanResource->humanResource->cnic }}</td>
                                             {{-- <td>{{ $HumanResource->application_for_post ?? 'null' }}</td> --}}
                                             
                                             {{-- <td>

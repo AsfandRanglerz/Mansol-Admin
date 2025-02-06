@@ -29,6 +29,8 @@ Route::prefix('company')->middleware('company')->group(function () {
     // ############ Projects #################
     Route::controller(CompanyProjectController::class)->group(function () {
         Route::get('/company-projects',  'index')->name('companyProject.index');
+        Route::get('/project-demands/{id}',  'demands')->name('companydemands.index');
+        Route::get('/demand-nominees/{id}',  'nominees')->name('companynominees.index');
     });
     // ############ Notification #################
     Route::controller(CompanyNotificationController::class)->group(function () {

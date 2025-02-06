@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="{{ asset('public/admin/assets/css/custom.css') }}">
     <link rel='shortcut icon' type='image/x-icon' href='{{ asset('public/admin/assets/images/cropped-mansol_fav_icon-32x32.png') }}' />
     <link rel="stylesheet" href="{{ asset('public/admin/assets/css/datatables.css') }}">
+    <!-- DataTable CDN -->
+    <link rel="stylesheet" href="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/admin/assets/bundles/datatables/datatables.min.css') }}">
 
 </head>
 
@@ -42,6 +45,11 @@
     <script src="{{ asset('public/admin/assets/js/custom.js') }}"></script>
     <script src="{{ asset('public/admin/assets/toastr/js/toastr.min.js') }}"></script>
     <script src="{{ asset('public/admin/assets/js/datatables.js') }}"></script>
+    <!-- DataTable CDN -->
+    <script src="{{ asset('public/admin/assets/bundles/datatables/datatables.min.js') }}"></script>
+    <script src="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}">
+    </script>
+    <script src="{{ asset('public/admin/assets/js/page/datatables.js') }}"></script>
     <script>
         toastr.options = {
             "closeButton": false,

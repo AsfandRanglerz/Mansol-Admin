@@ -1,7 +1,11 @@
 @extends('admin.layout.app')
 @section('title', 'Nominees')
 @section('content')
-
+<style>
+    .select2-container{
+        display: block;
+    }
+</style>
     {{-- Demand Create Model --}}
     <div class="modal fade" id="assignNominiModal" tabindex="-1" role="dialog" aria-labelledby="demandModalLabel"
         aria-hidden="true">
@@ -24,8 +28,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="hr_id">Human Resource</label>
-                                        <select name="human_resource_id" class="form-control">
-                                            <option value="" selected disabled>Select Human Resource</option>
+                                        <select name="human_resource_id[]" class="form-control select2" multiple>
                                             @foreach ($humanRecources as $humanRecource)
                                                 <option value="{{ $humanRecource->id }}">{{ $humanRecource->name }}</option>
                                             @endforeach
