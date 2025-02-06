@@ -2,39 +2,6 @@
 @section('title', 'Create Human Resource')
 @section('content')
 
-{{-- Create Company Model --}}
-<div class="modal fade" id="createCompanyModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createModalLabel">Add Company</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form enctype="multipart/form-data" action="{{ route('companies.store') }}" method="POST">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="image">Image</label>
-                                <input type="file" class="form-control" id="image" name="image">
-                                <div class="invalid-feedback"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 
 <div class="main-content" style="min-height: 562px;">
     <section class="section">
@@ -987,6 +954,9 @@
         </div>
     </section>
 </div>
+
+
+@include('admin.humanresouce.document')
 
 @endsection
 
