@@ -98,4 +98,10 @@ class DemandsController extends Controller
             return redirect()->route('demands.index', ['id' => $request->project_id])->with(['error' => 'This Demand cannot be deleted because it has assigned nominees.']);
         }
     }
+
+    public function getDemand(Request $request)
+    {
+        $demands = Demand::where('project_id', $request->project_id)->orderBy('manpower', 'asc')->get();
+        return response()->json($demands);
+    }
 }

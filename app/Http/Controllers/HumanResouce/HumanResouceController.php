@@ -97,6 +97,7 @@ class HumanResouceController extends Controller
             return redirect('human-resouce')->with('message', 'Password Reset Successfully!');
         }
     }
+    
     public function logout(Request $request)
     {
         Auth::guard('humanresource')->logout();

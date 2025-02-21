@@ -138,4 +138,10 @@ class ProjectsController extends Controller
             return redirect()->route('project.index', ['id' => $request->company_id])->with(['error' => 'This Project cannot be deleted because it has assigned nominees.']);
         }
     }
+
+    public function getProjects(Request $request)
+    {
+        $projects = Project::where('company_id', $request->company_id)->orderBy('project_name', 'asc')->get();
+        return response()->json($projects);
+    }
 }

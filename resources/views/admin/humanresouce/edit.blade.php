@@ -3,6 +3,7 @@
 @section('content')
 
 
+
     <div class="main-content" style="min-height: 562px;">
         <section class="section">
             <div class="section-body">
@@ -43,33 +44,79 @@
                                                 <div class="invalid-feedback"></div>
                                             </div>
                                         </div>
+
+                                        @if ($company)
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="craft_id">Application for
-                                                    Post</label>
-                                                <select name="craft_id" id="craft" class="form-control">
-                                                    <option value="" disabled>Select Craft</option>
-                                                    @foreach ($Crafts as $craft)
-                                                        <option value="{{ $craft->id }}"
-                                                            {{ old('craft', $HumanResource->craft) == $craft->id ? 'selected' : '' }}>
-                                                            {{ $craft->name }}
-                                                        </option>
+                                                <label class="text-danger" for="company_id">Company</label>
+                                                {{-- <select name="company_id" id="company_id" class="form-control">
+                                                    <option value="">Select Company</option>
+                                                    @foreach ($companies as $company)
+                                                        <option value="{{ $company->id }}" {{ $company->id == $company_id ? 'selected' : '' }}>{{ $company->name }}</option>
                                                     @endforeach
-                                                </select>
-
+                                                </select> --}}
+                                                <input type="text" value="{{ $company->name }}" readonly class="form-control">
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" id="project-group">
                                             <div class="form-group">
-                                                <label class="text-danger" for="sub_craft_id">Sub-Craft</label>
-                                                <select name="sub_craft_id" class="form-control" id="sub_craft">
-                                                    <option value="" disabled>Select Sub-Craft</option>
-                                                </select>
-                                                @error('sub_craft_id')
+                                                <label class="text-danger" for="project_id">Project</label>
+                                                {{-- <select name="project_id" id="project_id" class="form-control">
+                                                    <option value="" selected disabled>Select Project</option>
+                                                </select> --}}
+                                                <input type="text" value="{{ $project->project_name }}" readonly class="form-control">
+                                                @error('project_id')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
+                                        <div class="col-md-4" id="demand-group">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="demand_id">Demand</label>
+                                                {{-- <select name="demand_id" id="demand_id" class="form-control">
+                                                    <option value="" selected disabled>Select Demand</option>
+                                                </select> --}}
+                                                <input type="text" value="Man Power - {{ $demand->manpower }}" readonly class="form-control">
+                                                @error('demand_id')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        @endif
+                                        
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="craft">Application for Post</label>
+                                                {{-- <select name="craft_id" class="form-control" id="craft">
+                                                    <option value="" selected disabled>Select Craft</option>
+                                                    @foreach ($crafts as $craft)
+                                                        <option value="{{ $craft->id }}" {{ $craft->id == $HumanResource->craft_id ? 'selected' : '' }}>{{ $craft->name }}</option>
+                                                    @endforeach
+                                                </select> --}}
+                                                <input type="text" value="{{ $craft->name }}" readonly class="form-control">
+                                                @error('craft')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <input type="hidden" name="craft_id" value="{{ $craft->id ?? null }}">
+                                        
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="sub_craft">Sub-Craft</label>
+                                                {{-- <select name="sub_craft_id" class="form-control" id="sub_craft">
+                                                    <option value="" selected disabled>Select Sub-Craft</option>
+                                                </select> --}}
+                                                <input type="text" value="{{ $subCraft->name ?? null }}" readonly class="form-control">
+                                                @error('sub_craft')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        
+                                        <input type="hidden" name="sub_craft_id" value="{{ $subCraft->id ?? null }}">
+                                        
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="application_date">Application Date</label>
@@ -87,10 +134,10 @@
                                                 <label class="text-danger" for="approvals">Approvals</label>
                                                 <select name="approvals" class="form-control">
                                                     <option value="">Select Company</option>
-                                                    @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $company)
-                                                        <option value="{{ strtolower($company) }}"
-                                                            {{ old('approvals', $HumanResource->approvals) == strtolower($company) ? 'selected' : '' }}>
-                                                            {{ $company }}
+                                                    @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $approvals)
+                                                        <option value="{{ strtolower($approvals) }}"
+                                                            {{ old('approvals', $HumanResource->approvals) == strtolower($approvals) ? 'selected' : '' }}>
+                                                            {{ $approvals }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -214,14 +261,14 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="doi">DOI</label>
+                                                <label class="text-danger" for="doi">Data Of Issue/Passport</label>
                                                 <input type="date" class="form-control" id="doi" name="doi"
                                                     value="{{ old('doi', $HumanResource->doi) }}">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="doe">DOE</label>
+                                                <label class="text-danger" for="doe">Data Of Expiry/Passport</label>
                                                 <input type="date" class="form-control" id="doe" name="doe"
                                                     value="{{ old('doe', $HumanResource->doe) }}">
                                             </div>
@@ -562,61 +609,14 @@
                                             </div>
                                             
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="profession">Profession</label>
-                                                <select name="profession" id="profession" class="form-control">
-                                                    <option value="" disabled
-                                                        {{ old('profession', $HumanResource->profession ?? '') == '' ? 'selected' : '' }}>
-                                                        Select Profession</option>
-                                                    <option value="engineer"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'engineer' ? 'selected' : '' }}>
-                                                        Engineer</option>
-                                                    <option value="doctor"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'doctor' ? 'selected' : '' }}>
-                                                        Doctor</option>
-                                                    <option value="teacher"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'teacher' ? 'selected' : '' }}>
-                                                        Teacher</option>
-                                                    <option value="lawyer"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'lawyer' ? 'selected' : '' }}>
-                                                        Lawyer</option>
-                                                    <option value="accountant"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'accountant' ? 'selected' : '' }}>
-                                                        Accountant</option>
-                                                    <option value="software_developer"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'software_developer' ? 'selected' : '' }}>
-                                                        Software Developer</option>
-                                                    <option value="architect"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'architect' ? 'selected' : '' }}>
-                                                        Architect</option>
-                                                    <option value="businessman"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'businessman' ? 'selected' : '' }}>
-                                                        Businessman</option>
-                                                    <option value="freelancer"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'freelancer' ? 'selected' : '' }}>
-                                                        Freelancer</option>
-                                                    <option value="student"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'student' ? 'selected' : '' }}>
-                                                        Student</option>
-                                                    <option value="other"
-                                                        {{ old('profession', $HumanResource->profession ?? '') == 'other' ? 'selected' : '' }}>
-                                                        Other</option>
-                                                </select>
-                                                @error('profession')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-                                        </div>
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="experience">Years of Experience</label>
-                                                <input type="number" name="experience" class="form-control"
+                                                <label class="text-danger" for="experience">Years of Experience (Local)</label>
+                                                <input type="number" name="experience_local" class="form-control"
                                                        min="0" 
                                                        placeholder="Enter Years of Experience"
-                                                       value="{{ old('experience', $HumanResource->experience ?? '') }}">
+                                                       value="{{ old('experience', $HumanResource->experience_local ?? '') }}">
                                                 @error('experience')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -625,13 +625,45 @@
                                         
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="district_of_domicile">District Of
-                                                    Domicile</label>
-                                                <input type="text" class="form-control" id="district_of_domicile"
-                                                    name="district_of_domicile"
-                                                    value="{{ old('district_of_domicile', $HumanResource->district_of_domicile) }}">
+                                                <label class="text-danger" for="experience">Years of Experience (Gulf)</label>
+                                                <input type="number" name="experience_gulf" class="form-control"
+                                                       min="0" 
+                                                       placeholder="Enter Years of Experience"
+                                                       value="{{ old('experience', $HumanResource->experience_gulf ?? '') }}">
+                                                @error('experience')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
+                                        
+                                            <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="district_of_domicile">District Of
+                                                Domicile</label>
+                                                <select name="district_of_domicile" id="district_of_domicile" class="form-control">
+                                                    <option value="" selected disabled>Select District</option>
+                                                    @foreach ([
+                                                        'Abbottabad', 'AJK', 'Astore', 'Attock', 'Bahawalnagar', 'Bahawalpur', 'Bannu', 'Bhakhar', 'Bhakkar', 'Bhimber', 'Buner',
+                                                        'Chakwal', 'Charsadda', 'Chitral', 'Dadu', 'D.G. Khan', 'Dir Lower', 'Dir Upper', 'Faisalabad', 'Fateh Jang', 'Gujranwala',
+                                                        'Gujrat', 'Gujar Khan', 'Hafizabad', 'Haripur', 'Hyderabad', 'Islamabad', 'Jacobabad', 'Jaffarabad', 'Jhang', 'Jhelum',
+                                                        'Jiwani', 'Karachi', 'Kashmore', 'Kasur', 'Kech', 'Khanewal', 'Khanpur', 'Khyber', 'Khyber Agency', 'Kohat', 'Kohlu',
+                                                        'Lahore', 'Lakki Marwat', 'Larkana', 'Lasbela', 'Layyah', 'Lodhran', 'Lower Dir', 'Lower Kohistan', 'Malakand', 'Mandi Bahauddin',
+                                                        'Mansehra', 'Mardan', 'Mastung', 'Matiari', 'Mirpur', 'Mirpur Khas', 'Muzaffarabad', 'Muzaffargarh', 'Nawabshah', 'Nowshera',
+                                                        'Okara', 'Pakpattan', 'Peshawar', 'Quetta', 'Rahim Yar Khan', 'Rajanpur', 'Rawalpindi', 'Sahiwal', 'Sargodha', 'Sawat',
+                                                        'Sialkot', 'Shikarpur', 'Sindh', 'Sirkot', 'Skardu', 'Sukkur', 'Swabi', 'Swat', 'Tando Allahyar', 'Tando Muhammad Khan',
+                                                        'Tank', 'Thatta', 'Toba Tek Singh', 'Upper Dir', 'Upper Kohistan', 'Vehari', 'Zhob'
+                                                    ] as $district)
+                                                        <option value="{{ $district }}" 
+                                                            {{ old('district_of_domicile', $HumanResource->district_of_domicile ?? '') == $district ? 'selected' : '' }}>
+                                                            {{ $district }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            @error('district_of_domicile')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>                                            
                                         
                                         
                                         <div class="col-md-4">
@@ -801,6 +833,10 @@
                                             </div>
                                         </div>
 
+
+                                        
+
+                                        
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="citizenship">Citizenship</label>
@@ -820,6 +856,8 @@
                                                 @enderror
                                             </div>
                                         </div>
+
+                                        
 
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -884,7 +922,10 @@
                                                     value="{{ old('comment', $HumanResource->comment) }}">
                                             </div>
                                         </div>
-
+                                        
+                                        @if (is_null($company))
+                                            
+                                        
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="status">Status</label>
@@ -907,7 +948,10 @@
                                                 @enderror
                                             </div>
                                         </div>
-
+                                        @endif
+                                        @if ($company)
+                                        <input type="hidden" name="status" value="3">
+                                        @endif
                                     </div>
                                     <div class="modal-footer justify-content-center">
                                         <button type="submit" class="btn btn-primary">Update</button>
@@ -921,7 +965,6 @@
             </div>
         </section>
     </div>
-
 @endsection
 
 @section('js')
@@ -931,45 +974,83 @@
         </script>
     @endif
 
-    <script>
+    {{-- <script>
         $(document).ready(function() {
-            // Fetch the selected craft and sub_craft
-            var selectedCraft = $('#craft').val();
-            var selectedSubCraft = "{{ $HumanResource->sub_craft }}";
-
-            // Load the sub-crafts when the page loads (if a craft is already selected)
-            if (selectedCraft) {
-                fetchSubCrafts(selectedCraft, selectedSubCraft);
+            // Check if company_id is selected on page load
+            var selectedCompany = "{{ $HumanResource->company_id }}";
+    
+            if (selectedCompany) {
+                // If company is selected, show project and demand fields
+                $('#project-group').removeClass('d-none');
+                $('#demand-group').removeClass('d-none');
+                $('#craft').closest('.col-md-4').addClass('d-none');
+                $('#sub_craft').closest('.col-md-4').addClass('d-none');
+                loadProjects(selectedCompany); // Load the projects for the selected company
+            } else {
+                // If no company is selected, show craft and sub-craft fields
+                $('#project-group').addClass('d-none');
+                $('#demand-group').addClass('d-none');
+                $('#craft').closest('.col-md-4').removeClass('d-none');
+                $('#sub_craft').closest('.col-md-4').removeClass('d-none');
             }
-
-            // Handle craft change event
-            $('#craft').on('change', function() {
-                var craftId = $(this).val();
-                fetchSubCrafts(craftId, null); // Reset sub-craft selection when craft changes
+    
+            // When company changes
+            $('#company_id').on('change', function() {
+                var companyId = $(this).val();
+                if (companyId) {
+                    // Show project and demand fields if company is selected
+                    $('#project-group').removeClass('d-none');
+                    $('#demand-group').removeClass('d-none');
+                    $('#craft').closest('.col-md-4').addClass('d-none');
+                    $('#sub_craft').closest('.col-md-4').addClass('d-none');
+                    loadProjects(companyId); // Load the projects for the selected company
+                } else {
+                    // Otherwise, show craft and sub-craft fields
+                    $('#project-group').addClass('d-none');
+                    $('#demand-group').addClass('d-none');
+                    $('#craft').closest('.col-md-4').removeClass('d-none');
+                    $('#sub_craft').closest('.col-md-4').removeClass('d-none');
+                }
             });
-
-            // Function to fetch sub-crafts and populate the dropdown
-            function fetchSubCrafts(craftId, selectedSubCraft) {
+    
+            // When project changes
+            $('#project_id').on('change', function() {
+                var projectId = $(this).val();
+                loadDemands(projectId); // Load the demands for the selected project
+            });
+    
+            // Function to load projects based on company
+            function loadProjects(companyId) {
                 $.ajax({
-                    url: "{{ route('get-sub-crafts') }}",
+                    url: "{{ route('get-projects') }}",
                     type: "GET",
-                    data: {
-                        craft_id: craftId
-                    },
+                    data: { company_id: companyId },
                     success: function(data) {
-                        $('#sub_craft').empty();
-                        $('#sub_craft').append('<option value="" disabled>Select Sub-Craft</option>');
-
+                        $('#project_id').empty().append('<option value="" disabled>Select Project</option>');
                         $.each(data, function(key, value) {
-                            $('#sub_craft').append(
-                                `<option value="${value.id}" ${value.id == selectedSubCraft ? 'selected' : ''}>
-                            ${value.name}
-                        </option>`
-                            );
+                            $('#project_id').append(`<option value="${value.id}">${value.project_name}</option>`);
                         });
-                    },
+                    }
+                });
+            }
+    
+            // Function to load demands based on project
+            function loadDemands(projectId) {
+                $.ajax({
+                    url: "{{ route('get-demand') }}",
+                    type: "GET",
+                    data: { project_id: projectId },
+                    success: function(data) {
+                        $('#demand_id').empty().append('<option value="" disabled>Select Demand</option>');
+                        $.each(data, function(key, value) {
+                            $('#demand_id').append(`<option value="${value.id}">Man Power ${value.manpower}</option>`);
+                        });
+                    }
                 });
             }
         });
-    </script>
+    </script> --}}
+    
+    
+    
 @endsection

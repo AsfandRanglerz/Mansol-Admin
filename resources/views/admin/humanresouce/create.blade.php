@@ -15,12 +15,7 @@
                         <div class="card-header">
                             <div class="col-12 d-flex justify-content-between align-items-center">
                                 <h4>Add Human Resource</h4>
-                                <button data-toggle="modal" data-target="#createCompanyModal"
-                                    class="btn btn-primary text-white d-flex align-items-center"
-                                    href="{{ route('humanresource.index') }}">
-                                    <span class="fa-solid fa-plus mr-2"></span>
-                                    <p class="m-0">Add Attachments</p>
-                                </button>
+                                
                             </div>
                         </div>
                         <div class="card-body table-striped table-bordered table-responsive">
@@ -39,8 +34,41 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="name">Name</label>
                                             <input type="text" class="form-control" id="name" name="name"
-                                                value="{{ old('name') }}">
+                                                value="{{ old('name') }}" required>
                                             @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="company_id">Company (Optional)</label>
+                                            <select name="company_id" id="company_id" class="form-control">
+                                                <option value="">Select Company</option>
+                                                @foreach ($companies as $company)
+                                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-none" id="project-group">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="project_id">Project</label>
+                                            <select name="project_id" id="project_id" class="form-control">
+                                                <option value="" selected disabled>Select Project</option>
+                                            </select>
+                                            @error('project_id')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 d-none" id="demand-group">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="demand_id">Demand</label>
+                                            <select name="demand_id" id="demand_id" class="form-control">
+                                                <option value="" selected disabled>Select Demand</option>
+                                            </select>
+                                            @error('demand_id')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -76,7 +104,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="application_date">Application Date</label>
                                             <input type="date" class="form-control" id="application_date"
-                                                name="application_date" value="{{ old('application_date') }}">
+                                                name="application_date" value="{{ old('application_date') }}" required>
                                             @error('application_date')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -114,7 +142,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="son_of">S/O</label>
                                             <input type="text" class="form-control" id="son_of" name="son_of"
-                                                value="{{ old('son_of') }}" placeholder="Father Name">
+                                                value="{{ old('son_of') }}" placeholder="Father Name" required>
                                             @error('son_of')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -124,7 +152,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="mother_name">Mother Name</label>
                                             <input type="text" class="form-control" id="mother_name" name="mother_name"
-                                                value="{{ old('mother_name') }}" placeholder="Mother Name">
+                                                value="{{ old('mother_name') }}" placeholder="Mother Name" required>
                                             @error('mother_name')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -133,7 +161,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="blood_group">Blood Group</label>
-                                            <select name="blood_group" class="form-control">
+                                            <select name="blood_group" class="form-control" required>
                                                 <option value="" selected disabled>Select Blood Group</option>
                                                 @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $blood)
                                                 <option value="{{ strtolower($blood) }}">{{ $blood }}
@@ -149,7 +177,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="date_of_birth">Date Of Birth</label>
                                             <input type="date" class="form-control" id="date_of_birth"
-                                                name="date_of_birth" value="{{ old('date_of_birth') }}">
+                                                name="date_of_birth" value="{{ old('date_of_birth') }}" required>
                                             @error('date_of_birth')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -158,7 +186,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="city_of_birth">City Of Birth</label>
-                                            <select name="city_of_birth" class="form-control" id="citySelect">
+                                            <select name="city_of_birth" class="form-control" id="citySelect" required>
                                                 <option value="" selected disabled>Select City</option>
                                                 @foreach (['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad',
                                                 'Multan', 'Peshawar', 'Quetta'] as $city)
@@ -177,7 +205,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="cnic">CNIC</label>
                                             <input type="number" class="form-control" id="cnic" name="cnic"
-                                                value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X">
+                                                value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X" required>
                                             @error('cnic')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -187,7 +215,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="cnic_expiry_date">CNIC Expiry Date</label>
                                             <input type="date" class="form-control" id="cnic_expiry_date"
-                                                name="cnic_expiry_date" value="{{ old('cnic_expiry_date') }}">
+                                                name="cnic_expiry_date" value="{{ old('cnic_expiry_date') }}" required>
                                             @error('cnic_expiry_date')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -198,7 +226,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="passport">Passport #</label>
                                             <input type="text" class="form-control" id="passport" name="passport"
-                                                value="{{ old('passport') }}">
+                                                value="{{ old('passport') }}" required>
                                             @error('passport')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -208,7 +236,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="passport_issue_place">Passport Place Of
                                                 Issue</label>
-                                            <select name="passport_issue_place" class="form-control">
+                                            <select name="passport_issue_place" class="form-control" required>
                                                 <option value="" selected disabled>Select City</option>
                                                 @foreach (['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad',
                                                 'Multan', 'Peshawar', 'Quetta'] as $city)
@@ -226,9 +254,9 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="doi">DOI</label>
+                                            <label class="text-danger" for="doi">Data Of Issue/Passport</label>
                                             <input type="date" class="form-control" id="doi" name="doi"
-                                                value="{{ old('doi') }}">
+                                                value="{{ old('doi') }}" required>
                                             @error('doi')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -236,9 +264,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="doe">DOE</label>
+                                            <label class="text-danger" for="doe">Data Of Expiry/Passport</label>
                                             <input type="date" class="form-control" id="doe" name="doe"
-                                                value="{{ old('doe') }}">
+                                                value="{{ old('doe') }}" required>
                                             @error('doe')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -249,7 +277,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="religion">Religion</label>
-                                            <select name="religion" class="form-control">
+                                            <select name="religion" class="form-control" required>
                                                 <option value="" selected disabled>Select Religion</option>
                                                 @foreach (['Muslim', 'Hindu', 'Christian', 'Buddhist', 'Jewish', 'Sikh']
                                                 as $religion)
@@ -267,7 +295,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="martial_status">Marital Status</label>
-                                            <select name="martial_status" class="form-control">
+                                            <select name="martial_status" class="form-control" required>
                                                 <option value="" selected disabled>Select Marital</option>
                                                 <option value="single">Single</option>
                                                 <option value="married">Married</option>
@@ -284,7 +312,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="next_of_kin">Next Of Kin</label>
                                             <input type="text" class="form-control" id="next_of_kin" name="next_of_kin"
-                                                value="{{ old('next_of_kin') }}">
+                                                value="{{ old('next_of_kin') }}" required>
                                             @error('next_of_kin')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -293,7 +321,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="relation">Relation</label>
-                                            <select class="form-control" id="relation" name="relation">
+                                            <select class="form-control" id="relation" name="relation" required>
                                                 <option value="">Select Relation</option>
                                                 @foreach (['Father', 'Mother', 'Brother', 'Sister', 'Spouse', 'Friend',
                                                 'Other'] as $relation)
@@ -313,7 +341,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="kin_cnic">Kin CNIC</label>
                                             <input type="number" class="form-control" id="kin_cnic" name="kin_cnic"
-                                                value="{{ old('kin_cnic') }}" placeholder="XXXXX-XXXXXXX-X">
+                                                value="{{ old('kin_cnic') }}" placeholder="XXXXX-XXXXXXX-X" required>
                                             @error('kin_cnic')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -322,7 +350,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="shoe_size">Shoe Size</label>
-                                            <select name="shoe_size" class="form-control">
+                                            <select name="shoe_size" class="form-control" required>
                                                 <option value="" selected disabled>Select Shoe Size</option>
                                                 <option value="small">Small</option>
                                                 <option value="medium">Medium</option>
@@ -337,7 +365,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="cover_size">Cover Size</label>
-                                            <select name="cover_size" class="form-control">
+                                            <select name="cover_size" class="form-control" required>
                                                 <option value="" selected disabled>Select Cover Size</option>
                                                 @for ($i = 36; $i <= 46; $i++) <option value="{{ $i }}">{{ $i }}
                                                     </option>
@@ -352,7 +380,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="acdemic_qualification">Academic
                                                 Qualification</label>
-                                            <select name="acdemic_qualification" class="form-control">
+                                            <select name="acdemic_qualification" class="form-control" required>
                                                 <option value="" selected disabled>Select Qualification</option>
                                                 <option value="no_formal_education">No Formal Education</option>
                                                 <option value="primary">Primary Education</option>
@@ -529,34 +557,12 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger" for="profession">Profession</label>
-                                            <select name="profession" class="form-control">
-                                                <option value="" selected disabled>Select Profession</option>
-                                                <option value="engineer">Engineer</option>
-                                                <option value="doctor">Doctor</option>
-                                                <option value="teacher">Teacher</option>
-                                                <option value="lawyer">Lawyer</option>
-                                                <option value="accountant">Accountant</option>
-                                                <option value="software_developer">Software Developer</option>
-                                                <option value="architect">Architect</option>
-                                                <option value="businessman">Businessman</option>
-                                                <option value="freelancer">Freelancer</option>
-                                                <option value="student">Student</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                            @error('profession')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
 
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="experience">Years of Experience</label>
-                                            <input type="number" name="experience" class="form-control" min="0"
-                                                placeholder="Enter Years of Experience">
+                                            <label class="text-danger" for="experience">Years of Experience (Local)</label>
+                                            <input type="number" name="experience_local" class="form-control" min="0"
+                                                placeholder="Enter Years of Experience" required>
                                             @error('experience')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -564,10 +570,221 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
+                                            <label class="text-danger" for="experience">Years of Experience (Gulf)</label>
+                                            <input type="number" name="experience_gulf" class="form-control" min="0"
+                                                placeholder="Enter Years of Experience" required>
+                                            @error('experience')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="present_address">Present Address</label>
+                                            <textarea class="form-control" id="present_address"
+                                                name="present_address" required>{{ old('present_address') }}</textarea>
+                                            @error('present_address')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row col-md-8">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="present_address_phone">Phone</label>
+                                                <input type="tel" class="form-control" id="present_address_phone"
+                                                    name="present_address_phone"
+                                                    value="{{ old('present_address_phone') }}" required>
+                                                @error('present_address_phone')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="present_address_mobile">Mobile</label>
+                                                <input type="tel" class="form-control" id="present_address_mobile"
+                                                    name="present_address_mobile"
+                                                    value="{{ old('present_address_mobile') }}" required>
+                                                @error('present_address_mobile')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="email">Email</label>
+                                                <input type="email" class="form-control" id="email" name="email"
+                                                    value="{{ old('email') }}" required>
+                                                @error('email')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="present_address_city">Present Address
+                                                    City</label>
+                                                <select name="present_address_city" id="present_address_city"
+                                                    class="form-control" required>
+                                                    <option value="" disabled {{ old('present_address_city',
+                                                        $HumanResource->present_address_city ?? '') == '' ? 'selected' :
+                                                        '' }}>
+                                                        Select City</option>
+                                                    <option value="lahore" {{ old('present_address_city',
+                                                        $HumanResource->present_address_city ?? '') == 'lahore' ?
+                                                        'selected' : '' }}>
+                                                        Lahore</option>
+                                                    <option value="karachi" {{ old('present_address_city',
+                                                        $HumanResource->present_address_city ?? '') == 'karachi' ?
+                                                        'selected' : '' }}>
+                                                        Karachi</option>
+                                                    <option value="islamabad" {{ old('present_address_city',
+                                                        $HumanResource->present_address_city ?? '') == 'islamabad' ?
+                                                        'selected' : '' }}>
+                                                        Islamabad</option>
+                                                    <option value="peshawar" {{ old('present_address_city',
+                                                        $HumanResource->present_address_city ?? '') == 'peshawar' ?
+                                                        'selected' : '' }}>
+                                                        Peshawar</option>
+                                                    <option value="quetta" {{ old('present_address_city',
+                                                        $HumanResource->present_address_city ?? '') == 'quetta' ?
+                                                        'selected' : '' }}>
+                                                        Quetta</option>
+                                                    <option value="multan" {{ old('present_address_city',
+                                                        $HumanResource->present_address_city ?? '') == 'multan' ?
+                                                        'selected' : '' }}>
+                                                        Multan</option>
+                                                </select>
+                                                @error('present_address_city')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="permanent_address">Permanent
+                                                Address</label>
+                                            <textarea class="form-control" id="permanent_address"
+                                                name="permanent_address" required>{{ old('permanent_address') }}</textarea>
+                                            @error('permanent_address')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="row col-md-8">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="permanent_address_phone">Phone</label>
+                                                <input type="phone" class="form-control" id="permanent_address_phone"
+                                                    name="permanent_address_phone"
+                                                    value="{{ old('permanent_address_phone') }}" required>
+                                                @error('permanent_address_phone')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="permanent_address_mobile">Mobile</label>
+                                                <input type="tel" class="form-control" id="permanent_address_mobile"
+                                                    name="permanent_address_mobile"
+                                                    value="{{ old('permanent_address_mobile') }}" required>
+                                                @error('permanent_address_mobile')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="permanent_address_city">Permanent
+                                                    Address City</label>
+                                                <select name="permanent_address_city" id="permanent_address_city"
+                                                    class="form-control" required>
+                                                    <option value="" disabled {{ old('permanent_address_city',
+                                                        $HumanResource->permanent_address_city ?? '') == '' ? 'selected'
+                                                        : '' }}>
+                                                        Select City</option>
+                                                    <option value="lahore" {{ old('permanent_address_city',
+                                                        $HumanResource->permanent_address_city ?? '') == 'lahore' ?
+                                                        'selected' : '' }}>
+                                                        Lahore</option>
+                                                    <option value="karachi" {{ old('permanent_address_city',
+                                                        $HumanResource->permanent_address_city ?? '') == 'karachi' ?
+                                                        'selected' : '' }}>
+                                                        Karachi</option>
+                                                    <option value="islamabad" {{ old('permanent_address_city',
+                                                        $HumanResource->permanent_address_city ?? '') == 'islamabad' ?
+                                                        'selected' : '' }}>
+                                                        Islamabad</option>
+                                                    <option value="peshawar" {{ old('permanent_address_city',
+                                                        $HumanResource->permanent_address_city ?? '') == 'peshawar' ?
+                                                        'selected' : '' }}>
+                                                        Peshawar</option>
+                                                    <option value="quetta" {{ old('permanent_address_city',
+                                                        $HumanResource->permanent_address_city ?? '') == 'quetta' ?
+                                                        'selected' : '' }}>
+                                                        Quetta</option>
+                                                    <option value="multan" {{ old('permanent_address_city',
+                                                        $HumanResource->permanent_address_city ?? '') == 'multan' ?
+                                                        'selected' : '' }}>
+                                                        Multan</option>
+                                                </select>
+                                                @error('permanent_address_city')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="permanent_address_province">Permanent
+                                                    Address Province</label>
+                                                <select name="permanent_address_province" class="form-control" required>
+                                                    <option value="" selected disabled>Select Province</option>
+                                                    <option value="Punjab">Punjab</option>
+                                                    <option value="Sindh">Sindh</option>
+                                                    <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
+                                                    <option value="Balochistan">Balochistan</option>
+                                                    <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
+                                                    <option value="Islamabad Capital Territory">Islamabad Capital
+                                                        Territory</option>
+                                                    <option value="Azad Jammu & Kashmir">Azad Jammu & Kashmir</option>
+                                                </select>
+                                                @error('permanent_address_province')
+                                                <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="citizenship">Citizenship</label>
+                                            <select name="citizenship" class="form-control" required>
+                                                <option value="" selected disabled>Select Citizenship</option>
+                                                <option value="Pakistani">Pakistani</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            @error('citizenship')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
                                             <label class="text-danger" for="district_of_domicile">District Of
                                                 Domicile</label>
                                             <select name="district_of_domicile" id="district_of_domicile"
-                                                class="form-control">
+                                                class="form-control" required>
                                                 <option value="" selected disabled>Select District</option>
                                                 @foreach ([
                                                 'Abbottabad',
@@ -671,207 +888,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="present_address">Present Address</label>
-                                            <textarea class="form-control" id="present_address"
-                                                name="present_address">{{ old('present_address') }}</textarea>
-                                            @error('present_address')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row col-md-8">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="present_address_phone">Phone</label>
-                                                <input type="tel" class="form-control" id="present_address_phone"
-                                                    name="present_address_phone"
-                                                    value="{{ old('present_address_phone') }}">
-                                                @error('present_address_phone')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="present_address_mobile">Mobile</label>
-                                                <input type="tel" class="form-control" id="present_address_mobile"
-                                                    name="present_address_mobile"
-                                                    value="{{ old('present_address_mobile') }}">
-                                                @error('present_address_mobile')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="email">Email</label>
-                                                <input type="email" class="form-control" id="email" name="email"
-                                                    value="{{ old('email') }}">
-                                                @error('email')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="present_address_city">Present Address
-                                                    City</label>
-                                                <select name="present_address_city" id="present_address_city"
-                                                    class="form-control">
-                                                    <option value="" disabled {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == '' ? 'selected' :
-                                                        '' }}>
-                                                        Select City</option>
-                                                    <option value="lahore" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'lahore' ?
-                                                        'selected' : '' }}>
-                                                        Lahore</option>
-                                                    <option value="karachi" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'karachi' ?
-                                                        'selected' : '' }}>
-                                                        Karachi</option>
-                                                    <option value="islamabad" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'islamabad' ?
-                                                        'selected' : '' }}>
-                                                        Islamabad</option>
-                                                    <option value="peshawar" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'peshawar' ?
-                                                        'selected' : '' }}>
-                                                        Peshawar</option>
-                                                    <option value="quetta" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'quetta' ?
-                                                        'selected' : '' }}>
-                                                        Quetta</option>
-                                                    <option value="multan" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'multan' ?
-                                                        'selected' : '' }}>
-                                                        Multan</option>
-                                                </select>
-                                                @error('present_address_city')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger" for="permanent_address">Permanent
-                                                Address</label>
-                                            <textarea class="form-control" id="permanent_address"
-                                                name="permanent_address">{{ old('permanent_address') }}</textarea>
-                                            @error('permanent_address')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="row col-md-8">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="permanent_address_phone">Phone</label>
-                                                <input type="phone" class="form-control" id="permanent_address_phone"
-                                                    name="permanent_address_phone"
-                                                    value="{{ old('permanent_address_phone') }}">
-                                                @error('permanent_address_phone')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="permanent_address_mobile">Mobile</label>
-                                                <input type="tel" class="form-control" id="permanent_address_mobile"
-                                                    name="permanent_address_mobile"
-                                                    value="{{ old('permanent_address_mobile') }}">
-                                                @error('permanent_address_mobile')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="permanent_address_city">Permanent
-                                                    Address City</label>
-                                                <select name="permanent_address_city" id="permanent_address_city"
-                                                    class="form-control">
-                                                    <option value="" disabled {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == '' ? 'selected'
-                                                        : '' }}>
-                                                        Select City</option>
-                                                    <option value="lahore" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'lahore' ?
-                                                        'selected' : '' }}>
-                                                        Lahore</option>
-                                                    <option value="karachi" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'karachi' ?
-                                                        'selected' : '' }}>
-                                                        Karachi</option>
-                                                    <option value="islamabad" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'islamabad' ?
-                                                        'selected' : '' }}>
-                                                        Islamabad</option>
-                                                    <option value="peshawar" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'peshawar' ?
-                                                        'selected' : '' }}>
-                                                        Peshawar</option>
-                                                    <option value="quetta" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'quetta' ?
-                                                        'selected' : '' }}>
-                                                        Quetta</option>
-                                                    <option value="multan" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'multan' ?
-                                                        'selected' : '' }}>
-                                                        Multan</option>
-                                                </select>
-                                                @error('permanent_address_city')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="permanent_address_province">Permanent
-                                                    Address Province</label>
-                                                <select name="permanent_address_province" class="form-control">
-                                                    <option value="" selected disabled>Select Province</option>
-                                                    <option value="Punjab">Punjab</option>
-                                                    <option value="Sindh">Sindh</option>
-                                                    <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
-                                                    <option value="Balochistan">Balochistan</option>
-                                                    <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
-                                                    <option value="Islamabad Capital Territory">Islamabad Capital
-                                                        Territory</option>
-                                                    <option value="Azad Jammu & Kashmir">Azad Jammu & Kashmir</option>
-                                                </select>
-                                                @error('permanent_address_province')
-                                                <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger" for="citizenship">Citizenship</label>
-                                            <select name="citizenship" class="form-control">
-                                                <option value="" selected disabled>Select Citizenship</option>
-                                                <option value="Pakistani">Pakistani</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                            @error('citizenship')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="text-danger" for="gender">Gender</label>
-                                            <select name="gender" class="form-control">
+                                            <select name="gender" class="form-control" required>
                                                 <option value="" selected disabled>Select Gender</option>
                                                 <option value="male">Male</option>
                                                 <option value="female">Female</option>
@@ -911,7 +929,7 @@
                                             <label class="text-danger" for="min_salary">Min Acceptable Salary
                                                 %</label>
                                             <input type="number" class="form-control" id="min_salary" name="min_salary"
-                                                value="{{ old('min_salary') }}">
+                                                value="{{ old('min_salary') }}" required>
                                             @error('min_salary')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -930,7 +948,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="status">Status</label>
-                                            <select name="status" class="form-control">
+                                            <select name="status" class="form-control" id="status" required>
                                                 <option value="" selected disabled>Select Status</option>
                                                 <option value="1">Pending</option>
                                                 <option value="2">Approved</option>
@@ -956,7 +974,7 @@
 </div>
 
 
-@include('admin.humanresouce.document')
+
 
 @endsection
 
@@ -1002,6 +1020,7 @@
                     $('#sub_craft').empty();
                     $('#sub_craft').append(
                         '<option value="" selected disabled>Select Sub-Craft</option>');
+                    
 
                     $.each(data, function (key, value) {
                         $('#sub_craft').append('<option value="' + value.id +
@@ -1010,7 +1029,81 @@
                 }
             });
         });
+
+        $('#company_id').on('change', function () {
+            var companyId = $(this).val();
+
+            $.ajax({
+                url: "{{ route('get-projects') }}",
+                type: "GET",
+                data: {
+                    company_id: companyId
+                },
+                success: function (data) {
+                    $('#project_id').empty();
+                    $('#demand_id').empty();
+                    $('#sub_craft').empty();
+                    $('#project_id').append(
+                        '<option value="" selected disabled>Select Project</option>');
+                    $('#demand_id').append(
+                        '<option value="" selected disabled>Select Demand</option>');
+                    $('#sub_craft').append(
+                        '<option value="" selected disabled>Select Sub-Craft</option>');
+
+                    $.each(data, function (key, value) {
+                        $('#project_id').append('<option value="' + value.id +
+                            '">' + value.project_name + '</option>');
+                    });
+
+                    if ($('#status option[value="3"]').length === 0) {
+                        $('#status').empty().append('<option value="3" selected>Nominate</option>');
+                    } else {
+                        $('#status').val('3');
+                    }
+                }
+            });
+        });
+
+        $('#project_id').on('change', function () {
+            var projectId = $(this).val();
+
+            $.ajax({
+                url: "{{ route('get-demand') }}",
+                type: "GET",
+                data: {
+                    project_id: projectId
+                },
+                success: function (data) {
+                    $('#demand_id').empty();
+                    $('#demand_id').append(
+                        '<option value="" selected disabled>Select Demand</option>');
+
+                    $.each(data, function (key, value) {
+                        $('#demand_id').append('<option value="' + value.id +
+                            '">Man Power - ' + value.manpower + '</option>');
+                    });
+                }
+            });
+        });
+    });
+
+
+    $(document).ready(function() {
+        $('#company_id').change(function() {
+            var selectedCompany = $(this).val();
+            if (selectedCompany) {
+                $('#craft').closest('.col-md-4').addClass('d-none');
+                $('#sub_craft').closest('.col-md-4').addClass('d-none');
+                $('#project-group').removeClass('d-none');
+                $('#demand-group').removeClass('d-none');
+            } else {
+                $('#craft').closest('.col-md-4').removeClass('d-none');
+                $('#sub_craft').closest('.col-md-4').removeClass('d-none');
+                $('#project-group').addClass('d-none');
+                $('#demand-group').addClass('d-none');
+            }
+        });
     });
 </script>
-<script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
+
 @endsection

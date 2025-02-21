@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\HumanResourceController;
 use App\Http\Controllers\Admin\TermConditionController;
 use App\Http\Controllers\HumanResouce\HRProfileController;
 use App\Http\Controllers\Admin\ApprovedApplicantsController;
+use App\Http\Controllers\Admin\HrStepController;
 use App\Http\Controllers\HumanResouce\HumanResouceController;
 use App\Http\Controllers\HumanResouce\HRNotificationController;
 use App\Http\Controllers\HumanResouce\HumanResouceAuthController;
@@ -121,6 +122,8 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::post('/project-store',  'store')->name('project.store');
         Route::post('/project-update/{id}',  'update')->name('project.update');
         Route::delete('/project-destroy/{id}',  'destroy')->name('project.destroy');
+
+        Route::get('/get-projects',  'getProjects')->name('get-projects');
     });
     // ############ Demands #################
     Route::controller(DemandsController::class)->group(function () {
@@ -128,6 +131,8 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::post('/demand',  'store')->name('demand.store');
         Route::post('/demand-update/{id}',  'update')->name('demand.update');
         Route::delete('/demand-destroy/{id}',  'destroy')->name('demand.destroy');
+
+        Route::get('/get-demand', 'getDemand')->name('get-demand');
     });
     // ############ Human Resource #################
     Route::controller(HumanResourceController::class)->group(function () {
@@ -137,6 +142,10 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('/human-resource-edit/{id}',  'edit')->name('humanresource.edit');
         Route::post('/human-resource-update/{id}',  'update')->name('humanresource.update');
         Route::delete('/human-resource-destroy/{id}',  'destroy')->name('humanresource.destroy');
+    });
+    // ############ Human Resource Steps #################
+    Route::controller(HrStepController::class)->group(function () {
+        Route::post('/submit-step/{step}',  'submitStep')->name('submit.step');
     });
     // ############ Nomination #################
     Route::controller(NominationsController::class)->group(function () {
@@ -166,21 +175,21 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 });
 
 // ######################### Human Rescourse ############################
-Route::get('/human-resouce', [HumanResouceAuthController::class, 'getHrLoginPage']);
-Route::post('human-resouce/login', [HumanResouceAuthController::class, 'loginHR']);
-Route::get('/human-resouce-forgot-password', [HumanResouceController::class, 'forgetPassword']);
-Route::post('/human-resouce-reset-password-link', [HumanResouceController::class, 'adminResetPasswordLink']);
-Route::get('/human-resouce-change_password/{id}', [HumanResouceController::class, 'change_password']);
-Route::post('/human-resouce-reset-password', [HumanResouceController::class, 'ResetPassword']);
-Route::prefix('human-resouce')->middleware('humanresource')->group(function () {
+Route::get('/human-resource', [HumanResouceAuthController::class, 'getHrLoginPage']);
+Route::post('human-resource/login', [HumanResouceAuthController::class, 'loginHR']);
+Route::get('/human-resource-forgot-password', [HumanResouceController::class, 'forgetPassword']);
+Route::post('/human-resource-reset-password-link', [HumanResouceController::class, 'adminResetPasswordLink']);
+Route::get('/human-resource-change_password/{id}', [HumanResouceController::class, 'change_password']);
+Route::post('/human-resource-reset-password', [HumanResouceController::class, 'ResetPassword']);
+Route::prefix('human-resource')->middleware('humanresource')->group(function () {
     Route::get('dashboard', [HumanResouceController::class, 'getdashboard'])->name('human-resouce.dashboard');
     Route::get('profile', [HumanResouceController::class, 'getProfile']);
     Route::post('update-profile', [HumanResouceController::class, 'update_profile']);
     Route::get('logout', [HumanResouceController::class, 'logout']);
     /**officer */
     Route::get('officer/status/{id}', [OfficerController::class, 'status'])->name('officer.status');
-    /**human-resouce */
-    Route::get('human-resouce/status/{id}', [HumanResouceController::class, 'status'])->name('human-resouce.status');
+    /**human-resource */
+    Route::get('human-resource/status/{id}', [HumanResouceController::class, 'status'])->name('human-resouce.status');
 
     // ############ HR profile #################
     Route::controller(HRProfileController::class)->group(function () {

@@ -40,7 +40,8 @@ class CreateHumanResourcesTable extends Migration
             $table->string('passport')->required()->unique();
             $table->string('passport_issue_place')->required();
             $table->string('religion')->required();
-            $table->string('experience')->nullable();
+            $table->string('experience_local')->nullable();
+            $table->string('experience_gulf')->nullable();
             $table->string('martial_status')->required();
             $table->string('next_of_kin')->required();
             $table->string('relation')->required();
@@ -49,7 +50,7 @@ class CreateHumanResourcesTable extends Migration
             $table->string('cover_size')->required();
             $table->string('acdemic_qualification')->required();
             $table->string('technical_qualification')->nullable();
-            $table->string('profession')->required();
+            $table->string('profession')->nullable();
             $table->string('district_of_domicile')->required();
             $table->text('present_address')->required();
             $table->string('present_address_phone')->unique();

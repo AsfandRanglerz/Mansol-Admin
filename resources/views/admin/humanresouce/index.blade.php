@@ -89,9 +89,10 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Id No.</th>
+                                            <th>Documents</th>
                                             <th>Name</th>
                                             <th>Email</th>
-                                            <th>CNIC/NICOP</th>
+                                            <th>CNIC</th>
                                             <th>Application Date</th>
                                             <th>Appication for Post Craft</th>
                                             <th>Sub-Craft</th>
@@ -100,9 +101,9 @@
                                             <th>S/O</th>
                                             <th>Mother Name</th>
                                             <th>Date Of Birth</th>
-                                            <th>CNIC/NICOP Expiry Date</th>
-                                            <th>DOI</th>
-                                            <th>DOE</th>
+                                            <th>CNIC Expiry Date</th>
+                                            <th>Data Of Issue/Passport</th>
+                                            <th>Data Of Expiry/Passport</th>
                                             <th>Passport #</th>
                                             <th>Next Of Kin</th>
                                             <th>Relation</th>
@@ -111,7 +112,8 @@
                                             <th>Cover Size</th>
                                             <th>Academic Qualification</th>
                                             <th>Technical Qualification</th>
-                                            <th>Profession</th>
+                                            <th>Experience (Local)</th>
+                                            <th>Experience (Gulf)</th>
                                             <th>District Of Domicile</th>
                                             <th>Present Address</th>
                                             <th>Phone</th>
@@ -138,6 +140,14 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $HumanResource->registration ?? 'null' }}</td>
+                                            <td>
+                                                <button data-toggle="modal"    data-target="#createHRModal-{{ $HumanResource->id }}"
+                                                    class="btn btn-primary text-white d-flex align-items-center"
+                                                    href="{{ route('humanresource.index') }}">
+                                                    <span class="fa-solid fa-plus mr-2"></span>
+                                                    <p class="m-0 text-white">Attachments</p>
+                                                </button>
+                                            </td>
                                             <td>{{ $HumanResource->name ?? 'null' }}</td>
                                             <td>{{ $HumanResource->email ?? 'null' }}</td>
                                             <td>{{ $HumanResource->cnic ?? 'null' }}</td>
@@ -168,7 +178,8 @@
                                             <td>{{ $HumanResource->cover_size ?? 'null' }}</td>
                                             <td>{{ $HumanResource->acdemic_qualification ?? 'null' }}</td>
                                             <td>{{ $HumanResource->technical_qualification ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->profession ?? 'null' }}</td>
+                                            <td>{{ $HumanResource->experience_local ?? 0 }} Years</td>
+                                            <td>{{ $HumanResource->experience_gulf ?? 0 }} Years</td>
                                             <td>{{ $HumanResource->district_of_domicile ?? 'null' }}</td>
                                             <td>{{ $HumanResource->present_address ?? 'null' }}</td>
                                             <td>{{ $HumanResource->present_address_phone ?? 'null' }}</td>
@@ -190,8 +201,12 @@
                                             <td>
                                                 @if ($HumanResource->status == 1)
                                                     <div class="badge badge-success badge-shadow">Pending</div>
-                                                @else
+                                                @elseif ($HumanResource->status == 2)
+                                                    <div class="badge badge-success badge-shadow">Approved</div>
+                                                @elseif ($HumanResource->status == 0)
                                                     <div class="badge badge-danger badge-shadow">Rejected</div>
+                                                @elseif ($HumanResource->status == 3)
+                                                    <div class="badge badge-info badge-shadow">Nominated</div>
                                                 @endif
                                             </td>
                                             <td>
@@ -220,6 +235,9 @@
             </div>
         </section>
     </div>
+
+
+@include('admin.humanresouce.document')
 
 @endsection
 
@@ -250,4 +268,5 @@
                 });
         });
     </script>
+    <script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
 @endsection

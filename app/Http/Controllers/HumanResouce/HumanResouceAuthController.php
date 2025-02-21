@@ -13,6 +13,7 @@ class HumanResouceAuthController extends Controller
     }
     public function loginHR(Request $request)
     {
+        // dd('done');
         $request->validate([
             'email' => 'required',
             'password' => 'required',
@@ -20,7 +21,8 @@ class HumanResouceAuthController extends Controller
         if (!auth()->guard('humanresource')->attempt(['email' => $request->email, 'password' => $request->password])) {
             return back()->with('error', 'Invalid email or password');
         }
+        // dd('done');
         $request->session()->regenerate();
-        return redirect('human-resouce/dashboard')->with('message', 'Login Successfully!');
+        return redirect('human-resource/dashboard')->with('message', 'Login Successfully!');
     }
 }

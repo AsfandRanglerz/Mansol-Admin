@@ -11,7 +11,7 @@
                                 style="width: 40%" />
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ url('human-resouce/login') }}" class="needs-validation"
+                            <form method="POST" action="{{ url('human-resource/login') }}" class="needs-validation"
                                 novalidate="">
                                 @csrf
                                 <div class="form-group">
