@@ -181,11 +181,13 @@ Route::get('/human-resource-forgot-password', [HumanResouceController::class, 'f
 Route::post('/human-resource-reset-password-link', [HumanResouceController::class, 'adminResetPasswordLink']);
 Route::get('/human-resource-change_password/{id}', [HumanResouceController::class, 'change_password']);
 Route::post('/human-resource-reset-password', [HumanResouceController::class, 'ResetPassword']);
+Route::get('/generate-form-7', [HumanResouceController::class, 'generateForm7'])->name('generate.filled.pdf');
 Route::prefix('human-resource')->middleware('humanresource')->group(function () {
     Route::get('dashboard', [HumanResouceController::class, 'getdashboard'])->name('human-resouce.dashboard');
     Route::get('profile', [HumanResouceController::class, 'getProfile']);
     Route::post('update-profile', [HumanResouceController::class, 'update_profile']);
     Route::get('logout', [HumanResouceController::class, 'logout']);
+    
     /**officer */
     Route::get('officer/status/{id}', [OfficerController::class, 'status'])->name('officer.status');
     /**human-resource */
