@@ -493,7 +493,7 @@
 
             // Reset progress when modal opens
             modal.on("show.bs.modal", function () {
-                currentStep = 10;
+                currentStep = 1;
                 updateSteps();
             });
 
