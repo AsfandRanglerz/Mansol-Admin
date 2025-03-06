@@ -386,310 +386,22 @@
             </div>
 
             {{-- Step 8: NBP form --}}
-            <div class="form-section step-8" data-step="8">
-                <div id="step-8-slip">
-                    <!-- First Copy -->
-                    <div class="row">
-                        <div class="col-2">
-                            <img src="{{ asset('public/admin/assets/images/NBP_Logo.png') }}" alt="" class="bank-logo">
+            <div class="form-section" data-step="8">
+                <div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="opf">OPF Welfare Fund</label>
+                            <input type="text" class="form-control" id="opf">
                         </div>
-                        <div class="col-7">
-                            <h3 class="text-center">SPECIALIZED DEPOSIT SLIP</h3>
-                            <p class="text-center fw-bold">On Behalf of Bureau of Engports & Overseas Employment</p>
-                        </div>
-
-
-                        <div class="col-3 data-copy-section">
-                            <p class="bold text-center border-bottom-black">Bank Copy</p>
-
-                            <p class="text-center">Deposit Slip, No.</p>
-                            <p class="text-center fw-medium border-bottom-black">29787</p>
+                        <div class="col-md-6">
+                            <label for="stateLife">State Life Insurance Premium</label>
+                            <input type="text" class="form-control" id="stateLife">
                         </div>
                     </div>
-
-                    <div class="bold text-center" style="margin-bottom: 15px;">EMIGRANT THROUGH OVERSEAS EMPLOYMENT PROMOTOR
-                        (OEP)</div>
-
-                    <table>
-                        <tr>
-                            <td style="width: 35%">Collection Branch Name</td>
-                            <td style="width: 25%">Branch Code</td>
-                            <td style="width: 40%">Date
-                                <div class="number-grid">
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">5</span>
-                                    <span>-</span>
-                                    <span class="number-cell">0</span>
-                                    <span class="number-cell">2</span>
-                                    <span>-</span>
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">0</span>
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">5</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table>
-                        <tr>
-                            <td colspan="3">Employant Information</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 25%">Employee Names</td>
-                            <td style="width: 35%">AMAR 2022</td>
-                            <td style="width: 40%">CNIC
-                                <div class="number-grid">
-                                    <span class="number-cell">3</span>
-                                    <span class="number-cell">8</span>
-                                    <span class="number-cell">0</span>
-                                    <span class="number-cell">2</span>
-                                    <span>-</span>
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">9</span>
-                                    <span class="number-cell">7</span>
-                                    <span class="number-cell">4</span>
-                                    <span class="number-cell">6</span>
-                                    <span class="number-cell">8</span>
-                                    <span class="number-cell">9</span>
-                                    <span>-</span>
-                                    <span class="number-cell">1</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Telephone (mobile)</td>
-                            <td colspan="2">03244557417</td>
-                        </tr>
-                    </table>
-
-                    <div class="d-flex justify-content-between">
-                        <div class="bold">Particular of Payments _ CREDIT TO MADE THROUGH TRANSACTION CODE "ZBOGGP"</div>
-                        <div class="border border-black px-1">Amount in Rs.</div>
-                    </div>
-
-                    <table>
-                        <tr>
-                            <td rowspan="3" style="width: 50%" class="text-center">
-                                <p>Payment made on behalf of</p>
-                                <p class="fw-bold">Director General</p>
-                                <p class="fw-bold">Bureau of Employees & Overseas Employment</p>
-                            </td>
-                            <td style="width: 30%" class="text-center">OPE Welfare Fund</td>
-                            <td style="width: 20%" class="text-end">Rs. 4000/-</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">State Life Insurance Premium</td>
-                            <td class="text-end">Rs. 2000/-</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">OCE: Emigrant Promotion FEE</td>
-                            <td class="text-end">Rs. 1200/-</td>
-                        </tr>
-                    </table>
-
-                    <div class="d-flex justify-content-between">
-                        <p class="mb-0">Amount in Words: SIX THOUSAND SEVEN HUNDRED ONLY</p>
-                        <div class="d-flex">
-                            <div class="border border-black px-1 fw-bold">Total</div>
-                            <div class="border border-black px-1 fw-bold ml-2 pl-5">Rs 6700/-</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="row mt-3">
-                            <div class="col-4">
-                                <div class="border border-black text-center">Received By</div>
-                                <div class="border border-black d-flex justify-content-center align-items-center mt-1 h-100">
-                                    <p class="mb-0">Cashier's Stamp & Signature</p>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border border-black text-center">Authorized By</div>
-                                <div class="border border-black d-flex justify-content-center align-items-center mt-1 h-100">
-                                    <p class="mb-0">Authorized Officer's Signature</p>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border border-black text-center">Depository's Signature</div>
-                                <div
-                                    class="border border-black d-flex flex-column justify-content-center align-items-center mt-1 h-100">
-                                    <p class="text-center">Name: Muhammad Ad El-Sahatad</p>
-                                    <p class="text-center">Contact Member: 03244557417</p>
-                                    <p class="text-center">Signature: _________________</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-5">
-                        <div class="col-4">
-                            <p class="text-center fw-bold">Note: for branch only</p>
-                        </div>
-                        <div class="col-4">
-                            <p class="text-center fw-bold">- Only cash is acceptable</p>
-                        </div>
-                        <div class="col-4">
-                            <p class="text-center fw-bold">- Separate slip for every individual</p>
-                        </div>
-                    </div>
-
-                    <div style="border: 1px solid black;" class="mb-4 mt-1"></div>
-
-                    <!-- Second Copy -->
-                    <div class="row">
-                        <div class="col-2">
-                            <img src="{{ asset('public/admin/assets/images/NBP_Logo.png') }}" alt="" class="bank-logo">
-                        </div>
-                        <div class="col-8">
-                            <h3 class="text-center">SPECIALIZED DEPOSIT SLIP</h3>
-                            <p class="text-center fw-bold">On Behalf of Bureau of Engports & Overseas Employment</p>
-                        </div>
-
-
-                        <div class="col-2 data-copy-section">
-                            <p class="bold text-center border-bottom-black">Bank Copy</p>
-
-                            <p class="text-center">Deposit Slip, No.</p>
-                            <p class="text-center fw-medium border-bottom-black">29787</p>
-                        </div>
-                    </div>
-
-                    <div class="bold text-center" style="margin-bottom: 15px;">EMIGRANT THROUGH OVERSEAS EMPLOYMENT PROMOTOR
-                        (OEP)</div>
-
-                    <table>
-                        <tr>
-                            <td style="width: 35%">Collection Branch Name</td>
-                            <td style="width: 25%">Branch Code</td>
-                            <td style="width: 40%">Date
-                                <div class="number-grid">
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">5</span>
-                                    <span>-</span>
-                                    <span class="number-cell">0</span>
-                                    <span class="number-cell">2</span>
-                                    <span>-</span>
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">0</span>
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">5</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table>
-                        <tr>
-                            <td colspan="3">Employant Information</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 25%">Employee Names</td>
-                            <td style="width: 35%">AMAR 2022</td>
-                            <td style="width: 40%">CNIC
-                                <div class="number-grid">
-                                    <span class="number-cell">3</span>
-                                    <span class="number-cell">8</span>
-                                    <span class="number-cell">0</span>
-                                    <span class="number-cell">2</span>
-                                    <span>-</span>
-                                    <span class="number-cell">2</span>
-                                    <span class="number-cell">9</span>
-                                    <span class="number-cell">7</span>
-                                    <span class="number-cell">4</span>
-                                    <span class="number-cell">6</span>
-                                    <span class="number-cell">8</span>
-                                    <span class="number-cell">9</span>
-                                    <span>-</span>
-                                    <span class="number-cell">1</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Telephone (mobile)</td>
-                            <td colspan="2">03244557417</td>
-                        </tr>
-                    </table>
-
-                    <div class="d-flex justify-content-between">
-                        <div class="bold">Particular of Payments _ CREDIT TO MADE THROUGH TRANSACTION CODE "ZBOGGP"</div>
-                        <div class="border border-black px-1">Amount in Rs.</div>
-                    </div>
-
-                    <table>
-                        <tr>
-                            <td rowspan="3" style="width: 50%" class="text-center">
-                                <p>Payment made on behalf of</p>
-                                <p class="fw-bold">Director General</p>
-                                <p class="fw-bold">Bureau of Employees & Overseas Employment</p>
-                            </td>
-                            <td style="width: 30%" class="text-center">OPE Welfare Fund</td>
-                            <td style="width: 20%" class="text-end">Rs. 4000/-</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">State Life Insurance Premium</td>
-                            <td class="text-end">Rs. 2000/-</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">OCE: Emigrant Promotion FEE</td>
-                            <td class="text-end">Rs. 1200/-</td>
-                        </tr>
-                    </table>
-
-                    <div class="d-flex justify-content-between">
-                        <p class="mb-0">Amount in Words: SIX THOUSAND SEVEN HUNDRED ONLY</p>
-                        <div class="d-flex">
-                            <div class="border border-black px-1 fw-bold">Total</div>
-                            <div class="border border-black px-1 fw-bold ml-2 pl-5">Rs 6700/-</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="row mt-3">
-                            <div class="col-4">
-                                <div class="border border-black text-center">Received By</div>
-                                <div class="border border-black d-flex justify-content-center align-items-center mt-1 h-100">
-                                    <p class="mb-0">Cashier's Stamp & Signature</p>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border border-black text-center">Authorized By</div>
-                                <div class="border border-black d-flex justify-content-center align-items-center mt-1 h-100">
-                                    <p class="mb-0">Authorized Officer's Signature</p>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border border-black text-center">Depository's Signature</div>
-                                <div
-                                    class="border border-black d-flex flex-column justify-content-center align-items-center mt-1 h-100">
-                                    <p class="text-center">Name: Muhammad Ad El-Sahatad</p>
-                                    <p class="text-center">Contact Member: 03244557417</p>
-                                    <p class="text-center">Signature: _________________</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-5">
-                        <div class="col-4">
-                            <p class="text-center fw-bold">Note: for branch only</p>
-                        </div>
-                        <div class="col-4">
-                            <p class="text-center fw-bold">- Only cash is acceptable</p>
-                        </div>
-                        <div class="col-4">
-                            <p class="text-center fw-bold">- Separate slip for every individual</p>
-                        </div>
-                    </div>
-
-                    <div style="border: 1px solid black;" class="mb-4 mt-1"></div>
                 </div>
-                <div class="d-flex justify-content-end my-3">
-                    <button id="step-8-print-btn" class=" d-flex align-items-center btn btn-primary">
-                        <span class="fa-solid fa-print"></span>
-                        <p class="mb-0 ml-2">Print</p>
-                    </button>
-                </div>
+                <button id="generatePdfBtn8" class="btn btn-primary">Generate PDF</button>
+                <br><br>
+                <iframe id="pdfFrame8" src="" width="100%" height="0"></iframe>
             </div>
 
             <div class="buttons d-flex justify-content-end">
@@ -765,31 +477,13 @@
 
             // Reset progress when modal opens
             modal.on("show.bs.modal", function () {
-                currentStep = 7;
+                currentStep = 8;
                 updateSteps();
             });
 
             updateSteps();
         });
 
-        // Add print functionality for step-7-print-btn
-        $("#step-7-print-btn").click(function () {
-            var printContents = document.getElementById("step-7-slip").innerHTML;
-            var originalContents = document.body.innerHTML;
-
-            var printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Print</title>');
-            printWindow.document.write('<style>');
-            printWindow.document.write(document.querySelector('style').innerHTML); // Copy styles from the main document
-            printWindow.document.write('</style>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(printContents);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.print();
-            document.body.innerHTML = originalContents;
-            location.reload();
-        });
 
         // Generate PDF and display in iframe
         $("#generatePdfBtn").click(function () {
@@ -799,6 +493,21 @@
                 success: function (response) {
                     $("#pdfFrame").attr("src", "{{ asset('public/admin/assets/form-7.pdf') }}");
                     $("#pdfFrame").attr("height", "600px");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error generating PDF:", error);
+                }
+            });
+        });
+
+        // For step 8 pdf
+        $("#generatePdfBtn8").click(function () {
+            $.ajax({
+                url: 'http://localhost/Mansol-Admin/generate-form-8',
+                method: 'GET',
+                success: function (response) {
+                    $("#pdfFrame8").attr("src", "{{ asset('public/admin/assets/form-8.pdf') }}");
+                    $("#pdfFrame8").attr("height", "600px");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);

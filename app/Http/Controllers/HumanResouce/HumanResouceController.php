@@ -109,6 +109,8 @@ class HumanResouceController extends Controller
     }
 
     // Pdf module function
+
+    // Form 7 PDF Generator
     public function generateForm7()
     {
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
@@ -228,6 +230,232 @@ class HumanResouceController extends Controller
         $pdfPath = 'admin/assets/form-7.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
     
+        // Return JSON response with URL
+        return response()->json([
+            'pdf_url' => asset($pdfPath) // Generates correct URL
+        ]);
+    }
+
+    // Form 8 PDF Generator
+    public function generateForm8()
+    {
+        $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
+        
+        // Set the source PDF file
+        $path = public_path('admin/assets/NBP_Blank.pdf'); 
+        $pdf->setSourceFile($path);
+        
+        // Import first page
+        $pdf->AddPage();
+        $tplId1 = $pdf->importPage(1);
+        $pdf->useTemplate($tplId1, 10, 10, 200);
+        
+        // Set font and text color
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetTextColor(0, 0, 0);
+        
+        // Depositor Copy
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(155, 32.6);  
+        $pdf->Write(10, "-297466");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 9);
+        $pdf->SetXY(129, 45.8);
+        $idCardNumber = "06-03-2025";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // Date
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(52, 56);  
+        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 7);
+        $pdf->SetXY(52, 61);  
+        $pdf->Write(10, "03244257417");  // Mobile Number
+
+        $pdf->SetFont('Helvetica', 'B', 9);
+        $pdf->SetXY(104, 55.7);
+        $idCardNumber = "35202-2974669-1";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // CNIC
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 71);  
+        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 76);  
+        $pdf->Write(10, "Rs 2500/-");  // State Life
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(167, 81);  
+        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+
+        $pdf->SetFont('Helvetica', 'B', 8);
+        $pdf->SetXY(165, 86.2);  
+        $pdf->Write(10, "Rs 6700/-");  // Total price
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(44, 86.4);  
+        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words
+        
+        // BE & OE Copy
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(155, 137);  
+        $pdf->Write(10, "-297466");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 9);
+        $pdf->SetXY(129, 149.2);
+        $idCardNumber = "06-03-2025";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // Date
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(52, 160.2);  
+        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 7);
+        $pdf->SetXY(52, 165.2);  
+        $pdf->Write(10, "03244257417");  // Mobile Number
+
+        $pdf->SetFont('Helvetica', 'B', 9);
+        $pdf->SetXY(104, 159.9);
+        $idCardNumber = "35202-2974669-1";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // CNIC
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 175.2);  
+        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 180.2);  
+        $pdf->Write(10, "Rs 2500/-");  // State Life
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(167, 185.2);  
+        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+
+        $pdf->SetFont('Helvetica', 'B', 8);
+        $pdf->SetXY(165, 190.4);  
+        $pdf->Write(10, "Rs 6700/-");  // Total price
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(44, 190.2);  
+        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words 
+
+        // Import second page
+        $pdf->AddPage();
+        $tplId2 = $pdf->importPage(2);
+        $pdf->useTemplate($tplId2, 10, 10, 200);
+        
+        // Set font and text color
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetTextColor(0, 0, 0);
+        
+        // Repeat the same content for the second page if needed
+        // Depositor Copy
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(155, 31);  
+        $pdf->Write(10, "-297466");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 9);
+        $pdf->SetXY(129, 43.8);
+        $idCardNumber = "06-03-2025";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // Date
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(52, 54);  
+        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 7);
+        $pdf->SetXY(52, 59);  
+        $pdf->Write(10, "03244257417");  // Mobile Number
+
+        $pdf->SetFont('Helvetica', 'B', 9);
+        $pdf->SetXY(104, 53.7);
+        $idCardNumber = "35202-2974669-1";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // CNIC
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 69);  
+        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 74);  
+        $pdf->Write(10, "Rs 2500/-");  // State Life
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(167, 79);  
+        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+
+        $pdf->SetFont('Helvetica', 'B', 8);
+        $pdf->SetXY(165, 84.2);  
+        $pdf->Write(10, "Rs 6700/-");  // Total price
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(44, 84.4);  
+        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words
+        
+        // BE & OE Copy
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(155, 135);  
+        $pdf->Write(10, "-297466");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 9);
+        $pdf->SetXY(129, 147.2);
+        $idCardNumber = "06-03-2025";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // Date
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(52, 157.9);  
+        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+
+        $pdf->SetFont('Helvetica', '', 7);
+        $pdf->SetXY(52, 163.2);  
+        $pdf->Write(10, "03244257417");  // Mobile Number
+
+        $pdf->SetFont('Helvetica', 'B', 9);
+        $pdf->SetXY(104, 157.9);
+        $idCardNumber = "35202-2974669-1";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // CNIC
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 173.2);  
+        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(165, 178.2);  
+        $pdf->Write(10, "Rs 2500/-");  // State Life
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(167, 183.2);  
+        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+
+        $pdf->SetFont('Helvetica', 'B', 8);
+        $pdf->SetXY(165, 188.4);  
+        $pdf->Write(10, "Rs 6700/-");  // Total price
+
+        $pdf->SetFont('Helvetica', '', 8);
+        $pdf->SetXY(44, 188.2);
+        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words 
+
+        // Save filled PDF to public folder
+        $pdfPath = 'admin/assets/form-8.pdf';
+        $pdf->Output(public_path($pdfPath), 'F'); 
+        
         // Return JSON response with URL
         return response()->json([
             'pdf_url' => asset($pdfPath) // Generates correct URL
