@@ -558,60 +558,189 @@ class HumanResouceController extends Controller
     public function generateForm10()
     {
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
-        $pdf->AddPage();
-    
+        
         // Set the source PDF file for Form 10
         $path = public_path('admin/assets/FSA_Blank.pdf'); 
         $pdf->setSourceFile($path);
-    
-        // Import first page
-        $tplId = $pdf->importPage(1);
-        $pdf->useTemplate($tplId, 10, 10, 200);
-    
+        
+        // Import and use the first page
+        $pdf->AddPage();
+        $tplId1 = $pdf->importPage(1);
+        $pdf->useTemplate($tplId1, 10, 10, 200);
+        
         // Set font and text color
         $pdf->SetFont('Times', '', 9);
         $pdf->SetTextColor(0, 0, 0);
-    
         
-        $pdf->SetXY(86, 66.4);
-        $pdf->Write(10, "TALIB HUUSAIN"); // Name
+        // Add content to the first page
+       
+        $pdf->SetXY(60, 44);
+        $idCardNumber = "26-02-2025";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
+        } // Date
 
-        $pdf->SetXY(86, 71.4);
-        $pdf->Write(10, "ALLAH DINO"); // Father name
+        $pdf->SetFont('Times', 'B', 11);
+        $pdf->SetXY(60, 53);
+        $pdf->Write(10, "MANSOL MANPOWER SOLUTIONS"); // Name of agency
 
-        $pdf->SetXY(86, 76.4);
-        $pdf->Write(10, "06 / 03 / 2025"); // Date
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 58);
+        $idCardNumber = "LHR 3054";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
+        } // License Number
 
-        $pdf->SetXY(87, 81.6);
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 76);
+        $idCardNumber = "TALIB HUUSAIN";
+        $maxCharsPerLine = 14;
+        $currentLine = 0;
+
+        foreach (str_split($idCardNumber) as $index => $char) {
+            if ($index > 0 && $index % $maxCharsPerLine == 0) {
+                $currentLine++;
+                $pdf->SetXY(60, 76 + ($currentLine * 4)); // Move to the next line
+            }
+            $pdf->Cell(7.2, 3, $char, 0, 0, 'C');
+        } // Emigrant Name
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 82.4);
+        $pdf->Write(10, "Allah Dino"); // Name of father
+
+        $pdf->SetXY(60, 88.5);
         $idCardNumber = "4350304643339";
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(5.5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
-        } // NIC Number
+            $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
+        } // CNIC
+
+        $pdf->SetXY(60, 101);
+        $idCardNumber = "0300-0522381";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
+        } // Cell no
+
+        $pdf->SetFont('Times', '', 5);
+        $pdf->SetXY(59.5, 116);
+        $idCardNumber = "VILLAGE FAQEER MUHAMMAD KHAN CHAKRANI PO KAND KOT KHUJAL TEHSILK AND KOT DISTT KASHMORE";
+        $charWidth = 1.7; // Adjust width per character
+        $charHeight = 4;  // Adjust height per character
+        $maxCharsPerRow = 57; // Number of characters that fit in one row
+        $currentLine = 0;
+
+        foreach (str_split($idCardNumber) as $index => $char) {
+            // Move to the next row if the limit is reached
+            if ($index > 0 && $index % $maxCharsPerRow == 0) {
+                $currentLine++;
+                $pdf->SetXY(59.5, 116 + ($currentLine * $charHeight));
+            }
+            
+            // Print each character in a separate cell without a border
+            $pdf->Cell($charWidth, $charHeight, $char, 0, 0, 'C'); 
+        }
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 122);
+        $pdf->Write(10, "Lahore"); // City
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(128, 122);
+        $pdf->Write(10, "XYZ"); // District
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 129);
+        $pdf->Write(10, "Punjab"); // Province
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 138);
+        $pdf->Write(10, "Middle"); // Qualification
+
+        $pdf->SetXY(60, 147.3);
+        $idCardNumber = "LT6913331";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
+        } // Cell no
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 152);
+        $pdf->Write(10, "KASHMORE "); // Place of issue
+        
+        $pdf->SetXY(127.5, 152);
+        $idCardNumber = "26-04-2023";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(3.4, 10, $char, 0, 0, 'C');
+        } // Date of issue
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 162);
+        $pdf->Write(10, "AZMIYA"); // Name of Nominance
+
+        $pdf->SetXY(60, 167);
+        $idCardNumber = "4350307607840";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
+        } // CNIC no
+
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(60, 173);
+        $pdf->Write(10, "Wife"); // Name of Nominance
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(53.5, 187);
+        $pdf->Write(10, "4350304643339"); // Recipt no
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(53.5, 206.3);
+        $pdf->Write(10, "OEC FEE"); // OEC FEE
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(95, 197);
+        $pdf->Write(10, "MODEL TOWN"); // NBP Branch
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(95, 201);
+        $pdf->Write(10, "New Airport Road"); // ABP Branch
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(150, 191);
+        $pdf->Write(10, "2000"); // Welfare Fund 
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(150, 194);
+        $pdf->Write(10, "2500"); // Insurance Fund 
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(150, 197);
+        $pdf->Write(10, "500"); // Insurance Fund 
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(150, 201);
+        $pdf->Write(10, "6000"); // Bank Certificate/Service
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(150, 206.5);
+        $pdf->Write(10, "200"); // OEC
+
+        $pdf->SetFont('Times', '', 6);
+        $pdf->SetXY(150, 210);
+        $pdf->Write(10, "10"); // Adhesive Fee
+
+        // Import and use the second page
+        $pdf->AddPage();
+        $tplId2 = $pdf->importPage(2);
+        $pdf->useTemplate($tplId2, 10, 10, 200);
+
+        // Add content to the second page
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
 
         
-        $pdf->SetXY(92.2, 87);
-        $pdf->Write(10, "LT6913331"); // Number
 
-        $pdf->SetXY(94.2, 91.3);
-        $pdf->Write(10, "Apr 26, 2023"); // Date
-
-        $pdf->SetXY(102.2, 97.5);
-        $pdf->Write(10, "Job"); // Occupation
-
-        $pdf->SetXY(131.2, 87);
-        $pdf->Write(10, "Apr 26, 2023"); // Issued Date
-
-        $pdf->SetXY(131.2, 92);
-        $pdf->Write(10, "KASHMORE"); // Place
-
-        $pdf->SetXY(86.2, 105.5);
-        $pdf->MultiCell(90, 10, "VILLAGE FAQEER MUHAMMAD KHAN CHAKRANI\nPOKAND KOT KHUJAL TEHSIL KAND KOT DISTT KASHMORE", 0, 'L', 0, 1); // Postal Address
-
-        
         // Save filled PDF to public folder
         $pdfPath = 'admin/assets/form-10.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
-    
+
         // Return JSON response with URL
         return response()->json([
             'pdf_url' => asset($pdfPath) // Generates correct URL
