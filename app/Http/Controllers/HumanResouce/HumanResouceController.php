@@ -358,7 +358,7 @@ class HumanResouceController extends Controller
         $pdf->SetTextColor(0, 0, 0);
         
         // Repeat the same content for the second page if needed
-        // Depositor Copy
+        // Bank Copy
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(155, 31);  
         $pdf->Write(10, "-297466");  // Slip no.
@@ -405,7 +405,7 @@ class HumanResouceController extends Controller
         $pdf->SetXY(44, 84.4);  
         $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words
         
-        // BE & OE Copy
+        // Bank Copy
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(155, 135);  
         $pdf->Write(10, "-297466");  // Slip no.
@@ -462,5 +462,160 @@ class HumanResouceController extends Controller
         ]);
     }
     
+    // Form 9 PDF Generator
+    public function generateForm9()
+    {
+        $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
+        $pdf->AddPage();
+    
+        // Set the source PDF file for Form 9
+        $path = public_path('admin/assets/State_Life_Blank.pdf'); 
+        $pdf->setSourceFile($path);
+    
+        // Import first page
+        $tplId = $pdf->importPage(1);
+        $pdf->useTemplate($tplId, 10, 10, 200);
+    
+        // Set font and text color
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
+    
+        
+        $pdf->SetXY(86, 66.4);
+        $pdf->Write(10, "TALIB HUUSAIN"); // Name
+
+        $pdf->SetXY(86, 71.4);
+        $pdf->Write(10, "ALLAH DINO"); // Father name
+
+        $pdf->SetXY(86, 76.4);
+        $pdf->Write(10, "06 / 03 / 2025"); // Date
+
+        $pdf->SetXY(87, 81.6);
+        $idCardNumber = "4350304643339";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5.5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // NIC Number
+
+        
+        $pdf->SetXY(92.2, 87);
+        $pdf->Write(10, "LT6913331"); // Number
+
+        $pdf->SetXY(94.2, 91.3);
+        $pdf->Write(10, "Apr 26, 2023"); // Date
+
+        $pdf->SetXY(102.2, 97.5);
+        $pdf->Write(10, "Job"); // Occupation
+
+        $pdf->SetXY(131.2, 87);
+        $pdf->Write(10, "Apr 26, 2023"); // Issued Date
+
+        $pdf->SetXY(131.2, 92);
+        $pdf->Write(10, "KASHMORE"); // Place
+
+        $pdf->SetXY(86.2, 105.5);
+        $pdf->MultiCell(90, 10, "VILLAGE FAQEER MUHAMMAD KHAN CHAKRANI\nPOKAND KOT KHUJAL TEHSIL KAND KOT DISTT KASHMORE", 0, 'L', 0, 1); // Postal Address
+
+        $pdf->SetXY(86.2, 118);
+        $pdf->MultiCell(90, 10, "Adrees", 0, 'L', 0, 1); // Address Abroad
+
+        $pdf->SetXY(86.2, 123);
+        $pdf->MultiCell(90, 10, "Adrees", 0, 'L', 0, 1); // Address Abroad of Employer
+
+        $pdf->SetXY(95.2, 125.5);
+        $pdf->Write(10, "AZMIYA"); // Particular person name
+
+        $pdf->SetXY(87, 132);
+        $idCardNumber = "4350304643339";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // NIC Number
+
+        $pdf->SetXY(119, 137.5);
+        $pdf->Write(10, "Wife"); // Wife
+
+        $pdf->SetXY(87, 147);
+        $pdf->Write(10, "Rs. 1,000,000/-(Rupees One Million Only)"); // Price
+
+        $pdf->SetXY(87, 152);
+        $pdf->Write(10, "Two years"); // Time Period
+
+        $pdf->SetXY(87, 158);
+        $pdf->Write(10, "Apr 26, 2023"); // Date of renewal of insurance
+
+        $pdf->SetXY(87, 165.5);
+        $pdf->Write(10, "Rs. 2500/- (Rupees Two Thousand Five Hundred only)"); // Amount Of Premium Paid 
+        // Save filled PDF to public folder
+        $pdfPath = 'admin/assets/form-9.pdf';
+        $pdf->Output(public_path($pdfPath), 'F'); 
+    
+        // Return JSON response with URL
+        return response()->json([
+            'pdf_url' => asset($pdfPath) // Generates correct URL
+        ]);
+    }
+
+    // Form 10 PDF Generator
+    public function generateForm10()
+    {
+        $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
+        $pdf->AddPage();
+    
+        // Set the source PDF file for Form 10
+        $path = public_path('admin/assets/FSA_Blank.pdf'); 
+        $pdf->setSourceFile($path);
+    
+        // Import first page
+        $tplId = $pdf->importPage(1);
+        $pdf->useTemplate($tplId, 10, 10, 200);
+    
+        // Set font and text color
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
+    
+        
+        $pdf->SetXY(86, 66.4);
+        $pdf->Write(10, "TALIB HUUSAIN"); // Name
+
+        $pdf->SetXY(86, 71.4);
+        $pdf->Write(10, "ALLAH DINO"); // Father name
+
+        $pdf->SetXY(86, 76.4);
+        $pdf->Write(10, "06 / 03 / 2025"); // Date
+
+        $pdf->SetXY(87, 81.6);
+        $idCardNumber = "4350304643339";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(5.5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+        } // NIC Number
+
+        
+        $pdf->SetXY(92.2, 87);
+        $pdf->Write(10, "LT6913331"); // Number
+
+        $pdf->SetXY(94.2, 91.3);
+        $pdf->Write(10, "Apr 26, 2023"); // Date
+
+        $pdf->SetXY(102.2, 97.5);
+        $pdf->Write(10, "Job"); // Occupation
+
+        $pdf->SetXY(131.2, 87);
+        $pdf->Write(10, "Apr 26, 2023"); // Issued Date
+
+        $pdf->SetXY(131.2, 92);
+        $pdf->Write(10, "KASHMORE"); // Place
+
+        $pdf->SetXY(86.2, 105.5);
+        $pdf->MultiCell(90, 10, "VILLAGE FAQEER MUHAMMAD KHAN CHAKRANI\nPOKAND KOT KHUJAL TEHSIL KAND KOT DISTT KASHMORE", 0, 'L', 0, 1); // Postal Address
+
+        
+        // Save filled PDF to public folder
+        $pdfPath = 'admin/assets/form-10.pdf';
+        $pdf->Output(public_path($pdfPath), 'F'); 
+    
+        // Return JSON response with URL
+        return response()->json([
+            'pdf_url' => asset($pdfPath) // Generates correct URL
+        ]);
+    }
 
 }

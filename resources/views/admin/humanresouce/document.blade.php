@@ -404,6 +404,22 @@
                 <iframe id="pdfFrame8" src="" width="100%" height="0"></iframe>
             </div>
 
+            {{-- Step 9: Medical Report --}}
+            <div class="form-section" data-step="9">
+                
+                <button id="generatePdfBtn9" class="btn btn-primary">Generate PDF</button>
+                <br><br>
+                <iframe id="pdfFrame9" src="" width="100%" height="0"></iframe>
+            </div>
+
+            {{-- Step 10--}}
+            <div class="form-section" data-step="10">
+                
+                <button id="generatePdfBtn10" class="btn btn-primary">Generate PDF</button>
+                <br><br>
+                <iframe id="pdfFrame10" src="" width="100%" height="0"></iframe>
+            </div>
+
             <div class="buttons d-flex justify-content-end">
                 <button id="prev" class="btn btn-success d-none">Previous</button>
                 <button id="next" class="btn btn-primary">Save & Next</button>
@@ -477,7 +493,7 @@
 
             // Reset progress when modal opens
             modal.on("show.bs.modal", function () {
-                currentStep = 8;
+                currentStep = 10;
                 updateSteps();
             });
 
@@ -508,6 +524,36 @@
                 success: function (response) {
                     $("#pdfFrame8").attr("src", "{{ asset('public/admin/assets/form-8.pdf') }}");
                     $("#pdfFrame8").attr("height", "600px");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error generating PDF:", error);
+                }
+            });
+        });
+
+        // For step 9 pdf
+        $("#generatePdfBtn9").click(function () {
+            $.ajax({
+                url: 'http://localhost/Mansol-Admin/generate-form-9',
+                method: 'GET',
+                success: function (response) {
+                    $("#pdfFrame9").attr("src", "{{ asset('public/admin/assets/form-9.pdf') }}");
+                    $("#pdfFrame9").attr("height", "600px");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error generating PDF:", error);
+                }
+            });
+        });
+
+        // For step 10 pdf
+        $("#generatePdfBtn10").click(function () {
+            $.ajax({
+                url: 'http://localhost/Mansol-Admin/generate-form-10',
+                method: 'GET',
+                success: function (response) {
+                    $("#pdfFrame10").attr("src", "{{ asset('public/admin/assets/form-10.pdf') }}");
+                    $("#pdfFrame10").attr("height", "600px");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
