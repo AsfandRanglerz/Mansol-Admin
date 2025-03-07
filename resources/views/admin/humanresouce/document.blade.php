@@ -643,6 +643,7 @@
                                 type="text"
                                 class="form-control"
                                 id="ammountInDigits"
+                                value="15000"
                             />
                         </div>
 
@@ -655,6 +656,8 @@
                                     type="text"
                                     class="form-control"
                                     id="ammountInWords"
+                                    value="Fifteen Thousand Rupees Only"
+                                    readonly
                                 />
                             </div>
                             <button
@@ -679,7 +682,7 @@
                         <div class="col-md-5 pr-0">
                             <label for="opf">OPF Welfare Fund</label>
 
-                            <input type="text" class="form-control" id="opf" />
+                            <input type="text" class="form-control" id="opf" value="4000" />
                         </div>
 
                         <div class="col-md-6 pl-2 d-flex align-items-end">
@@ -691,6 +694,7 @@
                                     type="text"
                                     class="form-control"
                                     id="stateLife"
+                                    value="2500"
                                 />
                             </div>
                             <button
