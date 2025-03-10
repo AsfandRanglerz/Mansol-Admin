@@ -259,34 +259,49 @@
             {{-- Step 1: Latest Resume --}}
 
             <div class="form-section active" data-step="1">
-                <form
-                    id="form-step-1"
-                    action="{{ route('submit.step', ['step' => 1]) }}"
-                    method="POST"
-                    enctype="multipart/form-data"
-                >
-                    @csrf
-
-                    <input
-                        type="hidden"
-                        name="human_resource_id"
-                        value="{{ $HumanResource->id }}"
-                    />
-
-                    <h5>Latest Resume</h5>
-
-                    <div class="form-group">
-                        <label>Upload CV (PDF only)</label>
+                <div style="gap: 10px" class="d-flex align-items-center">
+                    <form
+                        style="width: 40%"
+                        id="form-step-1"
+                        action="{{ route('submit.step', ['step' => 1]) }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        target="uploadFrame"
+                    >
+                        @csrf
 
                         <input
-                            type="file"
-                            class="form-control"
-                            name="cv"
-                            accept=".pdf"
-                            required
+                            type="hidden"
+                            name="human_resource_id"
+                            value="{{ $HumanResource->id }}"
                         />
-                    </div>
-                </form>
+
+                        <h5>Latest Resume</h5>
+
+                        <div class="form-group">
+                            <label>Upload CV (PDF only)</label>
+
+                            <input
+                                type="file"
+                                class="form-control"
+                                name="cv"
+                                id="cvInput"
+                                accept=".pdf"
+                                required
+                                onchange="previewPDF(this)"
+                            />
+                        </div>
+                    </form>
+                    <!-- <div style="width: 60%">
+                        <iframe
+                            class="border-0"
+                            id="pdfFrame1"
+                            src=""
+                            width="100%"
+                            height="0px"
+                        ></iframe>
+                    </div> -->
+                </div>
             </div>
 
             {{-- Step 2: Passport Images --}}
@@ -682,7 +697,12 @@
                         <div class="col-md-5 pr-0">
                             <label for="opf">OPF Welfare Fund</label>
 
-                            <input type="text" class="form-control" id="opf" value="4000" />
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="opf"
+                                value="4000"
+                            />
                         </div>
 
                         <div class="col-md-6 pl-2 d-flex align-items-end">
@@ -928,35 +948,44 @@
 
         // For step 10 pdf
 
-        /**        $("#generatePdfBtn10").click(function () {
-        
-                    $.ajax({
-        
-                        url: 'http://localhost/Mansol-Admin/generate-form-10',
-        
-                        method: 'GET',
-        
-                        success: function (response) {
-        
-                            $("#pdfFrame10").attr("src", "{{ asset('public/admin/assets/form-10.pdf') }}");
-        
-                            $("#pdfFrame10").attr("height", "600px");
-        
-                        },
-        
-                        error: function (xhr, status, error) {
-        
-                            console.error("Error generating PDF:", error);
-        
-                        }
-        
-                    });
-        
-                }); **/
+        $("#generatePdfBtn10").click(function () {
+            $.ajax({
+                url: "http://localhost/Mansol-Admin/generate-form-10",
+
+                method: "GET",
+
+                success: function (response) {
+                    $("#pdfFrame10").attr(
+                        "src",
+                        "{{ asset('public/admin/assets/form-10.pdf') }}"
+                    );
+
+                    $("#pdfFrame10").attr("height", "600px");
+                },
+
+                error: function (xhr, status, error) {
+                    console.error("Error generating PDF:", error);
+                },
+            });
+        });
     });
 </script>
 
 <script>
+    function previewPDF(input) {
+        const file = input.files[0];
+        if (file && file.type === "application/pdf") {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("pdfFrame1").src = e.target.result;
+                document.getElementById("pdfFrame1").style.height = "300px";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert("Please upload a valid PDF file.");
+        }
+    }
+
     document
         .getElementById("step-8-print-btn")
         .addEventListener("click", function () {
