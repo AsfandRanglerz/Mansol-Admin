@@ -881,7 +881,7 @@
 
         $("#generatePdfBtn").click(function () {
             $.ajax({
-                url: "http://localhost/Mansol-Admin/generate-form-7",
+                url: "https://ranglerzwp.xyz/mansolnew/generate-form-7",
 
                 method: "GET",
 
@@ -904,7 +904,7 @@
 
         $("#generatePdfBtn8").click(function () {
             $.ajax({
-                url: "http://localhost/Mansol-Admin/generate-form-8",
+                url: "https://ranglerzwp.xyz/mansolnew/generate-form-8",
 
                 method: "GET",
 
@@ -927,7 +927,7 @@
 
         $("#generatePdfBtn9").click(function () {
             $.ajax({
-                url: "http://localhost/Mansol-Admin/generate-form-9",
+                url: "https://ranglerzwp.xyz/mansolnew/generate-form-9",
 
                 method: "GET",
 
@@ -950,7 +950,7 @@
 
         $("#generatePdfBtn10").click(function () {
             $.ajax({
-                url: "http://localhost/Mansol-Admin/generate-form-10",
+                url: "https://ranglerzwp.xyz/mansolnew/generate-form-10",
 
                 method: "GET",
 
