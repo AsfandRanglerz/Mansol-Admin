@@ -461,14 +461,47 @@ class HumanResouceController extends Controller
             'pdf_url' => asset($pdfPath) // Generates correct URL
         ]);
     }
-    
-    // Form 9 PDF Generator
-    public function generateForm9()
+
+     // Form 9 PDF Generator
+     public function generateForm9()
     {
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         $pdf->AddPage();
     
         // Set the source PDF file for Form 9
+        $path = public_path('admin/assets/Challan-92-Blank.pdf'); 
+        $pdf->setSourceFile($path);
+    
+        // Import first page
+        $tplId = $pdf->importPage(1);
+        $pdf->useTemplate($tplId, 10, 10, 200);
+    
+        // Set font and text color
+        $pdf->SetFont('Helvetica', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
+    
+        
+        // $pdf->SetXY(86, 66.4);
+        // $pdf->Write(10, "TALIB HUUSAIN"); // Name
+
+        
+        // Save filled PDF to public folder
+        $pdfPath = 'admin/assets/Challan-92-Blank.pdf';
+        $pdf->Output(public_path($pdfPath), 'F'); 
+    
+        // Return JSON response with URL
+        return response()->json([
+            'pdf_url' => asset($pdfPath) // Generates correct URL
+        ]);
+    }
+    
+    // Form 10 PDF Generator
+    public function generateForm10()
+    {
+        $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
+        $pdf->AddPage();
+    
+        // Set the source PDF file for Form 10
         $path = public_path('admin/assets/State_Life_Blank.pdf'); 
         $pdf->setSourceFile($path);
     
@@ -545,7 +578,7 @@ class HumanResouceController extends Controller
         $pdf->SetXY(87, 165.5);
         $pdf->Write(10, "Rs. 2500/- (Rupees Two Thousand Five Hundred only)"); // Amount Of Premium Paid 
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/challan-92.pdf';
+        $pdfPath = 'admin/assets/life-insurance.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
     
         // Return JSON response with URL
@@ -554,8 +587,8 @@ class HumanResouceController extends Controller
         ]);
     }
 
-    // Form 10 PDF Generator
-    public function generateForm10()
+    // Form 11 PDF Generator
+    public function generateForm11()
     {
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         

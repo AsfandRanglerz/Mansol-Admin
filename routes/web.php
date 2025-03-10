@@ -184,7 +184,8 @@ Route::post('/human-resource-reset-password', [HumanResouceController::class, 'R
 Route::get('/generate-form-7', [HumanResouceController::class, 'generateForm7'])->name('generate.filled.pdf');
 Route::get('/generate-nbp-form', [HumanResouceController::class, 'generateForm8'])->name('generate.filled.pdf');
 Route::get('/generate-challan-92', [HumanResouceController::class, 'generateForm9'])->name('generate.filled.pdf');
-Route::get('/generate-fsa-form', [HumanResouceController::class, 'generateForm10'])->name('generate.filled.pdf');
+Route::get('/generate-life-insurance', [HumanResouceController::class, 'generateForm10'])->name('generate.filled.pdf');
+Route::get('/generate-fsa-form', [HumanResouceController::class, 'generateForm11'])->name('generate.filled.pdf');
 Route::prefix('human-resource')->middleware('humanresource')->group(function () {
     Route::get('dashboard', [HumanResouceController::class, 'getdashboard'])->name('human-resouce.dashboard');
     Route::get('profile', [HumanResouceController::class, 'getProfile']);

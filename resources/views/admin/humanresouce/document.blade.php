@@ -230,7 +230,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content p-4">
             <div class="steps mb-5">
-                @for ($i = 1; $i <= 10; $i++)
+                @for ($i = 1; $i <= 11; $i++)
                 <div
                     class="d-flex flex-column align-items-center position-relative step-container"
                 >
@@ -250,7 +250,7 @@
                     ></span>
                 </div>
 
-                @if ($i < 10)
+                @if ($i < 11)
                 <div class="line"></div>
 
                 @endif @endfor
@@ -731,19 +731,23 @@
                 <iframe id="pdfFrame8" src="" width="100%" height="0"></iframe>
             </div>
 
-            {{-- Step 9: Medical Report --}}
+            {{-- Step 9: NBP form --}}
 
             <div class="form-section" data-step="9">
-                <button id="generatePdfBtn9" class="btn btn-primary">
-                    Generate PDF
-                </button>
-
-                <br /><br />
+                <div>
+                    <button
+                        id="generatePdfBtn9"
+                        class="btn btn-primary"
+                        style="margin-bottom: 2px"
+                    >
+                        Generate PDF
+                    </button>
+                </div>
 
                 <iframe id="pdfFrame9" src="" width="100%" height="0"></iframe>
             </div>
 
-            {{-- Step 10--}}
+            {{-- Step 10 --}}
 
             <div class="form-section" data-step="10">
                 <button id="generatePdfBtn10" class="btn btn-primary">
@@ -753,6 +757,18 @@
                 <br /><br />
 
                 <iframe id="pdfFrame10" src="" width="100%" height="0"></iframe>
+            </div>
+
+            {{-- Step 11 --}}
+
+            <div class="form-section" data-step="11">
+                <button id="generatePdfBtn11" class="btn btn-primary">
+                    Generate PDF
+                </button>
+
+                <br /><br />
+
+                <iframe id="pdfFrame11" src="" width="100%" height="0"></iframe>
             </div>
 
             <div class="buttons d-flex justify-content-end">
@@ -781,7 +797,7 @@
 
             let currentStep = 1;
 
-            let maxSteps = 10;
+            let maxSteps = 11;
 
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");
@@ -881,7 +897,7 @@
 
         $("#generatePdfBtn").click(function () {
             $.ajax({
-                url: "https://ranglerzwp.xyz/mansolnew/generate-form-7",
+                url: "{{ asset('/generate-form-7') }}",
 
                 method: "GET",
 
@@ -904,7 +920,8 @@
 
         $("#generatePdfBtn8").click(function () {
             $.ajax({
-                url: "https://ranglerzwp.xyz/mansolnew/generate-nbp-form",
+                url: "{{ asset('/generate-nbp-form') }}",
+                // url: "http://localhost/Mansol-Admin/generate-nbp-form",
 
                 method: "GET",
 
@@ -927,14 +944,15 @@
 
         $("#generatePdfBtn9").click(function () {
             $.ajax({
-                url: "https://ranglerzwp.xyz/mansolnew/generate-challan-92",
+                url: "{{ asset('/generate-challan-92') }}",
+                // url: "http://localhost/Mansol-Admin/generate-nbp-form",
 
                 method: "GET",
 
                 success: function (response) {
                     $("#pdfFrame9").attr(
                         "src",
-                        "{{ asset('public/admin/assets/challan-92.pdf') }}"
+                        "{{ asset('public/admin/assets/Challan-92-Blank.pdf') }}"
                     );
 
                     $("#pdfFrame9").attr("height", "600px");
@@ -950,17 +968,43 @@
 
         $("#generatePdfBtn10").click(function () {
             $.ajax({
-                url: "https://ranglerzwp.xyz/mansolnew/generate-fsa-form",
+                url: "{{ asset('/generate-life-insurance') }}",
+                // url: "http://localhost/Mansol-Admin/generate-life-insurance",
 
                 method: "GET",
 
                 success: function (response) {
                     $("#pdfFrame10").attr(
                         "src",
-                        "{{ asset('public/admin/assets/fsa-form.pdf') }}"
+                        "{{ asset('public/admin/assets/life-insurance.pdf') }}"
                     );
 
                     $("#pdfFrame10").attr("height", "600px");
+                },
+
+                error: function (xhr, status, error) {
+                    console.error("Error generating PDF:", error);
+                },
+            });
+        });
+
+        // For step 11 pdf
+
+        $("#generatePdfBtn11").click(function () {
+            $.ajax({
+                url: "{{ asset('/generate-fsa-form') }}",
+
+                // url: "http://localhost/Mansol-Admin/generate-fsa-form",
+
+                method: "GET",
+
+                success: function (response) {
+                    $("#pdfFrame11").attr(
+                        "src",
+                        "{{ asset('public/admin/assets/fsa-form.pdf') }}"
+                    );
+
+                    $("#pdfFrame11").attr("height", "600px");
                 },
 
                 error: function (xhr, status, error) {
