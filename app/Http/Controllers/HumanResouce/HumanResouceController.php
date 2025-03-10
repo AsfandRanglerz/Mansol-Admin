@@ -453,7 +453,7 @@ class HumanResouceController extends Controller
         $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words 
 
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/form-8.pdf';
+        $pdfPath = 'admin/assets/nbp-form.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
         
         // Return JSON response with URL
@@ -545,7 +545,7 @@ class HumanResouceController extends Controller
         $pdf->SetXY(87, 165.5);
         $pdf->Write(10, "Rs. 2500/- (Rupees Two Thousand Five Hundred only)"); // Amount Of Premium Paid 
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/form-9.pdf';
+        $pdfPath = 'admin/assets/challan-92.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
     
         // Return JSON response with URL
@@ -738,7 +738,7 @@ class HumanResouceController extends Controller
         
 
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/form-10.pdf';
+        $pdfPath = 'admin/assets/fsa-form.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
 
         // Return JSON response with URL

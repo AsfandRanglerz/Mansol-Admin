@@ -904,14 +904,14 @@
 
         $("#generatePdfBtn8").click(function () {
             $.ajax({
-                url: "https://ranglerzwp.xyz/mansolnew/generate-form-8",
+                url: "https://ranglerzwp.xyz/mansolnew/generate-nbp-form",
 
                 method: "GET",
 
                 success: function (response) {
                     $("#pdfFrame8").attr(
                         "src",
-                        "{{ asset('public/admin/assets/form-8.pdf') }}"
+                        "{{ asset('public/admin/assets/nbp-form.pdf') }}"
                     );
 
                     $("#pdfFrame8").attr("height", "600px");
@@ -927,14 +927,14 @@
 
         $("#generatePdfBtn9").click(function () {
             $.ajax({
-                url: "https://ranglerzwp.xyz/mansolnew/generate-form-9",
+                url: "https://ranglerzwp.xyz/mansolnew/generate-challan-92",
 
                 method: "GET",
 
                 success: function (response) {
                     $("#pdfFrame9").attr(
                         "src",
-                        "{{ asset('public/admin/assets/form-9.pdf') }}"
+                        "{{ asset('public/admin/assets/challan-92.pdf') }}"
                     );
 
                     $("#pdfFrame9").attr("height", "600px");
@@ -950,14 +950,14 @@
 
         $("#generatePdfBtn10").click(function () {
             $.ajax({
-                url: "https://ranglerzwp.xyz/mansolnew/generate-form-10",
+                url: "https://ranglerzwp.xyz/mansolnew/generate-fsa-form",
 
                 method: "GET",
 
                 success: function (response) {
                     $("#pdfFrame10").attr(
                         "src",
-                        "{{ asset('public/admin/assets/form-10.pdf') }}"
+                        "{{ asset('public/admin/assets/fsa-form.pdf') }}"
                     );
 
                     $("#pdfFrame10").attr("height", "600px");
