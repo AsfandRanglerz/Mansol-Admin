@@ -477,16 +477,36 @@ class HumanResouceController extends Controller
         $pdf->useTemplate($tplId, 10, 10, 200);
     
         // Set font and text color
-        $pdf->SetFont('Helvetica', '', 9);
+        $pdf->SetFont('Helvetica', '', 6);
         $pdf->SetTextColor(0, 0, 0);
     
-        
-        // $pdf->SetXY(86, 66.4);
-        // $pdf->Write(10, "TALIB HUUSAIN"); // Name
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(57.2, 51.6);
+        $pdf->Write(10, "ATIF AZIZ"); // Name
+
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(57.2, 69.2);
+        $pdf->Write(10, "3054/LHR"); // Liecense Number
+
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(57.2, 126.2);
+        $pdf->Write(10, "ATIF AZIZ"); // Name
+
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(57.2, 144.2);
+        $pdf->Write(10, "3054/LHR"); // Liecense Number
+
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(57.2, 201);
+        $pdf->Write(10, "ATIF AZIZ"); // Name
+
+        $pdf->SetFont('Helvetica', 'B', 6);
+        $pdf->SetXY(57.2, 219);
+        $pdf->Write(10, "3054/LHR"); // Liecense Number
 
         
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/Challan-92-Blank.pdf';
+        $pdfPath = 'admin/assets/Challan-92.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
     
         // Return JSON response with URL

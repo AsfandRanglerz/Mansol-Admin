@@ -731,7 +731,7 @@
                 <iframe id="pdfFrame8" src="" width="100%" height="0"></iframe>
             </div>
 
-            {{-- Step 9: NBP form --}}
+            {{-- Step 9 --}}
 
             <div class="form-section" data-step="9">
                 <div>
@@ -952,7 +952,7 @@
                 success: function (response) {
                     $("#pdfFrame9").attr(
                         "src",
-                        "{{ asset('public/admin/assets/Challan-92-Blank.pdf') }}"
+                        "{{ asset('public/admin/assets/Challan-92.pdf') }}"
                     );
 
                     $("#pdfFrame9").attr("height", "600px");
