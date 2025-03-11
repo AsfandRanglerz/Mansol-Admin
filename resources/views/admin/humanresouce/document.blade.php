@@ -292,7 +292,7 @@
                             />
                         </div>
                     </form>
-                    <!-- <div style="width: 60%">
+                    <div style="width: 60%">
                         <iframe
                             class="border-0"
                             id="pdfFrame1"
@@ -300,7 +300,7 @@
                             width="100%"
                             height="0px"
                         ></iframe>
-                    </div> -->
+                    </div>
                 </div>
             </div>
 
