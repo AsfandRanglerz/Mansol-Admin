@@ -178,6 +178,7 @@
                                             <label class="text-danger" for="date_of_birth">Date Of Birth</label>
                                             <input type="date" class="form-control" id="date_of_birth"
                                                 name="date_of_birth" value="{{ old('date_of_birth') }}" required>
+                                                <div class="text-danger" id="dob-error" style="display: none;">Age should not be less than 21 years</div>
                                             @error('date_of_birth')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -979,6 +980,28 @@
 @endsection
 
 @section('js')
+<script>
+    $(document).ready(function() {
+        $('#createSubadminForm').on('submit', function(event) {
+            var dob = new Date($('#date_of_birth').val());
+            var today = new Date();
+            var age = today.getFullYear() - dob.getFullYear();
+            var monthDifference = today.getMonth() - dob.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            if (age < 21) {
+                event.preventDefault();
+                $('#dob-error').show();
+                $('html, body').animate({
+                    scrollTop: $('#date_of_birth').offset().top - 100
+                }, 'smooth');
+            } else {
+                $('#dob-error').hide();
+            }
+        });
+    });
+</script>
 <script>
     $(document).ready(function () {
         $('#table_id_events').DataTable()
