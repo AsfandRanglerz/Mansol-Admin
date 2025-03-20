@@ -580,13 +580,13 @@
                                     Select an Option
                                 </option>
 
-                                <option value="Yet to appear">Yet to appear</option>
+                                <option value="">Yet to appear</option>
 
-                                <option value="Appeared">Appeared</option>
+                                <option value="">Appeared</option>
 
-                                <option value="Waiting">Waiting</option>
+                                <option value="">Waiting</option>
 
-                                <option value="Result Available">Result Available</option>
+                                <option value="">Result Available</option>
                             </select>
                         </div>
 
@@ -631,11 +631,11 @@
                                     Select an Option
                                 </option>
 
-                                <option value="Lab 1">Lab 1</option>
+                                <option value="">Lab 1</option>
 
-                                <option value="Lab 2">Lab 2</option>
+                                <option value="">Lab 2</option>
 
-                                <option value="Lab 3">Lab 3</option>
+                                <option value="">Lab 3</option>
                             </select>
                         </div>
 
@@ -675,27 +675,27 @@
                 <div>
                     <div class="row mb-3">
                         <div class="col-md-5 pr-0">
-                            <label for="ammountInDigits"
+                            <label for="amountInDigits"
                                 >Amount in digits</label
                             >
 
                             <input
                                 type="text"
                                 class="form-control"
-                                id="ammountInDigits"
+                                id="amountInDigits"
                                 value="15000"
                             />
                         </div>
 
                         <div class="col-md-6 pl-2 d-flex align-items-end">
                             <div style="flex: 1" class="mr-2">
-                                <label for="ammountInWords"
+                                <label for="amountInWords"
                                     >Amount in words</label
                                 >
                                 <input
                                     type="text"
                                     class="form-control"
-                                    id="ammountInWords"
+                                    id="amountInWords"
                                     value="Fifteen Thousand Rupees Only"
                                     readonly
                                 />
@@ -814,7 +814,86 @@
 @endforeach
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function numberToWords(num) {
+      const a = [
+        "",
+        "One",
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+        "Ten",
+        "Eleven",
+        "Twelve",
+        "Thirteen",
+        "Fourteen",
+        "Fifteen",
+        "Sixteen",
+        "Seventeen",
+        "Eighteen",
+        "Nineteen",
+      ];
+      const b = [
+        "",
+        "",
+        "Twenty",
+        "Thirty",
+        "Forty",
+        "Fifty",
+        "Sixty",
+        "Seventy",
+        "Eighty",
+        "Ninety",
+      ];
+      const c = ["", "Thousand", "Million", "Billion"];
 
+      if (num === 0) return "Zero";
+
+      let words = "";
+
+      function convertToWords(n, index) {
+        if (n === 0) return "";
+        let str = "";
+        if (n > 99) {
+          str += a[Math.floor(n / 100)] + " Hundred ";
+          n %= 100;
+        }
+        if (n > 19) {
+          str += b[Math.floor(n / 10)] + " ";
+          n %= 10;
+        }
+        if (n > 0) {
+          str += a[n] + " ";
+        }
+        return str + (index > 0 ? c[index] + " " : "");
+      }
+
+      let i = 0;
+      while (num > 0) {
+        const chunk = num % 1000;
+        if (chunk > 0) {
+          words = convertToWords(chunk, i) + words;
+        }
+        num = Math.floor(num / 1000);
+        i++;
+      }
+
+      return words.trim() + " Only";
+    }
+
+    $(document).ready(function () {
+      $("#amountInDigits").on("input", function () {
+        const amount = parseInt($(this).val().replace(/,/g, ""), 10);
+        const words = isNaN(amount) ? "" : numberToWords(amount);
+        $("#amountInWords").val(words);
+      });
+    });
+  </script>
 <script>
     $(document).ready(function () {
         $(".modal").each(function () {
@@ -848,7 +927,7 @@
                 modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
             }
               
-
+            
             function saveStep(step) {
                 let form = modal.find(`#form-step-${step}`);
                 let checkbox = document.getElementById("recieved");
