@@ -580,13 +580,13 @@
                                     Select an Option
                                 </option>
 
-                                <option value="">Yet to appear</option>
+                                <option value="Yet to appear">Yet to appear</option>
 
-                                <option value="">Appeared</option>
+                                <option value="Appeared">Appeared</option>
 
-                                <option value="">Waiting</option>
+                                <option value="Waiting">Waiting</option>
 
-                                <option value="">Result Available</option>
+                                <option value="Result Available">Result Available</option>
                             </select>
                         </div>
 
@@ -631,11 +631,11 @@
                                     Select an Option
                                 </option>
 
-                                <option value="">Lab 1</option>
+                                <option value="Lab 1">Lab 1</option>
 
-                                <option value="">Lab 2</option>
+                                <option value="Lab 2">Lab 2</option>
 
-                                <option value="">Lab 3</option>
+                                <option value="Lab 3">Lab 3</option>
                             </select>
                         </div>
 
@@ -848,7 +848,7 @@
                 modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
             }
               
-            
+
             function saveStep(step) {
                 let form = modal.find(`#form-step-${step}`);
                 let checkbox = document.getElementById("recieved");

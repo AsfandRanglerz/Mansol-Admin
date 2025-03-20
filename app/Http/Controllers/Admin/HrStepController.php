@@ -193,7 +193,15 @@ class HrStepController extends Controller
                     'file_type' => 'medical_report',
                 ],
                 [
-                    'file_name' => $data['file_name']
+                    'file_name' => $data['file_name'],
+                    'process_status' => $request->process_status,
+                    'medically_fit' => $request->medically_fit,
+                    'report_date' => $request->report_date,
+                    'valid_until' => $request->valid_until,
+                    'lab' => $request->lab,
+                    'any_comments' => $request->any_comments,
+                    'original_report_recieved' => $request->original_report_recieved,
+
                 ]
             );
             $data['file_name'] = $request->file('medical_report')->store('medical_reports', 'public');
