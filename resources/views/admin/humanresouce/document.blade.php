@@ -364,6 +364,11 @@
                                     object-fit: cover;
                                 "
                             />
+                            <input
+                            type="hidden"
+                            name="human_resource_id"
+                            value="{{ $HumanResource->id }}"
+                        />
                         </div>
                     </div>
                 </form>
@@ -429,6 +434,11 @@
                                     object-fit: cover;
                                 "
                             />
+                            <input
+                            type="hidden"
+                            name="human_resource_id"
+                            value="{{ $HumanResource->id }}"
+                        />
                         </div>
                     </div>
                 </form>
@@ -469,6 +479,11 @@
                                 object-fit: cover;
                             "
                         />
+                        <input
+                        type="hidden"
+                        name="human_resource_id"
+                        value="{{ $HumanResource->id }}"
+                    />
                     </div>
                 </form>
             </div>
@@ -533,6 +548,11 @@
                                     object-fit: cover;
                                 "
                             />
+                            <input
+                            type="hidden"
+                            name="human_resource_id"
+                            value="{{ $HumanResource->id }}"
+                        />
                         </div>
                     </div>
                 </form>
@@ -555,7 +575,7 @@
                         <div class="col-md-6">
                             <label>Process Status</label>
 
-                            <select name="" id="" class="form-control" required>
+                            <select name="process_status" id="" class="form-control" required>
                                 <option value="" selected disabled>
                                     Select an Option
                                 </option>
@@ -573,7 +593,7 @@
                         <div class="col-md-6">
                             <label>Medically Fit</label>
 
-                            <select name="" id="" class="form-control" required>
+                            <select name="medically_fit" id="" class="form-control" required>
                                 <option value="" selected disabled>
                                     Select an Option
                                 </option>
@@ -589,19 +609,24 @@
                         <div class="col-md-6 mt-3">
                             <label>Report Date</label>
 
-                            <input type="date" class="form-control" />
+                            <input type="date" class="form-control" name="report_date" />
+                            <input
+                            type="hidden"
+                            name="human_resource_id"
+                            value="{{ $HumanResource->id }}"
+                        />
                         </div>
 
                         <div class="col-md-6 mt-3">
                             <label>Valid Until</label>
 
-                            <input type="date" class="form-control" />
+                            <input type="date" class="form-control" name="valid_until"/>
                         </div>
 
                         <div class="col-md-6 mt-3">
                             <label>Lab</label>
 
-                            <select name="" id="" class="form-control" required>
+                            <select name="lab" id="" class="form-control" required>
                                 <option value="" selected disabled>
                                     Select an Option
                                 </option>
@@ -617,7 +642,7 @@
                         <div class="col-md-6 mt-3">
                             <label>Any Comments on Medical Report</label>
 
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="any_comments" />
                         </div>
 
                         <div class="col-md-6 mt-3">
@@ -638,7 +663,7 @@
                             >
                             &nbsp; &nbsp;
 
-                            <input type="checkbox" id="recieved" />
+                            <input type="checkbox" id="recieved" name="original_report_recieved" />
                         </div>
                     </div>
                 </form>
@@ -794,9 +819,7 @@
     $(document).ready(function () {
         $(".modal").each(function () {
             let modal = $(this);
-
             let currentStep = 1;
-
             let maxSteps = 11;
 
             function updateSteps() {
@@ -807,7 +830,6 @@
 
                     if (stepNum <= currentStep) {
                         $(this).addClass("active");
-
                         $(this).next(".step-text").addClass("active");
                     }
                 });
@@ -819,68 +841,77 @@
                 });
 
                 modal.find(".form-section").removeClass("active");
-
-                modal
-                    .find(`.form-section[data-step="${currentStep}"]`)
-                    .addClass("active");
+                modal.find(`.form-section[data-step="${currentStep}"]`).addClass("active");
 
                 modal.find("#prev").toggleClass("d-none", currentStep === 1);
-
-                modal
-                    .find("#next")
-                    .toggleClass("d-none", currentStep === maxSteps);
-
-                modal
-                    .find("#submit")
-                    .toggleClass("d-none", currentStep !== maxSteps);
+                modal.find("#next").toggleClass("d-none", currentStep === maxSteps);
+                modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
+            }
+              
+            
+            function saveStep(step) {
+                let form = modal.find(`#form-step-${step}`);
+                let checkbox = document.getElementById("recieved");
+                // Before appending FormData, update the checkbox value
+                if (checkbox.checked) {
+                    checkbox.value = "yes";
+                } else {
+                    // Ensure unchecked checkboxes are included in FormData
+                    checkbox.setAttribute("value", "no");
+                    checkbox.checked = true; // Force it to be included
+                }
+                let formData = new FormData(form[0]);
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        toastr.success(`Step ${step} saved successfully.`);
+                        if (currentStep < maxSteps) {
+                            currentStep++;
+                            updateSteps();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error(`Error saving step ${step}: ${error}`);
+                    }
+                });
             }
 
             modal.find("#next").click(function (event) {
                 event.preventDefault();
-
-                if (currentStep < maxSteps) {
-                    currentStep++;
-
-                    updateSteps();
-                }
+                saveStep(currentStep);
             });
 
             modal.find("#prev").click(function () {
                 if (currentStep > 1) {
                     currentStep--;
-
                     updateSteps();
                 }
             });
 
             modal.find("input[type='file']").change(function (event) {
                 let fileInput = $(this);
-
                 let file = event.target.files[0];
 
                 if (file) {
                     let reader = new FileReader();
 
                     reader.onload = function (e) {
-                        fileInput
-                            .siblings("img")
-                            .attr("src", e.target.result)
-                            .removeClass("d-none");
+                        fileInput.siblings("img").attr("src", e.target.result).removeClass("d-none");
                     };
 
                     reader.readAsDataURL(file);
                 }
             });
 
-            // Reset progress when modal opens
-
             modal.on("show.bs.modal", function () {
                 currentStep = 1;
-
                 updateSteps();
             });
 
-            // Make active steps clickable
             modal.find(".step-container").click(function () {
                 let stepNum = $(this).find(".step").data("step");
 
@@ -894,22 +925,14 @@
         });
 
         // Generate PDF and display in iframe
-
         $("#generatePdfBtn").click(function () {
             $.ajax({
                 url: "{{ asset('/generate-form-7') }}",
-
                 method: "GET",
-
                 success: function (response) {
-                    $("#pdfFrame").attr(
-                        "src",
-                        "{{ asset('public/admin/assets/form-7.pdf') }}"
-                    );
-
+                    $("#pdfFrame").attr("src", "{{ asset('public/admin/assets/form-7.pdf') }}");
                     $("#pdfFrame").attr("height", "600px");
                 },
-
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
                 },
@@ -917,23 +940,14 @@
         });
 
         // For step 8 pdf
-
         $("#generatePdfBtn8").click(function () {
             $.ajax({
                 url: "{{ asset('/generate-nbp-form') }}",
-                // url: "http://localhost/Mansol-Admin/generate-nbp-form",
-
                 method: "GET",
-
                 success: function (response) {
-                    $("#pdfFrame8").attr(
-                        "src",
-                        "{{ asset('public/admin/assets/nbp-form.pdf') }}"
-                    );
-
+                    $("#pdfFrame8").attr("src", "{{ asset('public/admin/assets/nbp-form.pdf') }}");
                     $("#pdfFrame8").attr("height", "600px");
                 },
-
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
                 },
@@ -941,23 +955,14 @@
         });
 
         // For step 9 pdf
-
         $("#generatePdfBtn9").click(function () {
             $.ajax({
                 url: "{{ asset('/generate-challan-92') }}",
-                // url: "http://localhost/Mansol-Admin/generate-nbp-form",
-
                 method: "GET",
-
                 success: function (response) {
-                    $("#pdfFrame9").attr(
-                        "src",
-                        "{{ asset('public/admin/assets/Challan-92.pdf') }}"
-                    );
-
+                    $("#pdfFrame9").attr("src", "{{ asset('public/admin/assets/Challan-92.pdf') }}");
                     $("#pdfFrame9").attr("height", "600px");
                 },
-
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
                 },
@@ -965,23 +970,14 @@
         });
 
         // For step 10 pdf
-
         $("#generatePdfBtn10").click(function () {
             $.ajax({
                 url: "{{ asset('/generate-life-insurance') }}",
-                // url: "http://localhost/Mansol-Admin/generate-life-insurance",
-
                 method: "GET",
-
                 success: function (response) {
-                    $("#pdfFrame10").attr(
-                        "src",
-                        "{{ asset('public/admin/assets/life-insurance.pdf') }}"
-                    );
-
+                    $("#pdfFrame10").attr("src", "{{ asset('public/admin/assets/life-insurance.pdf') }}");
                     $("#pdfFrame10").attr("height", "600px");
                 },
-
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
                 },
@@ -989,24 +985,14 @@
         });
 
         // For step 11 pdf
-
         $("#generatePdfBtn11").click(function () {
             $.ajax({
                 url: "{{ asset('/generate-fsa-form') }}",
-
-                // url: "http://localhost/Mansol-Admin/generate-fsa-form",
-
                 method: "GET",
-
                 success: function (response) {
-                    $("#pdfFrame11").attr(
-                        "src",
-                        "{{ asset('public/admin/assets/fsa-form.pdf') }}"
-                    );
-
+                    $("#pdfFrame11").attr("src", "{{ asset('public/admin/assets/fsa-form.pdf') }}");
                     $("#pdfFrame11").attr("height", "600px");
                 },
-
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
                 },

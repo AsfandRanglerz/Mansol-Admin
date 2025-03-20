@@ -1115,8 +1115,8 @@
         $('#company_id').change(function() {
             var selectedCompany = $(this).val();
             if (selectedCompany) {
-                $('#craft').closest('.col-md-4').addClass('d-none');
-                $('#sub_craft').closest('.col-md-4').addClass('d-none');
+                // $('#craft').closest('.col-md-4').addClass('d-none');
+                // $('#sub_craft').closest('.col-md-4').addClass('d-none');
                 $('#project-group').removeClass('d-none');
                 $('#demand-group').removeClass('d-none');
             } else {

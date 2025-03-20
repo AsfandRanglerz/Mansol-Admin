@@ -189,7 +189,7 @@ class HumanResourceController extends Controller
         $message['email'] = $request->email;
         $message['password'] = $password;
 
-        Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
+        // Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
 
         // Return success message
         return redirect()->route('humanresource.index')->with(['message' => 'Human Resource Created Successfully']);
