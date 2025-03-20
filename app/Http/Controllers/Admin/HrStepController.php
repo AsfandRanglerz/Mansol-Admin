@@ -204,7 +204,7 @@ class HrStepController extends Controller
 
                 ]
             );
-            $data['file_name'] = $request->file('medical_report')->store('medical_reports', 'public');
+            // $data['file_name'] = $request->file('medical_report')->store('medical_reports', 'public');
         }
 
         
