@@ -181,7 +181,7 @@ Route::get('/human-resource-forgot-password', [HumanResouceController::class, 'f
 Route::post('/human-resource-reset-password-link', [HumanResouceController::class, 'adminResetPasswordLink']);
 Route::get('/human-resource-change_password/{id}', [HumanResouceController::class, 'change_password']);
 Route::post('/human-resource-reset-password', [HumanResouceController::class, 'ResetPassword']);
-Route::get('/generate-form-7', [HumanResouceController::class, 'generateForm7'])->name('generate.filled.pdf');
+Route::post('/generate-form-7', [HumanResouceController::class, 'generateForm7'])->name('generate.filled.pdf7');
 Route::get('/generate-nbp-form', [HumanResouceController::class, 'generateForm8'])->name('generate.filled.pdf');
 Route::get('/generate-challan-92', [HumanResouceController::class, 'generateForm9'])->name('generate.filled.pdf');
 Route::get('/generate-life-insurance', [HumanResouceController::class, 'generateForm10'])->name('generate.filled.pdf');

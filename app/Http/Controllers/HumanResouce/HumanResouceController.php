@@ -109,132 +109,268 @@ class HumanResouceController extends Controller
     }
 
     // Pdf module function
-
     // Form 7 PDF Generator
-    public function generateForm7()
-    {
-        $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
-        $pdf->AddPage();
+   public function generateForm7(Request $request)
+   {
+       $data = $request->all();
+       $hr = HumanResource::find($data['human_resource_id']);
+    //    $pdfPath = 'admin/assets/humanresource/'.$hr->id.'/form-7.pdf';
+    //    $test = $data['amount_words'];
+    //    $ys =  $test."/-";
+        // return [$data];
+    //    return $hr;
+       $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
+       $pdf->AddPage();
+   
+       // Set the source PDF file
+       $path = public_path('admin/assets/Allied_Blank.pdf'); 
+       $pdf->setSourceFile($path);
+   
+       // Import first page
+       $tplId = $pdf->importPage(1);
+       $pdf->useTemplate($tplId, 10, 10, 200);
+   
+       // Set font and text color
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetTextColor(0, 0, 0);
+   
+       // Date
+
+       $pdf->SetXY(157, 32.6);  
+       $pdf->Write(10, "05/03/2025");  // Name
+
+       // Depositor Details
+
+       $pdf->SetXY(49, 51);  
+       $pdf->Write(10, "MUHAMMAD ATIF SHAHZAD");  // Name
+   
+       $pdf->SetXY(49, 58);
+       $pdf->Write(10, "0333 - 0324 (4257417)"); // Contact Number
+
+       $pdf->SetXY(119, 51);
+       $pdf->Write(10, "MUHAMMAD IBRAHIM"); // S/O
+
+       $pdf->SetXY(118, 58);
+       $idCardNumber = "35201-1229593-1";
+       foreach (str_split($idCardNumber) as $char) {
+           $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+       } // ID Card Number
+
+       // Intending Emigrant
+
+       $pdf->SetFont('Helvetica', 'B', 8);
+       $pdf->SetXY(50, 72);  
+       $pdf->Write(10, $hr->name);  // Name
+   
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(50, 78);
+       $pdf->Write(10, $hr->present_address_phone . $hr->present_address_mobile); // Contact Number
+
+       $pdf->SetFont('Helvetica', 'B', 8);
+       $pdf->SetXY(122, 72);
+       $pdf->Write(10, $hr->son_of); // S/O
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(121, 78);
+       $idCardNumber = $hr->cnic;
+       foreach (str_split($idCardNumber) as $char) {
+           $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+       } // ID Card Number
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(50, 84);
+       $pdf->Write(10, $hr->present_address); // Address
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(50, 90);
+       $pdf->Write(10, "PAKISTAN"); // Country
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(122, 90);
+       $pdf->Write(10, $hr->passport); // Passport Number
+
+       // Overseas Employment Section
+
+       $pdf->SetFont('Helvetica', 'B', 8);
+       $pdf->SetXY(49, 104);
+       $pdf->Write(10, "WORKWEB"); // Name
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(49, 110);
+       $pdf->Write(10, "WORKWEB"); // Address
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(49, 116);
+       $pdf->Write(10, "Pakistan"); // Country
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(142, 116);
+       $pdf->Write(10, "WORKWEB"); // O.E.P. License Number
+
+       // Deposit Details
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(55, 129.2);
+       $idCardNumber = "3103461677457234";
+       foreach (str_split($idCardNumber) as $char) {
+           $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+       } // Account Number
+
+       $pdf->SetFont('Helvetica', '', 8);
+       $pdf->SetXY(126, 129.2);
+       $idCardNumber = "12345678";
+       foreach (str_split($idCardNumber) as $char) {
+           $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+       } // Cheque Number
+
+       
+       $pdf->SetFont('Helvetica', 'B', 8);
+       $pdf->SetXY(68, 142.4);
+       $pdf->Write(10, $data['amount_digits']); // Amount in figures
+   
+       $pdf->SetFont('Helvetica', 'B', 8);
+       $pdf->SetXY(65, 146);
+       $pdf->Write(10, $data['amount_words']);
+
+       // Save filled PDF to public folder
+       $pdfPath = 'admin/assets/humanresource/'.$hr->id.'-form-7.pdf';
+       $pdf->Output(public_path($pdfPath), 'F'); 
+       $pdfPath1 = 'public/admin/assets/humanresource/'.$hr->id.'-form-7.pdf';
+   
+       // Return JSON response with URL
+       return response()->json([
+            'hr'=>$hr,
+           'request'=>$data,
+           'pdf_url' => asset($pdfPath1) // Generates correct URL
+       ]);
+   }
+
+//    public function generateForm7(Request $request)
+//     {
+//         $data = $request->all();
+//         $hr = HumanResource::find($data['human_resource_id']);
+//         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
+//         $pdf->AddPage();
     
-        // Set the source PDF file
-        $path = public_path('admin/assets/Allied_Blank.pdf'); 
-        $pdf->setSourceFile($path);
+//         // Set the source PDF file
+//         $path = public_path('admin/assets/Allied_Blank.pdf'); 
+//         $pdf->setSourceFile($path);
     
-        // Import first page
-        $tplId = $pdf->importPage(1);
-        $pdf->useTemplate($tplId, 10, 10, 200);
+//         // Import first page
+//         $tplId = $pdf->importPage(1);
+//         $pdf->useTemplate($tplId, 10, 10, 200);
     
-        // Set font and text color
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetTextColor(0, 0, 0);
+//         // Set font and text color
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetTextColor(0, 0, 0);
     
-        // Date
+//         // Date
 
-        $pdf->SetXY(157, 32.6);  
-        $pdf->Write(10, "05/03/2025");  // Name
+//         $pdf->SetXY(157, 32.6);  
+//         $pdf->Write(10, "05/03/2025");  // Name
 
-        // Depositor Details
+//         // Depositor Details
 
-        $pdf->SetXY(49, 51);  
-        $pdf->Write(10, "MUHAMMAD ATIF SHAHZAD");  // Name
+//         $pdf->SetXY(49, 51);  
+//         $pdf->Write(10, "MUHAMMAD ATIF SHAHZAD");  // Name
     
-        $pdf->SetXY(49, 58);
-        $pdf->Write(10, "0333 - 0324 (4257417)"); // Contact Number
+//         $pdf->SetXY(49, 58);
+//         $pdf->Write(10, "0333 - 0324 (4257417)"); // Contact Number
 
-        $pdf->SetXY(119, 51);
-        $pdf->Write(10, "MUHAMMAD IBRAHIM"); // S/O
+//         $pdf->SetXY(119, 51);
+//         $pdf->Write(10, "MUHAMMAD IBRAHIM"); // S/O
 
-        $pdf->SetXY(118, 58);
-        $idCardNumber = "35201-1229593-1";
-        foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
-        } // ID Card Number
+//         $pdf->SetXY(118, 58);
+//         $idCardNumber = "35201-1229593-1";
+//         foreach (str_split($idCardNumber) as $char) {
+//             $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+//         } // ID Card Number
 
-        // Intending Emigrant
+//         // Intending Emigrant
 
-        $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(50, 72);  
-        $pdf->Write(10, "FAISAL TARIQ");  // Name
+//         $pdf->SetFont('Helvetica', 'B', 8);
+//         $pdf->SetXY(50, 72);  
+//         $pdf->Write(10, "FAISAL TARIQ");  // Name
     
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(50, 78);
-        $pdf->Write(10, "03027619611 03067614351"); // Contact Number
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(50, 78);
+//         $pdf->Write(10, "03027619611 03067614351"); // Contact Number
 
-        $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(122, 72);
-        $pdf->Write(10, "MUHAMMAD TARIQ"); // S/O
+//         $pdf->SetFont('Helvetica', 'B', 8);
+//         $pdf->SetXY(122, 72);
+//         $pdf->Write(10, "MUHAMMAD TARIQ"); // S/O
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(121, 78);
-        $idCardNumber = "3103461677457";
-        foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
-        } // ID Card Number
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(121, 78);
+//         $idCardNumber = "3103461677457";
+//         foreach (str_split($idCardNumber) as $char) {
+//             $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+//         } // ID Card Number
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(50, 84);
-        $pdf->Write(10, "Lahore, Pakistan"); // Address
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(50, 84);
+//         $pdf->Write(10, "Lahore, Pakistan"); // Address
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(50, 90);
-        $pdf->Write(10, "PAKISTAN"); // Country
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(50, 90);
+//         $pdf->Write(10, "PAKISTAN"); // Country
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(122, 90);
-        $pdf->Write(10, " CS7967453"); // Passport Number
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(122, 90);
+//         $pdf->Write(10, " CS7967453"); // Passport Number
 
-        // Overseas Employment Section
+//         // Overseas Employment Section
 
-        $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(49, 104);
-        $pdf->Write(10, "WORKWEB"); // Name
+//         $pdf->SetFont('Helvetica', 'B', 8);
+//         $pdf->SetXY(49, 104);
+//         $pdf->Write(10, "WORKWEB"); // Name
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(49, 110);
-        $pdf->Write(10, "WORKWEB"); // Address
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(49, 110);
+//         $pdf->Write(10, "WORKWEB"); // Address
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(49, 116);
-        $pdf->Write(10, "Pakistan"); // Country
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(49, 116);
+//         $pdf->Write(10, "Pakistan"); // Country
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(142, 116);
-        $pdf->Write(10, "WORKWEB"); // O.E.P. License Number
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(142, 116);
+//         $pdf->Write(10, "WORKWEB"); // O.E.P. License Number
 
-        // Deposit Details
+//         // Deposit Details
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(55, 129.2);
-        $idCardNumber = "3103461677457234";
-        foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
-        } // Account Number
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(55, 129.2);
+//         $idCardNumber = "3103461677457234";
+//         foreach (str_split($idCardNumber) as $char) {
+//             $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+//         } // Account Number
 
-        $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(126, 129.2);
-        $idCardNumber = "12345678";
-        foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
-        } // Cheque Number
+//         $pdf->SetFont('Helvetica', '', 8);
+//         $pdf->SetXY(126, 129.2);
+//         $idCardNumber = "12345678";
+//         foreach (str_split($idCardNumber) as $char) {
+//             $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+//         } // Cheque Number
 
         
-        $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(68, 142.4);
-        $pdf->Write(10, "15000 /-"); // Amount in figures
+//         $pdf->SetFont('Helvetica', 'B', 8);
+//         $pdf->SetXY(68, 142.4);
+//         $pdf->Write(10, "15000 /-"); // Amount in figures
 
-        $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(65, 146);
-        $pdf->Write(10, "FIFTEEN THOUSAND ONLY"); // Amount in words
+//         $pdf->SetFont('Helvetica', 'B', 8);
+//         $pdf->SetXY(65, 146);
+//         $pdf->Write(10, "FIFTEEN THOUSAND ONLY"); // Amount in words
 
-        // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/form-7.pdf';
-        $pdf->Output(public_path($pdfPath), 'F'); 
+//         // Save filled PDF to public folder
+//         $pdfPath = 'admin/assets/form-7.pdf';
+//         $pdf->Output(public_path($pdfPath), 'F'); 
     
-        // Return JSON response with URL
-        return response()->json([
-            'pdf_url' => asset($pdfPath) // Generates correct URL
-        ]);
-    }
+//         // Return JSON response with URL
+//         return response()->json([
+//             'pdf_url' => asset($pdfPath) // Generates correct URL
+//         ]);
+//     }
 
     // Form 8 PDF Generator
     public function generateForm8()

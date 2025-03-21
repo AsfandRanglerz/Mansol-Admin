@@ -678,12 +678,19 @@
                             <label for="amountInDigits"
                                 >Amount in digits</label
                             >
+                            <input
+                            type="hidden"
+                            name="human_resource_id"
+                            class="human_resource_id"
+                            value="{{ $HumanResource->id }}"
+                            />
 
                             <input
                                 type="text"
-                                class="form-control"
+                                class="form-control amountInDigits"
                                 id="amountInDigits"
                                 value="15000"
+                                name="amount_digits"
                             />
                         </div>
 
@@ -694,15 +701,17 @@
                                 >
                                 <input
                                     type="text"
-                                    class="form-control"
+                                    class="form-control amountInWords"
                                     id="amountInWords"
                                     value="Fifteen Thousand Rupees Only"
                                     readonly
+                                    name="amount_words"
+
                                 />
                             </div>
                             <button
-                                id="generatePdfBtn"
-                                class="btn btn-primary"
+                                id=""
+                                class="btn btn-primary generatePdfBtn"
                                 style="margin-bottom: 2px"
                             >
                                 Generate PDF
@@ -711,7 +720,7 @@
                     </div>
                 </div>
 
-                <iframe id="pdfFrame" src="" width="100%" height="0"></iframe>
+                <iframe class="pdfFrame" src="" width="100%" height="0"></iframe>
             </div>
 
             {{-- Step 8: NBP form --}}
@@ -887,10 +896,10 @@
     }
 
     $(document).ready(function () {
-      $("#amountInDigits").on("input", function () {
+      $(".amountInDigits").on("input", function () {
         const amount = parseInt($(this).val().replace(/,/g, ""), 10);
         const words = isNaN(amount) ? "" : numberToWords(amount);
-        $("#amountInWords").val(words);
+        $(".amountInWords").val(words);
       });
     });
   </script>
@@ -927,22 +936,27 @@
                 modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
             }
               
-            
             function saveStep(step) {
                 let form = modal.find(`#form-step-${step}`);
+                let button = modal.find("#next"); // Get the button
+                let originalText = button.html(); // Store original button text
+
+                // Show loading spinner and disable button
+                button.prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
+
                 let checkbox = document.getElementById("recieved");
-                // Before appending FormData, update the checkbox value
                 if (checkbox.checked) {
                     checkbox.value = "yes";
                 } else {
-                    // Ensure unchecked checkboxes are included in FormData
                     checkbox.setAttribute("value", "no");
-                    checkbox.checked = true; // Force it to be included
+                    checkbox.checked = true; // Force inclusion in FormData
                 }
+
                 let formData = new FormData(form[0]);
+
                 $.ajax({
-                    url: form.attr('action'),
-                    method: form.attr('method'),
+                    url: form.attr("action"),
+                    method: form.attr("method"),
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -955,6 +969,10 @@
                     },
                     error: function (xhr, status, error) {
                         toastr.error(`Error saving step ${step}: ${error}`);
+                    },
+                    complete: function () {
+                        // Restore button state after success/error
+                        button.prop("disabled", false).html(originalText);
                     }
                 });
             }
@@ -1004,13 +1022,38 @@
         });
 
         // Generate PDF and display in iframe
-        $("#generatePdfBtn").click(function () {
+        $(".generatePdfBtn").click(function () {
+            function getQueryParam(param) {
+                let urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            // Get human_resource_id from URL
+            let hr_id = getQueryParam("human_resource_id");
+            let amount_digits = $(this).closest('.form-section').find('.amountInDigits').val();
+            let amount_words = $(this).closest('.form-section').find('.amountInWords').val();
+            console.log('amount_digits', amount_digits, 'amount_words');
+
             $.ajax({
-                url: "{{ asset('/generate-form-7') }}",
-                method: "GET",
+                url: "{{ url('/generate-form-7') }}",
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "Content-Type": "application/json" // Make sure it's JSON
+                },
+                data: JSON.stringify({
+                    human_resource_id: hr_id,
+                    amount_digits: amount_digits,
+                    amount_words: amount_words,
+                }),
+                processData: false,
+                contentType: false,
                 success: function (response) {
-                    $("#pdfFrame").attr("src", "{{ asset('public/admin/assets/form-7.pdf') }}");
-                    $("#pdfFrame").attr("height", "600px");
+                    console.log(response.human_resource_id);
+                    console.log(response.pdf_url);
+                    $('.pdfFrameFile').val(response.pdf_url);
+                    $(".pdfFrame").attr("src", response.pdf_url);
+                    $(".pdfFrame").attr("height", "600px");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1077,6 +1120,25 @@
                 },
             });
         });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".modal").on("show.bs.modal", function () {
+            let humanResourceId = $(this).attr("id").split('-')[1];
+            let url = new URL(window.location.href);
+            url.searchParams.set('human_resource_id', humanResourceId);
+            window.history.pushState({}, '', url);
+        });
+
+        $(".modal").on("hidden.bs.modal", function () {
+            let url = new URL(window.location.href);
+            url.searchParams.delete('human_resource_id');
+            window.history.pushState({}, '', url);
+        });
+
+        // ...existing code...
     });
 </script>
 
