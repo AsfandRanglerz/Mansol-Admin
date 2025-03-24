@@ -585,7 +585,7 @@
                     action="{{ route('submit.step', ['step' => 6]) }}"
                     method="POST"
                     enctype="multipart/form-data"
-                >
+                    >
                     @csrf
 
                     @php
@@ -681,6 +681,13 @@
             {{-- Step 7: Medical Report --}}
 
             <div class="form-section" data-step="7">
+                <form
+                id="form-step-7"
+                action="{{ route('submit.step', ['step' => 7]) }}"
+                method="POST"
+                enctype="multipart/form-data"
+                >
+                @csrf
                 <div>
                     <div class="row mb-3">
                         <div class="col-md-5 pr-0">
@@ -728,8 +735,9 @@
                         </div>
                     </div>
                 </div>
-                <input type="hidden" id="stepSevenFile" class="stepSevenFile" name="step_seven">
+                <input type="text" id="stepSevenFile" class="stepSevenFile" name="step_seven_file">
                 <iframe class="pdfFrame" src="" width="100%" height="0"></iframe>
+                </form>
             </div>
 
             {{-- Step 8: NBP form --}}
@@ -1057,9 +1065,9 @@
         }),
         success: function (response) {
             console.log('PDF URL:', response.pdf_url);
-
+            
             // Set the PDF URL in the input field
-            formSection.find('.stepSevenFile').val(response.pdf_url);
+            formSection.find('.stepSevenFile').val(response.url);
 
             // Update the iframe to display the generated PDF
             formSection.find('.pdfFrame').attr("src", response.pdf_url);
