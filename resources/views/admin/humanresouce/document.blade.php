@@ -728,7 +728,7 @@
                         </div>
                     </div>
                 </div>
-                <input type="hidden" id="stepSevenFile" name="step_seven">
+                <input type="hidden" id="stepSevenFile" class="stepSevenFile" name="step_seven">
                 <iframe class="pdfFrame" src="" width="100%" height="0"></iframe>
             </div>
 
@@ -1032,43 +1032,44 @@
 
         // Generate PDF and display in iframe
         $(".generatePdfBtn").click(function () {
-            function getQueryParam(param) {
-                let urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get(param);
-            }
+    // Get the closest form section
+    let formSection = $(this).closest('.form-section');
 
-            // Get human_resource_id from URL
-            let hr_id = getQueryParam("human_resource_id");
-            let amount_digits = $(this).closest('.form-section').find('.amountInDigits').val();
-            let amount_words = $(this).closest('.form-section').find('.amountInWords').val();
-            console.log('amount_digits', amount_digits, 'amount_words');
-            $.ajax({
-                url: "{{ url('/generate-form-7') }}",
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-                    "Content-Type": "application/json" // Make sure it's JSON
-                },
-                data: JSON.stringify({
-                    human_resource_id: hr_id,
-                    amount_digits: amount_digits,
-                    amount_words: amount_words,
-                }),
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    console.log(response.human_resource_id);
-                    console.log(response.pdf_url);
-                    $(this).closest('.form-section').find('#stepSevenFile').val(response.pdf_url);
-                    // $('#stepSevenFile').val(response.pdf_url);
-                    $(".pdfFrame").attr("src", response.pdf_url);
-                    $(".pdfFrame").attr("height", "600px");
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error generating PDF:", error);
-                },
-            });
-        });
+    // Get the required values
+    let hr_id = formSection.find('.human_resource_id').val();
+    let amount_digits = formSection.find('.amountInDigits').val();
+    let amount_words = formSection.find('.amountInWords').val();
+
+    console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
+
+    // Make the AJAX request
+    $.ajax({
+        url: "{{ url('/generate-form-7') }}", // Update this URL if necessary
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            "Content-Type": "application/json" // Ensure JSON format
+        },
+        data: JSON.stringify({
+            human_resource_id: hr_id,
+            amount_digits: amount_digits,
+            amount_words: amount_words,
+        }),
+        success: function (response) {
+            console.log('PDF URL:', response.pdf_url);
+
+            // Set the PDF URL in the input field
+            formSection.find('.stepSevenFile').val(response.pdf_url);
+
+            // Update the iframe to display the generated PDF
+            formSection.find('.pdfFrame').attr("src", response.pdf_url);
+            formSection.find('.pdfFrame').attr("height", "600px");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error generating PDF:", error);
+        }
+    });
+});
 
         // For step 8 pdf
         $("#generatePdfBtn8").click(function () {
