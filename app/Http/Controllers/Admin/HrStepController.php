@@ -22,7 +22,6 @@ class HrStepController extends Controller
             'nok_cnic_front' => $step == 5 ? 'required|image|mimes:jpeg,png,jpg|max:2048' : '',
             'nok_cnic_back' => $step == 5 ? 'required|image|mimes:jpeg,png,jpg|max:2048' : '',
             'medical_report' => $step == 6 ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : '',
-            'step_seven_file' => $step == 7 ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : '',
         ]);
 
         $humanResource = HumanResource::findOrFail($request->human_resource_id);
@@ -215,12 +214,8 @@ class HrStepController extends Controller
             );
             // $data['file_name'] = $request->file('medical_report')->store('medical_reports', 'public');
         }
-        if ($request->hasFile('step_seven_file') && $step == 7) {
-            $file = $request->file('step_seven_file');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+        if ($step == 7) {
+            // return $request;
             // Store the data in the `hr_steps` table
             $hrStep = HrStep::updateOrCreate(
                 [
@@ -229,7 +224,7 @@ class HrStepController extends Controller
                     'file_type' => 'step 7 pdf',
                 ],
                 [
-                    'file_name' => $data['file_name']
+                    'file_name' => $request->step_seven_file,
                 ]
             );
             // $data['file_name'] = $request->file('nok_cnic_back')->store('nok_cnic_images', 'public');

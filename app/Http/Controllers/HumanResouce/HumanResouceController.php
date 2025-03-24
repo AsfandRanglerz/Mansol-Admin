@@ -226,7 +226,7 @@ class HumanResouceController extends Controller
        
        $pdf->SetFont('Helvetica', 'B', 8);
        $pdf->SetXY(68, 142.4);
-       $pdf->Write(10, $data['amount_digits']); // Amount in figures
+       $pdf->Write(10, $data['amount_digits']. "/-"); // Amount in figures
    
        $pdf->SetFont('Helvetica', 'B', 8);
        $pdf->SetXY(65, 146);

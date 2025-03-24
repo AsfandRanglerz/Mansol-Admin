@@ -689,6 +689,11 @@
                 >
                 @csrf
                 <div>
+                    @php
+                                $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
+                                $fileExists = $step->file_name ? asset($step->file_name) : null;
+                                $fileExist = $step->file_name ? $step->file_name : null;
+                            @endphp
                     <div class="row mb-3">
                         <div class="col-md-5 pr-0">
                             <label for="amountInDigits"
@@ -735,8 +740,12 @@
                         </div>
                     </div>
                 </div>
-                <input type="text" id="stepSevenFile" class="stepSevenFile" name="step_seven_file">
-                <iframe class="pdfFrame" src="" width="100%" height="0"></iframe>
+                <input type="text" id="stepSevenFile" class="stepSevenFile d-none" name="step_seven_file" value="{{ $fileExist ? $fileExist : '' }}">
+
+                <iframe class="pdfFrame"   src="{{ $fileExists ? $fileExists : '' }}" width="100%" height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+
+          
+
                 </form>
             </div>
 
