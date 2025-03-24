@@ -23,11 +23,10 @@ class HumanResourceController extends Controller
 {
     public function index()
     {
-        $HumanResources = HumanResource::with('Crafts')
-            ->with('SubCrafts')
-            ->orderByRaw("FIELD(status, 1, 3, 2, 0)")->latest()->get();
-
-        // dd($HumanResources);
+        $HumanResources = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
+        ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
+        ->latest()
+        ->get();
         return view('admin.humanresouce.index', compact('HumanResources'));
     }
     public function create()

@@ -114,11 +114,11 @@ class HumanResouceController extends Controller
    {
        $data = $request->all();
        $hr = HumanResource::find($data['human_resource_id']);
-    //    $pdfPath = 'admin/assets/humanresource/'.$hr->id.'/form-7.pdf';
-    //    $test = $data['amount_words'];
-    //    $ys =  $test."/-";
+        //    $pdfPath = 'admin/assets/humanresource/'.$hr->id.'/form-7.pdf';
+        //    $test = $data['amount_words'];
+        //    $ys =  $test."/-";
         // return [$data];
-    //    return $hr;
+        //    return $hr;
        $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
        $pdf->AddPage();
    
@@ -241,7 +241,8 @@ class HumanResouceController extends Controller
        return response()->json([
             'hr'=>$hr,
            'request'=>$data,
-           'pdf_url' => asset($pdfPath1) // Generates correct URL
+           'pdf_url' => asset($pdfPath1), // Generates correct URL
+           'url' => $pdfPath1, // Generates correct URL
        ]);
    }
 
