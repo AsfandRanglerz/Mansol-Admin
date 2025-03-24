@@ -827,6 +827,7 @@
                     Previous
                 </button>
 
+                <button id="nextStep" class="btn btn-success">Next</button>
                 <button id="next" class="btn btn-primary">Save & Next</button>
 
                 <button id="submit" class="btn btn-primary d-none">
@@ -951,23 +952,126 @@
                 modal.find("#prev").toggleClass("d-none", currentStep === 1);
                 modal.find("#next").toggleClass("d-none", currentStep === maxSteps);
                 modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
+                checkStepCompletion();
             }
-              
-            function saveStep(step) {
-                let form = modal.find(`#form-step-${step}`);
-                let button = modal.find("#next"); // Get the button
+
+            function checkStepCompletion() {
+                let currentSection = modal.find(`.form-section[data-step="${currentStep}"]`);
+                let allFieldsFilled = true;
+
+                // Check all inputs except file and hidden inputs
+                currentSection.find("input:not([type='file']):not([type='hidden']), select, textarea").each(function () {
+                    if (!$(this).val()) {
+                        allFieldsFilled = false;
+                        return false; // Break loop
+                    }
+                });
+
+                // Check iframes or images for file-related fields
+                currentSection.find("iframe, img").each(function () {
+                    if ($(this).is("iframe") && (!$(this).attr("src") || $(this).attr("src") === "")) {
+                        allFieldsFilled = false;
+                        return false; // Break loop
+                    }
+                    if ($(this).is("img") && $(this).hasClass("d-none")) {
+                        allFieldsFilled = false;
+                        return false; // Break loop
+                    }
+                });
+
+                // Show or hide the "Next Step" button
+                modal.find("#nextStep").toggleClass("d-none", !allFieldsFilled);
+            }
+
+            function findFirstIncompleteStep() {
+                for (let step = 1; step <= maxSteps; step++) {
+                    currentStep = step;
+                    let currentSection = modal.find(`.form-section[data-step="${step}"]`);
+                    let allFieldsFilled = true;
+
+                    // Check all inputs except file and hidden inputs
+                    currentSection.find("input:not([type='file']):not([type='hidden']), select, textarea").each(function () {
+                        if (!$(this).val()) {
+                            allFieldsFilled = false;
+                            return false; // Break loop
+                        }
+                    });
+
+                    // Check iframes or images for file-related fields
+                    currentSection.find("iframe, img").each(function () {
+                        if ($(this).is("iframe") && (!$(this).attr("src") || $(this).attr("src") === "")) {
+                            allFieldsFilled = false;
+                            return false; // Break loop
+                        }
+                        if ($(this).is("img") && $(this).hasClass("d-none")) {
+                            allFieldsFilled = false;
+                            return false; // Break loop
+                        }
+                    });
+
+                    if (!allFieldsFilled) {
+                        return step; // Return the first incomplete step
+                    }
+                }
+                return maxSteps; // If all steps are complete, return the last step
+            }
+
+            modal.on("show.bs.modal", function () {
+                currentStep = findFirstIncompleteStep();
+                updateSteps();
+            });
+
+            modal.find("#nextStep").click(function (event) {
+                event.preventDefault();
+                if (currentStep < maxSteps) {
+                    currentStep++;
+                    updateSteps();
+                }
+            });
+
+            modal.find("#prev").click(function () {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateSteps();
+                }
+            });
+
+            modal.find("#next").click(function (event) {
+                event.preventDefault();
+                let currentSection = modal.find(`.form-section[data-step="${currentStep}"]`);
+                let allFieldsFilled = true;
+
+                // Check all inputs except file and hidden inputs
+                currentSection.find("input:not([type='file']):not([type='hidden']), select, textarea").each(function () {
+                    if (!$(this).val()) {
+                        allFieldsFilled = false;
+                        return false; // Break loop
+                    }
+                });
+
+                // Check iframes or images for file-related fields
+                currentSection.find("iframe, img").each(function () {
+                    if ($(this).is("iframe") && (!$(this).attr("src") || $(this).attr("src") === "")) {
+                        allFieldsFilled = false;
+                        return false; // Break loop
+                    }
+                    if ($(this).is("img") && $(this).hasClass("d-none")) {
+                        allFieldsFilled = false;
+                        return false; // Break loop
+                    }
+                });
+
+                if (!allFieldsFilled) {
+                    toastr.error("Please complete all required fields before proceeding.");
+                    return;
+                }
+
+                let form = modal.find(`#form-step-${currentStep}`);
+                let button = $(this); // Get the button
                 let originalText = button.html(); // Store original button text
 
                 // Show loading spinner and disable button
                 button.prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
-
-                let checkbox = document.getElementById("recieved");
-                if (checkbox.checked) {
-                    checkbox.value = "yes";
-                } else {
-                    checkbox.setAttribute("value", "no");
-                    checkbox.checked = true; // Force inclusion in FormData
-                }
 
                 let formData = new FormData(form[0]);
 
@@ -978,32 +1082,20 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        toastr.success(`Step ${step} saved successfully.`);
+                        toastr.success(`Step ${currentStep} saved successfully.`);
                         if (currentStep < maxSteps) {
                             currentStep++;
                             updateSteps();
                         }
                     },
                     error: function (xhr, status, error) {
-                        toastr.error(`Error saving step ${step}: ${error}`);
+                        toastr.error(`Error saving step ${currentStep}: ${error}`);
                     },
                     complete: function () {
                         // Restore button state after success/error
                         button.prop("disabled", false).html(originalText);
                     }
                 });
-            }
-
-            modal.find("#next").click(function (event) {
-                event.preventDefault();
-                saveStep(currentStep);
-            });
-
-            modal.find("#prev").click(function () {
-                if (currentStep > 1) {
-                    currentStep--;
-                    updateSteps();
-                }
             });
 
             modal.find("input[type='file']").change(function (event) {
@@ -1021,11 +1113,6 @@
                 }
             });
 
-            modal.on("show.bs.modal", function () {
-                currentStep = 1;
-                updateSteps();
-            });
-
             modal.find(".step-container").click(function () {
                 let stepNum = $(this).find(".step").data("step");
 
@@ -1039,7 +1126,8 @@
         });
 
         // Generate PDF and display in iframe
-        $(".generatePdfBtn").click(function () {
+        $(".generatePdfBtn").click(function (e) {
+            e.preventDefault()
     // Get the closest form section
     let formSection = $(this).closest('.form-section');
 
