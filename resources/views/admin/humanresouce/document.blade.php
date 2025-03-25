@@ -653,22 +653,23 @@
                         <div class="col-md-6 mt-3">
                             <label>Any Comments on Medical Report</label>
                             <input type="text" class="form-control" name="any_comments" value="{{ $any_comments }}" />
+                            {{-- Original Report Received --}}
+                            <div class="d-flex align-items-center">
+                                <label class="mb-0" for="recieved">Original Report Received?</label> &nbsp; &nbsp;
+                                <input type="checkbox" id="recieved" name="original_report_received" {{ $original_report_received == 'yes' ? 'checked' : '' }} />
+                            </div>
                         </div>
 
                         {{-- Upload Medical Report --}}
-                        <div class="col-md-6 mt-3">
+                        <div class="col-md-6">
                             <label>Upload Medical Report</label>
                             <input type="file" class="form-control" name="medical_report" accept=".pdf,image/*" />
-                            
-                            @if ($medical_report)
-                                <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View Uploaded Report</a>
-                            @endif
                         </div>
 
-                        {{-- Original Report Received --}}
-                        <div class="col-md-6 mt-3">
-                            <label for="recieved">Original Report Received?</label> &nbsp; &nbsp;
-                            <input type="checkbox" id="recieved" name="original_report_received" {{ $original_report_received == 'yes' ? 'checked' : '' }} />
+                        <div class="col-md-6 mt-3 d-flex align-items-center">
+                             @if ($medical_report)
+                                <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View Uploaded Report</a>
+                            @endif
                         </div>
 
                         {{-- Hidden Input for Human Resource ID --}}
