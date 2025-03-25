@@ -1172,10 +1172,10 @@
             console.log('PDF URL:', response.pdf_url);
             
             // Set the PDF URL in the input field
-            formSection.find('.stepSevenFile').val(response.url);
+            formSection.find('.stepSevenFile').val(response.url).trigger('change');
 
             // Update the iframe to display the generated PDF
-            formSection.find('.pdfFrame').attr("src", response.pdf_url);
+            formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
             formSection.find('.pdfFrame').attr("height", "600px");
         },
         error: function (xhr, status, error) {
