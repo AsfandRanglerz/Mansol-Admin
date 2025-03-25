@@ -937,6 +937,12 @@
             let modal = $(this);
             let currentStep = 1;
             let maxSteps = 11;
+            let isChanged = false; // Flag to track changes
+
+            // Track changes in form fields
+            modal.find("input, select, textarea").on("change input", function () {
+                isChanged = true; // Set the flag to true when a field changes
+            });
 
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");
@@ -991,11 +997,10 @@
                 });
 
                 // Update the text of the #next button based on allFieldsFilled
-
+                modal.find("#next").text(allFieldsFilled ? "Update & Next" : "Save & Next");
 
                 // Show or hide the "Next Step" button
                 modal.find("#nextStep").toggleClass("d-none", !allFieldsFilled);
-                modal.find("#next").text(allFieldsFilled ? "Update & Next" : "Save & Next");
             }
 
             function findFirstIncompleteStep() {
@@ -1054,6 +1059,13 @@
             modal.find("#next").click(function (event) {
                 event.preventDefault();
                 let currentSection = modal.find(`.form-section[data-step="${currentStep}"]`);
+
+                // Check if any changes were made
+                if (!isChanged) {
+                    toastr.warning("Nothing has changed.");
+                    return; // Prevent submission if no changes
+                }
+
                 let allFieldsFilled = true;
 
                 // Check all inputs except file and hidden inputs
@@ -1102,6 +1114,7 @@
                             currentStep++;
                             updateSteps();
                         }
+                        isChanged = false; // Reset the flag after successful submission
                     },
                     error: function (xhr, status, error) {
                         toastr.error(`Error saving step ${currentStep}: ${error}`);
@@ -1144,7 +1157,8 @@
 
         // Generate PDF and display in iframe
         $(".generatePdfBtn").click(function (e) {
-            e.preventDefault()
+    e.preventDefault();
+
     // Get the closest form section
     let formSection = $(this).closest('.form-section');
 
@@ -1154,6 +1168,11 @@
     let amount_words = formSection.find('.amountInWords').val();
 
     console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
+
+    // Add a loader to the button
+    let button = $(this);
+    let originalText = button.html(); // Store the original button text
+    button.prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Generating...');
 
     // Make the AJAX request
     $.ajax({
@@ -1170,9 +1189,9 @@
         }),
         success: function (response) {
             console.log('PDF URL:', response.pdf_url);
-            
+
             // Set the PDF URL in the input field
-            formSection.find('.stepSevenFile').val(response.url).trigger('change');
+            formSection.find('.stepSevenFile').val(response.pdf_url).trigger('change');
 
             // Update the iframe to display the generated PDF
             formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
@@ -1180,6 +1199,11 @@
         },
         error: function (xhr, status, error) {
             console.error("Error generating PDF:", error);
+            toastr.error("Failed to generate PDF. Please try again.");
+        },
+        complete: function () {
+            // Restore the button state
+            button.prop("disabled", false).html(originalText);
         }
     });
 });
