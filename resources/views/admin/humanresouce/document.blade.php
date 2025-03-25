@@ -668,7 +668,7 @@
 
                         <div class="col-md-6 mt-3 d-flex align-items-center">
                              @if ($medical_report)
-                                <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View Uploaded Report</a>
+                                <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View Recent Uploaded Report</a>
                             @endif
                         </div>
 
