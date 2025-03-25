@@ -1157,56 +1157,56 @@
 
         // Generate PDF and display in iframe
         $(".generatePdfBtn").click(function (e) {
-    e.preventDefault();
+            e.preventDefault();
 
-    // Get the closest form section
-    let formSection = $(this).closest('.form-section');
+            // Get the closest form section
+            let formSection = $(this).closest('.form-section');
 
-    // Get the required values
-    let hr_id = formSection.find('.human_resource_id').val();
-    let amount_digits = formSection.find('.amountInDigits').val();
-    let amount_words = formSection.find('.amountInWords').val();
+            // Get the required values
+            let hr_id = formSection.find('.human_resource_id').val();
+            let amount_digits = formSection.find('.amountInDigits').val();
+            let amount_words = formSection.find('.amountInWords').val();
 
-    console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
+            console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
 
-    // Add a loader to the button
-    let button = $(this);
-    let originalText = button.html(); // Store the original button text
-    button.prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Generating...');
+            // Add a loader to the button
+            let button = $(this);
+            let originalText = button.html(); // Store the original button text
+            button.prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Generating...');
 
-    // Make the AJAX request
-    $.ajax({
-        url: "{{ url('/generate-form-7') }}", // Update this URL if necessary
-        method: "POST",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            "Content-Type": "application/json" // Ensure JSON format
-        },
-        data: JSON.stringify({
-            human_resource_id: hr_id,
-            amount_digits: amount_digits,
-            amount_words: amount_words,
-        }),
-        success: function (response) {
-            console.log('PDF URL:', response.pdf_url);
+            // Make the AJAX request
+            $.ajax({
+                url: "{{ url('/generate-form-7') }}", // Update this URL if necessary
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "Content-Type": "application/json" // Ensure JSON format
+                },
+                data: JSON.stringify({
+                    human_resource_id: hr_id,
+                    amount_digits: amount_digits,
+                    amount_words: amount_words,
+                }),
+                success: function (response) {
+                    console.log('PDF URL:', response.pdf_url);
 
-            // Set the PDF URL in the input field
-            formSection.find('.stepSevenFile').val(response.pdf_url).trigger('change');
+                    // Set the PDF URL in the input field
+                    formSection.find('.stepSevenFile').val(response.pdf_url).trigger('change');
 
-            // Update the iframe to display the generated PDF
-            formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
-            formSection.find('.pdfFrame').attr("height", "600px");
-        },
-        error: function (xhr, status, error) {
-            console.error("Error generating PDF:", error);
-            toastr.error("Failed to generate PDF. Please try again.");
-        },
-        complete: function () {
-            // Restore the button state
-            button.prop("disabled", false).html(originalText);
-        }
-    });
-});
+                    // Update the iframe to display the generated PDF
+                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
+                    formSection.find('.pdfFrame').attr("height", "600px");
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error generating PDF:", error);
+                    toastr.error("Failed to generate PDF. Please try again.");
+                },
+                complete: function () {
+                    // Restore the button state
+                    button.prop("disabled", false).html(originalText);
+                }
+            });
+        });
 
         // For step 8 pdf
         $("#generatePdfBtn8").click(function () {
