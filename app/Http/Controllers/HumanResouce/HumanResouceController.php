@@ -117,7 +117,7 @@ class HumanResouceController extends Controller
         //    $pdfPath = 'admin/assets/humanresource/'.$hr->id.'/form-7.pdf';
         //    $test = $data['amount_words'];
         //    $ys =  $test."/-";
-        // return [$data];
+        //    return [$data];
         //    return $hr;
        $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
        $pdf->AddPage();
@@ -138,7 +138,7 @@ class HumanResouceController extends Controller
 
        $pdf->SetXY(157, 32.6);  
        $pdf->Write(10, "05/03/2025");  // Name
-
+        
        // Depositor Details
 
        $pdf->SetXY(49, 51);  
