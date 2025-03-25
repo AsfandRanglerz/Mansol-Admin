@@ -961,6 +961,7 @@
                 modal.find("#prev").toggleClass("d-none", currentStep === 1);
                 modal.find("#next").toggleClass("d-none", currentStep === maxSteps);
                 modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
+
                 checkStepCompletion();
             }
 
@@ -993,11 +994,7 @@
 
                 // Show or hide the "Next Step" button
                 modal.find("#nextStep").toggleClass("d-none", !allFieldsFilled);
-                if (allFieldsFilled) {
-                    modal.find("#next").text("Update & Next");
-                } else {
-                    modal.find("#next").text("Save & Next");
-                }
+                modal.find("#next").text(allFieldsFilled ? "Update & Next" : "Save & Next");
             }
 
             function findFirstIncompleteStep() {
@@ -1111,6 +1108,8 @@
                     complete: function () {
                         // Restore button state after success/error
                         button.prop("disabled", false).html(originalText);
+
+                        updateSteps();
                     }
                 });
             });
