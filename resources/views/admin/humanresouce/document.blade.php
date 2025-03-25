@@ -988,8 +988,16 @@
                     }
                 });
 
+                // Update the text of the #next button based on allFieldsFilled
+
+
                 // Show or hide the "Next Step" button
                 modal.find("#nextStep").toggleClass("d-none", !allFieldsFilled);
+                if (allFieldsFilled) {
+                    modal.find("#next").text("Update & Next");
+                } else {
+                    modal.find("#next").text("Save & Next");
+                }
             }
 
             function findFirstIncompleteStep() {
