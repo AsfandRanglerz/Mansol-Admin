@@ -653,23 +653,22 @@
                         <div class="col-md-6 mt-3">
                             <label>Any Comments on Medical Report</label>
                             <input type="text" class="form-control" name="any_comments" value="{{ $any_comments }}" />
-                            {{-- Original Report Received --}}
-                            <div class="d-flex align-items-center">
-                                <label class="mb-0" for="recieved">Original Report Received?</label> &nbsp; &nbsp;
-                                <input type="checkbox" id="recieved" name="original_report_received" {{ $original_report_received == 'yes' ? 'checked' : '' }} />
-                            </div>
                         </div>
 
                         {{-- Upload Medical Report --}}
-                        <div class="col-md-6">
+                        <div class="col-md-6 mt-3">
                             <label>Upload Medical Report</label>
                             <input type="file" class="form-control" name="medical_report" accept=".pdf,image/*" />
+                            
+                            @if ($medical_report)
+                                <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View Uploaded Report</a>
+                            @endif
                         </div>
 
-                        <div class="col-md-6 mt-3 d-flex align-items-center">
-                             @if ($medical_report)
-                                <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View Recent Uploaded Report</a>
-                            @endif
+                        {{-- Original Report Received --}}
+                        <div class="col-md-6 mt-3">
+                            <label for="recieved">Original Report Received?</label> &nbsp; &nbsp;
+                            <input type="checkbox" id="recieved" name="original_report_received" {{ $original_report_received == 'yes' ? 'checked' : '' }} />
                         </div>
 
                         {{-- Hidden Input for Human Resource ID --}}
@@ -1033,6 +1032,8 @@
             let currentStep = 1;
             let maxSteps = 11;
 
+
+
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");
 
@@ -1091,11 +1092,12 @@
                 });
 
                 // Update the text of the #next button based on allFieldsFilled
-                modal.find("#next").text(allFieldsFilled ? "Update & Next" : "Save & Next");
+
 
                 // Show or hide the "Next Step" button
                 
                 modal.find("#nextStep").toggleClass("d-none", !allFieldsFilled);
+                modal.find("#next").text(allFieldsFilled ? "Update & Next" : "Save & Next");
             }
 
             function findFirstIncompleteStep() {
@@ -1154,13 +1156,6 @@
             modal.find("#next,#submit").click(function (event) {
                 event.preventDefault();
                 let currentSection = modal.find(`.form-section[data-step="${currentStep}"]`);
-
-                // Check if any changes were made
-                if (!isChanged) {
-                    toastr.warning("Nothing has changed.");
-                    return; // Prevent submission if no changes
-                }
-
                 let allFieldsFilled = true;
 
                 // Check all inputs except file and hidden inputs
@@ -1214,7 +1209,6 @@
                             currentStep++;
                             updateSteps();
                         }
-                        isChanged = false; // Reset the flag after successful submission
                     },
                     error: function (xhr, status, error) {
                         toastr.error(`Error saving step ${currentStep}: ${error}`);
@@ -1258,44 +1252,44 @@
         // Generate PDF and display in iframe
         $(".generatePdfBtn").click(function (e) {
             e.preventDefault()
-    // Get the closest form section
-    let formSection = $(this).closest('.form-section');
+        // Get the closest form section
+        let formSection = $(this).closest('.form-section');
 
-    // Get the required values
-    let hr_id = formSection.find('.human_resource_id').val();
-    let amount_digits = formSection.find('.amountInDigits').val();
-    let amount_words = formSection.find('.amountInWords').val();
+        // Get the required values
+        let hr_id = formSection.find('.human_resource_id').val();
+        let amount_digits = formSection.find('.amountInDigits').val();
+        let amount_words = formSection.find('.amountInWords').val();
 
-    console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
+        console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
 
-    // Make the AJAX request
-    $.ajax({
-        url: "{{ url('/generate-form-7') }}", // Update this URL if necessary
-        method: "POST",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            "Content-Type": "application/json" // Ensure JSON format
-        },
-        data: JSON.stringify({
-            human_resource_id: hr_id,
-            amount_digits: amount_digits,
-            amount_words: amount_words,
-        }),
-        success: function (response) {
-            console.log('PDF URL:', response.pdf_url);
-            
-            // Set the PDF URL in the input field
-            formSection.find('.stepSevenFile').val(response.url).trigger('change');
+        // Make the AJAX request
+        $.ajax({
+            url: "{{ url('/generate-form-7') }}", // Update this URL if necessary
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                "Content-Type": "application/json" // Ensure JSON format
+            },
+            data: JSON.stringify({
+                human_resource_id: hr_id,
+                amount_digits: amount_digits,
+                amount_words: amount_words,
+            }),
+            success: function (response) {
+                console.log('PDF URL:', response.pdf_url);
+                
+                // Set the PDF URL in the input field
+                formSection.find('.stepSevenFile').val(response.url).trigger('change');
 
-            // Update the iframe to display the generated PDF
-            formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
-            formSection.find('.pdfFrame').attr("height", "600px");
-        },
-        error: function (xhr, status, error) {
-            console.error("Error generating PDF:", error);
-        }
-    });
-});
+                // Update the iframe to display the generated PDF
+                formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
+                formSection.find('.pdfFrame').attr("height", "600px");
+            },
+            error: function (xhr, status, error) {
+                console.error("Error generating PDF:", error);
+            }
+        });
+        });
 
         // For step 8 PDF generation
         $(document).on('click', '#generatePdfBtn8', function (e) {
