@@ -134,7 +134,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 
         Route::get('/get-demand', 'getDemand')->name('get-demand');
     });
-    // ############ Human Resource #################
+    // ############ Human Resource ################# 
     Route::controller(HumanResourceController::class)->group(function () {
         Route::get('/human-resource',  'index')->name('humanresource.index');
         Route::get('/human-resource/create',  'create')->name('humanresource.create');
@@ -182,10 +182,10 @@ Route::post('/human-resource-reset-password-link', [HumanResouceController::clas
 Route::get('/human-resource-change_password/{id}', [HumanResouceController::class, 'change_password']);
 Route::post('/human-resource-reset-password', [HumanResouceController::class, 'ResetPassword']);
 Route::post('/generate-form-7', [HumanResouceController::class, 'generateForm7'])->name('generate.filled.pdf7');
-Route::get('/generate-nbp-form', [HumanResouceController::class, 'generateForm8'])->name('generate.filled.pdf');
-Route::get('/generate-challan-92', [HumanResouceController::class, 'generateForm9'])->name('generate.filled.pdf');
-Route::get('/generate-life-insurance', [HumanResouceController::class, 'generateForm10'])->name('generate.filled.pdf');
-Route::get('/generate-fsa-form', [HumanResouceController::class, 'generateForm11'])->name('generate.filled.pdf');
+Route::post('/generate-nbp-form', [HumanResouceController::class, 'generateForm8'])->name('generate.filled.pdf');
+Route::post('/generate-challan-92', [HumanResouceController::class, 'generateForm9'])->name('generate.filled.pdf');
+Route::post('/generate-life-insurance', [HumanResouceController::class, 'generateForm10'])->name('generate.filled.pdf');
+Route::post('/generate-fsa-form', [HumanResouceController::class, 'generateForm11'])->name('generate.filled.pdf');
 Route::prefix('human-resource')->middleware('humanresource')->group(function () {
     Route::get('dashboard', [HumanResouceController::class, 'getdashboard'])->name('human-resouce.dashboard');
     Route::get('profile', [HumanResouceController::class, 'getProfile']);

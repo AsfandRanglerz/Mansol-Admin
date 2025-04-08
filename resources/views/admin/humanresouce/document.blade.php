@@ -691,6 +691,8 @@
                 <div>
                     @php
                                 $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
+                                $amountInDigits = $step->amount_digits ?? '15000'; // Default to 4000 if not set
+                                $amountInWords = $step->amount_words ?? 'Fifteen Thousand Rupees Only';
                                 $fileExists = $step->file_name ? asset($step->file_name) : null;
                                 $fileExist = $step->file_name ? $step->file_name : null;
                             @endphp
@@ -710,7 +712,7 @@
                                 type="text"
                                 class="form-control amountInDigits"
                                 id="amountInDigits"
-                                value="15000"
+                                value="{{$amountInDigits}}"
                                 name="amount_digits"
                             />
                         </div>
@@ -724,7 +726,7 @@
                                     type="text"
                                     class="form-control amountInWords"
                                     id="amountInWords"
-                                    value="Fifteen Thousand Rupees Only"
+                                    value="{{$amountInWords}}"
                                     readonly
                                     name="amount_words"
 
@@ -750,34 +752,55 @@
             </div>
 
             {{-- Step 8: NBP form --}}
-
             <div class="form-section" data-step="8">
+                <form
+                id="form-step-8"
+                action="{{ route('submit.step', ['step' => 8]) }}"
+                method="POST"
+                enctype="multipart/form-data"
+                >
+                @csrf
+                @php
+                    $step = optional($HumanResource->hrSteps->where('step_number', 8)->first());
+                    $opfValue = $step->amount_digits ?? '4000'; // Default to 4000 if not set
+                    $stateLifeValue = $step->amount_digits1 ?? '2500';
+                    $fileExists = $step->file_name ? asset($step->file_name) : null;
+                    $fileExist = $step->file_name ? $step->file_name : null;
+                @endphp
                 <div>
                     <div class="row mb-3">
                         <div class="col-md-5 pr-0">
                             <label for="opf">OPF Welfare Fund</label>
-
                             <input
                                 type="text"
                                 class="form-control"
                                 id="opf"
-                                value="4000"
+                                name="opf"
+                                value="{{$opfValue}}"
                             />
                         </div>
-
-                        <div class="col-md-6 pl-2 d-flex align-items-end">
-                            <div style="flex: 1" class="mr-2">
-                                <label for="stateLife"
-                                    >State Life Insurance Premium</label
-                                >
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="stateLife"
-                                    value="2500"
-                                />
-                            </div>
+            
+                        <div class="col-md-5 pr-0">
+                            <label for="stateLife">State Life Insurance Premium</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="stateLife"
+                                value="{{$stateLifeValue}}"
+                                name="state_life_insurance"
+                            />
+                        </div>
+            
+                        <input
+                            type="hidden"
+                            class="human_resource_id"
+                            name="human_resource_id"
+                            value="{{ $HumanResource->id }}"
+                        />
+            
+                        <div class="col-md-2 d-flex align-items-end">
                             <button
+                            type="button"
                                 id="generatePdfBtn8"
                                 class="btn btn-primary"
                                 style="margin-bottom: 2px"
@@ -787,14 +810,38 @@
                         </div>
                     </div>
                 </div>
+            
+                {{-- <iframe id="pdfFrame8" src="" width="100%" height="0"></iframe> --}}
 
-                <iframe id="pdfFrame8" src="" width="100%" height="0"></iframe>
+                <input type="text" id="stepEightFile" class="stepEightFile d-none" name="step_eight_file" value="{{ $fileExist ? $fileExist : '' }}">
+
+                <iframe class="pdfFrame"   src="{{ $fileExists ? $fileExists : '' }}" width="100%" height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+            </form>
+
             </div>
 
             {{-- Step 9 --}}
 
             <div class="form-section" data-step="9">
+                <form
+                id="form-step-9"
+                action="{{ route('submit.step', ['step' => 9]) }}"
+                method="POST"
+                enctype="multipart/form-data"
+                >
+                @csrf
+                @php
+                    $step = optional($HumanResource->hrSteps->where('step_number', 9)->first());
+                    $fileExists = $step->file_name ? asset($step->file_name) : null;
+                    $fileExist = $step->file_name ? $step->file_name : null;
+                @endphp
                 <div>
+                    <input
+                    type="hidden"
+                    class="human_resource_id"
+                    name="human_resource_id"
+                    value="{{ $HumanResource->id }}"
+                    />
                     <button
                         id="generatePdfBtn9"
                         class="btn btn-primary"
@@ -804,31 +851,79 @@
                     </button>
                 </div>
 
-                <iframe id="pdfFrame9" src="" width="100%" height="0"></iframe>
+                {{-- <iframe id="pdfFrame9" src="" width="100%" height="0"></iframe> --}}
+                <input type="text" id="stepNineFile" class="stepNineFile d-none" name="step_nine_file" value="{{ $fileExist ? $fileExist : '' }}">
+
+                <iframe class="pdfFrame"   src="{{ $fileExists ? $fileExists : '' }}" width="100%" height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+            </form>
             </div>
 
             {{-- Step 10 --}}
 
             <div class="form-section" data-step="10">
+                <form
+                id="form-step-10"
+                action="{{ route('submit.step', ['step' => 10]) }}"
+                method="POST"
+                enctype="multipart/form-data"
+                >
+                @csrf
+                @php
+                    $step = optional($HumanResource->hrSteps->where('step_number', 10)->first());
+                    $fileExists = $step->file_name ? asset($step->file_name) : null;
+                    $fileExist = $step->file_name ? $step->file_name : null;
+                @endphp
+                <input
+                type="hidden"
+                class="human_resource_id"
+                name="human_resource_id"
+                value="{{ $HumanResource->id }}"
+                />
                 <button id="generatePdfBtn10" class="btn btn-primary">
                     Generate PDF
                 </button>
 
                 <br /><br />
 
-                <iframe id="pdfFrame10" src="" width="100%" height="0"></iframe>
+                {{-- <iframe id="pdfFrame10" src="" width="100%" height="0"></iframe> --}}
+                <input type="text" id="stepTenFile" class="stepTenFile d-none" name="step_ten_file" value="{{ $fileExist ? $fileExist : '' }}">
+                
+                <iframe class="pdfFrame"   src="{{ $fileExists ? $fileExists : '' }}" width="100%" height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+                </form>
             </div>
 
             {{-- Step 11 --}}
 
             <div class="form-section" data-step="11">
+                <form
+                id="form-step-11"
+                action="{{ route('submit.step', ['step' => 11]) }}"
+                method="POST"
+                enctype="multipart/form-data"
+                >
+                @csrf
+                @php
+                    $step = optional($HumanResource->hrSteps->where('step_number', 11)->first());
+                    $fileExists = $step->file_name ? asset($step->file_name) : null;
+                    $fileExist = $step->file_name ? $step->file_name : null;
+                @endphp
+                 <input
+                 type="hidden"
+                 class="human_resource_id"
+                 name="human_resource_id"
+                 value="{{ $HumanResource->id }}"
+                 />
                 <button id="generatePdfBtn11" class="btn btn-primary">
                     Generate PDF
                 </button>
 
                 <br /><br />
 
-                <iframe id="pdfFrame11" src="" width="100%" height="0"></iframe>
+                {{-- <iframe id="pdfFrame11" src="" width="100%" height="0"></iframe> --}}
+                <input type="text" id="stepElevenFile" class="stepElevenFile d-none" name="step_eleven_file" value="{{ $fileExist ? $fileExist : '' }}">
+                
+                <iframe class="pdfFrame"   src="{{ $fileExists ? $fileExists : '' }}" width="100%" height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+                </form>
             </div>
 
             <div class="buttons d-flex justify-content-end">
@@ -937,6 +1032,8 @@
             let currentStep = 1;
             let maxSteps = 11;
 
+
+
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");
 
@@ -960,6 +1057,11 @@
 
                 modal.find("#prev").toggleClass("d-none", currentStep === 1);
                 modal.find("#next").toggleClass("d-none", currentStep === maxSteps);
+                if (currentStep === maxSteps) {
+                    $("#nextStep").hide();
+                }else{
+                    $("#nextStep").show();
+                }
                 modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
 
                 checkStepCompletion();
@@ -993,6 +1095,7 @@
 
 
                 // Show or hide the "Next Step" button
+                
                 modal.find("#nextStep").toggleClass("d-none", !allFieldsFilled);
                 modal.find("#next").text(allFieldsFilled ? "Update & Next" : "Save & Next");
             }
@@ -1050,7 +1153,7 @@
                 }
             });
 
-            modal.find("#next").click(function (event) {
+            modal.find("#next,#submit").click(function (event) {
                 event.preventDefault();
                 let currentSection = modal.find(`.form-section[data-step="${currentStep}"]`);
                 let allFieldsFilled = true;
@@ -1088,7 +1191,6 @@
                 button.prop("disabled", true).html('<i class="fa fa-spinner fa-spin"></i> Processing...');
 
                 let formData = new FormData(form[0]);
-
                 $.ajax({
                     url: form.attr("action"),
                     method: form.attr("method"),
@@ -1096,6 +1198,12 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
+                        if(currentStep === 11){
+                            modal.modal("hide");
+                        }
+                        // if(currentStep === 10){
+                        //     $("#nextStep").addClass('d-none');
+                        // }
                         toastr.success(`Step ${currentStep} saved successfully.`);
                         if (currentStep < maxSteps) {
                             currentStep++;
@@ -1144,68 +1252,122 @@
         // Generate PDF and display in iframe
         $(".generatePdfBtn").click(function (e) {
             e.preventDefault()
-    // Get the closest form section
-    let formSection = $(this).closest('.form-section');
+        // Get the closest form section
+        let formSection = $(this).closest('.form-section');
 
-    // Get the required values
-    let hr_id = formSection.find('.human_resource_id').val();
-    let amount_digits = formSection.find('.amountInDigits').val();
-    let amount_words = formSection.find('.amountInWords').val();
+        // Get the required values
+        let hr_id = formSection.find('.human_resource_id').val();
+        let amount_digits = formSection.find('.amountInDigits').val();
+        let amount_words = formSection.find('.amountInWords').val();
 
-    console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
+        console.log('amount_digits:', amount_digits, 'amount_words:', amount_words);
 
-    // Make the AJAX request
-    $.ajax({
-        url: "{{ url('/generate-form-7') }}", // Update this URL if necessary
-        method: "POST",
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            "Content-Type": "application/json" // Ensure JSON format
-        },
-        data: JSON.stringify({
-            human_resource_id: hr_id,
-            amount_digits: amount_digits,
-            amount_words: amount_words,
-        }),
-        success: function (response) {
-            console.log('PDF URL:', response.pdf_url);
-            
-            // Set the PDF URL in the input field
-            formSection.find('.stepSevenFile').val(response.url).trigger('change');
+        // Make the AJAX request
+        $.ajax({
+            url: "{{ url('/generate-form-7') }}", // Update this URL if necessary
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                "Content-Type": "application/json" // Ensure JSON format
+            },
+            data: JSON.stringify({
+                human_resource_id: hr_id,
+                amount_digits: amount_digits,
+                amount_words: amount_words,
+            }),
+            success: function (response) {
+                console.log('PDF URL:', response.pdf_url);
+                
+                // Set the PDF URL in the input field
+                formSection.find('.stepSevenFile').val(response.url).trigger('change');
 
-            // Update the iframe to display the generated PDF
-            formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
-            formSection.find('.pdfFrame').attr("height", "600px");
-        },
-        error: function (xhr, status, error) {
-            console.error("Error generating PDF:", error);
-        }
-    });
-});
+                // Update the iframe to display the generated PDF
+                formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
+                formSection.find('.pdfFrame').attr("height", "600px");
+            },
+            error: function (xhr, status, error) {
+                console.error("Error generating PDF:", error);
+            }
+        });
+        });
 
-        // For step 8 pdf
-        $("#generatePdfBtn8").click(function () {
+        // For step 8 PDF generation
+        $(document).on('click', '#generatePdfBtn8', function (e) {
+            e.preventDefault();
+            // Get the closest form section
+            let formSection = $(this).closest('.form-section');
+
+            // Get the required values
+            let hr_id = formSection.find('.human_resource_id').val(); // Human Resource ID
+            let opfValue = parseInt(formSection.find('#opf').val()) || 0; // Default to 0 if empty
+            let stateLifeValue = parseInt(formSection.find('#stateLife').val()) || 0; // Default to 0 if empty
+            let totalAmount = opfValue + stateLifeValue + 200; // Add 200 to the total
+
+            // Convert the total amount to words
+            let totalAmountInWords = numberToWords(totalAmount);
+
+            console.log('Human Resource ID:', hr_id);
+            console.log('Total Amount:', totalAmount, 'In Words:', totalAmountInWords);
+        
             $.ajax({
-                url: "{{ asset('/generate-nbp-form') }}",
-                method: "GET",
+                url: "{{ url('/generate-nbp-form') }}", // Update this URL if necessary
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "Content-Type": "application/json" // Ensure JSON format
+                },
+                data: JSON.stringify({
+                    human_resource_id: hr_id,
+                    opf: opfValue,
+                    state_life: stateLifeValue,
+                    total_amount: totalAmount,
+                    total_amount_words: totalAmountInWords,
+                }),
                 success: function (response) {
-                    $("#pdfFrame8").attr("src", "{{ asset('public/admin/assets/nbp-form.pdf') }}");
-                    $("#pdfFrame8").attr("height", "600px");
+                    console.log('PDF URL:', response.pdf_url);
+                    
+                    // Set the PDF URL in the input field
+                    formSection.find('.stepEightFile').val(response.url).trigger('change');
+
+                    // Update the iframe to display the generated PDF
+                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
+                    formSection.find('.pdfFrame').attr("height", "600px");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
-                },
+                }
             });
         });
 
         // For step 9 pdf
-        $("#generatePdfBtn9").click(function () {
+        $(document).on('click', '#generatePdfBtn9', function (e) {
+   
+            e.preventDefault(); // Prevent the default form submission behavior
+            // Get the closest form section
+            let formSection = $(this).closest('.form-section');
+            // Get the required values
+            let hr_id = formSection.find('.human_resource_id').val();
+            console.log('Human Resource ID:', hr_id);
+            // return;
             $.ajax({
-                url: "{{ asset('/generate-challan-92') }}",
-                method: "GET",
+                url: "{{ url('/generate-challan-92') }}",
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "Content-Type": "application/json" // Ensure JSON format
+                },
+                data: JSON.stringify({
+                    human_resource_id: hr_id,
+                }),
                 success: function (response) {
-                    $("#pdfFrame9").attr("src", "{{ asset('public/admin/assets/Challan-92.pdf') }}");
-                    $("#pdfFrame9").attr("height", "600px");
+                    console.log('PDF URL:', response.pdf_url);
+                    
+                    // Set the PDF URL in the input field
+                    formSection.find('.stepNineFile').val(response.url).trigger('change');
+
+                    // Update the iframe to display the generated PDF
+                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
+                    formSection.find('.pdfFrame').attr("height", "600px");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1214,13 +1376,30 @@
         });
 
         // For step 10 pdf
-        $("#generatePdfBtn10").click(function () {
+        $(document).on('click', '#generatePdfBtn10', function (e) {            
+            e.preventDefault(); // Prevent the default form submission behavior
+            // Get the closest form section
+            let formSection = $(this).closest('.form-section');
+            // Get the required values
+            let hr_id = formSection.find('.human_resource_id').val();
+            console.log('Human Resource ID:', hr_id);
             $.ajax({
-                url: "{{ asset('/generate-life-insurance') }}",
-                method: "GET",
+                url: "{{ url('/generate-life-insurance') }}",
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "Content-Type": "application/json" // Ensure JSON format
+                },
+                data: JSON.stringify({
+                    human_resource_id: hr_id,
+                }),
                 success: function (response) {
-                    $("#pdfFrame10").attr("src", "{{ asset('public/admin/assets/life-insurance.pdf') }}");
-                    $("#pdfFrame10").attr("height", "600px");
+                    console.log('PDF URL:', response.pdf_url);
+                    // Set the PDF URL in the input field
+                    formSection.find('.stepTenFile').val(response.url).trigger('change');
+                    // Update the iframe to display the generated PDF
+                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
+                    formSection.find('.pdfFrame').attr("height", "600px");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1229,13 +1408,30 @@
         });
 
         // For step 11 pdf
-        $("#generatePdfBtn11").click(function () {
+        $(document).on('click', '#generatePdfBtn11', function (e) {
+            e.preventDefault(); // Prevent the default form submission behavior
+            // Get the closest form section
+            let formSection = $(this).closest('.form-section');
+            // Get the required values
+            let hr_id = formSection.find('.human_resource_id').val();
+            console.log('Human Resource ID:', hr_id);
             $.ajax({
-                url: "{{ asset('/generate-fsa-form') }}",
-                method: "GET",
+                url: "{{ url('/generate-fsa-form') }}",
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    "Content-Type": "application/json" // Ensure JSON format
+                },
+                data: JSON.stringify({
+                    human_resource_id: hr_id,
+                }),
                 success: function (response) {
-                    $("#pdfFrame11").attr("src", "{{ asset('public/admin/assets/fsa-form.pdf') }}");
-                    $("#pdfFrame11").attr("height", "600px");
+                    console.log('PDF URL:', response.pdf_url);
+                    // Set the PDF URL in the input field
+                    formSection.find('.stepElevenFile').val(response.url).trigger('change');
+                    // Update the iframe to display the generated PDF
+                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" + new Date().getTime());
+                    formSection.find('.pdfFrame').attr("height", "600px");
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);

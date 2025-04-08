@@ -193,11 +193,11 @@ class HumanResouceController extends Controller
 
        $pdf->SetFont('Helvetica', 'B', 8);
        $pdf->SetXY(49, 104);
-       $pdf->Write(10, "WORKWEB"); // Name
+       $pdf->Write(10, "MANSOL MANPOWER SOLUTIONS"); // Name
 
-       $pdf->SetFont('Helvetica', '', 8);
-       $pdf->SetXY(49, 110);
-       $pdf->Write(10, "WORKWEB"); // Address
+       $pdf->SetFont('Helvetica', '', 7);
+       $pdf->SetXY(49, 111.6);
+       $pdf->Write(7, "OFFICE NO. 123, 1ST FLOOR, DIVINE MEGA-2, NEW AIRPORT ROAD, LAHORE CANTT, PAKISTAN."); // Address
 
        $pdf->SetFont('Helvetica', '', 8);
        $pdf->SetXY(49, 116);
@@ -205,23 +205,23 @@ class HumanResouceController extends Controller
 
        $pdf->SetFont('Helvetica', '', 8);
        $pdf->SetXY(142, 116);
-       $pdf->Write(10, "WORKWEB"); // O.E.P. License Number
+       $pdf->Write(10, "3054/LHR"); // O.E.P. License Number
 
        // Deposit Details
 
-       $pdf->SetFont('Helvetica', '', 8);
-       $pdf->SetXY(55, 129.2);
-       $idCardNumber = "3103461677457234";
-       foreach (str_split($idCardNumber) as $char) {
-           $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
-       } // Account Number
+    //    $pdf->SetFont('Helvetica', '', 8);
+    //    $pdf->SetXY(55, 129.2);
+    //    $idCardNumber = "3103461677457234";
+    //    foreach (str_split($idCardNumber) as $char) {
+    //        $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+    //    } // Account Number
 
-       $pdf->SetFont('Helvetica', '', 8);
-       $pdf->SetXY(126, 129.2);
-       $idCardNumber = "12345678";
-       foreach (str_split($idCardNumber) as $char) {
-           $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
-       } // Cheque Number
+    //    $pdf->SetFont('Helvetica', '', 8);
+    //    $pdf->SetXY(126, 129.2);
+    //    $idCardNumber = "12345678";
+    //    foreach (str_split($idCardNumber) as $char) {
+    //        $pdf->Cell(3.1, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
+    //    } // Cheque Number
 
        
        $pdf->SetFont('Helvetica', 'B', 8);
@@ -374,8 +374,10 @@ class HumanResouceController extends Controller
 //     }
 
     // Form 8 PDF Generator
-    public function generateForm8()
+    public function generateForm8(Request $request)
     {
+        $data = $request->all();
+       $hr = HumanResource::find($data['human_resource_id']);
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         
         // Set the source PDF file
@@ -405,26 +407,26 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(52, 56);  
-        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+        $pdf->Write(10, $hr->name);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 7);
         $pdf->SetXY(52, 61);  
-        $pdf->Write(10, "03244257417");  // Mobile Number
+        $pdf->Write(10, $hr->present_address_mobile);  // Mobile Number
 
         $pdf->SetFont('Helvetica', 'B', 9);
         $pdf->SetXY(104, 55.7);
-        $idCardNumber = "35202-2974669-1";
+        $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 71);  
-        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 76);  
-        $pdf->Write(10, "Rs 2500/-");  // State Life
+        $pdf->Write(10, $data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(167, 81);  
@@ -432,11 +434,11 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', 'B', 8);
         $pdf->SetXY(165, 86.2);  
-        $pdf->Write(10, "Rs 6700/-");  // Total price
+        $pdf->Write(10, $data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(44, 86.4);  
-        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words
+        $pdf->Write(10, $data['total_amount_words']);  // Price in words
         
         // BE & OE Copy
         $pdf->SetFont('Helvetica', 'B', 6);
@@ -452,38 +454,38 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(52, 160.2);  
-        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+        $pdf->Write(10, $hr->name);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 7);
         $pdf->SetXY(52, 165.2);  
-        $pdf->Write(10, "03244257417");  // Mobile Number
+        $pdf->Write(10, $hr->present_address_mobile);  // Mobile Number
 
         $pdf->SetFont('Helvetica', 'B', 9);
         $pdf->SetXY(104, 159.9);
-        $idCardNumber = "35202-2974669-1";
+        $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 175.2);  
-        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 180.2);  
-        $pdf->Write(10, "Rs 2500/-");  // State Life
+        $pdf->Write(10, $data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(167, 185.2);  
         $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
 
         $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(165, 190.4);  
-        $pdf->Write(10, "Rs 6700/-");  // Total price
+        $pdf->SetXY(165, 86.2);  
+        $pdf->Write(10, $data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(44, 190.2);  
-        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words 
+        $pdf->SetXY(44, 86.4);  
+        $pdf->Write(10, $data['total_amount_words']);  // Price in words
 
         // Import second page
         $pdf->AddPage();
@@ -509,26 +511,26 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(52, 54);  
-        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+        $pdf->Write(10, $hr->name);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 7);
         $pdf->SetXY(52, 59);  
-        $pdf->Write(10, "03244257417");  // Mobile Number
+        $pdf->Write(10, $hr->present_address_mobile);  // Mobile Number
 
         $pdf->SetFont('Helvetica', 'B', 9);
         $pdf->SetXY(104, 53.7);
-        $idCardNumber = "35202-2974669-1";
+        $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 69);  
-        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 74);  
-        $pdf->Write(10, "Rs 2500/-");  // State Life
+        $pdf->Write(10, $data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(167, 79);  
@@ -536,11 +538,11 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', 'B', 8);
         $pdf->SetXY(165, 84.2);  
-        $pdf->Write(10, "Rs 6700/-");  // Total price
+        $pdf->Write(10,  $data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(44, 84.4);  
-        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words
+        $pdf->Write(10, $data['total_amount_words'] );  // Price in words
         
         // Bank Copy
         $pdf->SetFont('Helvetica', 'B', 6);
@@ -556,26 +558,26 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(52, 157.9);  
-        $pdf->Write(10, "AMIR AZIZ");  // Slip no.
+        $pdf->Write(10, $hr->name);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 7);
         $pdf->SetXY(52, 163.2);  
-        $pdf->Write(10, "03244257417");  // Mobile Number
+        $pdf->Write(10, $hr->present_address_mobile);  // Mobile Number
 
         $pdf->SetFont('Helvetica', 'B', 9);
         $pdf->SetXY(104, 157.9);
-        $idCardNumber = "35202-2974669-1";
+        $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 173.2);  
-        $pdf->Write(10, "Rs 4000/-");  // OPF Welfare Fund
+        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(165, 178.2);  
-        $pdf->Write(10, "Rs 2500/-");  // State Life
+        $pdf->Write(10, $data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(167, 183.2);  
@@ -583,25 +585,34 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', 'B', 8);
         $pdf->SetXY(165, 188.4);  
-        $pdf->Write(10, "Rs 6700/-");  // Total price
+        $pdf->Write(10,  $data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(44, 188.2);
-        $pdf->Write(10, "SIX THOUSAND SEVEN HUNDRED RUPESS");  // Price in words 
+        $pdf->Write(10, $data['total_amount_words']);  // Price in words 
 
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/nbp-form.pdf';
+        // $pdfPath = 'admin/assets/nbp-form.pdf';
+        // $pdf->Output(public_path($pdfPath), 'F'); 
+        $pdfPath = 'admin/assets/humanresource/'.$hr->id.'-nbp-form.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
+        $pdfPath1 = 'public/admin/assets/humanresource/'.$hr->id.'-nbp-form.pdf';
         
         // Return JSON response with URL
+        // Return JSON response with URL
         return response()->json([
-            'pdf_url' => asset($pdfPath) // Generates correct URL
+            // 'hr'=>$hr,
+            // 'request'=>$data,
+            'pdf_url' => asset($pdfPath1), // Generates correct URL
+            'url' => $pdfPath1, // Generates correct URL
         ]);
     }
 
      // Form 9 PDF Generator
-     public function generateForm9()
+     public function generateForm9(Request $request)
     {
+        $data = $request->all();
+        $hr = HumanResource::find($data['human_resource_id']);
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         $pdf->AddPage();
     
@@ -619,7 +630,7 @@ class HumanResouceController extends Controller
     
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 51.6);
-        $pdf->Write(10, "ATIF AZIZ"); // Name
+        $pdf->Write(10, $hr->name); // Name
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 69.2);
@@ -627,7 +638,7 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 126.2);
-        $pdf->Write(10, "ATIF AZIZ"); // Name
+        $pdf->Write(10, $hr->name); // Name
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 144.2);
@@ -635,7 +646,7 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 201);
-        $pdf->Write(10, "ATIF AZIZ"); // Name
+        $pdf->Write(10, $hr->name); // Name
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 219);
@@ -643,18 +654,21 @@ class HumanResouceController extends Controller
 
         
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/Challan-92.pdf';
+        $pdfPath = 'admin/assets/humanresource/'.$hr->id.'-Challan-92.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
-    
+        $pdfPath1 = 'public/admin/assets/humanresource/'.$hr->id.'-Challan-92.pdf';
         // Return JSON response with URL
         return response()->json([
-            'pdf_url' => asset($pdfPath) // Generates correct URL
+            'pdf_url' => asset($pdfPath1), // Generates correct URL
+            'url' => $pdfPath1, // Generates correct URL
         ]);
     }
     
     // Form 10 PDF Generator
-    public function generateForm10()
+    public function generateForm10(Request $request)
     {
+        $data = $request->all();
+        $hr = HumanResource::find($data['human_resource_id']);
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         $pdf->AddPage();
     
@@ -672,16 +686,16 @@ class HumanResouceController extends Controller
     
         
         $pdf->SetXY(86, 66.4);
-        $pdf->Write(10, "TALIB HUUSAIN"); // Name
+        $pdf->Write(10, $hr->name); // Name
 
         $pdf->SetXY(86, 71.4);
-        $pdf->Write(10, "ALLAH DINO"); // Father name
+        $pdf->Write(10, $hr->son_of); // Father name
 
         $pdf->SetXY(86, 76.4);
-        $pdf->Write(10, "06 / 03 / 2025"); // Date
+        $pdf->Write(10, $hr->date_of_birth); // Date
 
         $pdf->SetXY(87, 81.6);
-        $idCardNumber = "4350304643339";
+        $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5.5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
         } // NIC Number
@@ -738,15 +752,21 @@ class HumanResouceController extends Controller
         $pdfPath = 'admin/assets/life-insurance.pdf';
         $pdf->Output(public_path($pdfPath), 'F'); 
     
+        $pdfPath = 'admin/assets/humanresource/'.$hr->id.'-life-insurance.pdf';
+        $pdf->Output(public_path($pdfPath), 'F'); 
+        $pdfPath1 = 'public/admin/assets/humanresource/'.$hr->id.'-life-insurance.pdf';
         // Return JSON response with URL
         return response()->json([
-            'pdf_url' => asset($pdfPath) // Generates correct URL
+            'pdf_url' => asset($pdfPath1), // Generates correct URL
+            'url' => $pdfPath1, // Generates correct URL
         ]);
     }
 
     // Form 11 PDF Generator
-    public function generateForm11()
+    public function generateForm11(Request $request)
     {
+        $data = $request->all();
+        $hr = HumanResource::find($data['human_resource_id']);
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         
         // Set the source PDF file for Form 10
@@ -783,7 +803,7 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 76);
-        $idCardNumber = "TALIB HUUSAIN";
+        $idCardNumber = $hr->name;
         $maxCharsPerLine = 14;
         $currentLine = 0;
 
@@ -797,23 +817,23 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 82.4);
-        $pdf->Write(10, "Allah Dino"); // Name of father
+        $pdf->Write(10, $hr->son_of); // Name of father
 
         $pdf->SetXY(60, 88.5);
-        $idCardNumber = "4350304643339";
+        $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
         } // CNIC
 
         $pdf->SetXY(60, 101);
-        $idCardNumber = "0300-0522381";
+        $idCardNumber = $hr->present_address_phone ;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
         } // Cell no
 
         $pdf->SetFont('Times', '', 5);
         $pdf->SetXY(59.5, 116);
-        $idCardNumber = "VILLAGE FAQEER MUHAMMAD KHAN CHAKRANI PO KAND KOT KHUJAL TEHSILK AND KOT DISTT KASHMORE";
+        $idCardNumber = $hr->permanent_address;
         $charWidth = 1.7; // Adjust width per character
         $charHeight = 4;  // Adjust height per character
         $maxCharsPerRow = 57; // Number of characters that fit in one row
@@ -832,50 +852,50 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 122);
-        $pdf->Write(10, "Lahore"); // City
+        $pdf->Write(10, $hr->permanent_address_city); // City
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(128, 122);
-        $pdf->Write(10, "XYZ"); // District
+        $pdf->Write(10, $hr->district_of_domicile); // District
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 129);
-        $pdf->Write(10, "Punjab"); // Province
+        $pdf->Write(10, $hr->permanent_address_province); // Province
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 138);
-        $pdf->Write(10, "Middle"); // Qualification
+        $pdf->Write(10, $hr->acdemic_qualification); // Qualification
 
         $pdf->SetXY(60, 147.3);
-        $idCardNumber = "LT6913331";
+        $idCardNumber = $hr->passport;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
         } // Cell no
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 152);
-        $pdf->Write(10, "KASHMORE "); // Place of issue
+        $pdf->Write(10, $hr->passport_issue_place); // Place of issue
         
         $pdf->SetXY(127.5, 152);
-        $idCardNumber = "26-04-2023";
+        $idCardNumber = $hr->doi;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(3.4, 10, $char, 0, 0, 'C');
         } // Date of issue
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 162);
-        $pdf->Write(10, "AZMIYA"); // Name of Nominance
-
+        $pdf->Write(10, $hr->next_of_kin); // Name of Nominance
+        
         $pdf->SetXY(60, 167);
-        $idCardNumber = "4350307607840";
+        $idCardNumber = $hr->kin_cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
         } // CNIC no
 
         $pdf->SetFont('Times', '', 9);
         $pdf->SetXY(60, 173);
-        $pdf->Write(10, "Wife"); // Name of Nominance
-
+        $pdf->Write(10, $hr->relation); // Name of Nominance
+        
         $pdf->SetFont('Times', '', 6);
         $pdf->SetXY(53.5, 187);
         $pdf->Write(10, "4350304643339"); // Recipt no
@@ -928,12 +948,16 @@ class HumanResouceController extends Controller
         
 
         // Save filled PDF to public folder
-        $pdfPath = 'admin/assets/fsa-form.pdf';
-        $pdf->Output(public_path($pdfPath), 'F'); 
+        // $pdfPath = 'admin/assets/fsa-form.pdf';
+        // $pdf->Output(public_path($pdfPath), 'F'); 
 
+        $pdfPath = 'admin/assets/humanresource/'.$hr->id.'-fsa-form.pdf';
+        $pdf->Output(public_path($pdfPath), 'F'); 
+        $pdfPath1 = 'public/admin/assets/humanresource/'.$hr->id.'-fsa-form.pdf';
         // Return JSON response with URL
         return response()->json([
-            'pdf_url' => asset($pdfPath) // Generates correct URL
+            'pdf_url' => asset($pdfPath1), // Generates correct URL
+            'url' => $pdfPath1, // Generates correct URL
         ]);
     }
 

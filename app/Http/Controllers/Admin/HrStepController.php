@@ -225,6 +225,70 @@ class HrStepController extends Controller
                 ],
                 [
                     'file_name' => $request->step_seven_file,
+                    'amount_digits' => $request->amount_digits,
+                    'amount_words' => $request->amount_words,
+                ]
+            );
+            // $data['file_name'] = $request->file('nok_cnic_back')->store('nok_cnic_images', 'public');
+        }
+        if ($step == 8) {
+            // return $request;
+            // Store the data in the `hr_steps` table
+            $hrStep = HrStep::updateOrCreate(
+                [
+                    'human_resource_id' => $humanResource->id,
+                    'step_number' => $step,
+                    'file_type' => 'step 8 pdf',
+                ],
+                [
+                    'file_name' => $request->step_eight_file,
+                    'amount_digits' => $request->opf,
+                    'amount_digits1' => $request->state_life_insurance,
+                ]
+            );
+            // $data['file_name'] = $request->file('nok_cnic_back')->store('nok_cnic_images', 'public');
+        }
+        if ($step == 9) {
+            // return $request;
+            // Store the data in the `hr_steps` table
+            $hrStep = HrStep::updateOrCreate(
+                [
+                    'human_resource_id' => $humanResource->id,
+                    'step_number' => $step,
+                    'file_type' => 'step 9 pdf',
+                ],
+                [
+                    'file_name' => $request->step_nine_file,
+                ]
+            );
+            // $data['file_name'] = $request->file('nok_cnic_back')->store('nok_cnic_images', 'public');
+        }
+        if ($step == 10) {
+            // return $request;
+            // Store the data in the `hr_steps` table
+            $hrStep = HrStep::updateOrCreate(
+                [
+                    'human_resource_id' => $humanResource->id,
+                    'step_number' => $step,
+                    'file_type' => 'step 10 pdf',
+                ],
+                [
+                    'file_name' => $request->step_ten_file,
+                ]
+            );
+            // $data['file_name'] = $request->file('nok_cnic_back')->store('nok_cnic_images', 'public');
+        }
+        if ($step == 11) {
+            // return $request;
+            // Store the data in the `hr_steps` table
+            $hrStep = HrStep::updateOrCreate(
+                [
+                    'human_resource_id' => $humanResource->id,
+                    'step_number' => $step,
+                    'file_type' => 'step 10 pdf',
+                ],
+                [
+                    'file_name' => $request->step_eleven_file,
                 ]
             );
             // $data['file_name'] = $request->file('nok_cnic_back')->store('nok_cnic_images', 'public');
