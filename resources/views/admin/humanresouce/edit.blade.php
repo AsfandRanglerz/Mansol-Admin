@@ -30,7 +30,7 @@
                                                 <input type="number" class="form-control" id="registration"
                                                     name="registration"
                                                     value="{{ old('registration', $HumanResource->registration) }}"
-                                                    readonly>
+                                                     readonly>
                                                 @error('registration')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -61,10 +61,7 @@
                                         <div class="col-md-4" id="project-group">
                                             <div class="form-group">
                                                 <label class="text-danger" for="project_id">Project</label>
-                                                {{-- <select name="project_id" id="project_id" class="form-control">
-                                                    <option value="" selected disabled>Select Project</option>
-                                                </select> --}}
-                                                <input type="text" value="{{ $project->project_name }}" readonly class="form-control">
+                                                <input type="text" value="{{ $project->project_name ?? 'N/A' }}" readonly class="form-control">
                                                 @error('project_id')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -73,10 +70,7 @@
                                         <div class="col-md-4" id="demand-group">
                                             <div class="form-group">
                                                 <label class="text-danger" for="demand_id">Demand</label>
-                                                {{-- <select name="demand_id" id="demand_id" class="form-control">
-                                                    <option value="" selected disabled>Select Demand</option>
-                                                </select> --}}
-                                                <input type="text" value="Man Power - {{ $demand->manpower }}" readonly class="form-control">
+                                                <input type="text" value="{{ $demand ? 'Man Power - ' . $demand->manpower : 'N/A' }}" readonly class="form-control">
                                                 @error('demand_id')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -93,7 +87,8 @@
                                                         <option value="{{ $craft->id }}" {{ $craft->id == $HumanResource->craft_id ? 'selected' : '' }}>{{ $craft->name }}</option>
                                                     @endforeach
                                                 </select> --}}
-                                                <input type="text" value="{{ $craft->name }}" readonly class="form-control">
+                                                <input type="text" value="{{ optional($craft)->name }}" readonly class="form-control">
+
                                                 @error('craft')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -958,22 +953,341 @@
                                     </div>
                                 </form>
                             </div>
-
+                            
                         </div>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-header text-center d-flex justify-content-between align-items-center">
+                        <a class="btn btn-primary" onclick="showUserModel('createDriverModel')">Mobilize</a>
+                        <h4 class="flex-grow-1 text-center m-0">Job History</h4>
+                        <div style="width: 75px;"></div> <!-- Empty space to balance the button width -->
+                    </div>
+                    
+
+                <div class="card-body table-striped table-bordered table-responsive">
+                    <table class="table responsive" id="table_id_events">
+                        <thead>
+                            <tr>
+                                <th>Sr.</th>
+                                <th>Company</th>
+                                <th>Project</th>
+                                <th>Demand</th>
+                                <th>Craft</th>
+                                <th>Sub-Craft</th>
+                                <th>Application Date</th>
+                                <th>Demobe</th>
+                                <th scope="col">Actions</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($histories as $data)
+                            <tr>
+                                    <td>
+                                        {{ $loop->iteration }}
+                                    </td>
+                                    <td>
+                                        {{ $data->company_name ?? 'N/A' }}
+                                    </td>
+                                    <td>
+                                        {{ $data->company_name ?? 'N/A' }}
+                                    </td>
+                                    <td>
+                                        {{ $data->company_name ?? 'N/A' }}
+                                    </td>
+                                    <td>
+                                        {{ $data->craft_name ?? 'N/A' }}
+                                    </td>
+                                    <td>
+                                        {{ $data->sub_craft_name ?? 'N/A' }}
+                                    </td>
+                                    <td>
+                                        {{ $data->start_date ?? 'N/A' }}
+                                    </td>
+                                    <td>
+                                        {{ $data->end_date ?? 'N/A' }}
+                                    </td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-2">
+                                                <button type="button"
+                                                    class="btn btn-primary editDriverBtn w-100"
+                                                    data-id="{{ $data->id }}">Edit</button>
+                                            </div>
+                                            <div class="col-md-6 mb-2">
+                                                <form action="{{ route('humanresource.destroy', $data->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-flat w-100 show_confirm"
+                                                        data-toggle="tooltip">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>                                        
+                                    </td>
+                                </tr>
+                                @endforeach
+                           
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </div>
         </section>
+        <!-- add Hobby Modal -->
+        <div class="modal fade" id="createDriverModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Add Job History</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="createDriverForm" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="start_date">Company</label>
+                                    <select name="company_id" id="company_id" class="form-control">
+                                        <option value="">Select Company</option>
+                                        @foreach ($companies as $company)
+                                            <option value="{{ $company->name }}">{{ $company->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-danger" for="project_id">Project</label>
+                                    <select name="project_id" id="project_id" class="form-control">
+                                        <option value="" selected disabled>Select Project</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-danger" for="demand_id">Demand</label>
+                                    <select name="demand_id" id="demand_id" class="form-control">
+                                        <option value="" selected disabled>Select Demand</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="start_date">Craft</label>
+                                    <select name="craft_name" id="craft" class="form-control">
+                                        <option value="">Select Craft</option>
+                                        @foreach ($crafts as $craft)
+                                            <option value="{{ $craft->name }}">{{ $craft->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                        <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
+                                        <select name="sub_craft_id" class="form-control" id="sub_craft">
+                                            <option value="" selected disabled>Select Sub-Craft</option>
+                                        </select>
+                                        @error('sub_craft')
+                                        <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="start_date">Application Date</label>
+                                    <input type="date" class="form-control" id="editStartDate" name="start_date" value="{{ date('Y-m-d') }}" readonly>
+
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        {{-- <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="end_date">End Date</label>
+                                    <input type="date" class="form-control" id="editEndDate" name="end_date">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div> --}}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary create-ethnicity">Create</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        <!-- Edit Hobby Modal -->
+        <div class="modal fade" id="editDriverModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" id="mymodal" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Driver</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editDriverForm" enctype="multipart/form-data">
+                        <input type="hidden" id="editDriverId" name="id">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="start_date">Company</label>
+                                    <select name="company_id" id="company_id" class="form-control">
+                                        <option value="">Select Company</option>
+                                        @foreach ($companies as $company)
+                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="start_date">Craft</label>
+                                    <select name="craft_name" id="craft_name" class="form-control">
+                                        <option value="">Select Craft</option>
+                                        @foreach ($crafts as $craft)
+                                            <option value="{{ $craft->id }}">{{ $craft->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="start_date">Sub-Craft</label>
+                                    <select name="sub_craft_name" id="sub_craft_name" class="form-control">
+                                        <option value="">Select Sub-Craft</option>
+                                        @foreach ($subCrafts as $data)
+                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="start_date">Start Date</label>
+                                    <input type="date" class="form-control" id="editStartDate" name="start_date">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="end_date">End Date</label>
+                                    <input type="date" class="form-control" id="editEndDate" name="end_date">
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary update-driver">Update</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
     </div>
 @endsection
 
 @section('js')
+<script>
+    $(document).ready(function() {
+        $('#table_id_events').DataTable()
+    })
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script type="text/javascript">
+        $('.show_confirm').click(function(event) {
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
+            event.preventDefault();
+            swal({
+                    title: `Are you sure you want to delete this record?`,
+                    text: "If you delete this, it will be gone forever.",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        form.submit();
+                    }
+                });
+        });
+    </script>
     @if (\Illuminate\Support\Facades\Session::has('message'))
         <script>
             toastr.success('{{ \Illuminate\Support\Facades\Session::get('message') }}');
         </script>
     @endif
+        <script>
 
+            $(document).on('click','#craft', function () {
+                        var craftId = $(this).val();
+                        $.ajax({
+                            url: "{{ route('get-sub-crafts') }}",
+                            type: "GET",
+                            data: {
+                                craft_id: craftId
+                            },
+                            success: function (data) {
+                                $('#sub_craft').empty();
+                                $('#sub_craft').append(
+                                    '<option value="" selected disabled>Select Sub-Craft</option>');
+                                
+
+                                $.each(data, function (key, value) {
+                                    $('#sub_craft').append('<option value="' + value.id +
+                                        '">' + value.name + '</option>');
+                                });
+                            }
+                        });
+                    });
+            //add 
+            function showUserModel(id) {
+                $(`#${id}`).modal('show');
+                $('#createDriverModel').find('input, textarea, select').val('');
+                $('#clonedInputsContainer').empty();
+                $('#createDriverForm')[0].reset(); // Reset the form after successful submission
+            };
+
+            $(document).on('click', '.editDriverBtn', function() {
+            var id = $(this).data('id');
+            $('.update-driver').attr('data', id);
+            $('#editDriverModel').modal('show');
+            // editDriver(id);
+            });
+        
+        </script>
     {{-- <script>
         $(document).ready(function() {
             // Check if company_id is selected on page load

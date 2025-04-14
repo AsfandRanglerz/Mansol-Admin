@@ -29,4 +29,9 @@ class HumanResource extends Authenticatable
     public function hrSteps(){
         return $this->hasMany(HrStep::class,'human_resource_id');
     }
+
+    public function jobHistory(){
+        return $this->hasMany(JobHistory::class,'human_resource_id');
+    }
 }
+ 

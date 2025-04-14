@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Demand;
 use App\Models\HrStep;
+use App\Models\JobHistory;
 use App\Models\Company;
 use App\Models\Project;
 use App\Models\Nominate;
@@ -163,12 +164,12 @@ class HumanResourceController extends Controller
             'comment' => $request->comment,
         ];
 
-        if (empty($request->input('company_id'))) {
+        // if (empty($request->input('company_id'))) {
             $data['craft_id'] = $request->craft_id;
             $data['sub_craft_id'] = $request->sub_craft_id;
-        }
+        // }
 
-        HumanResource::create($data);
+        $HumanResource =  HumanResource::create($data);
 
         if (!empty($request->input('company_id'))) {
             $HR = HumanResource::where('email', $request->email)->first();
@@ -189,33 +190,58 @@ class HumanResourceController extends Controller
         $message['password'] = $password;
 
         // Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
-
+        $history = JobHistory::create([
+            'human_resource_id' => $HumanResource->id,
+            'company_id' => $request->company_id,
+            'craft_id' => $request->craft_id,
+            'sub_craft_id' => $request->sub_craft_id,
+            'start_date' => $request->application_date,
+        ]);
         // Return success message
         return redirect()->route('humanresource.index')->with(['message' => 'Human Resource Created Successfully']);
     }
 
     public function edit($id)
     {
-
         $HumanResource = HumanResource::find($id);
-        $craft = MainCraft::where('id', $HumanResource->craft_id)->first();
+    
+        if (!$HumanResource) {
+            abort(404, 'Human Resource not found');
+        }
+    
+        $craft = MainCraft::find($HumanResource->craft_id);
         $nominates = Nominate::where('human_resource_id', $id)->first();
-        $subCraft = SubCraft::where('id', $HumanResource->sub_craft_id)->first();
+        $subCraft = SubCraft::find($HumanResource->sub_craft_id);
+        $companies = Company::latest()->get();
+        $crafts = MainCraft::latest()->get();
+        $subCrafts = SubCraft::latest()->get();
+    
         $project = null;
         $company = null;
         $demand = null;
-        
+    
         if ($nominates) {
             $project = Project::find($nominates->project_id);
-            $company = Company::find($project->company_id);
-            $demand = Demand::find($nominates->demand_id);
+            $company = $project ? Company::find($project->company_id) : null;
+            $demand = $nominates->demand_id ? Demand::find($nominates->demand_id) : null;
         }
-        
-        // dd($company);
-
-        return view('admin.humanresouce.edit', compact('HumanResource', 'craft',  'project', 'demand', 'company', 'subCraft'));
+    
+        $histories = JobHistory::where('human_resource_id', $id)->latest()->get();
+    
+        return view('admin.humanresouce.edit', compact(
+            'HumanResource',
+            'crafts',
+            'subCrafts',
+            'companies',
+            'craft',
+            'project',
+            'demand',
+            'company',
+            'subCraft',
+            'histories'
+        ));
     }
-
+    
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -334,7 +360,13 @@ class HumanResourceController extends Controller
             'min_salary' => $request->min_salary,
             'comment' => $request->comment,
         ]);
-
+        $history = JobHistory::create([
+            'human_resource_id' => $HumanResource->id,
+            'company_id' => $request->company_id,
+            'craft_id' => $request->craft_id,
+            'sub_craft_id' => $request->sub_craft_id,
+            'start_date' => $request->application_date,
+        ]);
         return redirect()->route('humanresource.index')->with('message', 'Human Resource Updated Successfully');
     }
 
@@ -346,5 +378,11 @@ class HumanResourceController extends Controller
         }catch(QueryException $e){
             return redirect()->route('humanresource.index')->with(['error' => 'Cannot delete because this Human Resource is associated with Company']);
         }
+    }
+
+    public function getJobHistory($id)
+    {
+        $histories = JobHistory::where('id', $id)->first();
+        return response()->json($histories);
     }
 }
