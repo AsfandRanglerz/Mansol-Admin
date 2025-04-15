@@ -990,7 +990,24 @@ class HumanResouceController extends Controller
         $pdf->SetFont('Times', '', 9);
         $pdf->SetTextColor(0, 0, 0);
 
+        $pdf->SetFont('Times', '', 8);
+        $pdf->SetXY(150, 50);
+        $idCardNumber = "02 00 00";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(4, 10, $char, 0, 0, 'C');
+        } // Permission Date
+
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 73.5);
+        $pdf->Write(10, "GULF STEEL WORKS"); // Company Name
         
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 78.5);
+        $pdf->Write(10, "SAUDIA ARABIA"); // Country
+
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(145, 78.5);
+        $pdf->Write(10, "AL KHOBER, K.S.A"); // City
 
         // Save filled PDF to public folder
         // $pdfPath = 'admin/assets/fsa-form.pdf';
