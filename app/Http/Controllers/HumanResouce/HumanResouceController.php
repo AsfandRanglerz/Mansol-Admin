@@ -784,25 +784,37 @@ class HumanResouceController extends Controller
         
         // Add content to the first page
        
-        $pdf->SetXY(60, 44);
-        $idCardNumber = "26-02-2025";
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetXY(66.5, 49);
+        $idCardNumber = "26 02 2025";
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
+            $pdf->Cell(6.7, 10, $char, 0, 0, 'C');
         } // Date
 
         $pdf->SetFont('Times', 'B', 11);
-        $pdf->SetXY(60, 53);
+        $pdf->SetXY(67, 60);
         $pdf->Write(10, "MANSOL MANPOWER SOLUTIONS"); // Name of agency
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 58);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(66.6, 65.7);
         $idCardNumber = "LHR 3054";
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
+            $pdf->Cell(8.5, 10, $char, 0, 0, 'C');
         } // License Number
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 76);
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetXY(67, 72);
+        $pdf->Write(10, "540318"); // Permission no.
+
+        $pdf->SetFont('Times', '', 8);
+        $pdf->SetXY(146.5, 71);
+        $idCardNumber = "26 02 2025";
+        foreach (str_split($idCardNumber) as $char) {
+            $pdf->Cell(4, 10, $char, 0, 0, 'C');
+        } // Permission Date
+
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 86);
         $idCardNumber = $hr->name;
         $maxCharsPerLine = 14;
         $currentLine = 0;
@@ -810,33 +822,41 @@ class HumanResouceController extends Controller
         foreach (str_split($idCardNumber) as $index => $char) {
             if ($index > 0 && $index % $maxCharsPerLine == 0) {
                 $currentLine++;
-                $pdf->SetXY(60, 76 + ($currentLine * 4)); // Move to the next line
+                $pdf->SetXY(67, 86 + ($currentLine * 5)); // Adjust line spacing as needed
             }
-            $pdf->Cell(7.2, 3, $char, 0, 0, 'C');
+            $pdf->Cell(8.5, 5, $char, 0, 0, 'C'); // Adjust cell width and height as needed
         } // Emigrant Name
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 82.4);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67.5, 94.5);
         $pdf->Write(10, $hr->son_of); // Name of father
 
-        $pdf->SetXY(60, 88.5);
+        $pdf->SetXY(67, 101.5);
         $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
+            $pdf->Cell(5.9, 10, $char, 0, 0, 'C');
         } // CNIC
 
-        $pdf->SetXY(60, 101);
+        $pdf->SetXY(67, 116.5);
         $idCardNumber = $hr->present_address_phone ;
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
+            $pdf->Cell(8.5, 10, $char, 0, 0, 'C');
         } // Cell no
 
-        $pdf->SetFont('Times', '', 5);
-        $pdf->SetXY(59.5, 116);
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetXY(23.5, 122.3);
+        $pdf->Write(10, "11.   Email"); // Email Heading
+
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetXY(67, 122.5);
+        $pdf->Write(10, "xyz@gmail.com"); // Email 
+
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetXY(67, 133);
         $idCardNumber = $hr->permanent_address;
-        $charWidth = 1.7; // Adjust width per character
+        $charWidth = 4.85; // Adjust width per character
         $charHeight = 4;  // Adjust height per character
-        $maxCharsPerRow = 57; // Number of characters that fit in one row
+        $maxCharsPerRow = 25; // Number of characters that fit in one row
         $currentLine = 0;
 
         foreach (str_split($idCardNumber) as $index => $char) {
@@ -850,90 +870,115 @@ class HumanResouceController extends Controller
             $pdf->Cell($charWidth, $charHeight, $char, 0, 0, 'C'); 
         }
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 122);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 141);
         $pdf->Write(10, $hr->permanent_address_city); // City
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(128, 122);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(148, 141);
         $pdf->Write(10, $hr->district_of_domicile); // District
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 129);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(23.5, 150);
+        $pdf->Write(10, "11.   Province"); // Province Heading
+
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 150);
         $pdf->Write(10, $hr->permanent_address_province); // Province
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 138);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 160);
         $pdf->Write(10, $hr->acdemic_qualification); // Qualification
 
-        $pdf->SetXY(60, 147.3);
+        $pdf->SetXY(67, 171);
         $idCardNumber = $hr->passport;
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(7.2, 10, $char, 0, 0, 'C');
+            $pdf->Cell(8.5, 10, $char, 0, 0, 'C');
         } // Cell no
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 152);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 176.5);
         $pdf->Write(10, $hr->passport_issue_place); // Place of issue
         
-        $pdf->SetXY(127.5, 152);
+        $pdf->SetFont('Times', '', 9);
+        $pdf->SetXY(147, 176.4);
         $idCardNumber = $hr->doi;
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(3.4, 10, $char, 0, 0, 'C');
+            $pdf->Cell(4, 10, $char, 0, 0, 'C');
         } // Date of issue
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 162);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 187.5);
         $pdf->Write(10, $hr->next_of_kin); // Name of Nominance
         
-        $pdf->SetXY(60, 167);
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetXY(23.5, 193);
+        $pdf->Write(10, "21.   CNIC No:"); // CNIC Heading
+
+        $pdf->SetXY(67, 193.8);
         $idCardNumber = $hr->kin_cnic;
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(5.7, 10, $char, 0, 0, 'C');
+            $pdf->Cell(5.9, 10, $char, 0, 0, 'C');
         } // CNIC no
 
-        $pdf->SetFont('Times', '', 9);
-        $pdf->SetXY(60, 173);
+        $pdf->SetFont('Times', '', 11);
+        $pdf->SetXY(67, 200.5);
         $pdf->Write(10, $hr->relation); // Name of Nominance
         
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(53.5, 187);
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(61, 218);
         $pdf->Write(10, "4350304643339"); // Recipt no
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(53.5, 206.3);
-        $pdf->Write(10, "OEC FEE"); // OEC FEE
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(24.5, 225.5);
+        $pdf->Write(10, "25. Insurance Fee"); // 25. Insurance Fee
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(95, 197);
-        $pdf->Write(10, "MODEL TOWN"); // NBP Branch
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(24.5, 229.7);
+        $pdf->Write(10, "26. Registration Fee "); // 26. Registration Fee 
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(95, 201);
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(108, 222);
+        $pdf->Write(10, "117 G Model Town (Protector Office)"); // NBP Branch
+
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(108, 225.5);
+        $pdf->Write(10, "117 G Model Town (Protector Office)"); // NBP Branch
+
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(108, 229.5);
+        $pdf->Write(10, "117 G Model Town (Protector Office)"); // NBP Branch
+
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(108, 233.5);
         $pdf->Write(10, "New Airport Road"); // ABP Branch
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(150, 191);
-        $pdf->Write(10, "2000"); // Welfare Fund 
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(108, 240.5);
+        $pdf->Write(10, "117 G Model Town (Protector Office)"); // NBP Branch
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(150, 194);
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(172, 221.5);
+        $pdf->Write(10, "4000"); // Welfare Fund 
+
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(172, 225.5);
         $pdf->Write(10, "2500"); // Insurance Fund 
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(150, 197);
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(172, 229.5);
         $pdf->Write(10, "500"); // Insurance Fund 
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(150, 201);
-        $pdf->Write(10, "6000"); // Bank Certificate/Service
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(172, 234.5);
+        $pdf->Write(10, "15000"); // Bank Certificate/Service
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(150, 206.5);
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(172, 240.5);
         $pdf->Write(10, "200"); // OEC
 
-        $pdf->SetFont('Times', '', 6);
-        $pdf->SetXY(150, 210);
+        $pdf->SetFont('Times', '', 7);
+        $pdf->SetXY(172, 244.5);
         $pdf->Write(10, "10"); // Adhesive Fee
 
         // Import and use the second page
