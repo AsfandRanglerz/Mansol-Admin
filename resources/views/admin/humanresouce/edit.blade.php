@@ -45,16 +45,10 @@
                                             </div>
                                         </div>
 
-                                        @if ($company)
+                                        {{-- @if ($company)
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="company_id">Company</label>
-                                                {{-- <select name="company_id" id="company_id" class="form-control">
-                                                    <option value="">Select Company</option>
-                                                    @foreach ($companies as $company)
-                                                        <option value="{{ $company->id }}" {{ $company->id == $company_id ? 'selected' : '' }}>{{ $company->name }}</option>
-                                                    @endforeach
-                                                </select> --}}
                                                 <input type="text" value="{{ $company->name }}" readonly class="form-control">
                                             </div>
                                         </div>
@@ -76,33 +70,24 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        @endif
+                                        @endif --}}
                                         
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="craft">Application for Post</label>
-                                                {{-- <select name="craft_id" class="form-control" id="craft">
-                                                    <option value="" selected disabled>Select Craft</option>
-                                                    @foreach ($crafts as $craft)
-                                                        <option value="{{ $craft->id }}" {{ $craft->id == $HumanResource->craft_id ? 'selected' : '' }}>{{ $craft->name }}</option>
-                                                    @endforeach
-                                                </select> --}}
                                                 <input type="text" value="{{ optional($craft)->name }}" readonly class="form-control">
 
                                                 @error('craft')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> --}}
 
-                                        <input type="hidden" name="craft_id" value="{{ $craft->id ?? null }}">
+                                        {{-- <input type="hidden" name="craft_id" value="{{ $craft->id ?? null }}"> --}}
                                         
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="sub_craft">Sub-Craft</label>
-                                                {{-- <select name="sub_craft_id" class="form-control" id="sub_craft">
-                                                    <option value="" selected disabled>Select Sub-Craft</option>
-                                                </select> --}}
                                                 <input type="text" value="{{ $subCraft->name ?? null }}" readonly class="form-control">
                                                 @error('sub_craft')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -110,9 +95,9 @@
                                             </div>
                                         </div>
                                         
-                                        <input type="hidden" name="sub_craft_id" value="{{ $subCraft->id ?? null }}">
+                                        <input type="hidden" name="sub_craft_id" value="{{ $subCraft->id ?? null }}"> --}}
                                         
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="application_date">Application Date</label>
                                                 <input type="date" class="form-control" id="application_date"
@@ -122,7 +107,7 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -936,7 +921,7 @@
                                                         Approved</option>
                                                     <option value="0"
                                                         {{ old('status', $HumanResource->status) == 0 ? 'selected' : '' }}>
-                                                        Rejected</option>
+                                                         Rejected</option>
                                                 </select>
                                                 @error('status')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -949,7 +934,7 @@
                                         @endif
                                     </div>
                                     <div class="modal-footer justify-content-center">
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
                                     </div>
                                 </form>
                             </div>
@@ -959,7 +944,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header text-center d-flex justify-content-between align-items-center">
-                        <a class="btn btn-primary" onclick="showUserModel('createDriverModel')">Mobilize</a>
+                        <a class="btn btn-primary" onclick="showUserModel('createDriverModel')">Nominate</a>
                         <h4 class="flex-grow-1 text-center m-0">Job History</h4>
                         <div style="width: 75px;"></div> <!-- Empty space to balance the button width -->
                     </div>
@@ -972,12 +957,12 @@
                                 <th>Sr.</th>
                                 <th>Company</th>
                                 <th>Project</th>
-                                <th>Demand</th>
                                 <th>Craft</th>
                                 <th>Sub-Craft</th>
                                 <th>Application Date</th>
-                                <th>Demobe</th>
-                                <th scope="col">Actions</th>
+                                <th>Mob-Date</th>
+                                <th>Demob-Date</th>
+                                <th scope="col-2">Actions</th>
                               </tr>
                         </thead>
                         <tbody>
@@ -987,39 +972,39 @@
                                         {{ $loop->iteration }}
                                     </td>
                                     <td>
-                                        {{ $data->company_name ?? 'N/A' }}
+                                        {{ $data->company->name ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $data->company_name ?? 'N/A' }}
+                                        {{ $data->project->project_name ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $data->company_name ?? 'N/A' }}
+                                        {{ $data->craft->name ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $data->craft_name ?? 'N/A' }}
+                                        {{ $data->subCraft->name ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $data->sub_craft_name ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $data->start_date ?? 'N/A' }}
+                                        {{ $data->application_date ?? 'N/A' }}
                                     </td>
                                     <td>
                                         {{ $data->end_date ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-2">
+                                        {{ $data->end_date ?? 'N/A' }}
+                                    </td>
+                                    <td class="">
+                                        <div class="row m-1">
+                                            {{-- <div class="col-md-6 mb-2">
                                                 <button type="button"
-                                                    class="btn btn-primary editDriverBtn w-100"
-                                                    data-id="{{ $data->id }}">Edit</button>
-                                            </div>
+                                                    class="btn btn-primary editDriverBtn"
+                                                    data-id="{{ $data->id }}"><span class="fa fa-edit"></span></button>
+                                            </div> --}}
                                             <div class="col-md-6 mb-2">
                                                 <form action="{{ route('humanresource.destroy', $data->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-flat w-100 show_confirm"
-                                                        data-toggle="tooltip">Delete</button>
+                                                    <button type="submit" class="btn btn-danger btn-flat show_confirm"
+                                                        data-toggle="tooltip"><span class="fa fa-trash"></span></button>
                                                 </form>
                                             </div>
                                         </div>                                        
@@ -1053,7 +1038,7 @@
                                     <select name="company_id" id="company_id" class="form-control">
                                         <option value="">Select Company</option>
                                         @foreach ($companies as $company)
-                                            <option value="{{ $company->name }}">{{ $company->name }}</option>
+                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback"></div>
@@ -1092,7 +1077,6 @@
                                 </div>
                             </div>
                         </div>
-        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -1115,16 +1099,6 @@
                                 </div>
                             </div>
                         </div>
-        
-                        {{-- <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="end_date">End Date</label>
-                                    <input type="date" class="form-control" id="editEndDate" name="end_date">
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                        </div> --}}
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -1139,7 +1113,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" id="mymodal" role="document">
             <div class="modal-content">
                 <div class="modal-header justify-content-center">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Driver</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Demob</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1148,7 +1122,7 @@
                     <form id="editDriverForm" enctype="multipart/form-data">
                         <input type="hidden" id="editDriverId" name="id">
 
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="start_date">Company</label>
@@ -1163,44 +1137,65 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label class="text-danger" for="project_id">Project</label>
+                                    <select name="project_id" id="project_id" class="form-control">
+                                        <option value="" selected disabled>Select Project</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="text-danger" for="demand_id">Demand</label>
+                                    <select name="demand_id" id="demand_id" class="form-control">
+                                        <option value="" selected disabled>Select Demand</option>
+                                    </select>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="start_date">Craft</label>
-                                    <select name="craft_name" id="craft_name" class="form-control">
+                                    <select name="craft_name" id="craft" class="form-control">
                                         <option value="">Select Craft</option>
                                         @foreach ($crafts as $craft)
-                                            <option value="{{ $craft->id }}">{{ $craft->name }}</option>
+                                            <option value="{{ $craft->name }}">{{ $craft->name }}</option>
                                         @endforeach
                                     </select>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
+                        </div> --}}
+        
+                        {{-- <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="start_date">Sub-Craft</label>
-                                    <select name="sub_craft_name" id="sub_craft_name" class="form-control">
-                                        <option value="">Select Sub-Craft</option>
-                                        @foreach ($subCrafts as $data)
-                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
-                                        @endforeach
-                                    </select>
+                                        <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
+                                        <select name="sub_craft_id" class="form-control" id="sub_craft">
+                                            <option value="" selected disabled>Select Sub-Craft</option>
+                                        </select>
+                                        @error('sub_craft')
+                                        <div class="text-danger">{{ $message }}</div>
+                                        @enderror
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="start_date">Start Date</label>
-                                    <input type="date" class="form-control" id="editStartDate" name="start_date">
+                                    <label for="start_date">Application Date</label>
+                                    <input type="date" class="form-control" id="editStartDate" name="start_date" value="{{ date('Y-m-d') }}" readonly>
+
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                        </div>
-
+                        </div> --}}
+        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="end_date">End Date</label>
+                                    <label for="end_date">Demob Date</label>
                                     <input type="date" class="form-control" id="editEndDate" name="end_date">
                                     <div class="invalid-feedback"></div>
                                 </div>
@@ -1287,6 +1282,166 @@
             // editDriver(id);
             });
         
+
+            $('#company_id').on('change', function () {
+            var companyId = $(this).val();
+
+            $.ajax({
+                url: "{{ route('get-projects') }}",
+                type: "GET",
+                data: {
+                    company_id: companyId
+                },
+                success: function (data) {
+                    $('#project_id').empty();
+                    $('#demand_id').empty();
+                    $('#sub_craft').empty();
+                    $('#project_id').append(
+                        '<option value="" selected disabled>Select Project</option>');
+                    $('#demand_id').append(
+                        '<option value="" selected disabled>Select Demand</option>');
+                    $('#sub_craft').append(
+                        '<option value="" selected disabled>Select Sub-Craft</option>');
+
+                    $.each(data, function (key, value) {
+                        $('#project_id').append('<option value="' + value.id +
+                            '">' + value.project_name + '</option>');
+                    });
+
+                    if ($('#status option[value="3"]').length === 0) {
+                        $('#status').empty().append('<option value="3" selected>Nominate</option>');
+                    } else {
+                        $('#status').val('3');
+                    }
+                }
+            });
+        });
+
+        $('#project_id').on('change', function () {
+            var projectId = $(this).val();
+
+            $.ajax({
+                url: "{{ route('get-demand') }}",
+                type: "GET",
+                data: {
+                    project_id: projectId
+                },
+                success: function (data) {
+                    $('#demand_id').empty();
+                    $('#demand_id').append(
+                        '<option value="" selected disabled>Select Demand</option>');
+
+                    $.each(data, function (key, value) {
+                        $('#demand_id').append('<option value="' + value.id +
+                            '">Man Power - ' + value.manpower + '</option>');
+                    });
+                }
+            });
+        });
+        </script>
+        <script>
+            $(document).ready(function () {
+                // When company is selected
+                $('#company_id').on('change', function () {
+                    var companyId = $(this).val();
+        
+                    if (companyId) {
+                        $('#project-group').removeClass('d-none');
+                        $('#demand-group').removeClass('d-none');
+                    } else {
+                        $('#project-group').addClass('d-none');
+                        $('#demand-group').addClass('d-none');
+                        $('#craft').closest('.col-md-4').removeClass('d-none');
+                        $('#sub_craft').closest('.col-md-4').removeClass('d-none');
+                    }
+        
+                    // Reset dependent fields
+                    $('#project_id').empty().append('<option value="" selected disabled>Select Project</option>');
+                    $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+                    $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+        
+                    if (companyId) {
+                        $.ajax({
+                            url: "{{ route('get-projects') }}",
+                            type: "GET",
+                            data: { company_id: companyId },
+                            success: function (data) {
+                                $.each(data, function (key, value) {
+                                    $('#project_id').append('<option value="' + value.id + '">' + value.project_name + '</option>');
+                                });
+                            }
+                        });
+                    }
+                });
+        
+                // When project is selected
+                $('#project_id').on('change', function () {
+                    var projectId = $(this).val();
+        
+                    $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+                    $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+        
+                    if (projectId) {
+                        $.ajax({
+                            url: "{{ route('get-demand') }}",
+                            type: "GET",
+                            data: { project_id: projectId },
+                            success: function (data) {
+                                $.each(data, function (key, value) {
+                                    $('#demand_id').append('<option value="' + value.id + '">Man Power - ' + value.manpower + '</option>');
+                                });
+                            }
+                        });
+                    }
+                });
+        
+                // When demand is selected
+                $('#demand_id').on('change', function () {
+                    var demandId = $(this).val();
+        
+                    $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+        
+                    if (demandId) {
+                        $.ajax({
+                            url: "{{ route('get-crafts-by-demand') }}",
+                            type: "GET",
+                            data: { demand_id: demandId },
+                            success: function (data) {
+                                if (data.length > 0) {
+                                    $.each(data, function (key, value) {
+                                        $('#craft').append('<option value="' + value.id + '">' + value.name + '</option>');
+                                    });
+                                    // Automatically select the first craft
+                                    $('#craft').val(data[0].id).trigger('change');
+                                }
+                            }
+                        });
+                    }
+                });
+        
+                // When craft is selected
+                $('#craft').on('change', function () {
+                    var craftId = $(this).val();
+        
+                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+        
+                    if (craftId) {
+                        $.ajax({
+                            url: "{{ route('get-sub-crafts') }}",
+                            type: "GET",
+                            data: { craft_id: craftId },
+                            success: function (data) {
+                                $.each(data, function (key, value) {
+                                    $('#sub_craft').append('<option value="' + value.id + '">' + value.name + '</option>');
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         </script>
     {{-- <script>
         $(document).ready(function() {

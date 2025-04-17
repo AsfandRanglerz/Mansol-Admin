@@ -53,6 +53,7 @@ class HumanResourceController extends Controller
     public function store(Request $request)
     {
         // dd($request);
+        // return $request;
         $request->validate([
             'registration' => 'required|string|max:255',
             'application_date' => 'required|date',
@@ -190,13 +191,18 @@ class HumanResourceController extends Controller
         $message['password'] = $password;
 
         // Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
-        $history = JobHistory::create([
-            'human_resource_id' => $HumanResource->id,
-            'company_id' => $request->company_id,
-            'craft_id' => $request->craft_id,
-            'sub_craft_id' => $request->sub_craft_id,
-            'start_date' => $request->application_date,
-        ]);
+        if (!empty($request->input('company_id')) || !empty($request->input('craft_id'))) {
+                    $history = JobHistory::create([
+                        'human_resource_id' => $HumanResource->id,
+                        'company_id'        => $request->company_id ?? null,
+                        'project_id'        => $request->project_id ?? null,
+                        'demand_id'         => $request->demand_id ?? null,
+                        'craft_id'          => $request->craft_id ?? null,
+                        'sub_craft_id'      => $request->sub_craft_id ?? null,
+                        'application_date'        => $request->application_date ?? null,
+                    ]);
+        }
+        
         // Return success message
         return redirect()->route('humanresource.index')->with(['message' => 'Human Resource Created Successfully']);
     }
@@ -226,8 +232,8 @@ class HumanResourceController extends Controller
             $demand = $nominates->demand_id ? Demand::find($nominates->demand_id) : null;
         }
     
-        $histories = JobHistory::where('human_resource_id', $id)->latest()->get();
-    
+        $histories = JobHistory::with('humanResource','company','project','craft','subCraft')->where('human_resource_id', $id)->latest()->get();
+        // return $histories;
         return view('admin.humanresouce.edit', compact(
             'HumanResource',
             'crafts',
@@ -359,7 +365,7 @@ class HumanResourceController extends Controller
             'performance_appraisal' => $request->performance_appraisal,
             'min_salary' => $request->min_salary,
             'comment' => $request->comment,
-        ]);
+        ]); 
         $history = JobHistory::create([
             'human_resource_id' => $HumanResource->id,
             'company_id' => $request->company_id,

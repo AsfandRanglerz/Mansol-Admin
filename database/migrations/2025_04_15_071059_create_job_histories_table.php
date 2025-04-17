@@ -16,11 +16,14 @@ class CreateJobHistoriesTable extends Migration
         Schema::create('job_histories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('human_resource_id')->constrained(`human_resources`)->onDelete('cascade');
-            $table->string('company_name')->nullable(); 
-            $table->string('craft_name')->nullable(); 
-            $table->string('sub_craft_name')->nullable(); 
-            $table->string('start_date')->nullable(); 
-            $table->string('end_date')->nullable(); 
+            $table->foreignId('company_id')->constrained(`companies`)->onDelete('cascade')->nullable(); 
+            $table->foreignId('project_id')->constrained(`projects`)->onDelete('cascade')->nullable(); 
+            $table->foreignId('demand_id')->constrained(`demands`)->onDelete('cascade')->nullable(); 
+            $table->foreignId('craft_id')->constrained(`main_crafts`)->onDelete('cascade')->nullable(); 
+            $table->foreignId('sub_craft_id')->constrained(`sub_crafts`)->onDelete('cascade')->nullable(); 
+            $table->string('application_date')->nullable(); 
+            $table->string('demobe_date')->nullable(); 
+            $table->string('status')->default(0); 
             $table->timestamps();
         });
     }

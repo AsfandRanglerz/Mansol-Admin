@@ -85,4 +85,10 @@ class MainCraftController extends Controller
 
         return response()->json($subCrafts);
     }
+
+    public function getAllCrafts()
+{
+    $crafts = MainCraft::all(); // Fetch all crafts from the database   
+    return response()->json($crafts);
+}
 }

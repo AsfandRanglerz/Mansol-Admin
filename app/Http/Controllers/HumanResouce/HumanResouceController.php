@@ -380,9 +380,22 @@ class HumanResouceController extends Controller
        $hr = HumanResource::find($data['human_resource_id']);
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         
-        // Set the source PDF file
-        $path = public_path('admin/assets/NBP_Blank.pdf'); 
-        $pdf->setSourceFile($path);
+        // // Set the source PDF file
+        // $path = public_path('admin/assets/NBP_Blank.pdf'); 
+        // $pdf->setSourceFile($path);
+        try{
+            // Set the source PDF file
+            $path = public_path('admin/assets/NBP_Blank.pdf'); 
+            $pdf->setSourceFile($path);
+        }catch (\Exception $e) {
+            return response()->json([
+                'error' => true,
+                'error' => 'tt',
+                'message' => 'PDF Generation Failed',
+                'details' => $e->getMessage(),
+                'line' => $e->getLine(),
+            ], 500);
+        }
         
         // Import first page
         $pdf->AddPage();

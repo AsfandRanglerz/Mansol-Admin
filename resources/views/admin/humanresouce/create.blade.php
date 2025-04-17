@@ -104,7 +104,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="application_date">Application Date</label>
                                             <input type="date" class="form-control" id="application_date"
-                                                name="application_date" value="{{ old('application_date') }}" required>
+                                                name="application_date" value="{{ date('Y-m-d') }}" required readonly>
                                             @error('application_date')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -1056,35 +1056,31 @@
         $('#company_id').on('change', function () {
             var companyId = $(this).val();
 
-            $.ajax({
-                url: "{{ route('get-projects') }}",
-                type: "GET",
-                data: {
-                    company_id: companyId
-                },
-                success: function (data) {
-                    $('#project_id').empty();
-                    $('#demand_id').empty();
-                    $('#sub_craft').empty();
-                    $('#project_id').append(
-                        '<option value="" selected disabled>Select Project</option>');
-                    $('#demand_id').append(
-                        '<option value="" selected disabled>Select Demand</option>');
-                    $('#sub_craft').append(
-                        '<option value="" selected disabled>Select Sub-Craft</option>');
+            if (companyId) {
+                $('#project-group').removeClass('d-none');
+                $('#demand-group').removeClass('d-none');
+            } else {
+                $('#project-group').addClass('d-none');
+                $('#demand-group').addClass('d-none');
 
-                    $.each(data, function (key, value) {
-                        $('#project_id').append('<option value="' + value.id +
-                            '">' + value.project_name + '</option>');
-                    });
+                // Load all crafts when no company is selected
+                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+                $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
 
-                    if ($('#status option[value="3"]').length === 0) {
-                        $('#status').empty().append('<option value="3" selected>Nominate</option>');
-                    } else {
-                        $('#status').val('3');
+                $.ajax({
+                    url: "{{ route('get-all-crafts') }}", // Backend route to fetch all crafts
+                    type: "GET",
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $('#craft').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
                     }
-                }
-            });
+                });
+            }
+
+            // Reset dependent fields
+            $('#project_id').empty().append('<option value="" selected disabled>Select Project</option>');
+            $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
         });
 
         $('#project_id').on('change', function () {
@@ -1124,6 +1120,110 @@
                 $('#sub_craft').closest('.col-md-4').removeClass('d-none');
                 $('#project-group').addClass('d-none');
                 $('#demand-group').addClass('d-none');
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // When company is selected
+        $('#company_id').on('change', function () {
+            var companyId = $(this).val();
+
+            if (companyId) {
+                $('#project-group').removeClass('d-none');
+                $('#demand-group').removeClass('d-none');
+            } else {
+                $('#project-group').addClass('d-none');
+                $('#demand-group').addClass('d-none');
+                $('#craft').closest('.col-md-4').removeClass('d-none');
+                $('#sub_craft').closest('.col-md-4').removeClass('d-none');
+            }
+
+            // Reset dependent fields
+            $('#project_id').empty().append('<option value="" selected disabled>Select Project</option>');
+            $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+            $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+            $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+
+            if (companyId) {
+                $.ajax({
+                    url: "{{ route('get-projects') }}",
+                    type: "GET",
+                    data: { company_id: companyId },
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $('#project_id').append('<option value="' + value.id + '">' + value.project_name + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+
+        // When project is selected
+        $('#project_id').on('change', function () {
+            var projectId = $(this).val();
+
+            $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+            $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+            $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+
+            if (projectId) {
+                $.ajax({
+                    url: "{{ route('get-demand') }}",
+                    type: "GET",
+                    data: { project_id: projectId },
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $('#demand_id').append('<option value="' + value.id + '">Man Power - ' + value.manpower + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+
+        // When demand is selected
+        $('#demand_id').on('change', function () {
+            var demandId = $(this).val();
+
+            $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+            $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+
+            if (demandId) {
+                $.ajax({
+                    url: "{{ route('get-crafts-by-demand') }}",
+                    type: "GET",
+                    data: { demand_id: demandId },
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $.each(data, function (key, value) {
+                                $('#craft').append('<option value="' + value.id + '">' + value.name + '</option>');
+                            });
+                            // Automatically select the first craft
+                            $('#craft').val(data[0].id).trigger('change');
+                        }
+                    }
+                });
+            }
+        });
+
+        // When craft is selected
+        $('#craft').on('change', function () {
+            var craftId = $(this).val();
+
+            $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+
+            if (craftId) {
+                $.ajax({
+                    url: "{{ route('get-sub-crafts') }}",
+                    type: "GET",
+                    data: { craft_id: craftId },
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $('#sub_craft').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    }
+                });
             }
         });
     });

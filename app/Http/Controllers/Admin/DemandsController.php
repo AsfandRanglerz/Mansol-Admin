@@ -104,4 +104,11 @@ class DemandsController extends Controller
         $demands = Demand::where('project_id', $request->project_id)->orderBy('manpower', 'asc')->get();
         return response()->json($demands);
     }
+
+    public function getCrafts(Request $request)
+    {
+        $demand = Demand::where('id', $request->demand_id)->first();
+        $craft = MainCraft::where('id', $demand->craft_id)->latest()->get();
+        return response()->json($craft);
+    }
 }

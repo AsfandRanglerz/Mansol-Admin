@@ -38,3 +38,9 @@ public function edit($id)
         'histories'
     ));
 }
+
+public function getAllCrafts()
+{
+    $crafts = MainCraft::all(); // Fetch all crafts from the database
+    return response()->json($crafts);
+}

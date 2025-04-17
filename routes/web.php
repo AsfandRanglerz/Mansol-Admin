@@ -89,6 +89,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::delete('/mainCraft-destroy/{id}',  'destroy')->name('maincraft.destroy');
         
         Route::get('/get-sub-crafts', 'getSubCrafts')->name('get-sub-crafts');
+        Route::get('/get-all-crafts', 'getAllCrafts')->name('get-all-crafts');
     });
 
 
@@ -133,6 +134,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::delete('/demand-destroy/{id}',  'destroy')->name('demand.destroy');
 
         Route::get('/get-demand', 'getDemand')->name('get-demand');
+        Route::get('/get-crafts-by-demand', 'getCrafts')->name('get-crafts-by-demand');
     });
     // ############ Human Resource ################# 
     Route::controller(HumanResourceController::class)->group(function () {
