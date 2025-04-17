@@ -818,11 +818,11 @@
                                 <input type="file" class="form-control" name="scanned_visa" id="scanned_visa"
                                     accept=".pdf,image/*" onchange="previewFile(this)" />
                                 <div class="preview-box mt-3">
-                                    <div class="preview-box mt-3">
+                                    <div class="preview-box">
                                         <iframe id="pdfPreview-{{ $HumanResource->id }}" class="d-none"
                                             width="100%" height="300px"></iframe>
                                         <img id="imagePreview-{{ $HumanResource->id }}" class="img-fluid d-none"
-                                            style="max-width: 100%; max-height: 300px; object-fit: contain;" />
+                                            style="max-width: 100%; height: 300px; object-fit: contain;" />
                                     </div>
                                 </div>
                             </div>
@@ -873,7 +873,7 @@
                                     <iframe id="ticketPdfPreview" class="d-none" width="100%"
                                         height="300px"></iframe>
                                     <img id="ticketImagePreview" class="img-fluid d-none"
-                                        style="max-width: 100%; max-height: 300px; object-fit: contain;" />
+                                        style="max-width: 100%; height: 300px; object-fit: contain;" />
                                 </div>
                             </div>
                         </div>
