@@ -383,14 +383,15 @@ class HumanResouceController extends Controller
         // // Set the source PDF file
         // $path = public_path('admin/assets/NBP_Blank.pdf'); 
         // $pdf->setSourceFile($path);
-        try{
-            // Set the source PDF file
-            $path = public_path('admin/assets/NBP_Blank.pdf'); 
+        try {
+            $path = public_path('admin/assets/NBP_Blank.pdf');
+            if (!file_exists($path)) {
+                throw new \Exception("Source PDF file not found at: $path");
+            }
             $pdf->setSourceFile($path);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'error' => true,
-                'error' => 'tt',
                 'message' => 'PDF Generation Failed',
                 'details' => $e->getMessage(),
                 'line' => $e->getLine(),
