@@ -808,7 +808,7 @@
                                 <label for="endorsed_date">Endorsement Date</label>
                                 <input type="date" class="form-control" name="endorsed_date"
                                     id="endorsed_date" />
-                                <div>
+                                <div class="mt-3">
                                     <label for="endorsed">Endorsed?</label>
                                     <input type="checkbox" name="endorsed" id="endorsed">
                                 </div>
