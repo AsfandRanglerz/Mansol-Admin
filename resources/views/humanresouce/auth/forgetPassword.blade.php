@@ -11,7 +11,7 @@
                         </div>
                         <div class="card-body">
                             <p class="text-muted">We will send a link to reset your password</p>
-                            <form method="POST" action="{{url('human-resouce-reset-password-link')}}">
+                            <form method="POST" action="{{url('human-resource-reset-password-link')}}">
                                 @csrf
                                 <div class="form-group">
                                     <label for="email">Email</label>

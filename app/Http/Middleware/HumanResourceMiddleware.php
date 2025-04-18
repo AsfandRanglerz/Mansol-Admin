@@ -21,7 +21,7 @@ class HumanResourceMiddleware
 
             return $next($request);
         } else {
-            return redirect('/human-resouce')->with('error', 'Unauthorized Access!');
+            return redirect('/human-resource')->with('error', 'Unauthorized Access!');
         }
     }
 }
