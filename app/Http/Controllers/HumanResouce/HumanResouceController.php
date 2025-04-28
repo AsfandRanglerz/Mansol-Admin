@@ -435,20 +435,20 @@ class HumanResouceController extends Controller
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 71);  
-        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
+        $pdf->SetXY(162, 71);  
+        $pdf->Write(10, 'Rs. '.$data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 76);  
-        $pdf->Write(10, $data['state_life'].' /-');  // State Life
+        $pdf->SetXY(162, 76);  
+        $pdf->Write(10, 'Rs. '.$data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(167, 81);  
+        $pdf->SetXY(164, 81);  
         $pdf->Write(10, "Rs. 200/-");  // OEC Emigrant Fund it remain fixed
 
         $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(165, 86.2);  
-        $pdf->Write(10, $data['total_amount'].' /-');  // Total price
+        $pdf->SetXY(162, 86.2);  
+        $pdf->Write(10, 'Rs. '.$data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(44, 86.4);  
@@ -482,23 +482,27 @@ class HumanResouceController extends Controller
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 175.2);  
-        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
+        $pdf->SetXY(162, 175.2);  
+        $pdf->Write(10, 'Rs. '.$data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 180.2);  
-        $pdf->Write(10, $data['state_life'].' /-');  // State Life
+        $pdf->SetXY(162, 180.2);  
+        $pdf->Write(10, 'Rs. '.$data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(167, 185.2);  
+        $pdf->SetXY(163, 185.2);  
         $pdf->Write(10, "Rs. 200/-");  // OEC Emigrant Fund it remain fixed
 
         $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(165, 86.2);  
-        $pdf->Write(10, $data['total_amount'].' /-');  // Total price
+        $pdf->SetXY(144, 190.2);  
+        $pdf->Write(10, 'Total');  // Total price heading
+
+        $pdf->SetFont('Helvetica', 'B', 8);
+        $pdf->SetXY(162, 190.2);  
+        $pdf->Write(10, 'Rs. '.$data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(44, 86.4);  
+        $pdf->SetXY(44, 190);  
         $pdf->Write(10, $data['total_amount_words']);  // Price in words
 
         // Import second page
@@ -539,20 +543,20 @@ class HumanResouceController extends Controller
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 69);  
-        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
+        $pdf->SetXY(162, 69);  
+        $pdf->Write(10, 'Rs. '.$data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 74);  
-        $pdf->Write(10, $data['state_life'].' /-');  // State Life
+        $pdf->SetXY(162, 74);  
+        $pdf->Write(10, 'Rs. '.$data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(167, 79);  
-        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+        $pdf->SetXY(163, 79);  
+        $pdf->Write(10, "Rs. 200/-");  // OEC Emigrant Fund it remain fixed
 
         $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(165, 84.2);  
-        $pdf->Write(10,  $data['total_amount'].' /-');  // Total price
+        $pdf->SetXY(162, 84.2);  
+        $pdf->Write(10,  'Rs. '.$data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(44, 84.4);  
@@ -586,20 +590,20 @@ class HumanResouceController extends Controller
         } // CNIC
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 173.2);  
-        $pdf->Write(10, $data['opf'].' /-');  // OPF Welfare Fund
+        $pdf->SetXY(162, 173.2);  
+        $pdf->Write(10, 'Rs. '.$data['opf'].' /-');  // OPF Welfare Fund
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(165, 178.2);  
-        $pdf->Write(10, $data['state_life'].' /-');  // State Life
+        $pdf->SetXY(162, 178.2);  
+        $pdf->Write(10, 'Rs. '.$data['state_life'].' /-');  // State Life
 
         $pdf->SetFont('Helvetica', '', 8);
-        $pdf->SetXY(167, 183.2);  
-        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+        $pdf->SetXY(163, 183.2);  
+        $pdf->Write(10, "Rs. 200/-");  // OEC Emigrant Fund it remain fixed
 
         $pdf->SetFont('Helvetica', 'B', 8);
-        $pdf->SetXY(165, 188.4);  
-        $pdf->Write(10,  $data['total_amount'].' /-');  // Total price
+        $pdf->SetXY(162, 188.4);  
+        $pdf->Write(10,  'Rs. '.$data['total_amount'].' /-');  // Total price
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(44, 188.2);
