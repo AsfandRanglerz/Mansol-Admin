@@ -42,7 +42,7 @@
                                     </div>
                                     <div class="tab-pane fade active show" id="settings" role="tabpanel"
                                         aria-labelledby="profile-tab2">
-                                        <form method="post" action="{{ url('human-resouce/update-profile') }}"
+                                        <form method="post" action="{{ url('human-resource/update-profile') }}"
                                             enctype="multipart/form-data">
                                             @csrf
                                             <div class="card-header">

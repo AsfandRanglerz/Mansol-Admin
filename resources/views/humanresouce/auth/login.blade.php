@@ -38,7 +38,7 @@
                                         <div class="d-block">
                                             {{-- <label class="custom-control-label" for="remember-me">Remember Me</label> --}}
                                             <div class="float-right">
-                                                <a href="{{ url('human-resouce-forgot-password') }}" class="text-small">
+                                                <a href="{{ url('human-resource-forgot-password') }}" class="text-small">
                                                     Forgot Password?
                                                 </a>
                                             </div>

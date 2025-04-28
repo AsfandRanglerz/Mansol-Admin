@@ -15,7 +15,7 @@
                             @else
                                 <p class="text-muted">Enter Your New Password</p>
                             @endif
-                            <form method="POST" action="{{url('human-resouce-reset-password')}}">
+                            <form method="POST" action="{{url('human-resource-reset-password')}}">
                                  @csrf
                                 <input value="{{$user->email}}" type="hidden" name="email" >
                                 <div class="form-group">

@@ -63,7 +63,7 @@ class HumanResouceController extends Controller
                 'token' => $token,
             ]);
 
-            $data['url'] = url('human-resouce-change_password', $token);
+            $data['url'] = url('human-resource-change_password', $token);
             Mail::to($request->email)->send(new ResetPasswordMail($data));
             return back()->with('message', 'Reset Password Link Send Successfully');
         }
@@ -96,7 +96,7 @@ class HumanResouceController extends Controller
         ];
         if (HumanResource::where('email', $request->email)->update($tags_data)) {
             DB::table('password_resets')->where('email', $request->email)->delete();
-            return redirect('human-resouce')->with('message', 'Password Reset Successfully!');
+            return redirect('human-resource')->with('message', 'Password Reset Successfully!');
         }
     }
     
@@ -105,7 +105,7 @@ class HumanResouceController extends Controller
         Auth::guard('humanresource')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('human-resouce')->with('message', 'Log Out Successfully');
+        return redirect('human-resource')->with('message', 'Log Out Successfully');
     }
 
     // Pdf module function
@@ -444,7 +444,7 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(167, 81);  
-        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+        $pdf->Write(10, "Rs. 200/-");  // OEC Emigrant Fund it remain fixed
 
         $pdf->SetFont('Helvetica', 'B', 8);
         $pdf->SetXY(165, 86.2);  
@@ -491,7 +491,7 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetXY(167, 185.2);  
-        $pdf->Write(10, "Rs 200/-");  // OEC Emigrant Fund it remain fixed
+        $pdf->Write(10, "Rs. 200/-");  // OEC Emigrant Fund it remain fixed
 
         $pdf->SetFont('Helvetica', 'B', 8);
         $pdf->SetXY(165, 86.2);  

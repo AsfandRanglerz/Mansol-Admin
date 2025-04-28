@@ -163,6 +163,7 @@ class HumanResourceController extends Controller
             'performance_appraisal' => $request->performance_appraisal,
             'min_salary' => $request->min_salary,
             'comment' => $request->comment,
+            'image'=> 'public/admin/assets/images/users/avatar.png',
         ];
 
         // if (empty($request->input('company_id'))) {
@@ -190,7 +191,7 @@ class HumanResourceController extends Controller
         $message['email'] = $request->email;
         $message['password'] = $password;
 
-        // Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
+        Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
         if (!empty($request->input('company_id')) || !empty($request->input('craft_id'))) {
                     $history = JobHistory::create([
                         'human_resource_id' => $HumanResource->id,

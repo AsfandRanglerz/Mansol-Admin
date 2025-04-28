@@ -1,28 +1,28 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="{{ url('/human-resouce/dashboard') }}"> <img alt="image"
+            <a href="{{ url('/human-resource/dashboard') }}"> <img alt="image"
                     src="{{ asset('public/admin/assets/images/mansol-01.png') }}" class="header-logo" style="width: 50%" />
             </a>
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Main</li>
-            <li class="dropdown {{ request()->is('human-resouce/dashboard') ? 'active' : '' }}">
-                <a href="{{ url('/human-resouce/dashboard') }}" class="nav-link"><span><i
+            <li class="dropdown {{ request()->is('human-resource/dashboard') ? 'active' : '' }}">
+                <a href="{{ url('/human-resource/dashboard') }}" class="nav-link"><span><i
                             data-feather="home"></i>Dashboard</span></a>
             </li>
             {{-- My Profile --}}
-            <li class="dropdown {{ request()->is('human-resouce/my-profile*') ? 'active' : '' }}">
+            <li class="dropdown {{ request()->is('human-resource/my-profile*') ? 'active' : '' }}">
                 <a href="{{ route('myprofile.index') }}" class="nav-link px-2">
                     <span><i class="fas fa-user"></i> My Profile</span>
                 </a>
             </li>
             {{-- Notifications --}}
-            <li class="dropdown {{ request()->is('human-resouce/notification*') ? 'active' : '' }}">
+            <li class="dropdown {{ request()->is('human-resource/notification*') ? 'active' : '' }}">
                 <a href="{{ route('notificationHumanResouce.index') }}" class="nav-link">
                     <span><i data-feather="bell"></i>Notifications</span>
                     <div id="orderCounter"
-                        class="badge rounded-circle {{ request()->is('human-resouce/notification*') ? 'bg-white text-danger' : 'bg-danger text-white' }}">
+                        class="badge rounded-circle {{ request()->is('human-resource/notification*') ? 'bg-white text-danger' : 'bg-danger text-white' }}">
                         1
                     </div>
                 </a>
