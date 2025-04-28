@@ -76,6 +76,7 @@
     }
 
     .preview-box img {
+        object-fit: cover;
 
         max-width: 100%;
 
@@ -306,7 +307,7 @@
 
                                 <img id="preview-passport-1" src="{{ $passport_front ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $passport_front ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm;" />
+                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             {{-- Passport Image 2 --}}
@@ -317,7 +318,7 @@
 
                                 <img id="preview-passport-2" src="{{ $passport_back ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $passport_back ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm;" />
+                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -360,7 +361,7 @@
 
                                 <img id="preview-cnic-front" src="{{ $cnic_front ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $cnic_front ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm;" />
+                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             {{-- CNIC Back --}}
@@ -371,7 +372,7 @@
 
                                 <img id="preview-cnic-back" src="{{ $cnic_back ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $cnic_back ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm;" />
+                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -400,7 +401,7 @@
 
                             <img id="preview-photo" class="img-fluid mt-2 border rounded"
                                 src="{{ $fileExists ?: asset('default-placeholder.png') }}"
-                                style="width: 3.5cm; height: 4.5cm;" />
+                                style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
                         </div>
@@ -443,7 +444,7 @@
 
                                 <img id="preview-nok-front" src="{{ $nok_cnic_front ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $nok_cnic_front ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm;" />
+                                    style="width: 9.5cm; height: 5.5cm; object-fit: cover;" />
                             </div>
 
                             {{-- NOK CNIC Back --}}
@@ -455,7 +456,7 @@
 
                                 <img id="preview-nok-back" src="{{ $nok_cnic_back ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $nok_cnic_back ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm;" />
+                                    style="width: 9.5cm; height: 5.5cm; object-fit: cover;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -821,7 +822,7 @@
                                         <iframe id="pdfPreview-{{ $HumanResource->id }}" class="d-none"
                                             width="100%" height="300px"></iframe>
                                         <img id="imagePreview-{{ $HumanResource->id }}" class="img-fluid d-none"
-                                            style="max-width: 100%; height: 300px;" />
+                                            style="max-width: 100%; height: 300px; object-fit: contain;" />
                                     </div>
                                 </div>
                             </div>
@@ -872,7 +873,7 @@
                                     <iframe id="ticketPdfPreview" class="d-none" width="100%"
                                         height="300px"></iframe>
                                     <img id="ticketImagePreview" class="img-fluid d-none"
-                                        style="max-width: 100%; height: 300px;" />
+                                        style="max-width: 100%; height: 300px; object-fit: contain;" />
                                 </div>
                             </div>
                         </div>
