@@ -205,6 +205,17 @@
     .step-8 .border-bottom-black {
         border-bottom: 3px solid black;
     }
+
+    .download-btn {
+        top: 0.5rem;
+        right: 0rem;
+    }
+
+    .photo-download-btn {
+        top: 0.5rem;
+        left: 13%;
+        right: auto;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -304,10 +315,15 @@
                                 <label>Passport Image 1</label>
                                 <input type="file" class="form-control" name="passport_image_1" accept="image/*"
                                     onchange="previewImage(this, 'preview-passport-1')" required />
-
-                                <img id="preview-passport-1" src="{{ $passport_front ?? 'default-placeholder.png' }}"
-                                    class="img-fluid mt-2 border rounded {{ $passport_front ? '' : 'd-none' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-relative">
+                                    <img id="preview-passport-1"
+                                        src="{{ $passport_front ?? 'default-placeholder.png' }}"
+                                        class="img-fluid mt-2 border rounded {{ $passport_front ? '' : 'd-none' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
                             </div>
 
                             {{-- Passport Image 2 --}}
@@ -316,9 +332,16 @@
                                 <input type="file" class="form-control" name="passport_image_2" accept="image/*"
                                     onchange="previewImage(this, 'preview-passport-2')" required />
 
-                                <img id="preview-passport-2" src="{{ $passport_back ?? 'default-placeholder.png' }}"
-                                    class="img-fluid mt-2 border rounded {{ $passport_back ? '' : 'd-none' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-relative">
+                                    <img id="preview-passport-2"
+                                        src="{{ $passport_back ?? 'default-placeholder.png' }}"
+                                        class="img-fluid mt-2 border rounded {{ $passport_back ? '' : 'd-none' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
+
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -358,10 +381,15 @@
                                 <label>CNIC Front</label>
                                 <input type="file" class="form-control" name="cnic_front" accept="image/*"
                                     onchange="previewImage(this, 'preview-cnic-front')" required />
+                                <div class="position-relative">
+                                    <img id="preview-cnic-front" src="{{ $cnic_front ?? 'default-placeholder.png' }}"
+                                        class="img-fluid mt-2 border rounded {{ $cnic_front ? '' : 'd-none' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
 
-                                <img id="preview-cnic-front" src="{{ $cnic_front ?? 'default-placeholder.png' }}"
-                                    class="img-fluid mt-2 border rounded {{ $cnic_front ? '' : 'd-none' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             {{-- CNIC Back --}}
@@ -369,10 +397,14 @@
                                 <label>CNIC Back</label>
                                 <input type="file" class="form-control" name="cnic_back" accept="image/*"
                                     onchange="previewImage(this, 'preview-cnic-back')" required />
+                                <div class="position-relative"><img id="preview-cnic-back"
+                                        src="{{ $cnic_back ?? 'default-placeholder.png' }}"
+                                        class="img-fluid mt-2 border rounded {{ $cnic_back ? '' : 'd-none' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
+                                        class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button></div>
 
-                                <img id="preview-cnic-back" src="{{ $cnic_back ?? 'default-placeholder.png' }}"
-                                    class="img-fluid mt-2 border rounded {{ $cnic_back ? '' : 'd-none' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -399,9 +431,14 @@
                             <input type="file" class="form-control" name="photo" accept="image/*"
                                 onchange="previewImage(this, 'preview-photo')" required />
 
-                            <img id="preview-photo" class="img-fluid mt-2 border rounded"
-                                src="{{ $fileExists ?: asset('default-placeholder.png') }}"
-                                style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                            <div class="position-relative"><img id="preview-photo"
+                                    class="img-fluid mt-2 border rounded"
+                                    src="{{ $fileExists ?: asset('default-placeholder.png') }}"
+                                    style="width: 3.5cm; height: 4.5cm; object-fit: contain;" /><button
+                                    class="btn btn-primary position-absolute download-btn photo-download-btn">
+                                    <span class="fa-solid fa-download"></span>
+                                </button></div>
+
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
                         </div>
@@ -442,9 +479,15 @@
                                 <input type="file" class="form-control" name="nok_cnic_front" accept="image/*"
                                     onchange="previewImage(this, 'preview-nok-front')" required />
 
-                                <img id="preview-nok-front" src="{{ $nok_cnic_front ?? 'default-placeholder.png' }}"
-                                    class="img-fluid mt-2 border rounded {{ $nok_cnic_front ? '' : 'd-none' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: cover;" />
+                                <div class="position-relative"><img id="preview-nok-front"
+                                        src="{{ $nok_cnic_front ?? 'default-placeholder.png' }}"
+                                        class="img-fluid mt-2 border rounded {{ $nok_cnic_front ? '' : 'd-none' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
+
                             </div>
 
                             {{-- NOK CNIC Back --}}
@@ -453,10 +496,14 @@
 
                                 <input type="file" class="form-control" name="nok_cnic_back" accept="image/*"
                                     onchange="previewImage(this, 'preview-nok-back')" required />
+                                <div class="position-relative"><img id="preview-nok-back"
+                                        src="{{ $nok_cnic_back ?? 'default-placeholder.png' }}"
+                                        class="img-fluid mt-2 border rounded {{ $nok_cnic_back ? '' : 'd-none' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
+                                        class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button></div>
 
-                                <img id="preview-nok-back" src="{{ $nok_cnic_back ?? 'default-placeholder.png' }}"
-                                    class="img-fluid mt-2 border rounded {{ $nok_cnic_back ? '' : 'd-none' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: cover;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -1590,4 +1637,26 @@
                 printWindow.close();
             }, 500);
         });
+</script>
+
+<script>
+    function downloadImage(button) {
+        const imgElement = button.closest('.position-relative').querySelector('img');
+        if (imgElement && imgElement.src) {
+            const link = document.createElement('a');
+            link.href = imgElement.src;
+            link.download = 'downloaded-image.jpg'; // Default filename
+            link.click();
+        } else {
+            alert('No image available to download.');
+        }
+    }
+
+    // Attach the function to all download buttons
+    document.querySelectorAll('.download-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            downloadImage(this);
+        });
+    });
 </script>
