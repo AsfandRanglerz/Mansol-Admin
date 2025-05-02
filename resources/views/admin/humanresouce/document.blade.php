@@ -307,7 +307,7 @@
 
                                 <img id="preview-passport-1" src="{{ $passport_front ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $passport_front ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             {{-- Passport Image 2 --}}
@@ -318,7 +318,7 @@
 
                                 <img id="preview-passport-2" src="{{ $passport_back ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $passport_back ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -361,7 +361,7 @@
 
                                 <img id="preview-cnic-front" src="{{ $cnic_front ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $cnic_front ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             {{-- CNIC Back --}}
@@ -372,7 +372,7 @@
 
                                 <img id="preview-cnic-back" src="{{ $cnic_back ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $cnic_back ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm; object-fit: contain;" />
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
@@ -444,7 +444,7 @@
 
                                 <img id="preview-nok-front" src="{{ $nok_cnic_front ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $nok_cnic_front ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm; object-fit: cover;" />
+                                    style="width: 100%; height: 5.5cm; object-fit: cover;" />
                             </div>
 
                             {{-- NOK CNIC Back --}}
@@ -456,7 +456,7 @@
 
                                 <img id="preview-nok-back" src="{{ $nok_cnic_back ?? 'default-placeholder.png' }}"
                                     class="img-fluid mt-2 border rounded {{ $nok_cnic_back ? '' : 'd-none' }}"
-                                    style="width: 9.5cm; height: 5.5cm; object-fit: cover;" />
+                                    style="width: 100%; height: 5.5cm; object-fit: cover;" />
                             </div>
 
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
