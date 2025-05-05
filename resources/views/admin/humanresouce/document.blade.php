@@ -1032,8 +1032,6 @@
             let currentStep = 1;
             let maxSteps = 13;
 
-
-
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");
 
@@ -1063,89 +1061,9 @@
                     $("#nextStep").show();
                 }
                 modal.find("#submit").toggleClass("d-none", currentStep !== maxSteps);
-
-                checkStepCompletion();
-            }
-
-            function checkStepCompletion() {
-                let currentSection = modal.find(`.form-section[data-step="${currentStep}"]`);
-                let allFieldsFilled = true;
-
-                // Check all visible inputs, selects, and textareas except excluded fields
-                currentSection.find(
-                    "input:not([type='file']):not([type='hidden']):not(#endorsed_date):not(#endorsed):visible, select:visible, textarea:visible"
-                ).each(function() {
-                    if (!$(this).val()) {
-                        console.log("Empty field detected:", $(this).attr("name") || $(this)
-                            .attr("id"));
-                        allFieldsFilled = false;
-                        return false; // Break loop
-                    }
-                });
-
-                // Check file-related fields (iframe or image)
-                currentSection.find(".preview-box").each(function() {
-                    const pdfPreview = $(this).find("iframe");
-                    const imagePreview = $(this).find("img");
-
-                    // Check if either the PDF or image preview is visible and has content
-                    if (
-                        (pdfPreview.length && !pdfPreview.hasClass("d-none") && pdfPreview.attr(
-                            "src")) ||
-                        (imagePreview.length && !imagePreview.hasClass("d-none") && imagePreview
-                            .attr("src"))
-                    ) {
-                        // Valid preview exists, continue
-                    } else {
-                        console.log("File preview missing in:", $(this));
-                        allFieldsFilled = false;
-                        return false; // Break loop
-                    }
-                });
-
-                // Show or hide the "Next Step" button
-                modal.find("#nextStep").toggleClass("d-none", !allFieldsFilled);
-                modal.find("#next").text(allFieldsFilled ? "Update & Next" : "Save & Next");
-            }
-
-            function findFirstIncompleteStep() {
-                for (let step = 1; step <= maxSteps; step++) {
-                    currentStep = step;
-                    let currentSection = modal.find(`.form-section[data-step="${step}"]`);
-                    let allFieldsFilled = true;
-
-                    // Check all inputs except file and hidden inputs
-                    currentSection.find(
-                        "input:not([type='file']):not([type='hidden']), select, textarea").each(
-                        function() {
-                            if (!$(this).val()) {
-                                allFieldsFilled = false;
-                                return false; // Break loop
-                            }
-                        });
-
-                    // Check iframes or images for file-related fields
-                    currentSection.find("iframe, img").each(function() {
-                        if ($(this).is("iframe") && (!$(this).attr("src") || $(this).attr(
-                                "src") === "")) {
-                            allFieldsFilled = false;
-                            return false; // Break loop
-                        }
-                        if ($(this).is("img") && $(this).hasClass("d-none")) {
-                            allFieldsFilled = false;
-                            return false; // Break loop
-                        }
-                    });
-
-                    if (!allFieldsFilled) {
-                        return step; // Return the first incomplete step
-                    }
-                }
-                return maxSteps; // If all steps are complete, return the last step
             }
 
             modal.on("show.bs.modal", function() {
-                currentStep = findFirstIncompleteStep();
                 updateSteps();
             });
 
@@ -1166,41 +1084,6 @@
 
             modal.find("#next,#submit").click(function(event) {
                 event.preventDefault();
-                let currentSection = modal.find(`.form-section[data-step="${currentStep}"]`);
-                let allFieldsFilled = true;
-
-                // Check all visible inputs, selects, and textareas except excluded fields
-                currentSection.find(
-                    "input:not([type='file']):not([type='hidden']):not(#endorsed_date):not(#endorsed):visible, select:visible, textarea:visible"
-                ).each(function() {
-                    if (!$(this).val()) {
-                        allFieldsFilled = false;
-                        return false; // Break loop
-                    }
-                });
-
-                // Check file-related fields (iframe or image)
-                currentSection.find(".preview-box").each(function() {
-                    const pdfPreview = $(this).find("iframe");
-                    const imagePreview = $(this).find("img");
-
-                    if (
-                        (pdfPreview.length && !pdfPreview.hasClass("d-none") &&
-                            pdfPreview.attr("src")) ||
-                        (imagePreview.length && !imagePreview.hasClass("d-none") &&
-                            imagePreview.attr("src"))
-                    ) {
-                        // Valid preview exists, continue
-                    } else {
-                        allFieldsFilled = false;
-                        return false; // Break loop
-                    }
-                });
-
-                if (!allFieldsFilled) {
-                    toastr.error("Please complete all required fields before proceeding.");
-                    return;
-                }
 
                 let form = modal.find(`#form-step-${currentStep}`);
                 let button = $(this); // Get the button
@@ -1238,22 +1121,6 @@
                         updateSteps();
                     }
                 });
-            });
-
-            modal.find("input[type='file']").change(function(event) {
-                let fileInput = $(this);
-                let file = event.target.files[0];
-
-                if (file) {
-                    let reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        fileInput.siblings("img").attr("src", e.target.result).removeClass(
-                            "d-none");
-                    };
-
-                    reader.readAsDataURL(file);
-                }
             });
 
             modal.find(".step-container").click(function() {
