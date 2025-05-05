@@ -16,156 +16,155 @@ class HrStepController extends Controller
         // Array to store file names for the step
         $data = [];
 
-        if ($request->hasFile('cv') && $step == 1) {
-            $file = $request->file('cv');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+        if ($step == 1) {
+            // Handle CV upload
+            if ($request->hasFile('cv')) {
+                $file = $request->file('cv');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'cv',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
-        }
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 1,
+                        'file_type' => 'cv',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
 
-        if ($request->hasFile('passport_image_1') && $step == 2) {
-            $file = $request->file('passport_image_1');
-            $extension = $file->getClientOriginalExtension();
-            $filename = uniqid('passport_front_') . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+            // Handle Passport Images
+            if ($request->hasFile('passport_image_1')) {
+                $file = $request->file('passport_image_1');
+                $filename = uniqid('passport_front_') . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'passport front',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
-        }
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 2,
+                        'file_type' => 'passport front',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
 
-        if ($request->hasFile('passport_image_2') && $step == 2) {
-            $file = $request->file('passport_image_2');
-            $extension = $file->getClientOriginalExtension();
-            $filename = uniqid('passport_back_') . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+            if ($request->hasFile('passport_image_2')) {
+                $file = $request->file('passport_image_2');
+                $filename = uniqid('passport_back_') . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'passport back',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
-        }
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 2,
+                        'file_type' => 'passport back',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
 
-        if ($request->hasFile('cnic_front') && $step == 3) {
-            $file = $request->file('cnic_front');
-            $extension = $file->getClientOriginalExtension();
-            $filename = uniqid('cnic_front_') . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+            // Handle CNIC Images
+            if ($request->hasFile('cnic_front')) {
+                $file = $request->file('cnic_front');
+                $filename = uniqid('cnic_front_') . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'cnic front',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
-        }
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 3,
+                        'file_type' => 'cnic front',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
 
-        if ($request->hasFile('cnic_back') && $step == 3) {
-            $file = $request->file('cnic_back');
-            $extension = $file->getClientOriginalExtension();
-            $filename = uniqid('cnic_back_') . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+            if ($request->hasFile('cnic_back')) {
+                $file = $request->file('cnic_back');
+                $filename = uniqid('cnic_back_') . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'cnic back',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
-        }
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 3,
+                        'file_type' => 'cnic back',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
 
-        if ($request->hasFile('photo') && $step == 4) {
-            $file = $request->file('photo');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+            // Handle Passport-size Photo
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'photo',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
-        }
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 4,
+                        'file_type' => 'photo',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
 
-        if ($request->hasFile('nok_cnic_front') && $step == 5) {
-            $file = $request->file('nok_cnic_front');
-            $extension = $file->getClientOriginalExtension();
-            $filename = uniqid('nok_cnic_front_') . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+            // Handle NOK CNIC Images
+            if ($request->hasFile('nok_cnic_front')) {
+                $file = $request->file('nok_cnic_front');
+                $filename = uniqid('nok_cnic_front_') . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'nok cnic front',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
-        }
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 5,
+                        'file_type' => 'nok cnic front',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
 
-        if ($request->hasFile('nok_cnic_back') && $step == 5) {
-            $file = $request->file('nok_cnic_back');
-            $extension = $file->getClientOriginalExtension();
-            $filename = uniqid('nok_cnic_back_') . '.' . $extension;
-            $file->move('public/admin/assets/humanResource', $filename);
-            $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
+            if ($request->hasFile('nok_cnic_back')) {
+                $file = $request->file('nok_cnic_back');
+                $filename = uniqid('nok_cnic_back_') . '.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $filename);
+                $data['file_name'] = 'public/admin/assets/humanResource/' . $filename;
 
-            HrStep::updateOrCreate(
-                [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => $step,
-                    'file_type' => 'nok cnic back',
-                ],
-                [
-                    'file_name' => $data['file_name']
-                ]
-            );
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 5,
+                        'file_type' => 'nok cnic back',
+                    ],
+                    [
+                        'file_name' => $data['file_name']
+                    ]
+                );
+            }
         }
 
         if ($request->hasFile('medical_report') && $step == 6) {

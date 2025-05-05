@@ -249,268 +249,165 @@
                     @endfor
                 </div>
 
-                {{-- Step 1: Latest Resume --}}
-
+                {{-- Step 1: Combined Form --}}
                 <div class="form-section active" data-step="1">
-                    <div style="gap: 10px" class="d-flex align-items-center">
-                        <form style="width: 40%" id="form-step-1" action="{{ route('submit.step', ['step' => 1]) }}"
-                            method="POST" enctype="multipart/form-data" target="uploadFrame">
-                            @csrf
-
-                            <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
-
-                            <h5>Latest Resume</h5>
-
-                            <div class="form-group">
-                                <label>Upload CV (PDF only)</label>
-                                @php
-                                    $step = optional($HumanResource->hrSteps->where('step_number', 1)->first());
-                                    $fileExists = $step->file_name ? asset($step->file_name) : null;
-                                @endphp
-
-
-                                <input type="file" class="form-control" name="cv" id="cvInput" accept=".pdf"
-                                    @if ($fileExists) value={{ $step->file_name }} @endif
-                                    @if (!$fileExists) required @endif onchange="previewPDF(this)" />
-                            </div>
-                        </form>
-                        <div style="width: 60%">
-                            {{-- PDF Preview Iframe --}}
-                            <iframe class="border-0" id="pdfFrame1" src="{{ $fileExists ? $fileExists : '' }}"
-                                width="100%" height="{{ $fileExists ? '300px' : '0px' }}"
-                                {{-- Hide if no file --}}></iframe>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Step 2: Passport Images --}}
-                <div class="form-section" data-step="2">
-                    <form id="form-step-2" action="{{ route('submit.step', ['step' => 2]) }}" method="POST"
+                    <form id="form-step-1" action="{{ route('submit.step', ['step' => 1]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
 
-                        <h5>Valid Passport</h5>
-
-                        <div class="row">
+                        {{-- Latest Resume --}}
+                        <h5>Latest Resume</h5>
+                        <div class="form-group">
+                            <label>Upload CV (PDF only)</label>
                             @php
-                                $steps = $HumanResource->hrSteps->where('step_number', 2);
-                                $passport_front = null;
-                                $passport_back = null;
-
-                                foreach ($steps as $step) {
-                                    if (!empty($step->file_type) && strtolower($step->file_type) === 'passport front') {
-                                        $passport_front = asset($step->file_name);
-                                    } elseif (
-                                        !empty($step->file_type) &&
-                                        strtolower($step->file_type) === 'passport back'
-                                    ) {
-                                        $passport_back = asset($step->file_name);
-                                    }
-                                }
+                                $cv = optional(
+                                    $HumanResource->hrSteps->where('step_number', 1)->where('file_type', 'cv')->first(),
+                                )->file_name;
                             @endphp
+                            <input type="file" class="form-control" name="cv" accept=".pdf"
+                                onchange="previewPDF(this, 'cvPreview')" />
+                            <iframe id="cvPreview" class="border-0 mt-2 {{ $cv ? '' : 'd-none' }}"
+                                src="{{ $cv ? asset($cv) : '' }}" width="100%" height="300px"></iframe>
+                        </div>
 
-
-                            {{-- Passport Image 1 --}}
+                        {{-- Passport Images --}}
+                        <h5>Valid Passport</h5>
+                        <div class="row">
                             <div class="col-md-6">
                                 <label>Passport Image 1</label>
+                                @php
+                                    $passportFront = optional(
+                                        $HumanResource->hrSteps
+                                            ->where('step_number', 2)
+                                            ->where('file_type', 'passport front')
+                                            ->first(),
+                                    )->file_name;
+                                @endphp
                                 <input type="file" class="form-control" name="passport_image_1" accept="image/*"
-                                    onchange="previewImage(this, 'preview-passport-1')" required />
-                                <div class="position-relative">
-                                    <img id="preview-passport-1"
-                                        src="{{ $passport_front ?? 'default-placeholder.png' }}"
-                                        class="img-fluid mt-2 border rounded {{ $passport_front ? '' : 'd-none' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
+                                    onchange="previewImage(this, 'passportFrontPreview')" />
+                                <img id="passportFrontPreview"
+                                    class="img-fluid mt-2 border rounded {{ $passportFront ? '' : 'd-none' }}"
+                                    src="{{ $passportFront ? asset($passportFront) : '' }}"
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
-
-                            {{-- Passport Image 2 --}}
                             <div class="col-md-6">
                                 <label>Passport Image 2</label>
+                                @php
+                                    $passportBack = optional(
+                                        $HumanResource->hrSteps
+                                            ->where('step_number', 2)
+                                            ->where('file_type', 'passport back')
+                                            ->first(),
+                                    )->file_name;
+                                @endphp
                                 <input type="file" class="form-control" name="passport_image_2" accept="image/*"
-                                    onchange="previewImage(this, 'preview-passport-2')" required />
-
-                                <div class="position-relative">
-                                    <img id="preview-passport-2"
-                                        src="{{ $passport_back ?? 'default-placeholder.png' }}"
-                                        class="img-fluid mt-2 border rounded {{ $passport_back ? '' : 'd-none' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
-
+                                    onchange="previewImage(this, 'passportBackPreview')" />
+                                <img id="passportBackPreview"
+                                    class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
+                                    src="{{ $passportBack ? asset($passportBack) : '' }}"
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
-
-                            <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
                         </div>
-                    </form>
-                </div>
 
-
-                {{-- Step 3: CNIC --}}
-                <div class="form-section" data-step="3">
-                    <form id="form-step-3" action="{{ route('submit.step', ['step' => 3]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-
+                        {{-- CNIC --}}
                         <h5>CNIC</h5>
-
                         <div class="row">
-                            @php
-                                $steps = $HumanResource->hrSteps->where('step_number', 3);
-                                $cnic_front = null;
-                                $cnic_back = null;
-
-                                foreach ($steps as $step) {
-                                    if (!empty($step->file_type) && strtolower($step->file_type) === 'cnic front') {
-                                        $cnic_front = asset($step->file_name);
-                                    } elseif (
-                                        !empty($step->file_type) &&
-                                        strtolower($step->file_type) === 'cnic back'
-                                    ) {
-                                        $cnic_back = asset($step->file_name);
-                                    }
-                                }
-                            @endphp
-
-                            {{-- CNIC Front --}}
                             <div class="col-md-6">
                                 <label>CNIC Front</label>
+                                @php
+                                    $cnicFront = optional(
+                                        $HumanResource->hrSteps
+                                            ->where('step_number', 3)
+                                            ->where('file_type', 'cnic front')
+                                            ->first(),
+                                    )->file_name;
+                                @endphp
                                 <input type="file" class="form-control" name="cnic_front" accept="image/*"
-                                    onchange="previewImage(this, 'preview-cnic-front')" required />
-                                <div class="position-relative">
-                                    <img id="preview-cnic-front" src="{{ $cnic_front ?? 'default-placeholder.png' }}"
-                                        class="img-fluid mt-2 border rounded {{ $cnic_front ? '' : 'd-none' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
-
+                                    onchange="previewImage(this, 'cnicFrontPreview')" />
+                                <img id="cnicFrontPreview"
+                                    class="img-fluid mt-2 border rounded {{ $cnicFront ? '' : 'd-none' }}"
+                                    src="{{ $cnicFront ? asset($cnicFront) : '' }}"
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
-
-                            {{-- CNIC Back --}}
                             <div class="col-md-6">
                                 <label>CNIC Back</label>
+                                @php
+                                    $cnicBack = optional(
+                                        $HumanResource->hrSteps
+                                            ->where('step_number', 3)
+                                            ->where('file_type', 'cnic back')
+                                            ->first(),
+                                    )->file_name;
+                                @endphp
                                 <input type="file" class="form-control" name="cnic_back" accept="image/*"
-                                    onchange="previewImage(this, 'preview-cnic-back')" required />
-                                <div class="position-relative"><img id="preview-cnic-back"
-                                        src="{{ $cnic_back ?? 'default-placeholder.png' }}"
-                                        class="img-fluid mt-2 border rounded {{ $cnic_back ? '' : 'd-none' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
-                                        class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button></div>
-
+                                    onchange="previewImage(this, 'cnicBackPreview')" />
+                                <img id="cnicBackPreview"
+                                    class="img-fluid mt-2 border rounded {{ $cnicBack ? '' : 'd-none' }}"
+                                    src="{{ $cnicBack ? asset($cnicBack) : '' }}"
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
-
-                            <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
                         </div>
-                    </form>
-                </div>
 
-
-                {{-- Step 4: Passport-size Photo --}}
-                <div class="form-section" data-step="4">
-                    <form id="form-step-4" action="{{ route('submit.step', ['step' => 4]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @php
-                            $step = optional($HumanResource->hrSteps->where('step_number', 4)->first());
-                            $fileExists = $step->file_name ? asset($step->file_name) : null;
-                        @endphp
-
+                        {{-- Passport-size Photograph --}}
                         <h5>Passport-size Photograph</h5>
-
                         <div class="form-group">
                             <label>Upload Photo</label>
-
-                            <input type="file" class="form-control" name="photo" accept="image/*"
-                                onchange="previewImage(this, 'preview-photo')" required />
-
-                            <div class="position-relative"><img id="preview-photo"
-                                    class="img-fluid mt-2 border rounded"
-                                    src="{{ $fileExists ?: asset('default-placeholder.png') }}"
-                                    style="width: 3.5cm; height: 4.5cm; object-fit: contain;" /><button
-                                    class="btn btn-primary position-absolute download-btn photo-download-btn">
-                                    <span class="fa-solid fa-download"></span>
-                                </button></div>
-
-
-                            <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
-                        </div>
-                    </form>
-                </div>
-
-
-                {{-- Step 5: NOK CNIC --}}
-                <div class="form-section" data-step="5">
-                    <form id="form-step-5" action="{{ route('submit.step', ['step' => 5]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-
-                        <h5>Next of Kin (NOK) CNIC</h5>
-
-                        <div class="row">
                             @php
-                                $steps = $HumanResource->hrSteps->where('step_number', 5);
-                                $nok_cnic_front = null;
-                                $nok_cnic_back = null;
-
-                                foreach ($steps as $step) {
-                                    if (!empty($step->file_type) && strtolower($step->file_type) === 'nok cnic front') {
-                                        $nok_cnic_front = asset($step->file_name);
-                                    } elseif (
-                                        !empty($step->file_type) &&
-                                        strtolower($step->file_type) === 'nok cnic back'
-                                    ) {
-                                        $nok_cnic_back = asset($step->file_name);
-                                    }
-                                }
+                                $photo = optional(
+                                    $HumanResource->hrSteps
+                                        ->where('step_number', 4)
+                                        ->where('file_type', 'photo')
+                                        ->first(),
+                                )->file_name;
                             @endphp
+                            <input type="file" class="form-control" name="photo" accept="image/*"
+                                onchange="previewImage(this, 'photoPreview')" />
+                            <img id="photoPreview" class="img-fluid mt-2 border rounded {{ $photo ? '' : 'd-none' }}"
+                                src="{{ $photo ? asset($photo) : '' }}"
+                                style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                        </div>
 
-                            {{-- NOK CNIC Front --}}
+                        {{-- NOK CNIC --}}
+                        <h5>Next of Kin (NOK) CNIC</h5>
+                        <div class="row">
                             <div class="col-md-6">
                                 <label>NOK CNIC Front</label>
-
+                                @php
+                                    $nokCnicFront = optional(
+                                        $HumanResource->hrSteps
+                                            ->where('step_number', 5)
+                                            ->where('file_type', 'nok cnic front')
+                                            ->first(),
+                                    )->file_name;
+                                @endphp
                                 <input type="file" class="form-control" name="nok_cnic_front" accept="image/*"
-                                    onchange="previewImage(this, 'preview-nok-front')" required />
-
-                                <div class="position-relative"><img id="preview-nok-front"
-                                        src="{{ $nok_cnic_front ?? 'default-placeholder.png' }}"
-                                        class="img-fluid mt-2 border rounded {{ $nok_cnic_front ? '' : 'd-none' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
-
+                                    onchange="previewImage(this, 'nokCnicFrontPreview')" />
+                                <img id="nokCnicFrontPreview"
+                                    class="img-fluid mt-2 border rounded {{ $nokCnicFront ? '' : 'd-none' }}"
+                                    src="{{ $nokCnicFront ? asset($nokCnicFront) : '' }}"
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
-
-                            {{-- NOK CNIC Back --}}
                             <div class="col-md-6">
                                 <label>NOK CNIC Back</label>
-
+                                @php
+                                    $nokCnicBack = optional(
+                                        $HumanResource->hrSteps
+                                            ->where('step_number', 5)
+                                            ->where('file_type', 'nok cnic back')
+                                            ->first(),
+                                    )->file_name;
+                                @endphp
                                 <input type="file" class="form-control" name="nok_cnic_back" accept="image/*"
-                                    onchange="previewImage(this, 'preview-nok-back')" required />
-                                <div class="position-relative"><img id="preview-nok-back"
-                                        src="{{ $nok_cnic_back ?? 'default-placeholder.png' }}"
-                                        class="img-fluid mt-2 border rounded {{ $nok_cnic_back ? '' : 'd-none' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
-                                        class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button></div>
-
+                                    onchange="previewImage(this, 'nokCnicBackPreview')" />
+                                <img id="nokCnicBackPreview"
+                                    class="img-fluid mt-2 border rounded {{ $nokCnicBack ? '' : 'd-none' }}"
+                                    src="{{ $nokCnicBack ? asset($nokCnicBack) : '' }}"
+                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
                             </div>
-
-                            <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
                         </div>
                     </form>
                 </div>
-
 
                 {{-- Step 6: Medical Report --}}
                 <div class="form-section" data-step="6">
