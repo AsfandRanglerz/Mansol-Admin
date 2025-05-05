@@ -230,7 +230,8 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content p-4">
                 <div class="steps mb-5">
-                    @for ($i = 1; $i <= 13; $i++)
+                    @for ($i = 1; $i <= 10; $i++)
+                        {{-- Adjusted to reflect the new total steps --}}
                         <div class="d-flex flex-column align-items-center position-relative step-container">
                             <div class="step {{ $i == 1 ? 'active' : '' }}" data-step="{{ $i }}">
                                 {{ $i }}
@@ -243,7 +244,7 @@
                             <span class="fa-solid fa-circle-check position-absolute top-0 tick-mark d-none"></span>
                         </div>
 
-                        @if ($i < 13)
+                        @if ($i < 10)
                             <div class="line"></div>
                         @endif
                     @endfor
@@ -409,12 +410,11 @@
                     </form>
                 </div>
 
-                {{-- Step 6: Medical Report --}}
-                <div class="form-section" data-step="6">
-                    <form id="form-step-6" action="{{ route('submit.step', ['step' => 6]) }}" method="POST"
+                {{-- Step 2: Medical Report (Previously Step 6) --}}
+                <div class="form-section" data-step="2">
+                    <form id="form-step-2" action="{{ route('submit.step', ['step' => 2]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
-
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 6)->first());
                             $medical_report = $step->file_name ? asset($step->file_name) : null;
@@ -428,7 +428,6 @@
                         @endphp
 
                         <h5>Medical Report</h5>
-
                         <div class="row">
                             {{-- Process Status --}}
                             <div class="col-md-6">
@@ -448,7 +447,6 @@
                                     </option>
                                 </select>
                             </div>
-
                             {{-- Medically Fit --}}
                             <div class="col-md-6">
                                 <label>Medically Fit</label>
@@ -463,21 +461,18 @@
                                     </option>
                                 </select>
                             </div>
-
                             {{-- Report Date --}}
                             <div class="col-md-6 mt-3">
                                 <label>Report Date</label>
                                 <input type="date" class="form-control" name="report_date"
                                     value="{{ $report_date }}" />
                             </div>
-
                             {{-- Valid Until --}}
                             <div class="col-md-6 mt-3">
                                 <label>Valid Until</label>
                                 <input type="date" class="form-control" name="valid_until"
                                     value="{{ $valid_until }}" />
                             </div>
-
                             {{-- Lab Selection --}}
                             <div class="col-md-6 mt-3">
                                 <label>Lab</label>
@@ -489,99 +484,79 @@
                                     <option value="Lab 3" {{ $lab == 'Lab 3' ? 'selected' : '' }}>Lab 3</option>
                                 </select>
                             </div>
-
                             {{-- Comments --}}
                             <div class="col-md-6 mt-3">
                                 <label>Any Comments on Medical Report</label>
                                 <input type="text" class="form-control" name="any_comments"
                                     value="{{ $any_comments }}" />
                             </div>
-
                             {{-- Upload Medical Report --}}
                             <div class="col-md-6 mt-3">
                                 <label>Upload Medical Report</label>
                                 <input type="file" class="form-control" name="medical_report"
                                     accept=".pdf,image/*" />
-
                                 @if ($medical_report)
                                     <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View
                                         Uploaded Report</a>
                                 @endif
                             </div>
-
                             {{-- Original Report Received --}}
                             <div class="col-md-6 mt-3">
                                 <label for="recieved">Original Report Received?</label> &nbsp; &nbsp;
                                 <input type="checkbox" id="recieved" name="original_report_received"
                                     {{ $original_report_received == 'yes' ? 'checked' : '' }} />
                             </div>
-
-                            {{-- Hidden Input for Human Resource ID --}}
                             <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
                         </div>
                     </form>
                 </div>
 
-
-                {{-- Step 7: Medical Report --}}
-
-                <div class="form-section" data-step="7">
-                    <form id="form-step-7" action="{{ route('submit.step', ['step' => 7]) }}" method="POST"
+                {{-- Step 3: Amount Details (Previously Step 7) --}}
+                <div class="form-section" data-step="3">
+                    <form id="form-step-3" action="{{ route('submit.step', ['step' => 3]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
-                        <div>
-                            @php
-                                $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
-                                $amountInDigits = $step->amount_digits ?? '15000'; // Default to 4000 if not set
-                                $amountInWords = $step->amount_words ?? 'Fifteen Thousand Rupees Only';
-                                $fileExists = $step->file_name ? asset($step->file_name) : null;
-                                $fileExist = $step->file_name ? $step->file_name : null;
-                            @endphp
-                            <div class="row mb-3">
-                                <div class="col-md-5 pr-0">
-                                    <label for="amountInDigits">Amount in digits</label>
-                                    <input type="hidden" name="human_resource_id" class="human_resource_id"
-                                        value="{{ $HumanResource->id }}" />
-
-                                    <input type="text" class="form-control amountInDigits" id="amountInDigits"
-                                        value="{{ $amountInDigits }}" name="amount_digits" />
+                        @php
+                            $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
+                            $amountInDigits = $step->amount_digits ?? '15000';
+                            $amountInWords = $step->amount_words ?? 'Fifteen Thousand Rupees Only';
+                            $fileExists = $step->file_name ? asset($step->file_name) : null;
+                        @endphp
+                        <div class="row mb-3">
+                            <div class="col-md-5 pr-0">
+                                <label for="amountInDigits">Amount in digits</label>
+                                <input type="hidden" name="human_resource_id" class="human_resource_id"
+                                    value="{{ $HumanResource->id }}" />
+                                <input type="text" class="form-control amountInDigits" id="amountInDigits"
+                                    value="{{ $amountInDigits }}" name="amount_digits" />
+                            </div>
+                            <div class="col-md-6 pl-2 d-flex align-items-end">
+                                <div style="flex: 1" class="mr-2">
+                                    <label for="amountInWords">Amount in words</label>
+                                    <input type="text" class="form-control amountInWords" id="amountInWords"
+                                        value="{{ $amountInWords }}" readonly name="amount_words" />
                                 </div>
-
-                                <div class="col-md-6 pl-2 d-flex align-items-end">
-                                    <div style="flex: 1" class="mr-2">
-                                        <label for="amountInWords">Amount in words</label>
-                                        <input type="text" class="form-control amountInWords" id="amountInWords"
-                                            value="{{ $amountInWords }}" readonly name="amount_words" />
-                                    </div>
-                                    <button id="" class="btn btn-primary generatePdfBtn"
-                                        style="margin-bottom: 2px">
-                                        Generate PDF
-                                    </button>
-                                </div>
+                                <button id="" class="btn btn-primary generatePdfBtn"
+                                    style="margin-bottom: 2px">Generate PDF</button>
                             </div>
                         </div>
-                        <input type="text" id="stepSevenFile" class="stepSevenFile d-none" name="step_seven_file"
-                            value="{{ $fileExist ? $fileExist : '' }}">
-
+                        <input type="text" id="stepThreeFile" class="stepThreeFile d-none" name="step_three_file"
+                            value="{{ $fileExists ? $fileExists : '' }}">
                         <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
                             height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
-
-
-
                     </form>
                 </div>
 
-                {{-- Step 8: NBP form --}}
-                <div class="form-section" data-step="8">
-                    <form id="form-step-8" action="{{ route('submit.step', ['step' => 8]) }}" method="POST"
+                {{-- Step 4: NBP Form (Previously Step 8) --}}
+                <div class="form-section" data-step="4">
+                    <form id="form-step-4" action="{{ route('submit.step', ['step' => 4]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 8)->first());
-                            $opfValue = $step->amount_digits ?? '4000'; // Default to 4000 if not set
+                            $opfValue = $step->amount_digits ?? '4000';
                             $stateLifeValue = $step->amount_digits1 ?? '2500';
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $fileExist = $step->file_name ? $step->file_name : null;
                         @endphp
                         <div>
                             <div class="row mb-3">
@@ -590,122 +565,90 @@
                                     <input type="text" class="form-control" id="opf" name="opf"
                                         value="{{ $opfValue }}" />
                                 </div>
-
                                 <div class="col-md-5 pr-0">
                                     <label for="stateLife">State Life Insurance Premium</label>
                                     <input type="text" class="form-control" id="stateLife"
                                         value="{{ $stateLifeValue }}" name="state_life_insurance" />
                                 </div>
-
                                 <input type="hidden" class="human_resource_id" name="human_resource_id"
                                     value="{{ $HumanResource->id }}" />
-
                                 <div class="col-md-2 d-flex align-items-end">
-                                    <button type="button" id="generatePdfBtn8" class="btn btn-primary"
-                                        style="margin-bottom: 2px">
-                                        Generate PDF
-                                    </button>
+                                    <button type="button" id="generatePdfBtn4" class="btn btn-primary"
+                                        style="margin-bottom: 2px">Generate PDF</button>
                                 </div>
                             </div>
                         </div>
-
-                        {{-- <iframe id="pdfFrame8" src="" width="100%" height="0"></iframe> --}}
-
-                        <input type="text" id="stepEightFile" class="stepEightFile d-none" name="step_eight_file"
-                            value="{{ $fileExist ? $fileExist : '' }}">
-
+                        <input type="text" id="stepFourFile" class="stepFourFile d-none" name="step_four_file"
+                            value="{{ $fileExists ? $fileExists : '' }}">
                         <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
                             height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
                     </form>
-
                 </div>
 
-                {{-- Step 9 --}}
-
-                <div class="form-section" data-step="9">
-                    <form id="form-step-9" action="{{ route('submit.step', ['step' => 9]) }}" method="POST"
+                {{-- Step 5: Challan Form (Previously Step 9) --}}
+                <div class="form-section" data-step="5">
+                    <form id="form-step-5" action="{{ route('submit.step', ['step' => 5]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 9)->first());
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $fileExist = $step->file_name ? $step->file_name : null;
                         @endphp
                         <div>
                             <input type="hidden" class="human_resource_id" name="human_resource_id"
                                 value="{{ $HumanResource->id }}" />
-                            <button id="generatePdfBtn9" class="btn btn-primary" style="margin-bottom: 2px">
-                                Generate PDF
-                            </button>
+                            <button id="generatePdfBtn5" class="btn btn-primary" style="margin-bottom: 2px">Generate
+                                PDF</button>
                         </div>
-
-                        {{-- <iframe id="pdfFrame9" src="" width="100%" height="0"></iframe> --}}
-                        <input type="text" id="stepNineFile" class="stepNineFile d-none" name="step_nine_file"
-                            value="{{ $fileExist ? $fileExist : '' }}">
-
+                        <input type="text" id="stepFiveFile" class="stepFiveFile d-none" name="step_five_file"
+                            value="{{ $fileExists ? $fileExists : '' }}">
                         <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
                             height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
                     </form>
                 </div>
 
-                {{-- Step 10 --}}
-
-                <div class="form-section" data-step="10">
-                    <form id="form-step-10" action="{{ route('submit.step', ['step' => 10]) }}" method="POST"
+                {{-- Step 6: Life Insurance Form (Previously Step 10) --}}
+                <div class="form-section" data-step="6">
+                    <form id="form-step-6" action="{{ route('submit.step', ['step' => 6]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 10)->first());
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $fileExist = $step->file_name ? $step->file_name : null;
                         @endphp
                         <input type="hidden" class="human_resource_id" name="human_resource_id"
                             value="{{ $HumanResource->id }}" />
-                        <button id="generatePdfBtn10" class="btn btn-primary">
-                            Generate PDF
-                        </button>
-
+                        <button id="generatePdfBtn6" class="btn btn-primary">Generate PDF</button>
                         <br /><br />
-
-                        {{-- <iframe id="pdfFrame10" src="" width="100%" height="0"></iframe> --}}
-                        <input type="text" id="stepTenFile" class="stepTenFile d-none" name="step_ten_file"
-                            value="{{ $fileExist ? $fileExist : '' }}">
-
+                        <input type="text" id="stepSixFile" class="stepSixFile d-none" name="step_six_file"
+                            value="{{ $fileExists ? $fileExists : '' }}">
                         <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
                             height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
                     </form>
                 </div>
 
-                {{-- Step 11 --}}
-
-                <div class="form-section" data-step="11">
-                    <form id="form-step-11" action="{{ route('submit.step', ['step' => 11]) }}" method="POST"
+                {{-- Step 7: FSA Form (Previously Step 11) --}}
+                <div class="form-section" data-step="7">
+                    <form id="form-step-7" action="{{ route('submit.step', ['step' => 7]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 11)->first());
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $fileExist = $step->file_name ? $step->file_name : null;
                         @endphp
                         <input type="hidden" class="human_resource_id" name="human_resource_id"
                             value="{{ $HumanResource->id }}" />
-                        <button id="generatePdfBtn11" class="btn btn-primary">
-                            Generate PDF
-                        </button>
-
+                        <button id="generatePdfBtn7" class="btn btn-primary">Generate PDF</button>
                         <br /><br />
-
-                        {{-- <iframe id="pdfFrame11" src="" width="100%" height="0"></iframe> --}}
-                        <input type="text" id="stepElevenFile" class="stepElevenFile d-none"
-                            name="step_eleven_file" value="{{ $fileExist ? $fileExist : '' }}">
-
+                        <input type="text" id="stepSevenFile" class="stepSevenFile d-none" name="step_seven_file"
+                            value="{{ $fileExists ? $fileExists : '' }}">
                         <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
                             height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
                     </form>
                 </div>
 
-                {{-- Step 12: Medical form which will be step 7 --}}
-                <div class="form-section" data-step="12">
+                {{-- Step 8: Visa Form (Previously Step 12) --}}
+                <div class="form-section" data-step="8">
                     <form action="">
                         <h3>Name (1234)</h3>
                         <p class="text-danger">Visa [Nominated in a project of Company]</p>
@@ -774,8 +717,8 @@
                     </form>
                 </div>
 
-                {{-- Step 13: Air Booking --}}
-                <div class="form-section" data-step="13">
+                {{-- Step 9: Air Booking (Previously Step 13) --}}
+                <div class="form-section" data-step="9">
                     <form action="">
                         <h3>Name (1234)</h3>
                         <p class="text-danger">Visa [Nominated in a project of Company]</p>
@@ -821,6 +764,26 @@
                                 </div>
                             </div>
                         </div>
+                    </form>
+                </div>
+
+                {{-- Step 10: Final Step --}}
+                <div class="form-section" data-step="10">
+                    <form id="form-step-10" action="{{ route('submit.step', ['step' => 10]) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @php
+                            $step = optional($HumanResource->hrSteps->where('step_number', 10)->first());
+                            $fileExists = $step->file_name ? asset($step->file_name) : null;
+                        @endphp
+                        <input type="hidden" class="human_resource_id" name="human_resource_id"
+                            value="{{ $HumanResource->id }}" />
+                        <button id="generatePdfBtn10" class="btn btn-primary">Generate PDF</button>
+                        <br /><br />
+                        <input type="text" id="stepTenFile" class="stepTenFile d-none" name="step_ten_file"
+                            value="{{ $fileExists ? $fileExists : '' }}">
+                        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
+                            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
                     </form>
                 </div>
 
@@ -927,7 +890,7 @@
         $(".modal").each(function() {
             let modal = $(this);
             let currentStep = 1;
-            let maxSteps = 13;
+            let maxSteps = 10;
 
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");
@@ -1075,8 +1038,8 @@
             });
         });
 
-        // For step 8 PDF generation
-        $(document).on('click', '#generatePdfBtn8', function(e) {
+        // For step 4 PDF generation
+        $(document).on('click', '#generatePdfBtn4', function(e) {
             e.preventDefault();
             // Get the closest form section
             let formSection = $(this).closest('.form-section');
@@ -1112,7 +1075,7 @@
                     console.log('PDF URL:', response.pdf_url);
 
                     // Set the PDF URL in the input field
-                    formSection.find('.stepEightFile').val(response.url).trigger('change');
+                    formSection.find('.stepFourFile').val(response.url).trigger('change');
 
                     // Update the iframe to display the generated PDF
                     formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
@@ -1125,8 +1088,8 @@
             });
         });
 
-        // For step 9 pdf
-        $(document).on('click', '#generatePdfBtn9', function(e) {
+        // For step 5 pdf
+        $(document).on('click', '#generatePdfBtn5', function(e) {
 
             e.preventDefault(); // Prevent the default form submission behavior
             // Get the closest form section
@@ -1149,7 +1112,7 @@
                     console.log('PDF URL:', response.pdf_url);
 
                     // Set the PDF URL in the input field
-                    formSection.find('.stepNineFile').val(response.url).trigger('change');
+                    formSection.find('.stepFiveFile').val(response.url).trigger('change');
 
                     // Update the iframe to display the generated PDF
                     formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
@@ -1162,8 +1125,8 @@
             });
         });
 
-        // For step 10 pdf
-        $(document).on('click', '#generatePdfBtn10', function(e) {
+        // For step 6 pdf
+        $(document).on('click', '#generatePdfBtn6', function(e) {
             e.preventDefault(); // Prevent the default form submission behavior
             // Get the closest form section
             let formSection = $(this).closest('.form-section');
@@ -1183,7 +1146,7 @@
                 success: function(response) {
                     console.log('PDF URL:', response.pdf_url);
                     // Set the PDF URL in the input field
-                    formSection.find('.stepTenFile').val(response.url).trigger('change');
+                    formSection.find('.stepSixFile').val(response.url).trigger('change');
                     // Update the iframe to display the generated PDF
                     formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
                         new Date().getTime());
@@ -1195,8 +1158,8 @@
             });
         });
 
-        // For step 11 pdf
-        $(document).on('click', '#generatePdfBtn11', function(e) {
+        // For step 7 pdf
+        $(document).on('click', '#generatePdfBtn7', function(e) {
             e.preventDefault(); // Prevent the default form submission behavior
             // Get the closest form section
             let formSection = $(this).closest('.form-section');
@@ -1216,7 +1179,7 @@
                 success: function(response) {
                     console.log('PDF URL:', response.pdf_url);
                     // Set the PDF URL in the input field
-                    formSection.find('.stepElevenFile').val(response.url).trigger('change');
+                    formSection.find('.stepSevenFile').val(response.url).trigger('change');
                     // Update the iframe to display the generated PDF
                     formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
                         new Date().getTime());

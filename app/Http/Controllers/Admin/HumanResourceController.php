@@ -392,4 +392,79 @@ class HumanResourceController extends Controller
         $histories = JobHistory::where('id', $id)->first();
         return response()->json($histories);
     }
+
+    public function validateStep(Request $request, $step)
+    {
+        if ($step == 2) { // Previously Step 6
+            $request->validate([
+                'process_status' => 'required|string',
+                'medically_fit' => 'required|string',
+                'report_date' => 'nullable|date',
+                'valid_until' => 'nullable|date',
+                'lab' => 'required|string',
+                'any_comments' => 'nullable|string',
+                'medical_report' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            ]);
+        }
+
+        if ($step == 3) { // Previously Step 7
+            $request->validate([
+                'amount_digits' => 'required|numeric',
+                'amount_words' => 'required|string',
+                'step_three_file' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
+        }
+
+        if ($step == 4) { // Previously Step 8
+            $request->validate([
+                'opf' => 'required|numeric',
+                'state_life_insurance' => 'required|numeric',
+                'step_four_file' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
+        }
+
+        if ($step == 5) { // Previously Step 9
+            $request->validate([
+                'step_five_file' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
+        }
+
+        if ($step == 6) { // Previously Step 10
+            $request->validate([
+                'step_six_file' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
+        }
+
+        if ($step == 7) { // Previously Step 11
+            $request->validate([
+                'step_seven_file' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
+        }
+
+        if ($step == 8) { // Previously Step 12
+            $request->validate([
+                'visa_type' => 'required|string',
+                'issue_date' => 'required|date',
+                'expiry_date' => 'required|date',
+                'receive_date' => 'nullable|date',
+                'visa_status' => 'nullable|string',
+                'endorsed_date' => 'nullable|date',
+                'scanned_visa' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            ]);
+        }
+
+        if ($step == 9) { // Previously Step 13
+            $request->validate([
+                'ticket_number' => 'required|string',
+                'flight_number' => 'required|string',
+                'flight_route' => 'required|string',
+                'flight_date' => 'required|date',
+                'etd' => 'required|string',
+                'eta' => 'required|string',
+                'upload_ticket' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            ]);
+        }
+
+        // ...existing code...
+    }
 }
