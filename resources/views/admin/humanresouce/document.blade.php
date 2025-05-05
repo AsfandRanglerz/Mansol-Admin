@@ -230,7 +230,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content p-4">
                 <div class="steps mb-5">
-                    @for ($i = 1; $i <= 10; $i++)
+                    @for ($i = 1; $i <= 8; $i++)
                         {{-- Adjusted to reflect the new total steps --}}
                         <div class="d-flex flex-column align-items-center position-relative step-container">
                             <div class="step {{ $i == 1 ? 'active' : '' }}" data-step="{{ $i }}">
@@ -244,7 +244,7 @@
                             <span class="fa-solid fa-circle-check position-absolute top-0 tick-mark d-none"></span>
                         </div>
 
-                        @if ($i < 10)
+                        @if ($i < 8)
                             <div class="line"></div>
                         @endif
                     @endfor
@@ -410,11 +410,15 @@
                     </form>
                 </div>
 
-                {{-- Step 2: Medical Report (Previously Step 6) --}}
+                {{-- Step 2: Medical Report (Previously Step 6) + Visa Form (Previously Step 8) + Air Booking (Previously Step 9) --}}
                 <div class="form-section" data-step="2">
                     <form id="form-step-2" action="{{ route('submit.step', ['step' => 2]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
+
+                        {{-- Medical Report --}}
+                        <h5>Medical Report</h5>
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 6)->first());
                             $medical_report = $step->file_name ? asset($step->file_name) : null;
@@ -426,8 +430,6 @@
                             $any_comments = $step->any_comments ?? '';
                             $original_report_received = $step->original_report_received ?? false;
                         @endphp
-
-                        <h5>Medical Report</h5>
                         <div class="row">
                             {{-- Process Status --}}
                             <div class="col-md-6">
@@ -473,7 +475,7 @@
                                 <input type="date" class="form-control" name="valid_until"
                                     value="{{ $valid_until }}" />
                             </div>
-                            {{-- Lab Selection --}}
+                            {{-- Lab --}}
                             <div class="col-md-6 mt-3">
                                 <label>Lab</label>
                                 <select name="lab" class="form-control" required>
@@ -506,7 +508,80 @@
                                 <input type="checkbox" id="recieved" name="original_report_received"
                                     {{ $original_report_received == 'yes' ? 'checked' : '' }} />
                             </div>
-                            <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
+                        </div>
+
+                        {{-- Visa Form --}}
+                        <h5 class="mt-5">Visa Form</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="visa_type">Visa Type</label>
+                                <select name="visa_type" class="form-control" required>
+                                    <option value="" disabled selected>Select an Option</option>
+                                    <option value="Work Permit">Work Permit</option>
+                                    <option value="Visit Visa">Visit Visa</option>
+                                    <option value="Single Entry">Single Entry</option>
+                                    <option value="B-1">B-1</option>
+                                    <option value="EV">EV</option>
+                                    <option value="Work Visit Visa">Work Visit Visa</option>
+                                    <option value="DEB">DEB</option>
+                                    <option value="Work Visa">Work Visa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="issue_date">Issue Date</label>
+                                <input type="date" class="form-control" name="issue_date" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="expiry_date">Expiry Date</label>
+                                <input type="date" class="form-control" name="expiry_date" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="receive_date">Visa Receive Date</label>
+                                <input type="date" class="form-control" name="receive_date" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="visa_status">Visa Status</label>
+                                <input type="text" class="form-control" name="visa_status" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="scanned_visa">Scanned Visa</label>
+                                <input type="file" class="form-control" name="scanned_visa"
+                                    accept=".pdf,image/*" />
+                            </div>
+                        </div>
+
+                        {{-- Air Booking --}}
+                        <h5 class="mt-5">Air Booking</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="ticket_number">Ticket Number</label>
+                                <input type="text" class="form-control" name="ticket_number" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="flight_number">Flight Number</label>
+                                <input type="text" class="form-control" name="flight_number" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="flight_route">Flight Route</label>
+                                <input type="text" class="form-control" name="flight_route" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="flight_date">Flight Date</label>
+                                <input type="date" class="form-control" name="flight_date" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="etd">Expected Time of Departure (ETD)</label>
+                                <input type="text" class="form-control" name="etd" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="eta">Expected Time of Arrival (ETA)</label>
+                                <input type="text" class="form-control" name="eta" />
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label for="upload_ticket">Upload Ticket</label>
+                                <input type="file" class="form-control" name="upload_ticket"
+                                    accept=".pdf,image/*" />
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -647,129 +722,9 @@
                     </form>
                 </div>
 
-                {{-- Step 8: Visa Form (Previously Step 12) --}}
+                {{-- Step 8: Final Step (Previously Step 10) --}}
                 <div class="form-section" data-step="8">
-                    <form action="">
-                        <h3>Name (1234)</h3>
-                        <p class="text-danger">Visa [Nominated in a project of Company]</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="phone_number">Number</label>
-                                <input type="text" class="form-control" id="phone_number" name="phone_number"
-                                    value="" />
-                            </div>
-                            <div class="col-md-6 mt-3 mt-md-0">
-                                <label>Visa Type</label>
-                                <select name="visa_type" class="form-control" required>
-                                    <option value="" disabled selected>Select an Option</option>
-                                    <option value="Work Permit">Work Permit</option>
-                                    <option value="Visit Visa">Visit Visa</option>
-                                    <option value="Single Entry">Single Entry</option>
-                                    <option value="B-1">B-1</option>
-                                    <option value="EV">EV</option>
-                                    <option value="Work Visit Visa">Work Visit Visa</option>
-                                    <option value="DEB">DEB</option>
-                                    <option value="Work Visa">Work Visa</option>
-
-                                </select>
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="issue_date">Issue Date</label>
-                                <input type="date" class="form-control" name="issue_date" id="issue_date" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="expiry_date">Expiry Date</label>
-                                <input type="date" class="form-control" name="expiry_date" id="expiry_date" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="receive_date">Visa Receive Date</label>
-                                <input type="date" class="form-control" name="receive_date" id="receive_date" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="visa_status">Visa Status</label>
-                                <input type="text" class="form-control" id="visa_status" name="visa_status"
-                                    value="" />
-                            </div>
-
-                            <div class="col-md-6 mt-3">
-                                <label for="endorsed_date">Endorsement Date</label>
-                                <input type="date" class="form-control" name="endorsed_date"
-                                    id="endorsed_date" />
-                                <div class="mt-3">
-                                    <label for="endorsed">Endorsed?</label>
-                                    <input type="checkbox" name="endorsed" id="endorsed">
-                                </div>
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="scanned_visa">Scanned Visa</label>
-                                <input type="file" class="form-control" name="scanned_visa" id="scanned_visa"
-                                    accept=".pdf,image/*" onchange="previewFile(this)" />
-                                <div class="preview-box mt-3">
-                                    <div class="preview-box">
-                                        <iframe id="pdfPreview-{{ $HumanResource->id }}" class="d-none"
-                                            width="100%" height="300px"></iframe>
-                                        <img id="imagePreview-{{ $HumanResource->id }}" class="img-fluid d-none"
-                                            style="max-width: 100%; height: 300px; object-fit: contain;" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                {{-- Step 9: Air Booking (Previously Step 13) --}}
-                <div class="form-section" data-step="9">
-                    <form action="">
-                        <h3>Name (1234)</h3>
-                        <p class="text-danger">Visa [Nominated in a project of Company]</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="ticket_number">Ticket Number</label>
-                                <input type="text" class="form-control" id="ticket_number" name="ticket_number"
-                                    value="" />
-                            </div>
-                            <div class="col-md-6 mt-3 mt-md-0">
-                                <label for="flight_number">Flight Number</label>
-                                <input type="text" class="form-control" id="flight_number" name="flight_number"
-                                    value="" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="flight_route">Flight Route</label>
-                                <input type="text" class="form-control" id="flight_route" name="flight_route"
-                                    value="" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="flight_date">Flight Date</label>
-                                <input type="date" class="form-control" name="flight_date" id="flight_date" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="etd">Expected Time of Departure(ETD)</label>
-                                <input type="text" class="form-control" id="etd" name="etd"
-                                    value="" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="eta">Expected Time of Arrival(ETA)</label>
-                                <input type="text" class="form-control" id="eta" name="eta"
-                                    value="" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="upload_ticket">Upload Ticket</label>
-                                <input type="file" class="form-control" name="upload_ticket" id="upload_ticket"
-                                    accept=".pdf,image/*" onchange="previewTicket(this)" />
-                                <div class="preview-box mt-3">
-                                    <iframe id="ticketPdfPreview" class="d-none" width="100%"
-                                        height="300px"></iframe>
-                                    <img id="ticketImagePreview" class="img-fluid d-none"
-                                        style="max-width: 100%; height: 300px; object-fit: contain;" />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                {{-- Step 10: Final Step --}}
-                <div class="form-section" data-step="10">
-                    <form id="form-step-10" action="{{ route('submit.step', ['step' => 10]) }}" method="POST"
+                    <form id="form-step-8" action="{{ route('submit.step', ['step' => 8]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @php
@@ -778,9 +733,9 @@
                         @endphp
                         <input type="hidden" class="human_resource_id" name="human_resource_id"
                             value="{{ $HumanResource->id }}" />
-                        <button id="generatePdfBtn10" class="btn btn-primary">Generate PDF</button>
+                        <button id="generatePdfBtn8" class="btn btn-primary">Generate PDF</button>
                         <br /><br />
-                        <input type="text" id="stepTenFile" class="stepTenFile d-none" name="step_ten_file"
+                        <input type="text" id="stepEightFile" class="stepEightFile d-none" name="step_eight_file"
                             value="{{ $fileExists ? $fileExists : '' }}">
                         <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
                             height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
@@ -890,7 +845,7 @@
         $(".modal").each(function() {
             let modal = $(this);
             let currentStep = 1;
-            let maxSteps = 10;
+            let maxSteps = 8;
 
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");

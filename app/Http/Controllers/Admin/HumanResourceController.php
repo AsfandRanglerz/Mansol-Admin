@@ -395,8 +395,9 @@ class HumanResourceController extends Controller
 
     public function validateStep(Request $request, $step)
     {
-        if ($step == 2) { // Previously Step 6
+        if ($step == 2) { // Step 2 now includes Medical Report, Visa Form, and Air Booking
             $request->validate([
+                // Medical Report
                 'process_status' => 'required|string',
                 'medically_fit' => 'required|string',
                 'report_date' => 'nullable|date',
@@ -404,6 +405,24 @@ class HumanResourceController extends Controller
                 'lab' => 'required|string',
                 'any_comments' => 'nullable|string',
                 'medical_report' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'original_report_received' => 'nullable|boolean',
+
+                // Visa Form
+                'visa_type' => 'required|string',
+                'issue_date' => 'required|date',
+                'expiry_date' => 'required|date',
+                'receive_date' => 'nullable|date',
+                'visa_status' => 'nullable|string',
+                'scanned_visa' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+
+                // Air Booking
+                'ticket_number' => 'required|string',
+                'flight_number' => 'required|string',
+                'flight_route' => 'required|string',
+                'flight_date' => 'required|date',
+                'etd' => 'required|string',
+                'eta' => 'required|string',
+                'upload_ticket' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
             ]);
         }
 
