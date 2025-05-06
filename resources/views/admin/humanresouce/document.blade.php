@@ -988,7 +988,7 @@
             modal.find(".step-container").click(function() {
                 let stepNum = $(this).find(".step").data("step");
 
-                if (stepNum <= currentStep) {
+                if (stepNum <= maxSteps) {
                     currentStep = stepNum;
                     updateSteps();
                 }
