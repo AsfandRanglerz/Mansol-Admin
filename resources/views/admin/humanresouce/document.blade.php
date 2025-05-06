@@ -287,10 +287,16 @@
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_1" accept="image/*"
                                     onchange="previewImage(this, 'passportFrontPreview')" />
-                                <img id="passportFrontPreview"
-                                    class="img-fluid mt-2 border rounded {{ $passportFront ? '' : 'd-none' }}"
-                                    src="{{ $passportFront ? asset($passportFront) : '' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-relative">
+                                    <img id="passportFrontPreview"
+                                        class="img-fluid mt-2 border rounded {{ $passportFront ? '' : 'd-none' }}"
+                                        src="{{ $passportFront ? asset($passportFront) : '' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
+
                             </div>
                             <div class="col-md-6">
                                 <label>Passport Image 2</label>
@@ -304,15 +310,19 @@
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_2" accept="image/*"
                                     onchange="previewImage(this, 'passportBackPreview')" />
-                                <img id="passportBackPreview"
-                                    class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
-                                    src="{{ $passportBack ? asset($passportBack) : '' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-absolute"><img id="passportBackPreview"
+                                        class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
+                                        src="{{ $passportBack ? asset($passportBack) : '' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
+                                        class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button></div>
+
                             </div>
                         </div>
 
                         {{-- CNIC --}}
-                        <h5>CNIC</h5>
+                        <h5 class="mt-4">CNIC</h5>
                         <div class="row">
                             <div class="col-md-6">
                                 <label>CNIC Front</label>
@@ -326,10 +336,16 @@
                                 @endphp
                                 <input type="file" class="form-control" name="cnic_front" accept="image/*"
                                     onchange="previewImage(this, 'cnicFrontPreview')" />
-                                <img id="cnicFrontPreview"
-                                    class="img-fluid mt-2 border rounded {{ $cnicFront ? '' : 'd-none' }}"
-                                    src="{{ $cnicFront ? asset($cnicFront) : '' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-relative">
+                                    <img id="cnicFrontPreview"
+                                        class="img-fluid mt-2 border rounded {{ $cnicFront ? '' : 'd-none' }}"
+                                        src="{{ $cnicFront ? asset($cnicFront) : '' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
+
                             </div>
                             <div class="col-md-6">
                                 <label>CNIC Back</label>
@@ -343,15 +359,21 @@
                                 @endphp
                                 <input type="file" class="form-control" name="cnic_back" accept="image/*"
                                     onchange="previewImage(this, 'cnicBackPreview')" />
-                                <img id="cnicBackPreview"
-                                    class="img-fluid mt-2 border rounded {{ $cnicBack ? '' : 'd-none' }}"
-                                    src="{{ $cnicBack ? asset($cnicBack) : '' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-relative">
+                                    <img id="cnicBackPreview"
+                                        class="img-fluid mt-2 border rounded {{ $cnicBack ? '' : 'd-none' }}"
+                                        src="{{ $cnicBack ? asset($cnicBack) : '' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
 
                         {{-- Passport-size Photograph --}}
-                        <h5>Passport-size Photograph</h5>
+                        <h5 class="mt-4">Passport-size Photograph</h5>
                         <div class="form-group">
                             <label>Upload Photo</label>
                             @php
@@ -364,13 +386,23 @@
                             @endphp
                             <input type="file" class="form-control" name="photo" accept="image/*"
                                 onchange="previewImage(this, 'photoPreview')" />
-                            <img id="photoPreview" class="img-fluid mt-2 border rounded {{ $photo ? '' : 'd-none' }}"
-                                src="{{ $photo ? asset($photo) : '' }}"
-                                style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                            <div class="position-relative">
+                                <img id="photoPreview"
+                                    class="img-fluid mt-2 border rounded {{ $photo ? '' : 'd-none' }}"
+                                    src="{{ $photo ? asset($photo) : '' }}"
+                                    style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                                @if ($photo)
+                                    <a href="{{ asset($photo) }}" download
+                                        class="btn btn-primary position-absolute download-btn photo-download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </a>
+                                @endif
+                            </div>
+
                         </div>
 
                         {{-- NOK CNIC --}}
-                        <h5>Next of Kin (NOK) CNIC</h5>
+                        <h5 class="mt-4">Next of Kin (NOK) CNIC</h5>
                         <div class="row">
                             <div class="col-md-6">
                                 <label>NOK CNIC Front</label>
@@ -384,10 +416,16 @@
                                 @endphp
                                 <input type="file" class="form-control" name="nok_cnic_front" accept="image/*"
                                     onchange="previewImage(this, 'nokCnicFrontPreview')" />
-                                <img id="nokCnicFrontPreview"
-                                    class="img-fluid mt-2 border rounded {{ $nokCnicFront ? '' : 'd-none' }}"
-                                    src="{{ $nokCnicFront ? asset($nokCnicFront) : '' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-relative">
+                                    <img id="nokCnicFrontPreview"
+                                        class="img-fluid mt-2 border rounded {{ $nokCnicFront ? '' : 'd-none' }}"
+                                        src="{{ $nokCnicFront ? asset($nokCnicFront) : '' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                </div>
+
                             </div>
                             <div class="col-md-6">
                                 <label>NOK CNIC Back</label>
@@ -401,10 +439,15 @@
                                 @endphp
                                 <input type="file" class="form-control" name="nok_cnic_back" accept="image/*"
                                     onchange="previewImage(this, 'nokCnicBackPreview')" />
-                                <img id="nokCnicBackPreview"
-                                    class="img-fluid mt-2 border rounded {{ $nokCnicBack ? '' : 'd-none' }}"
-                                    src="{{ $nokCnicBack ? asset($nokCnicBack) : '' }}"
-                                    style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                <div class="position-relative">
+                                    <button class="btn btn-primary position-absolute download-btn">
+                                        <span class="fa-solid fa-download"></span>
+                                    </button>
+                                    <img id="nokCnicBackPreview"
+                                        class="img-fluid mt-2 border rounded {{ $nokCnicBack ? '' : 'd-none' }}"
+                                        src="{{ $nokCnicBack ? asset($nokCnicBack) : '' }}"
+                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                                </div>
                             </div>
                         </div>
                     </form>
