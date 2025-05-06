@@ -540,11 +540,14 @@
                             <div class="col-md-6 mt-3">
                                 <label>Upload Medical Report</label>
                                 <input type="file" class="form-control" name="medical_report"
-                                    accept=".pdf,image/*" />
-                                @if ($medical_report)
-                                    <a href="{{ $medical_report }}" target="_blank" class="btn btn-info mt-2">View
-                                        Uploaded Report</a>
-                                @endif
+                                    accept=".pdf,image/*"
+                                    onchange="previewUploadedFile(this, 'medicalReportPreview')" />
+                                <div class="mt-2">
+                                    <a id="medicalReportPreview" href="{{ $medical_report }}" target="_blank"
+                                        class="btn btn-info {{ $medical_report ? '' : 'd-none' }}">
+                                        View Uploaded Report
+                                    </a>
+                                </div>
                             </div>
                             {{-- Original Report Received --}}
                             <div class="col-md-6 mt-3">
@@ -1433,4 +1436,36 @@
             downloadImage(this);
         });
     });
+</script>
+
+<script>
+    function previewImage(input, previewId) {
+        const file = input.files[0];
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewElement = document.getElementById(previewId);
+                if (previewElement) {
+                    previewElement.src = e.target.result;
+                    previewElement.classList.remove("d-none");
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert("Please upload a valid image file.");
+        }
+    }
+
+    function previewUploadedFile(input, previewId) {
+        const file = input.files[0];
+        const previewElement = document.getElementById(previewId);
+
+        if (file) {
+            const fileURL = URL.createObjectURL(file);
+            previewElement.href = fileURL;
+            previewElement.classList.remove("d-none");
+        } else {
+            previewElement.classList.add("d-none");
+        }
+    }
 </script>
