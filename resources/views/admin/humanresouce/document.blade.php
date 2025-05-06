@@ -232,7 +232,8 @@
                 <div class="steps mb-5">
                     @for ($i = 1; $i <= 7; $i++)
                         {{-- Adjusted to reflect the new total steps --}}
-                        <div class="d-flex flex-column align-items-center position-relative step-container">
+                        <div style="cursor: pointer;"
+                            class="d-flex flex-column align-items-center position-relative step-container">
                             <div class="step {{ $i == 1 ? 'active' : '' }}" data-step="{{ $i }}">
                                 {{ $i }}
                             </div>
