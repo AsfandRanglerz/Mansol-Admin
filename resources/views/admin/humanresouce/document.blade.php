@@ -230,7 +230,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content p-4">
                 <div class="steps mb-5">
-                    @for ($i = 1; $i <= 8; $i++)
+                    @for ($i = 1; $i <= 7; $i++)
                         {{-- Adjusted to reflect the new total steps --}}
                         <div class="d-flex flex-column align-items-center position-relative step-container">
                             <div class="step {{ $i == 1 ? 'active' : '' }}" data-step="{{ $i }}">
@@ -244,7 +244,7 @@
                             <span class="fa-solid fa-circle-check position-absolute top-0 tick-mark d-none"></span>
                         </div>
 
-                        @if ($i < 8)
+                        @if ($i < 7)
                             <div class="line"></div>
                         @endif
                     @endfor
@@ -310,13 +310,14 @@
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_2" accept="image/*"
                                     onchange="previewImage(this, 'passportBackPreview')" />
-                                <div class="position-absolute"><img id="passportBackPreview"
+                                <div class="position-relative"><img id="passportBackPreview"
                                         class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
                                         src="{{ $passportBack ? asset($passportBack) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
                                         class="btn btn-primary position-absolute download-btn">
                                         <span class="fa-solid fa-download"></span>
-                                    </button></div>
+                                    </button>
+                                </div>
 
                             </div>
                         </div>
@@ -766,7 +767,7 @@
                 </div>
 
                 {{-- Step 8: Final Step (Previously Step 10) --}}
-                <div class="form-section" data-step="8">
+                {{-- <div class="form-section" data-step="8">
                     <form id="form-step-8" action="{{ route('submit.step', ['step' => 8]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
@@ -783,7 +784,7 @@
                         <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
                             height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
                     </form>
-                </div>
+                </div> --}}
 
                 <div class="buttons d-flex justify-content-end">
                     <button id="prev" class="btn btn-success d-none">
@@ -888,7 +889,7 @@
         $(".modal").each(function() {
             let modal = $(this);
             let currentStep = 1;
-            let maxSteps = 8;
+            let maxSteps = 7;
 
             function updateSteps() {
                 modal.find(".step, .line, .step-text").removeClass("active");
@@ -1188,6 +1189,54 @@
                 },
             });
         });
+
+        // For step 8 pdf
+        // $(document).on('click', '#generatePdfBtn8', function(e) {
+        //     e.preventDefault(); // Prevent default form submission behavior
+
+        //     // Get the closest form section
+        //     let formSection = $(this).closest('.form-section');
+
+        //     // Get the required values
+        //     let hr_id = formSection.find('.human_resource_id').val();
+
+        //     console.log('Human Resource ID:', hr_id);
+
+        //     // Make the AJAX request
+        //     $.ajax({
+        //         url: "{{ url('/generate-life-insurance') }}", // Update this URL if necessary
+        //         method: "POST",
+        //         headers: {
+        //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        //             "Content-Type": "application/json" // Ensure JSON format
+        //         },
+        //         data: JSON.stringify({
+        //             human_resource_id: hr_id,
+        //         }),
+        //         success: function(response) {
+        //             if (response.success && response.pdf_url) {
+        //                 console.log('PDF URL:', response.pdf_url);
+
+        //                 // Set the PDF URL in the input field
+        //                 formSection.find('.stepEightFile').val(response.pdf_url).trigger(
+        //                     'change');
+
+        //                 // Update the iframe to display the generated PDF
+        //                 formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
+        //                     new Date().getTime());
+        //                 formSection.find('.pdfFrame').attr("height", "600px");
+
+        //                 toastr.success(response.message || "PDF generated successfully!");
+        //             } else {
+        //                 toastr.error(response.message || "Failed to generate PDF.");
+        //             }
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error("Error generating PDF:", error);
+        //             toastr.error("An error occurred while generating the PDF.");
+        //         }
+        //     });
+        // });
     });
 </script>
 
