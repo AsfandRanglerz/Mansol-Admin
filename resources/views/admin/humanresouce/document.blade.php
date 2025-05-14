@@ -248,7 +248,7 @@
                         @endif
                     @endfor
                 </div>
-
+ 
                 {{-- Step 1: Latest Resume --}}
 
                 <div class="form-section active" data-step="1">

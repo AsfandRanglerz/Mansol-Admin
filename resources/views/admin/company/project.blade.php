@@ -1,7 +1,6 @@
 @extends('admin.layout.app')
 @section('title', 'Projects')
 @section('content')
-
     {{-- Project Create Modle --}}
     <div class="modal fade" id="createProjectModel" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
         aria-hidden="true">
@@ -60,28 +59,38 @@
                             </div> --}}
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="text-danger" for="manpower_location">Man-Power Location City</label>
-                                    <select name="manpower_location" id="manpower_location" class="form-control">
-                                        <option value="" selected disabled>Select City</option>
-                                        <option value="lahore">Lahore</option>
-                                        <option value="karachi">Karachi</option>
-                                        <option value="islamabad">Islamabad</option>
+                                    <label class="text-danger" for="project_location">Project Location</label>
+                                    <select name="project_location" class="form-control" id="project_location" required>
+                                        <option value="" selected disabled>Select Location Country</option>
+                                        @foreach($countries as $country)
+                                            <option value="{{ $country->title }}"
+                                                    data-currency-symbol="{{ $country->currency_symbol }}"
+                                                {{ old('project_location', $HumanResource->project_location ?? '') == strtolower($country->title) ? 'selected' : '' }}>
+                                                {{ $country->title }}
+                                            </option>
+                                        @endforeach
                                     </select>
-                                    @error('manpower_location')
+                                    
+                                    @error('project_location')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="text-danger" for="project_location">Project Location</label>
-                                    <select name="project_location" class="form-control" id="project_location">
-                                        <option value="" selected disabled>Select Location City</option>
-                                        <option value="lahore">Lahore</option>
-                                        <option value="karachi">Karachi</option>
-                                        <option value="islamabad">Islamabad</option>
-                                    </select>
-                                    @error('project_location')
+                                    <label class="text-danger" for="manpower_location">Man-Power Location City</label>
+                                    <input type="text" class="form-control" id="manpower_location" name="manpower_location">
+                                    {{-- <select name="manpower_location" id="manpower_location" class="form-control" required>
+                                        <option value="" selected disabled>Select City</option>
+                                        @foreach($cities as $city)
+                                            <option value="{{ $city->name }}"
+                                                {{ old('manpower_location', $HumanResource->manpower_location ?? '') == strtolower($city->name) ? 'selected' : '' }}>
+                                                {{ $city->name }}
+                                            </option>
+                                        @endforeach
+                                    </select> --}}
+                                    
+                                    @error('manpower_location')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                 </div>
@@ -125,11 +134,21 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="text-danger" for="project_currency">Project Currency</label>
-                                    <select name="project_currency" class="form-control" id="project_currency">
+                                    {{-- <select name="project_currency" class="form-control" id="project_currency">
                                         <option value="" selected disabled>Select Currency</option>
                                         <option value="$">$</option>
                                         <option value="pkr">PKR</option>
+                                    </select> --}}
+                                    <select name="project_currency" class="form-control" id="project_currency" required>
+                                        <option value="" selected disabled>Select Currency</option>
+                                        @foreach($countries as $country)
+                                            <option value="{{ $country->currency_symbol }}"
+                                                {{ old('project_currency', $HumanResource->project_currency ?? '') == strtolower($country->currency_symbol) ? 'selected' : '' }}>
+                                                {{ $country->currency_symbol }}
+                                            </option>
+                                        @endforeach
                                     </select>
+                                    
                                     @error('project_currency')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -348,6 +367,8 @@
     <div class="main-content" style="min-height: 562px;">
         <section class="section">
             <div class="section-body">
+{{-- <pre>{{ json_encode($countries, JSON_PRETTY_PRINT) }}</pre> --}}
+
                 <div class="row">
                     <div class="col-12 col-md-12 col-lg-12">
                         <a class="btn btn-primary mb-3 text-white" href="{{ route('companies.index') }}">
@@ -446,7 +467,20 @@
 @endsection
 
 @section('js')
+<script>
+    document.getElementById('project_location').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const currencySymbol = selectedOption.getAttribute('data-currency-symbol');
 
+        const currencySelect = document.getElementById('project_currency');
+        for (let i = 0; i < currencySelect.options.length; i++) {
+            if (currencySelect.options[i].value.toLowerCase() === currencySymbol.toLowerCase()) {
+                currencySelect.selectedIndex = i;
+                break;
+            }
+        }
+    });
+</script>
     <script>
         $(document).ready(function() {
             $('#table_id_events').DataTable()

@@ -34,8 +34,18 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="name">Name</label>
                                             <input type="text" class="form-control" id="name" name="name"
-                                                value="{{ old('name') }}" required>
+                                                value="{{ old('name') }}" required placeholder="name">
                                             @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="son_of">S/O</label>
+                                            <input type="text" class="form-control" id="son_of" name="son_of"
+                                                value="{{ old('son_of') }}" placeholder="Father Name" required>
+                                            @error('son_of')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -138,16 +148,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger" for="son_of">S/O</label>
-                                            <input type="text" class="form-control" id="son_of" name="son_of"
-                                                value="{{ old('son_of') }}" placeholder="Father Name" required>
-                                            @error('son_of')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                   
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="mother_name">Mother Name</label>
@@ -189,13 +190,11 @@
                                             <label class="text-danger" for="city_of_birth">City Of Birth</label>
                                             <select name="city_of_birth" class="form-control" id="citySelect" required>
                                                 <option value="" selected disabled>Select City</option>
-                                                @foreach (['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad',
-                                                'Multan', 'Peshawar', 'Quetta'] as $city)
-                                                <option value="{{ strtolower($city) }}">
-                                                    {{ $city }}
-                                                </option>
+                                                @foreach($cities as $city)
+                                                    <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
                                                 @endforeach
                                             </select>
+                                            
                                             @error('city_of_birth')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -237,16 +236,16 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="passport_issue_place">Passport Place Of
                                                 Issue</label>
-                                            <select name="passport_issue_place" class="form-control" required>
-                                                <option value="" selected disabled>Select City</option>
-                                                @foreach (['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad',
-                                                'Multan', 'Peshawar', 'Quetta'] as $city)
-                                                <option value="{{ strtolower($city) }}" {{ old('passport_issue_place',
-                                                    strtolower($city))}}>
-                                                    {{ $city }}
-                                                </option>
-                                                @endforeach
-                                            </select>
+                                                <select name="passport_issue_place" class="form-control" required>
+                                                    <option value="" selected disabled>Select City</option>
+                                                    @foreach($cities as $city)
+                                                        <option value="{{ strtolower($city->name) }}"
+                                                            {{ old('passport_issue_place') == strtolower($city->name) ? 'selected' : '' }}>
+                                                            {{ $city->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                
                                             @error('passport_issue_place')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -628,37 +627,17 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="present_address_city">Present Address
                                                     City</label>
-                                                <select name="present_address_city" id="present_address_city"
-                                                    class="form-control" required>
-                                                    <option value="" disabled {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == '' ? 'selected' :
-                                                        '' }}>
-                                                        Select City</option>
-                                                    <option value="lahore" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'lahore' ?
-                                                        'selected' : '' }}>
-                                                        Lahore</option>
-                                                    <option value="karachi" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'karachi' ?
-                                                        'selected' : '' }}>
-                                                        Karachi</option>
-                                                    <option value="islamabad" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'islamabad' ?
-                                                        'selected' : '' }}>
-                                                        Islamabad</option>
-                                                    <option value="peshawar" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'peshawar' ?
-                                                        'selected' : '' }}>
-                                                        Peshawar</option>
-                                                    <option value="quetta" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'quetta' ?
-                                                        'selected' : '' }}>
-                                                        Quetta</option>
-                                                    <option value="multan" {{ old('present_address_city',
-                                                        $HumanResource->present_address_city ?? '') == 'multan' ?
-                                                        'selected' : '' }}>
-                                                        Multan</option>
-                                                </select>
+                                                    <select name="present_address_city" id="present_address_city" class="form-control" required>
+                                                        <option value="" disabled {{ old('present_address_city', $HumanResource->present_address_city ?? '') == '' ? 'selected' : '' }}>
+                                                            Select City
+                                                        </option>
+                                                        @foreach($cities as $city)
+                                                            <option value="{{ strtolower($city->name) }}"
+                                                                {{ old('present_address_city', $HumanResource->present_address_city ?? '') == strtolower($city->name) ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>                                                    
                                                 @error('present_address_city')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -706,37 +685,18 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="permanent_address_city">Permanent
                                                     Address City</label>
-                                                <select name="permanent_address_city" id="permanent_address_city"
-                                                    class="form-control" required>
-                                                    <option value="" disabled {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == '' ? 'selected'
-                                                        : '' }}>
-                                                        Select City</option>
-                                                    <option value="lahore" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'lahore' ?
-                                                        'selected' : '' }}>
-                                                        Lahore</option>
-                                                    <option value="karachi" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'karachi' ?
-                                                        'selected' : '' }}>
-                                                        Karachi</option>
-                                                    <option value="islamabad" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'islamabad' ?
-                                                        'selected' : '' }}>
-                                                        Islamabad</option>
-                                                    <option value="peshawar" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'peshawar' ?
-                                                        'selected' : '' }}>
-                                                        Peshawar</option>
-                                                    <option value="quetta" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'quetta' ?
-                                                        'selected' : '' }}>
-                                                        Quetta</option>
-                                                    <option value="multan" {{ old('permanent_address_city',
-                                                        $HumanResource->permanent_address_city ?? '') == 'multan' ?
-                                                        'selected' : '' }}>
-                                                        Multan</option>
-                                                </select>
+                                                    <select name="permanent_address_city" id="permanent_address_city" class="form-control" required>
+                                                        <option value="" disabled {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == '' ? 'selected' : '' }}>
+                                                            Select City
+                                                        </option>
+                                                        @foreach($cities as $city)
+                                                            <option value="{{ strtolower($city->name) }}"
+                                                                {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == strtolower($city->name) ? 'selected' : '' }}>
+                                                                {{ $city->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    
                                                 @error('permanent_address_city')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -748,23 +708,20 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="permanent_address_province">Permanent
                                                     Address Province</label>
-                                                <select name="permanent_address_province" class="form-control" required>
-                                                    <option value="" selected disabled>Select Province</option>
-                                                    <option value="Punjab">Punjab</option>
-                                                    <option value="Sindh">Sindh</option>
-                                                    <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
-                                                    <option value="Balochistan">Balochistan</option>
-                                                    <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
-                                                    <option value="Islamabad Capital Territory">Islamabad Capital
-                                                        Territory</option>
-                                                    <option value="Azad Jammu & Kashmir">Azad Jammu & Kashmir</option>
-                                                </select>
+                                                    <select name="permanent_address_province" class="form-control" required>
+                                                        <option value="" selected disabled>Select Province</option>
+                                                        @foreach($provinces as $data)
+                                                            <option value="{{ $data->name }}">{{ $data->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    
                                                 @error('permanent_address_province')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
                                     </div>
+                                {{-- <div class="row col-md-12"> --}}
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -784,103 +741,16 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="district_of_domicile">District Of
                                                 Domicile</label>
-                                            <select name="district_of_domicile" id="district_of_domicile"
-                                                class="form-control" required>
-                                                <option value="" selected disabled>Select District</option>
-                                                @foreach ([
-                                                'Abbottabad',
-                                                'AJK',
-                                                'Astore',
-                                                'Attock',
-                                                'Bahawalnagar',
-                                                'Bahawalpur',
-                                                'Bannu',
-                                                'Bhakhar',
-                                                'Bhakkar',
-                                                'Bhimber',
-                                                'Buner',
-                                                'Chakwal',
-                                                'Charsadda',
-                                                'Chitral',
-                                                'Dadu',
-                                                'D.G. Khan',
-                                                'Dir Lower',
-                                                'Dir Upper',
-                                                'Faisalabad',
-                                                'Fateh Jang',
-                                                'Gujranwala',
-                                                'Gujrat',
-                                                'Gujar Khan',
-                                                'Hafizabad',
-                                                'Haripur',
-                                                'Hyderabad',
-                                                'Islamabad',
-                                                'Jacobabad',
-                                                'Jaffarabad',
-                                                'Jhang',
-                                                'Jhelum',
-                                                'Jiwani',
-                                                'Karachi',
-                                                'Kashmore',
-                                                'Kasur',
-                                                'Kech',
-                                                'Khanewal',
-                                                'Khanpur',
-                                                'Khyber',
-                                                'Khyber Agency',
-                                                'Kohat',
-                                                'Kohlu',
-                                                'Lahore',
-                                                'Lakki Marwat',
-                                                'Larkana',
-                                                'Lasbela',
-                                                'Layyah',
-                                                'Lodhran',
-                                                'Lower Dir',
-                                                'Lower Kohistan',
-                                                'Malakand',
-                                                'Mandi Bahauddin',
-                                                'Mansehra',
-                                                'Mardan',
-                                                'Mastung',
-                                                'Matiari',
-                                                'Mirpur',
-                                                'Mirpur Khas',
-                                                'Muzaffarabad',
-                                                'Muzaffargarh',
-                                                'Nawabshah',
-                                                'Nowshera',
-                                                'Okara',
-                                                'Pakpattan',
-                                                'Peshawar',
-                                                'Quetta',
-                                                'Rahim Yar Khan',
-                                                'Rajanpur',
-                                                'Rawalpindi',
-                                                'Sahiwal',
-                                                'Sargodha',
-                                                'Sawat',
-                                                'Sialkot',
-                                                'Shikarpur',
-                                                'Sindh',
-                                                'Sirkot',
-                                                'Skardu',
-                                                'Sukkur',
-                                                'Swabi',
-                                                'Swat',
-                                                'Tando Allahyar',
-                                                'Tando Muhammad Khan',
-                                                'Tank',
-                                                'Thatta',
-                                                'Toba Tek Singh',
-                                                'Upper Dir',
-                                                'Upper Kohistan',
-                                                'Vehari',
-                                                'Zhob',
-                                                ] as $district)
-                                                <option value="{{ $district }}">{{ $district }}</option>
-                                                @endforeach
-                                            </select>
+                                                <select name="district_of_domicile" id="district_of_domicile" class="form-control" required>
+                                                    <option value="" selected disabled>Select District</option>
+                                                    @foreach($districts as $district)
+                                                        <option value="{{ $district->name }}"
+                                                            {{ old('district_of_domicile', $HumanResource->district_of_domicile ?? '') == $district->name ? 'selected' : '' }}>
+                                                            {{ $district->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                
                                             @error('district_of_domicile')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -903,7 +773,8 @@
                                             @enderror
                                         </div>
                                     </div>
-
+                                {{-- </div> --}}
+                                {{-- <div class="row col-md-12"> --}}
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="refference">Reference (Optional)</label>
@@ -927,15 +798,30 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="min_salary">Min Acceptable Salary
-                                                %</label>
-                                            <input type="number" class="form-control" id="min_salary" name="min_salary"
-                                                value="{{ old('min_salary') }}" required>
+                                            <label class="text-danger" for="min_salary">Min Acceptable Salary %</label>
+                                            <div class="input-group">
+                                                <!-- Currency Dropdown -->
+                                                <select name="currancy" class="form-control" id="currancy" required>
+                                                    <option value="" selected disabled> Currency</option>
+                                                    @foreach($curencies as $country)
+                                                        <option value="{{ $country->currency_symbol }}"
+                                                            {{ old('currancy', $HumanResource->currancy ?? '') == strtolower($country->currency_symbol) ? 'selected' : '' }}>
+                                                            {{ $country->currency_symbol }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                        
+                                                <!-- Salary Input -->
+                                                <input type="number" class="form-control" id="min_salary" name="min_salary" value="{{ old('min_salary') }}" required>
+                                            </div>
                                             @error('min_salary')
-                                            <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                        
                                     </div>
+                                {{-- </div> --}}
+                                {{-- <div class="row col-md-12"> --}}
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="comment">Comment (Optional)</label>
@@ -959,6 +845,7 @@
                                             @enderror
                                         </div>
                                     </div>
+                                {{-- </div> --}}
 
                                 </div>
                                 <div class="modal-footer justify-content-center">

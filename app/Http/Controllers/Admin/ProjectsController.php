@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\City;
 use App\Models\Project;
+use App\Models\Country;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
@@ -27,8 +29,10 @@ class ProjectsController extends Controller
 
         $registration = $maxValue >= 2000 ? $maxValue + 1 : 2001;
 
-
-        return view('admin.company.project', compact('company_id', 'projects', 'company_name', 'registration'));
+        $cities = City::orderBy('name')->get();
+        $countries = Country::orderBy('title')->get();
+        // return $countires;
+        return view('admin.company.project', compact('countries','cities','company_id', 'projects', 'company_name', 'registration'));
     }
 
     public function store(Request $request)
