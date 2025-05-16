@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\HumanResource;
 use App\Mail\ResetPasswordMail;
+use App\Models\HrStep;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -114,6 +115,7 @@ class HumanResouceController extends Controller
    {
        $data = $request->all();
        $hr = HumanResource::find($data['human_resource_id']);
+        //    return $hr;
         //    $pdfPath = 'admin/assets/humanresource/'.$hr->id.'/form-7.pdf';
         //    $test = $data['amount_words'];
         //    $ys =  $test."/-";
@@ -142,16 +144,16 @@ class HumanResouceController extends Controller
        // Depositor Details
 
        $pdf->SetXY(49, 51);  
-       $pdf->Write(10, "MUHAMMAD ATIF SHAHZAD");  // Name
+       $pdf->Write(10, $hr->name);  // Name
    
        $pdf->SetXY(49, 58);
-       $pdf->Write(10, "0333 - 0324 (4257417)"); // Contact Number
+       $pdf->Write(10, $hr->present_address_phone .' '. $hr->present_address_mobile); // Contact Number
 
        $pdf->SetXY(119, 51);
-       $pdf->Write(10, "MUHAMMAD IBRAHIM"); // S/O
+       $pdf->Write(10, $hr->son_of); // S/O
 
        $pdf->SetXY(118, 58);
-       $idCardNumber = "35201-1229593-1";
+       $idCardNumber = $hr->cnic;
        foreach (str_split($idCardNumber) as $char) {
            $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
        } // ID Card Number
@@ -164,7 +166,7 @@ class HumanResouceController extends Controller
    
        $pdf->SetFont('Helvetica', '', 8);
        $pdf->SetXY(50, 78);
-       $pdf->Write(10, $hr->present_address_phone . $hr->present_address_mobile); // Contact Number
+       $pdf->Write(10, $hr->present_address_phone .' '. $hr->present_address_mobile); // Contact Number
 
        $pdf->SetFont('Helvetica', 'B', 8);
        $pdf->SetXY(122, 72);
@@ -407,10 +409,13 @@ class HumanResouceController extends Controller
         $pdf->SetFont('Helvetica', '', 8);
         $pdf->SetTextColor(0, 0, 0);
         
+        $cnic = $hr->cnic;
+        $firstPart = substr($cnic, 0, 5);    // '35202'
+        $secondPart = substr($cnic, 5, 7);
         // Depositor Copy
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(155, 32.6);  
-        $pdf->Write(10, "-297466");  // Slip no.
+        $pdf->Write(10, $secondPart);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 9);
         $pdf->SetXY(129, 45.8);
@@ -457,7 +462,7 @@ class HumanResouceController extends Controller
         // BE & OE Copy
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(155, 137);  
-        $pdf->Write(10, "-297466");  // Slip no.
+        $pdf->Write(10, $secondPart);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 9);
         $pdf->SetXY(129, 149.2);
@@ -518,7 +523,7 @@ class HumanResouceController extends Controller
         // Bank Copy
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(155, 31);  
-        $pdf->Write(10, "-297466");  // Slip no.
+        $pdf->Write(10, $secondPart);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 9);
         $pdf->SetXY(129, 43.8);
@@ -565,7 +570,7 @@ class HumanResouceController extends Controller
         // Bank Copy
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(155, 135);  
-        $pdf->Write(10, "-297466");  // Slip no.
+        $pdf->Write(10, $secondPart);  // Slip no.
 
         $pdf->SetFont('Helvetica', '', 9);
         $pdf->SetXY(129, 147.2);
@@ -720,22 +725,22 @@ class HumanResouceController extends Controller
 
         
         $pdf->SetXY(92.2, 87);
-        $pdf->Write(10, "LT6913331"); // Number
+        $pdf->Write(10, $hr->passport); // Number
 
         $pdf->SetXY(94.2, 91.3);
-        $pdf->Write(10, "Apr 26, 2023"); // Date
+        $pdf->Write(10, $hr->doi); // Date
 
         $pdf->SetXY(102.2, 97.5);
         $pdf->Write(10, "Job"); // Occupation
 
         $pdf->SetXY(131.2, 87);
-        $pdf->Write(10, "Apr 26, 2023"); // Issued Date
+        $pdf->Write(10, $hr->doi); // Issued Date
 
         $pdf->SetXY(131.2, 92);
-        $pdf->Write(10, "KASHMORE"); // Place
+        $pdf->Write(10, strtoupper($hr->passport_issue_place)); // Place
 
         $pdf->SetXY(86.2, 105.5);
-        $pdf->MultiCell(90, 10, "VILLAGE FAQEER MUHAMMAD KHAN CHAKRANI\nPOKAND KOT KHUJAL TEHSIL KAND KOT DISTT KASHMORE", 0, 'L', 0, 1); // Postal Address
+        $pdf->MultiCell(90, 10, strtoupper($hr->permanent_address), 0, 'L', 0, 1); // Postal Address
 
         $pdf->SetXY(86.2, 118);
         $pdf->MultiCell(90, 10, "Adrees", 0, 'L', 0, 1); // Address Abroad
@@ -744,16 +749,16 @@ class HumanResouceController extends Controller
         $pdf->MultiCell(90, 10, "Adrees", 0, 'L', 0, 1); // Address Abroad of Employer
 
         $pdf->SetXY(95.2, 125.5);
-        $pdf->Write(10, "AZMIYA"); // Particular person name
+        $pdf->Write(10, $hr->next_of_kin); // Particular person name
 
         $pdf->SetXY(87, 132);
-        $idCardNumber = "4350304643339";
+        $idCardNumber = $hr->kin_cnic;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(5, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
         } // NIC Number
 
         $pdf->SetXY(119, 137.5);
-        $pdf->Write(10, "Wife"); // Wife
+        $pdf->Write(10, $hr->relation); // Wife
 
         $pdf->SetXY(87, 147);
         $pdf->Write(10, "Rs. 1,000,000/-(Rupees One Million Only)"); // Price
@@ -784,6 +789,10 @@ class HumanResouceController extends Controller
     public function generateForm11(Request $request)
     {
         $data = $request->all();
+        $passportImage = HrStep::where('human_resource_id', $data['human_resource_id'])
+        ->where('step_number',4)
+        ->first();
+        // return asset($passportImage->file_name);
         $hr = HumanResource::find($data['human_resource_id']);
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         
@@ -808,6 +817,10 @@ class HumanResouceController extends Controller
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(6.7, 10, $char, 0, 0, 'C');
         } // Date
+
+        // ✅ Insert image (top-right box — PE Office photo box)
+        $pdf->Image(asset($passportImage->file_name), 166, 41.5, 20.9, 18.5);
+
 
         $pdf->SetFont('Times', 'B', 11);
         $pdf->SetXY(67, 60);
@@ -840,7 +853,7 @@ class HumanResouceController extends Controller
         foreach (str_split($idCardNumber) as $index => $char) {
             if ($index > 0 && $index % $maxCharsPerLine == 0) {
                 $currentLine++;
-                $pdf->SetXY(67, 86 + ($currentLine * 5)); // Adjust line spacing as needed
+                $pdf->SetXY(67, 85 + ($currentLine * 5)); // Adjust line spacing as needed
             }
             $pdf->Cell(8.5, 5, $char, 0, 0, 'C'); // Adjust cell width and height as needed
         } // Emigrant Name
@@ -852,11 +865,25 @@ class HumanResouceController extends Controller
         $pdf->SetXY(67, 101.5);
         $idCardNumber = $hr->cnic;
         foreach (str_split($idCardNumber) as $char) {
-            $pdf->Cell(5.9, 10, $char, 0, 0, 'C');
+            $pdf->Cell(6.7, 10, $char, 0, 0, 'C');
         } // CNIC
+        
+        // $pdf->SetFont('ZapfDingbats'); // This font supports checkmarks
+        // Example for male
+        if ($hr->gender == 'male') {
+            $pdf->SetXY(67, 115); // Replace with exact coordinates of Male checkbox
+            $pdf->Rect(67, 109.5, 2, 2, 'F');
+        }
+
+        // Example for female
+        if ($hr->gender == 'female') {
+            $pdf->SetXY(90, 108); // Replace with exact coordinates of Female checkbox
+             $pdf->Rect(90.7, 109.5, 2, 2, 'F');
+        }
+
 
         $pdf->SetXY(67, 116.5);
-        $idCardNumber = $hr->present_address_phone ;
+        $idCardNumber = $hr->present_address_phone;
         foreach (str_split($idCardNumber) as $char) {
             $pdf->Cell(8.5, 10, $char, 0, 0, 'C');
         } // Cell no
@@ -867,7 +894,7 @@ class HumanResouceController extends Controller
 
         $pdf->SetFont('Times', '', 10);
         $pdf->SetXY(67, 122.5);
-        $pdf->Write(10, "xyz@gmail.com"); // Email 
+        $pdf->Write(10, $hr->email); // Email 
 
         $pdf->SetFont('Times', '', 10);
         $pdf->SetXY(67, 133);

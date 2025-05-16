@@ -175,13 +175,14 @@ class HumanResourceController extends Controller
             'comment' => $request->comment,
             'image'=> 'public/admin/assets/images/users/avatar.png',
         ];
-
+        
         // if (empty($request->input('company_id'))) {
             $data['craft_id'] = $request->craft_id;
             $data['sub_craft_id'] = $request->sub_craft_id;
-        // }
-
-        $HumanResource =  HumanResource::create($data);
+            // }
+            
+            $HumanResource =  HumanResource::create($data);
+            // return $HumanResource;
 
         if (!empty($request->input('company_id'))) {
             $HR = HumanResource::where('email', $request->email)->first();
