@@ -669,84 +669,131 @@
                                 </div>
                             </div>
                             {{-- Original Report Received --}}
-                            <div class="col-md-6 mt-3">
-                                <label for="recieved">Original Report Received?</label> &nbsp; &nbsp;
-                                <input type="checkbox" id="recieved" name="original_report_received"
+                            <div class="col-md-6 mt-4">
+                                <label for="recieved" class="mt-4">Original Report Received?</label> &nbsp; &nbsp;
+                                <input type="checkbox" id="recieved" name="original_report_received" class="mt-4"
                                     {{ $original_report_received == 'yes' ? 'checked' : '' }} />
                             </div>
                         </div>
 
+                       
                         {{-- Visa Form --}}
                         <h5 class="mt-5">Visa Form</h5>
+                        @php
+                            $visaStep = optional($HumanResource->hrSteps->where('step_number', 6)->first());
+                            $visa_type = $visaStep->visa_type ?? '';
+                            $visa_issue_date = $visaStep->visa_issue_date ?? '';
+                            $visa_expiry_date = $visaStep->visa_expiry_date ?? '';
+                            $visa_receive_date = $visaStep->visa_receive_date ?? '';
+                            $visa_status = $visaStep->visa_status ?? '';
+                            $visa_issue_number = $visaStep->visa_issue_number ?? '';
+                            $visa_endorsement_date = $visaStep->visa_endorsement_date ?? '';
+                            $endorsement_checked = $visaStep->endorsement_checked ?? false;
+                            $scanned_visa = $visaStep->scanned_visa ? asset($visaStep->scanned_visa) : null;
+                        @endphp
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="visa_type">Visa Type</label>
                                 <select name="visa_type" class="form-control" required>
-                                    <option value="" disabled selected>Select an Option</option>
-                                    <option value="Work Permit">Work Permit</option>
-                                    <option value="Visit Visa">Visit Visa</option>
-                                    <option value="Single Entry">Single Entry</option>
-                                    <option value="B-1">B-1</option>
-                                    <option value="EV">EV</option>
-                                    <option value="Work Visit Visa">Work Visit Visa</option>
-                                    <option value="DEB">DEB</option>
-                                    <option value="Work Visa">Work Visa</option>
+                                    <option value="" disabled {{ !$visa_type ? 'selected' : '' }}>Select an Option</option>
+                                    <option value="Work Permit" {{ $visa_type == 'Work Permit' ? 'selected' : '' }}>Work Permit</option>
+                                    <option value="Visit Visa" {{ $visa_type == 'Visit Visa' ? 'selected' : '' }}>Visit Visa</option>
+                                    {{-- ...other options... --}}
                                 </select>
                             </div>
-                            <div class="col-md-6">
+                             <div class="col-md-6">
+                                <label for="issue_date">Number</label>
+                                <input type="number" class="form-control" name="visa_issue_number" value="{{ $visa_issue_number }}" />
+                            </div>
+                            <div class="col-md-6 mt-3">
                                 <label for="issue_date">Issue Date</label>
-                                <input type="date" class="form-control" name="visa_issue_date" />
+                                <input type="date" class="form-control" name="visa_issue_date" value="{{ $visa_issue_date }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="expiry_date">Expiry Date</label>
-                                <input type="date" class="form-control" name="visa_expiry_date" />
+                                <input type="date" class="form-control" name="visa_expiry_date" value="{{ $visa_expiry_date }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="receive_date">Visa Receive Date</label>
-                                <input type="date" class="form-control" name="visa_receive_date" />
+                                <input type="date" class="form-control" name="visa_receive_date" value="{{ $visa_receive_date }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="visa_status">Visa Status</label>
-                                <input type="text" class="form-control" name="visa_status" />
+                                <input type="text" class="form-control" name="visa_status" value="{{ $visa_status }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="scanned_visa">Scanned Visa</label>
-                                <input type="file" class="form-control" name="scanned_visa"
-                                    accept=".pdf,image/*" />
+                                <input type="file" class="form-control" name="scanned_visa" accept=".pdf,image/*"
+                                onchange="previewUploadedFile(this, 'visaPreview')" />
+                                <div class="mt-2">
+                                    <a id="visaPreview" href="{{ $scanned_visa }}" target="_blank"
+                                        class="btn btn-info {{ $scanned_visa ? '' : 'd-none' }}">
+                                        View Uploaded Visa
+                                    </a>
+                                </div>
                             </div>
+                                {{-- Endorsement --}}
+                               <div class="col-md-6 mt-4">
+                                {{-- <input type="text" value="{{$endorsement_checked}}"> --}}
+                                   <label for="Endorsement" class="mt-4">Endorsement?</label> &nbsp; &nbsp;
+                                   <input type="checkbox" id="Endorsement" name="endorsement_checked" class="mt-4"
+                                       {{ $endorsement_checked == 'yes' ? 'checked' : '' }} />
+                               </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="endorsement_date">Endorsement Date</label>
+                                    <input type="date" class="form-control" name="visa_endorsement_date" value="{{ $visa_endorsement_date }}" />
+                                </div>
                         </div>
 
                         {{-- Air Booking --}}
                         <h5 class="mt-5">Air Booking</h5>
+                        @php
+                            $airBookingStep = optional($HumanResource->hrSteps->where('step_number', 6)->first());
+                            $ticket_number = $airBookingStep->ticket_number ?? '';
+                            $flight_number = $airBookingStep->flight_number ?? '';
+                            $flight_route = $airBookingStep->flight_route ?? '';
+                            $flight_date = $airBookingStep->flight_date ?? '';
+                            $flight_etd = $airBookingStep->flight_etd ?? '';
+                            $flight_eta = $airBookingStep->flight_eta ?? '';
+                            $upload_ticket = $airBookingStep->upload_ticket ? asset($airBookingStep->upload_ticket) : null;
+                        @endphp
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="ticket_number">Ticket Number</label>
-                                <input type="text" class="form-control" name="ticket_number" />
+                                <input type="text" class="form-control" name="ticket_number" value="{{ $ticket_number }}" />
                             </div>
                             <div class="col-md-6">
                                 <label for="flight_number">Flight Number</label>
-                                <input type="text" class="form-control" name="flight_number" />
+                                <input type="text" class="form-control" name="flight_number" value="{{ $flight_number }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="flight_route">Flight Route</label>
-                                <input type="text" class="form-control" name="flight_route" />
+                                <input type="text" class="form-control" name="flight_route" value="{{ $flight_route }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="flight_date">Flight Date</label>
-                                <input type="date" class="form-control" name="flight_date" />
+                                <input type="date" class="form-control" name="flight_date" value="{{ $flight_date }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="etd">Expected Time of Departure (ETD)</label>
-                                <input type="text" class="form-control" name="flight_etd" />
+                                <input type="time" class="form-control" name="flight_etd"
+                                    value="{{ $flight_etd ? date('H:i', strtotime($flight_etd)) : '' }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="eta">Expected Time of Arrival (ETA)</label>
-                                <input type="text" class="form-control" name="flight_eta" />
+                                <input type="time" class="form-control" name="flight_eta"
+                                    value="{{ $flight_eta ? date('H:i', strtotime($flight_eta)) : '' }}" />
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="upload_ticket">Upload Ticket</label>
-                                <input type="file" class="form-control" name="upload_ticket"
-                                    accept=".pdf,image/*" />
+                                <input type="file" class="form-control" name="upload_ticket" accept=".pdf,image/*"
+                                    onchange="previewUploadedFile(this, 'ticketPreview')" />
+                                <div class="mt-2">
+                                    <a id="ticketPreview" href="{{ $upload_ticket }}" target="_blank"
+                                        class="btn btn-info {{ $upload_ticket ? '' : 'd-none' }}">
+                                        View Uploaded Ticket
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </form>

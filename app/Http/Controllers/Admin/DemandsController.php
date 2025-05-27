@@ -100,8 +100,13 @@ class DemandsController extends Controller
     }
 
     public function getDemand(Request $request)
-    {
+    { 
         $demands = Demand::where('project_id', $request->project_id)->orderBy('manpower', 'asc')->get();
+         // Append concatenated name to each demand
+        $demands->transform(function ($demand) {
+            $demand->full_name = $demand->manpower . ' - ' . $demand->craft?->name;
+            return $demand;
+        });
         return response()->json($demands);
     }
 

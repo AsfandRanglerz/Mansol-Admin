@@ -36,22 +36,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="name">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name"
-                                                    value="{{ old('name', $HumanResource->name) }}">
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="son_of">S/O</label>
-                                                <input type="text" class="form-control" id="son_of" name="son_of"
-                                                    value="{{ old('son_of', $HumanResource->son_of) }}">
-                                                <div class="invalid-feedback"></div>
-                                            </div>
-                                        </div>
+                                     
                                         {{-- @if ($company)
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -144,7 +129,23 @@
                                             </div>
                                         </div>
 
-                                      
+                                       <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="name">Name</label>
+                                                <input type="text" class="form-control" id="name" name="name"
+                                                    value="{{ old('name', $HumanResource->name) }}">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="son_of">S/O</label>
+                                                <input type="text" class="form-control" id="son_of" name="son_of"
+                                                    value="{{ old('son_of', $HumanResource->son_of) }}">
+                                                <div class="invalid-feedback"></div>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="mother_name">Mother Name</label>
@@ -895,7 +896,11 @@
                 </div>
                 <div class="card">
                     <div class="card-header text-center d-flex justify-content-between align-items-center">
-                        <a class="btn btn-primary" onclick="showUserModel('createDriverModel')">Nominate</a>
+                    @if ($nominat)
+                            <a class="btn btn-primary" disabled title="Please Demob" onclick="showToaster()">Nominate</a>
+                        @else
+                            <a class="btn btn-primary" onclick="showUserModel('createDriverModel', {{ $HumanResource->id }})">Nominate</a>
+                        @endif
                         <h4 class="flex-grow-1 text-center m-0">Job History</h4>
                         <div style="width: 75px;"></div> <!-- Empty space to balance the button width -->
                     </div>
@@ -907,6 +912,7 @@
                             <tr>
                                 <th>Sr.</th>
                                 <th>Company</th>
+                                <th>Interview Location</th>
                                 <th>Project</th>
                                 <th>Craft</th>
                                 <th>Sub-Craft</th>
@@ -925,6 +931,9 @@
                                     <td>
                                         {{ $data->company->name ?? 'N/A' }}
                                     </td>
+                                     <td>
+                                        {{ $data->city_of_interview ?? 'N/A' }}
+                                    </td>
                                     <td>
                                         {{ $data->project->project_name ?? 'N/A' }}
                                     </td>
@@ -938,18 +947,18 @@
                                         {{ $data->application_date ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $data->end_date ?? 'N/A' }}
+                                        {{ $data->mob_date ?? 'N/A' }}
                                     </td>
                                     <td>
-                                        {{ $data->end_date ?? 'N/A' }}
+                                        {{ $data->demobe_date ?? 'N/A' }}
                                     </td>
                                     <td class="">
                                         <div class="row m-1">
-                                            {{-- <div class="col-md-6 mb-2">
+                                            <div class="col-md-6 mb-2">
                                                 <button type="button"
                                                     class="btn btn-primary editDriverBtn"
                                                     data-id="{{ $data->id }}"><span class="fa fa-edit"></span></button>
-                                            </div> --}}
+                                            </div>
                                             <div class="col-md-6 mb-2">
                                                 <form action="{{ route('humanresource.destroy', $data->id) }}" method="POST">
                                                     @csrf
@@ -981,7 +990,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="createDriverForm" enctype="multipart/form-data">
+                    <form id="createDriverForm" enctype="multipart/form-data" action="{{route('history.update')}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="human_resource_id" id="human_resource_id">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -995,6 +1006,24 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                     <label class="text-danger" for="city_of_interview">Interview Location</label>
+                                            <select name="city_of_interview" class="form-control" id="cityOfInterview" required>
+                                                <option value="" selected disabled>Select Location</option>
+                                                @foreach($cities as $city)
+                                                    <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            
+                                            @error('city_of_interview')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="text-danger" for="project_id">Project</label>
@@ -1004,8 +1033,6 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label class="text-danger" for="demand_id">Demand</label>
@@ -1015,10 +1042,12 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="start_date">Craft</label>
-                                    <select name="craft_name" id="craft" class="form-control">
+                                    <select name="craft_id" id="craft" class="form-control">
                                         <option value="">Select Craft</option>
                                         @foreach ($crafts as $craft)
                                             <option value="{{ $craft->name }}">{{ $craft->name }}</option>
@@ -1027,8 +1056,6 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                         <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
@@ -1041,19 +1068,21 @@
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="start_date">Application Date</label>
-                                    <input type="date" class="form-control" id="editStartDate" name="start_date" value="{{ date('Y-m-d') }}" readonly>
+                                    <input type="date" class="form-control" id="editStartDate" name="application_date" value="{{ date('Y-m-d') }}" readonly>
 
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary create-ethnicity">Create</button>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary create-ethnicity">Create</button>
                 </div>
             </div>
         </div>
@@ -1070,93 +1099,31 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="editDriverForm" enctype="multipart/form-data">
-                        <input type="hidden" id="editDriverId" name="id">
-
-                        {{-- <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="start_date">Company</label>
-                                    <select name="company_id" id="company_id" class="form-control">
-                                        <option value="">Select Company</option>
-                                        @foreach ($companies as $company)
-                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="text-danger" for="project_id">Project</label>
-                                    <select name="project_id" id="project_id" class="form-control">
-                                        <option value="" selected disabled>Select Project</option>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                        </div>
+                    <form id="editDriverForm" enctype="multipart/form-data" action="{{route('jobHistory.update')}}" method="POST">
+                        @csrf
+                        <input type="hidden" id="editDriverId" name="id">        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="text-danger" for="demand_id">Demand</label>
-                                    <select name="demand_id" id="demand_id" class="form-control">
-                                        <option value="" selected disabled>Select Demand</option>
-                                    </select>
+                                    <label for="end_date">Mob Date</label>
+                                    <input type="date" class="form-control" id="mobDate" name="start_date">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="start_date">Craft</label>
-                                    <select name="craft_name" id="craft" class="form-control">
-                                        <option value="">Select Craft</option>
-                                        @foreach ($crafts as $craft)
-                                            <option value="{{ $craft->name }}">{{ $craft->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                        </div> --}}
-        
-                        {{-- <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                        <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
-                                        <select name="sub_craft_id" class="form-control" id="sub_craft">
-                                            <option value="" selected disabled>Select Sub-Craft</option>
-                                        </select>
-                                        @error('sub_craft')
-                                        <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="start_date">Application Date</label>
-                                    <input type="date" class="form-control" id="editStartDate" name="start_date" value="{{ date('Y-m-d') }}" readonly>
-
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                        </div> --}}
-        
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="end_date">Demob Date</label>
-                                    <input type="date" class="form-control" id="editEndDate" name="end_date">
+                                    <input type="date" class="form-control" id="deMobDate" name="end_date">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                         </div>
-                    </form>
                 </div>
                 <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-primary update-driver">Update</button>
+                    <button type="submit" class="btn btn-primary update-history">Update</button>
                 </div>
+                    </form>
+
             </div>
         </div>
         </div>
@@ -1166,7 +1133,13 @@
 
 @section('js')
 <script>
+       function showToaster() {
+                toastr.warning("Please demobilize the current job before nominating!", "Action Blocked");
+        }
+</script>
+<script>
     $(document).ready(function() {
+     
         $('#table_id_events').DataTable()
     })
 </script>
@@ -1190,11 +1163,11 @@
                 });
         });
     </script>
-    @if (\Illuminate\Support\Facades\Session::has('message'))
+    {{-- @if (\Illuminate\Support\Facades\Session::has('message'))
         <script>
             toastr.success('{{ \Illuminate\Support\Facades\Session::get('message') }}');
         </script>
-    @endif
+    @endif --}}
         <script>
 
             $(document).on('click','#craft', function () {
@@ -1219,21 +1192,44 @@
                         });
                     });
             //add 
-            function showUserModel(id) {
+            function showUserModel(id, humanResourceId) {
                 $(`#${id}`).modal('show');
                 $('#createDriverModel').find('input, textarea, select').val('');
                 $('#clonedInputsContainer').empty();
                 $('#createDriverForm')[0].reset(); // Reset the form after successful submission
+                $('#human_resource_id').val(humanResourceId);
+                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                if (csrfToken) {
+                    if (!$('input[name="_token"]').length) {
+                        $('#createDriverForm').prepend(`<input type="hidden" name="_token" value="${csrfToken}">`);
+                    } else {
+                        $('input[name="_token"]').val(csrfToken);
+                    }
+                }
             };
 
-            $(document).on('click', '.editDriverBtn', function() {
-            var id = $(this).data('id');
-            $('.update-driver').attr('data', id);
-            $('#editDriverModel').modal('show');
-            // editDriver(id);
-            });
-        
+            function getDemobData(id) {
+                $.ajax({
+                    url: "{{ route('get-demob-data') }}",
+                    type: "GET",
+                    data: {
+                        id: id
+                    },
+                    success: function(data) {
+                        console.log(data.demobe_date);
+                        $('#mobDate').val(data.mob_date);
+                        $('#deMobDate').val(data.demobe_date);
+                    }
+                });
+            }
 
+            $(document).on('click', '.editDriverBtn', function () {
+                var id = $(this).data('id');
+                $('#editDriverId').val(id);
+                $('.update-history').attr('data', id);
+                $('#editDriverModel').modal('show');
+                getDemobData(id); // Now this will work
+            });
             $('#company_id').on('change', function () {
             var companyId = $(this).val();
 
@@ -1284,7 +1280,7 @@
 
                     $.each(data, function (key, value) {
                         $('#demand_id').append('<option value="' + value.id +
-                            '">Man Power - ' + value.manpower + '</option>');
+                            '">Man Power - ' + value.full_name + '</option>');
                     });
                 }
             });

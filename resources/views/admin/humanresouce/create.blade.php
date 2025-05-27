@@ -30,26 +30,7 @@
                                                 name="registration" value="{{ $registration }}" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger" for="name">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name"
-                                                value="{{ old('name') }}" required placeholder="name">
-                                            @error('name')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger" for="son_of">S/O</label>
-                                            <input type="text" class="form-control" id="son_of" name="son_of"
-                                                value="{{ old('son_of') }}" placeholder="Father Name" required>
-                                            @error('son_of')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                    
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="company_id">Company (Optional)</label>
@@ -59,6 +40,21 @@
                                                     <option value="{{ $company->id }}">{{ $company->name }}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="city_of_interview">Interview Location</label>
+                                            <select name="city_of_interview" class="form-control" id="cityOfInterview" required>
+                                                <option value="" selected disabled>Select location</option>
+                                                @foreach($cities as $city)
+                                                    <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            
+                                            @error('city_of_interview')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-4 d-none" id="project-group">
@@ -148,7 +144,26 @@
                                         </div>
                                     </div>
 
-                                   
+                                   <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="name">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                value="{{ old('name') }}" required placeholder="name">
+                                            @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="son_of">S/O</label>
+                                            <input type="text" class="form-control" id="son_of" name="son_of"
+                                                value="{{ old('son_of') }}" placeholder="Father Name" required>
+                                            @error('son_of')
+                                            <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="mother_name">Mother Name</label>
@@ -986,7 +1001,7 @@
 
                     $.each(data, function (key, value) {
                         $('#demand_id').append('<option value="' + value.id +
-                            '">Man Power - ' + value.manpower + '</option>');
+                            '">Man Power - ' + value.full_name + '</option>');
                     });
                 }
             });

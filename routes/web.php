@@ -144,6 +144,9 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('/human-resource-edit/{id}',  'edit')->name('humanresource.edit');
         Route::post('/human-resource-update/{id}',  'update')->name('humanresource.update');
         Route::delete('/human-resource-destroy/{id}',  'destroy')->name('humanresource.destroy');
+        Route::post('/update-history',  'mobDemob')->name('jobHistory.update');
+        Route::post('/jobHistory-update',  'updateHistory')->name('history.update');
+        Route::get('/get-demob-data',  'getMobData')->name('get-demob-data');
     });
     // ############ Human Resource Steps #################
     Route::controller(HrStepController::class)->group(function () {

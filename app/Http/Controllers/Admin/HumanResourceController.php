@@ -140,6 +140,7 @@ class HumanResourceController extends Controller
             'blood_group' => $request->blood_group,
             'date_of_birth' => $request->date_of_birth,
             'city_of_birth' => $request->city_of_birth,
+            'city_of_interview' => $request->city_of_interview,
             'cnic' => $request->cnic,
             'currancy' => $request->currancy,
             'cnic_expiry_date' => $request->cnic_expiry_date,
@@ -212,6 +213,7 @@ class HumanResourceController extends Controller
                         'craft_id'          => $request->craft_id ?? null,
                         'sub_craft_id'      => $request->sub_craft_id ?? null,
                         'application_date'        => $request->application_date ?? null,
+                        'city_of_interview'        => $request->city_of_interview ?? null,
                     ]);
         }
         
@@ -243,7 +245,12 @@ class HumanResourceController extends Controller
             $company = $project ? Company::find($project->company_id) : null;
             $demand = $nominates->demand_id ? Demand::find($nominates->demand_id) : null;
         }
-    
+        $nominat = JobHistory::where('human_resource_id', $id)
+        ->whereNull('demobe_date')
+        ->exists();
+            
+        // dd($nominat);   
+
         $histories = JobHistory::with('humanResource','company','project','craft','subCraft')->where('human_resource_id', $id)->latest()->get();
         $provinces = Province::orderBy('name')->get();
         $districts = Distric::orderBy('name')->get();
@@ -251,6 +258,7 @@ class HumanResourceController extends Controller
         $curencies = Country::orderBy('title')->get();
         // return $histories;
         return view('admin.humanresouce.edit', compact(
+            'nominat',
             'HumanResource',
             'crafts',
             'subCrafts',
@@ -350,6 +358,7 @@ class HumanResourceController extends Controller
                 'blood_group' => $request->blood_group,
                 'date_of_birth' => $request->date_of_birth,
                 'city_of_birth' => $request->city_of_birth,
+                'city_of_interview' => $request->city_of_interview,
                 'cnic' => $request->cnic,
                 'cnic_expiry_date' => $request->cnic_expiry_date,
                 'doi' => $request->doi,
@@ -416,6 +425,59 @@ class HumanResourceController extends Controller
         $histories = JobHistory::where('id', $id)->first();
         return response()->json($histories);
     }
+
+    public function mobDemob(Request $request)
+    {
+        $history = JobHistory::findOrFail($request->id);
+        $history->mob_date = $request->start_date;
+        $history->demobe_date = $request->end_date;
+        $history->save();
+        return redirect()->back()->with(['message' => 'Human Resource has been Mob/Demob Successfully']);
+    }
+
+    public function getMobData(Request $request){
+        $history = JobHistory::find($request->id);
+        if($history){
+            return response()->json($history);
+        }else{
+            return response()->json(['status' => 'error']);
+        }
+    }
+
+    public function updateHistory(Request $request)
+    {
+        // return $request;
+        $HumanResource = HumanResource::findOrFail($request->human_resource_id);
+        if($HumanResource){
+            $HumanResource->craft_id = $request->craft_id;
+            $HumanResource->sub_craft_id = $request->sub_craft_id;
+            $HumanResource->save();
+        }
+        if(!empty($request->input('company_id'))) {
+            // $HumanResource = HumanResource::where('email', $request->email)->first();
+            $craft = Demand::find($request->demand_id);
+            Nominate::where('human_resource_id', $HumanResource->id)->update([
+                'craft_id' => $craft->craft_id,
+                'human_resource_id' => $HumanResource->id,
+                'demand_id' => $request->demand_id,
+                'project_id' => $request->project_id,
+            ]);
+        }
+        if(!empty($request->input('company_id')) || !empty($request->input('craft_id'))) {
+                    $history = JobHistory::create([
+                        'human_resource_id' => $HumanResource->id,
+                        'company_id'        => $request->company_id ?? null,
+                        'project_id'        => $request->project_id ?? null,
+                        'demand_id'         => $request->demand_id ?? null,
+                        'craft_id'          => $request->craft_id ?? null,
+                        'sub_craft_id'      => $request->sub_craft_id ?? null,
+                        'application_date'        => $request->application_date ?? null,
+                        'city_of_interview'        => $request->city_of_interview ?? null,
+                    ]);
+        }
+        return redirect()->back()->with(['message' => 'Human Resource has been Nominated Successfully']);
+    }
+
 
     public function validateStep(Request $request, $step)
     {
