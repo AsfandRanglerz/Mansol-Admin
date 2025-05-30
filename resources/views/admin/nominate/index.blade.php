@@ -71,7 +71,7 @@
                                             <th>Sr.</th>
                                             <th>Nominee Name</th>
                                             <th>Status</th>
-                                            <th scope="col">Actions</th>
+                                            {{-- <th scope="col">Actions</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -84,7 +84,7 @@
                                                         <div class="badge badge-success badge-shadow">Assigned</div>
                                                     @endif
                                                 </td>
-                                                <td class="d-flex">
+                                                {{-- <td class="d-flex">
                                                     <form action="{{ route('nominate.destroy', $nominate->id) }}"
                                                         method="POST">
                                                         @csrf
@@ -98,11 +98,11 @@
                                                             value="{{ $project_id }}">
                                                         <input type="hidden" id="human_resource_id"
                                                             name="human_resource_id"
-                                                            value="{{ $nominate->humanResource->id }}">
+                                                            value="{{ $nominate->humanResource->id }}"> --}}
 
                                                         {{-- <button type="submit" class="btn btn-danger show_confirm">Un-Assign</button> --}}
-                                                    </form>
-                                                </td>
+                                                    {{-- </form>
+                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>

@@ -33,17 +33,6 @@
                                     
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="company_id">Company (Optional)</label>
-                                            <select name="company_id" id="company_id" class="form-control">
-                                                <option value="">Select Company</option>
-                                                @foreach ($companies as $company)
-                                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
                                             <label class="text-danger" for="city_of_interview">Interview Location</label>
                                             <select name="city_of_interview" class="form-control" id="cityOfInterview" required>
                                                 <option value="" selected disabled>Select location</option>
@@ -55,6 +44,18 @@
                                             @error('city_of_interview')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-danger" for="company_id">Company (Optional)</label>
+                                            <select name="company_id" id="company_id" class="form-control">
+                                                <option value="">Select Company</option>
+                                                @foreach ($companies as $company)
+                                                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4 d-none" id="project-group">
@@ -1071,13 +1072,13 @@
             $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
 
             if (projectId) {
-                $.ajax({
+                $.ajax({ 
                     url: "{{ route('get-demand') }}",
-                    type: "GET",
+                    type: "GET", 
                     data: { project_id: projectId },
                     success: function (data) {
                         $.each(data, function (key, value) {
-                            $('#demand_id').append('<option value="' + value.id + '">Man Power - ' + value.manpower + '</option>');
+                            $('#demand_id').append('<option value="' + value.id + '">Man Power - ' + value.full_name + '</option>');
                         });
                     }
                 });
