@@ -64,6 +64,8 @@ class HumanResourceController extends Controller
         // dd($request);
         // return $request;
         $request->validate([
+            'city_of_interview' => 'required',
+            'craft_id' => 'required',
             'registration' => 'required|string|max:255',
             'application_date' => 'required|date',
             'status' => 'nullable|string',
@@ -109,6 +111,8 @@ class HumanResourceController extends Controller
             'performance_appraisal' => 'nullable|string|max:255',
             'min_salary' => 'required|string|max:255',
             'comment' => 'nullable|string',
+            'experience_local' => 'required',
+            'experience_gulf' => 'required',
         ]);
 
         if ($request->hasfile('medical_doc')) {
@@ -204,7 +208,7 @@ class HumanResourceController extends Controller
         $message['password'] = $password;
 
         Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
-        if (!empty($request->input('company_id')) || !empty($request->input('craft_id'))) {
+        if (!empty($request->input('company_id'))) {
                     $history = JobHistory::create([
                         'human_resource_id' => $HumanResource->id,
                         'company_id'        => $request->company_id ?? null,

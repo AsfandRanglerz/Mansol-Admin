@@ -1,11 +1,11 @@
 @extends('admin.layout.app')
 @section('title', 'Nominees')
 @section('content')
-<style>
-    .select2-container{
-        display: block;
-    }
-</style>
+    <style>
+        .select2-container {
+            display: block;
+        }
+    </style>
     {{-- Demand Create Model --}}
     <div class="modal fade" id="assignNominiModal" tabindex="-1" role="dialog" aria-labelledby="demandModalLabel"
         aria-hidden="true">
@@ -24,19 +24,19 @@
                             <input type="hidden" id="demand_id" name="demand_id" value="{{ $demand_id }}">
                             <input type="hidden" id="craft_id" name="craft_id" value="{{ $craft_id }}">
                             <input type="hidden" id="project_id" name="project_id" value="{{ $project_id }}">
-                            
+
                             <div class="col">
                                 <div class="form-group">
                                     <label for="hr_id">Human Resource</label>
-                                        <select name="human_resource_id[]" class="form-control select2" multiple>
-                                            @foreach ($humanRecources as $humanRecource)
-                                                <option value="{{ $humanRecource->id }}">{{ $humanRecource->name }}</option>
-                                            @endforeach
-                                        </select>
+                                    <select name="human_resource_id[]" class="form-control select2" multiple>
+                                        @foreach ($humanRecources as $humanRecource)
+                                            <option value="{{ $humanRecource->id }}">{{ $humanRecource->name }}</option>
+                                        @endforeach
+                                    </select>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
-                            
+
 
                         </div>
                         <div class="modal-footer justify-content-center">
@@ -61,10 +61,10 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
-                                <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
+                                {{-- <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
                                     data-target="#assignNominiModal">
                                     Assign
-                                </a>
+                                </a> --}}
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
@@ -85,16 +85,22 @@
                                                     @endif
                                                 </td>
                                                 <td class="d-flex">
-                                                    <form action="{{ route('nominate.destroy', $nominate->id) }}" method="POST" >
+                                                    <form action="{{ route('nominate.destroy', $nominate->id) }}"
+                                                        method="POST">
                                                         @csrf
                                                         @method('DELETE')
 
-                                                        <input type="hidden" id="demand_id" name="demand_id" value="{{ $demand_id }}">
-                            <input type="hidden" id="craft_id" name="craft_id" value="{{ $craft_id }}">
-                            <input type="hidden" id="project_id" name="project_id" value="{{ $project_id }}">
-                            <input type="hidden" id="human_resource_id" name="human_resource_id" value="{{$nominate->humanResource->id}}">
+                                                        <input type="hidden" id="demand_id" name="demand_id"
+                                                            value="{{ $demand_id }}">
+                                                        <input type="hidden" id="craft_id" name="craft_id"
+                                                            value="{{ $craft_id }}">
+                                                        <input type="hidden" id="project_id" name="project_id"
+                                                            value="{{ $project_id }}">
+                                                        <input type="hidden" id="human_resource_id"
+                                                            name="human_resource_id"
+                                                            value="{{ $nominate->humanResource->id }}">
 
-                                                        <button type="submit" class="btn btn-danger show_confirm">Un-Assign</button>
+                                                        {{-- <button type="submit" class="btn btn-danger show_confirm">Un-Assign</button> --}}
                                                     </form>
                                                 </td>
                                             </tr>

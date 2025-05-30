@@ -834,12 +834,12 @@
                                                         <!-- Currency Dropdown -->
                                                         <select name="currancy" class="form-control" id="currancy" required>
                                                             <option value="" selected disabled> Currency</option>
-                                                            @foreach($curencies as $country)
-                                                                <option value="{{ $country->currency_symbol }}"
-                                                                    {{ old('currancy', $HumanResource->currancy ?? '') == strtolower($country->currency_symbol) ? 'selected' : '' }}>
-                                                                    {{ $country->currency_symbol }}
-                                                                </option>
-                                                            @endforeach
+                                                            @foreach ($curencies as $country)
+                                                            <option value="{{ $country->currency_symbol }}"
+                                                                {{ strtolower(old('currancy', $HumanResource->currancy ?? '')) == strtolower($country->currency_symbol) ? 'selected' : '' }}>
+                                                                {{ $country->currency_symbol }}
+                                                            </option>
+                                                        @endforeach
                                                         </select>
                                                 
                                                         <!-- Salary Input -->

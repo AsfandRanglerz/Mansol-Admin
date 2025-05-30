@@ -89,7 +89,7 @@
                                                 <option value="{{ $craft->id }}">{{ $craft->name }}</option>
                                                 @endforeach
                                             </select>
-                                            @error('craft')
+                                            @error('craft_id')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -578,7 +578,7 @@
                                             <label class="text-danger" for="experience">Years of Experience (Local)</label>
                                             <input type="number" name="experience_local" class="form-control" min="0"
                                                 placeholder="Enter Years of Experience" required>
-                                            @error('experience')
+                                            @error('experience_local')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -588,7 +588,7 @@
                                             <label class="text-danger" for="experience">Years of Experience (Gulf)</label>
                                             <input type="number" name="experience_gulf" class="form-control" min="0"
                                                 placeholder="Enter Years of Experience" required>
-                                            @error('experience')
+                                            @error('experience_gulf')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -930,7 +930,7 @@
             });
     });
 </script>
-<script>
+{{-- <script>
     $(document).ready(function () {
         $('#craft').on('change', function () {
             var craftId = $(this).val();
@@ -1025,7 +1025,7 @@
             }
         });
     });
-</script>
+</script> --}}
 <script>
     $(document).ready(function () {
         // When company is selected
