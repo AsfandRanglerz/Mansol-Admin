@@ -70,8 +70,7 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Nominee Name</th>
-                                            <th>Status</th>
-                                            {{-- <th scope="col">Actions</th> --}}
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -79,30 +78,6 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $nominate->humanResource->name }}</td>
-                                                <td>
-                                                    @if ($nominate->humanResource->status == 3)
-                                                        <div class="badge badge-success badge-shadow">Assigned</div>
-                                                    @endif
-                                                </td>
-                                                {{-- <td class="d-flex">
-                                                    <form action="{{ route('nominate.destroy', $nominate->id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-
-                                                        <input type="hidden" id="demand_id" name="demand_id"
-                                                            value="{{ $demand_id }}">
-                                                        <input type="hidden" id="craft_id" name="craft_id"
-                                                            value="{{ $craft_id }}">
-                                                        <input type="hidden" id="project_id" name="project_id"
-                                                            value="{{ $project_id }}">
-                                                        <input type="hidden" id="human_resource_id"
-                                                            name="human_resource_id"
-                                                            value="{{ $nominate->humanResource->id }}"> --}}
-
-                                                        {{-- <button type="submit" class="btn btn-danger show_confirm">Un-Assign</button> --}}
-                                                    {{-- </form>
-                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>

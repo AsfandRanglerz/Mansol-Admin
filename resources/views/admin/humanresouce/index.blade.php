@@ -89,6 +89,7 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Id No.</th>
+                                            <th>Photo</th>
                                             <th>Documents</th>
                                             <th>Name</th>
                                             <th>Email</th>
@@ -140,6 +141,14 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $HumanResource->registration ?? 'null' }}</td>
+                                              @php
+                                                    $step4 = $HumanResource->hrSteps->firstWhere('step_number', 4);
+                                                @endphp
+
+                                                <td>
+                                                    <img src="{{ $step4 ? asset($step4->file_name) : asset('public/admin/assets/images/avator.png') }}" 
+                                                        alt="Step 4 Image" width="50" height="50">
+                                                </td>
                                             <td>
                                                 <button data-toggle="modal"    data-target="#createHRModal-{{ $HumanResource->id }}"
                                                     class="btn btn-primary text-white d-flex align-items-center"

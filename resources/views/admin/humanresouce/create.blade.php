@@ -122,8 +122,7 @@
                                             <label class="text-danger" for="approvals">Approvals (Optional)</label>
                                             <select name="approvals" id="" class="form-control">
                                                 <option value="">Select Company</option>
-                                                @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q
-                                                Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $company)
+                                                @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $company)
                                                 <option value="{{ strtolower($company) }}">{{ $company }}
                                                 </option>
                                                 @endforeach

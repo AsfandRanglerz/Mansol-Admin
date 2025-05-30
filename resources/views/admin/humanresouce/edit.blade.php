@@ -63,8 +63,8 @@
                                             </div>
                                         </div>
                                         @endif --}}
-                                        
-                                        {{-- <div class="col-md-4">
+                                        @if (empty($company))
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="craft">Application for Post</label>
                                                 <input type="text" value="{{ optional($craft)->name }}" readonly class="form-control">
@@ -73,11 +73,11 @@
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                        </div> --}}
+                                        </div>
 
-                                        {{-- <input type="hidden" name="craft_id" value="{{ $craft->id ?? null }}"> --}}
+                                        <input type="hidden" name="craft_id" value="{{ $craft->id ?? null }}">
                                         
-                                        {{-- <div class="col-md-4">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="sub_craft">Sub-Craft</label>
                                                 <input type="text" value="{{ $subCraft->name ?? null }}" readonly class="form-control">
@@ -87,8 +87,8 @@
                                             </div>
                                         </div>
                                         
-                                        <input type="hidden" name="sub_craft_id" value="{{ $subCraft->id ?? null }}"> --}}
-                                        
+                                        <input type="hidden" name="sub_craft_id" value="{{ $subCraft->id ?? null }}">
+                                        @endif
                                         {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="application_date">Application Date</label>

@@ -144,16 +144,16 @@ class HumanResouceController extends Controller
        // Depositor Details
 
        $pdf->SetXY(49, 51);  
-       $pdf->Write(10, $hr->name);  // Name
+       $pdf->Write(10, 'MUHAMMAD ATIF SHAHZAD');  // Name
    
        $pdf->SetXY(49, 58);
-       $pdf->Write(10, $hr->present_address_phone .' '. $hr->present_address_mobile); // Contact Number
+       $pdf->Write(10, '0333-0324(4257417)'); // Contact Number
 
        $pdf->SetXY(119, 51);
-       $pdf->Write(10, $hr->son_of); // S/O
+       $pdf->Write(10, 'MUHAMMAD IBRAHIM'); // S/O
 
        $pdf->SetXY(118, 58);
-       $idCardNumber = $hr->cnic;
+       $idCardNumber = '3520112295931';
        foreach (str_split($idCardNumber) as $char) {
            $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
        } // ID Card Number
@@ -651,26 +651,58 @@ class HumanResouceController extends Controller
         $pdf->SetFont('Helvetica', '', 6);
         $pdf->SetTextColor(0, 0, 0);
     
+        // ======== First Section ========
+        // Clear any previous text at this position by overlaying a white rectangle
+        $pdf->SetFillColor(255, 255, 255); // White color
+        $pdf->Rect(89.2, 41.9, 23.5, 9.8, 'F'); // Overlay white rectangle to "erase" previous content
+
+        $pdf->SetXY(89.5, 42.8);
+        $pdf->MultiCell(45, 10, $hr->name, 0, 'L');
+
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 51.6);
         $pdf->Write(10, $hr->name); // Name
+
+        $pdf->SetXY(57.2, 56.6); // 5 units below for passport
+        $pdf->Write(10, $hr->passport);
+
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 69.2);
         $pdf->Write(10, "3054/LHR"); // Liecense Number
 
+        // ======== Second Section ========
+        $pdf->SetFillColor(255, 255, 255); // White color
+        $pdf->Rect(89.2, 116.5, 23.5, 9.8, 'F'); // Overlay white rectangle 
+        
+        $pdf->SetXY(89.5, 117); // Adjust coordinates to center the text nicely
+        $pdf->MultiCell(22.5, 4, $hr->name, 0, 'L');
+
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 126.2);
         $pdf->Write(10, $hr->name); // Name
+
+        $pdf->SetXY(57.2, 131.2); // Passport
+        $pdf->Write(10, $hr->passport);
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 144.2);
         $pdf->Write(10, "3054/LHR"); // Liecense Number
 
+        // ======== Third Section ========
+        $pdf->SetFillColor(255, 255, 255); // White color
+        $pdf->Rect(89.2, 191.5, 23.4, 9.8, 'F'); // Overlay white rectangle 
+
+        $pdf->SetXY(89.5, 192); // Position slightly inside the box
+        $pdf->MultiCell(22.5, 4, $hr->name, 0, 'L');
+
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 201);
         $pdf->Write(10, $hr->name); // Name
 
+        $pdf->SetXY(57.2, 206); // Passport
+        $pdf->Write(10, $hr->passport);
+        
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 219);
         $pdf->Write(10, "3054/LHR"); // Liecense Number
@@ -818,8 +850,17 @@ class HumanResouceController extends Controller
             $pdf->Cell(6.7, 10, $char, 0, 0, 'C');
         } // Date
 
-        // ✅ Insert image (top-right box — PE Office photo box)
-        $pdf->Image(asset($passportImage->file_name), 166, 41.5, 20.9, 18.5);
+       // Set default image path
+        $defaultImagePath = public_path('admin/assets/images/avator.png');
+
+        // Check if human resource has uploaded a passport image
+        if (!empty($passportImage) && file_exists(public_path($passportImage->file_name))) {
+            $imagePath = public_path($passportImage->file_name);
+        } else {
+            $imagePath = $defaultImagePath;
+        }
+
+        $pdf->Image($imagePath, 166, 41.5, 20.9, 18.5);
 
 
         $pdf->SetFont('Times', 'B', 11);
@@ -900,19 +941,26 @@ class HumanResouceController extends Controller
         $pdf->SetXY(67, 133);
         $idCardNumber = $hr->permanent_address;
         $charWidth = 4.85; // Adjust width per character
-        $charHeight = 4;  // Adjust height per character
+        $charHeight = 4;   // Adjust height per character
         $maxCharsPerRow = 25; // Number of characters that fit in one row
-        $currentLine = 0;
+        $maxRows = 2; // Number of rows to display
+        $maxCells = $maxCharsPerRow * $maxRows; // Total number of cells
 
-        foreach (str_split($idCardNumber) as $index => $char) {
-            // Move to the next row if the limit is reached
-            if ($index > 0 && $index % $maxCharsPerRow == 0) {
-                $currentLine++;
-                $pdf->SetXY(59.5, 116 + ($currentLine * $charHeight));
-            }
-            
-            // Print each character in a separate cell without a border
-            $pdf->Cell($charWidth, $charHeight, $char, 0, 0, 'C'); 
+        $startX = 67; // Starting X coordinate
+        $startY = 133; // Starting Y coordinate
+        $secondRowMargin = 1.5; // Margin in units between first and second row
+
+        $chars = mb_str_split($idCardNumber); // Use mb_str_split for multibyte support
+        $totalChars = min(count($chars), $maxCells);
+
+        for ($i = 0; $i < $totalChars; $i++) {
+            $row = floor($i / $maxCharsPerRow);
+            $col = $i % $maxCharsPerRow;
+            $x = $startX + ($col * $charWidth);
+            // Add extra margin to second row
+            $y = $startY + ($row * $charHeight) + ($row > 0 ? $secondRowMargin : 0);
+            $pdf->SetXY($x, $y);
+            $pdf->Cell($charWidth, $charHeight, $chars[$i], 0, 0, 'C');
         }
 
         $pdf->SetFont('Times', '', 11);
