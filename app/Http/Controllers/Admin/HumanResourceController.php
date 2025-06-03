@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Demand;
 use App\Models\HrStep;
 use App\Models\JobHistory;
-use App\Models\Company;
-use App\Models\Project;
 use App\Models\City;
 use App\Models\Distric;
 use App\Models\Province;
 use App\Models\Country;
+use App\Models\Demand;
+use App\Models\Company;
+use App\Models\Project;
 use App\Models\Nominate;
 use App\Models\SubCraft;
 use App\Models\MainCraft;

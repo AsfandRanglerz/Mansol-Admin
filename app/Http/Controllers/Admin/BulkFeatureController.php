@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Imports\UsersImport;
+use App\Imports\HumanResourceImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 
 class BulkFeatureController extends Controller
 {
@@ -15,8 +16,18 @@ class BulkFeatureController extends Controller
             'file' => 'required|mimes:xlsx,xls,csv',
         ]);
 
-        Excel::import(new UsersImport, $request->file('file'));
+        try {
+            Log::info('Starting Excel import.');
 
-        return back()->with('success', 'Users imported successfully!');
+            Excel::import(new HumanResourceImport, $request->file('file'));
+
+            Log::info('Excel import completed successfully.');
+
+            return back()->with('success', 'Users imported successfully!');
+        } catch (\Throwable $e) {
+            Log::error('Import failed: ' . $e->getMessage());
+
+            return back()->with('error', 'Import failed: ' . $e->getMessage());
+        }
     }
 }

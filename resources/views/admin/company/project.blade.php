@@ -31,7 +31,7 @@
                                 <div class="form-group">
                                     <label class="text-danger" for="project_code">Project Code</label>
                                     <input type="number" class="form-control" id="project_code" name="project_code" value="{{ $registration }}" readonly>
-                                    @error('project_code')
+                                    @error('project_code') 
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                 </div>
