@@ -34,6 +34,7 @@ class HumanResourceController extends Controller
         ->get();
         return view('admin.humanresouce.index', compact('HumanResources'));
     }
+
     public function create()
     {
         $crafts = MainCraft::where('status', '=', 1)->latest()->get();
@@ -52,10 +53,13 @@ class HumanResourceController extends Controller
         // dd($companies);
 
         $provinces = Province::orderBy('name')->get();
+        // dd($provinces);
         $districts = Distric::orderBy('name')->get();
+        // dd($districts);
         $cities = City::orderBy('name')->get();
+        // dd($cities);
         $curencies = Country::orderBy('title')->get();
-        // return [$provinces];
+        // dd($curencies);
         return view('admin.humanresouce.create', compact('provinces','districts','cities','crafts', 'registration', 'companies','curencies'));
     }
 
@@ -64,54 +68,54 @@ class HumanResourceController extends Controller
         // dd($request);
         // return $request;
         $request->validate([
-            'city_of_interview' => 'required',
-            'craft_id' => 'required',
-            'registration' => 'required|string|max:255',
-            'application_date' => 'required|date',
+            'city_of_interview' => 'nullable',
+            'craft_id' => 'nullable',
+            'registration' => 'nullable|string|max:255',
+            'application_date' => 'nullable|date',
             'status' => 'nullable|string',
-            'experience_local' => 'required|string',
-            'experience_gulf' => 'required|string',
+            'experience_local' => 'nullable|string',
+            'experience_gulf' => 'nullable|string',
             'approvals' => 'nullable|string|max:255',
             'medical_doc' => 'nullable|file|mimes:pdf,jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'son_of' => 'required|string|max:255',
-            'mother_name' => 'required|string|max:255',
-            'blood_group' => 'required|string|max:3',
-            'date_of_birth' => 'required|date',
-            'city_of_birth' => 'required|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'blood_group' => 'nullable|string|max:3',
+            'date_of_birth' => 'nullable|date',
+            'city_of_birth' => 'nullable|string|max:255',
             'cnic' => 'required|string',
-            'cnic_expiry_date' => 'required|date',
-            'doi' => 'required|date',
-            'doe' => 'required|date',
-            'passport' => 'required|string|max:255',
-            'passport_issue_place' => 'required|string|max:255',
+            'cnic_expiry_date' => 'nullable|date',
+            'doi' => 'nullable|date',
+            'doe' => 'nullable|date',
+            'passport' => 'nullable|string|max:255',
+            'passport_issue_place' => 'nullable|string|max:255',
             'religion' => 'required|string|max:255',
             'martial_status' => 'required|string|max:255',
-            'next_of_kin' => 'required|string|max:255',
-            'relation' => 'required|string|max:255',
-            'kin_cnic' => 'required|string',
-            'shoe_size' => 'required|string|max:255',
-            'cover_size' => 'required|string|max:255',
+            'next_of_kin' => 'nullable|string|max:255',
+            'relation' => 'nullable|string|max:255',
+            'kin_cnic' => 'nullable|string',
+            'shoe_size' => 'nullable|string|max:255',
+            'cover_size' => 'nullable|string|max:255',
             'acdemic_qualification' => 'required|string|max:255',
-            'technical_qualification' => 'nullable|string|max:255',
-            'district_of_domicile' => 'required|string|max:255',
-            'present_address' => 'required|string',
-            'present_address_phone' => 'required|string',
-            'present_address_mobile' => 'required|string',
-            'email' => 'required|email|unique:human_resources,email',
+            'technical_qualification' => 'required|string|max:255',
+            'district_of_domicile' => 'nullable|string|max:255',
+            'present_address' => 'nullable|string',
+            'present_address_phone' => 'nullable|string',
+            'present_address_mobile' => 'nullable|string',
+            'email' => 'nullable|email|unique:human_resources,email',
             'present_address_city' => 'required|string|max:255',
-            'permanent_address' => 'required|string',
-            'permanent_address_phone' => 'required|string',
-            'permanent_address_mobile' => 'required|string',
-            'permanent_address_city' => 'required|string|max:255',
-            'permanent_address_province' => 'required|string|max:255',
+            'permanent_address' => 'nullable|string',
+            'permanent_address_phone' => 'nullable|string',
+            'permanent_address_mobile' => 'nullable|string',
+            'permanent_address_city' => 'nullable|string|max:255',
+            'permanent_address_province' => 'nullable|string|max:255',
             'gender' => 'required|string|max:255',
             'citizenship' => 'required|string|max:255',
             'refference' => 'nullable|string|max:255',
             'performance_appraisal' => 'nullable|string|max:255',
-            'min_salary' => 'required|string|max:255',
+            'min_salary' => 'nullable|string|max:255',
             'comment' => 'nullable|string',
-            'experience_local' => 'required',
+            'experience_local' => 'nullable',
             'experience_gulf' => 'required',
         ]);
 
@@ -292,26 +296,26 @@ class HumanResourceController extends Controller
             'experience_local' => 'required|string',
             'experience_gulf' => 'required|string',
             'name' => 'required|string|max:255',
-            'son_of' => 'nullable|string|max:255',
+            'son_of' => 'required|string|max:255',
             'mother_name' => 'nullable|string|max:255',
             'blood_group' => 'nullable|string|max:3',
             'date_of_birth' => 'nullable|date',
             'city_of_birth' => 'nullable|string|max:255',
-            'cnic' => 'nullable|string',
+            'cnic' => 'required|string',
             'cnic_expiry_date' => 'nullable|date',
             'doi' => 'nullable|date',
             'doe' => 'nullable|date',
             'passport' => 'nullable|string|max:255',
             'passport_issue_place' => 'nullable|string|max:255',
-            'religion' => 'nullable|string|max:255',
+            'religion' => 'required|string|max:255',
             'martial_status' => 'nullable|string|max:255',
             'next_of_kin' => 'nullable|string|max:255',
             'relation' => 'nullable|string|max:255',
             'kin_cnic' => 'nullable|string',
             'shoe_size' => 'nullable|string|max:255',
             'cover_size' => 'nullable|string|max:255',
-            'acdemic_qualification' => 'nullable|string|max:255',
-            'technical_qualification' => 'nullable|string|max:255',
+            'acdemic_qualification' => 'required|string|max:255',
+            'technical_qualification' => 'required|string|max:255',
             'district_of_domicile' => 'nullable|string|max:255',
             'present_address' => 'nullable|string',
             'present_address_phone' => 'nullable|string',
@@ -322,8 +326,8 @@ class HumanResourceController extends Controller
             'permanent_address_mobile' => 'nullable|string',
             'permanent_address_city' => 'nullable|string|max:255',
             'permanent_address_province' => 'nullable|string|max:255',
-            'gender' => 'nullable|string|max:255',
-            'citizenship' => 'nullable|string|max:255',
+            'gender' => 'required|string|max:255',
+            'citizenship' => 'required|string|max:255',
             'refference' => 'nullable|string|max:255',
             'performance_appraisal' => 'nullable|string|max:255',
             'min_salary' => 'nullable|string|max:255',
