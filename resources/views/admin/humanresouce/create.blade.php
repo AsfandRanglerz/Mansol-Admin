@@ -34,7 +34,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="city_of_interview">Interview Location</label>
-                                            <select name="city_of_interview" class="form-control" id="cityOfInterview" required>
+                                            <select name="city_of_interview" class="form-control" id="cityOfInterview" >
                                                 <option value="" selected disabled>Select location</option>
                                                 @foreach($cities as $city)
                                                     <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
@@ -49,7 +49,7 @@
                                     
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="company_id">Company (Optional)</label>
+                                            <label class="text-danger" for="company_id">Company</label>
                                             <select name="company_id" id="company_id" class="form-control">
                                                 <option value="">Select Company</option>
                                                 @foreach ($companies as $company)
@@ -98,7 +98,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
+                                            <label class="text-danger" for="sub_craft">Sub-Craft</label>
                                             <select name="sub_craft_id" class="form-control" id="sub_craft">
                                                 <option value="" selected disabled>Select Sub-Craft</option>
                                             </select>
@@ -111,7 +111,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="application_date">Application Date</label>
                                             <input type="date" class="form-control" id="application_date"
-                                                name="application_date" value="{{ date('Y-m-d') }}" required readonly>
+                                                name="application_date" value="{{ date('Y-m-d') }}"  readonly>
                                             @error('application_date')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -119,7 +119,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="approvals">Approvals (Optional)</label>
+                                            <label class="text-danger" for="approvals">Approvals</label>
                                             <select name="approvals" id="" class="form-control">
                                                 <option value="">Select Company</option>
                                                 @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $company)
@@ -135,8 +135,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="medical_doc">Approval Document
-                                                (Optional)</label>
+                                            <label class="text-danger" for="medical_doc">Approval Document</label>
                                             <input type="file" class="form-control" id="medical_doc" name="medical_doc">
                                             @error('medical_doc')
                                             <div class="text-danger">{{ $message }}</div>
@@ -146,9 +145,9 @@
 
                                    <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="name">Name</label>
+                                            <label class="text-danger" for="name">Name *</label>
                                             <input type="text" class="form-control" id="name" name="name"
-                                                value="{{ old('name') }}" required placeholder="name">
+                                                value="{{ old('name') }}"  placeholder="name">
                                             @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -156,9 +155,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="son_of">S/O</label>
+                                            <label class="text-danger" for="son_of">S/O *</label>
                                             <input type="text" class="form-control" id="son_of" name="son_of"
-                                                value="{{ old('son_of') }}" placeholder="Father Name" required>
+                                                value="{{ old('son_of') }}" placeholder="Father Name" >
                                             @error('son_of')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -168,7 +167,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="mother_name">Mother Name</label>
                                             <input type="text" class="form-control" id="mother_name" name="mother_name"
-                                                value="{{ old('mother_name') }}" placeholder="Mother Name" required>
+                                                value="{{ old('mother_name') }}" placeholder="Mother Name" >
                                             @error('mother_name')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -177,7 +176,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="blood_group">Blood Group</label>
-                                            <select name="blood_group" class="form-control" required>
+                                            <select name="blood_group" class="form-control" >
                                                 <option value="" selected disabled>Select Blood Group</option>
                                                 @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $blood)
                                                 <option value="{{ strtolower($blood) }}">{{ $blood }}
@@ -193,7 +192,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="date_of_birth">Date Of Birth</label>
                                             <input type="date" class="form-control" id="date_of_birth"
-                                                name="date_of_birth" value="{{ old('date_of_birth') }}" required>
+                                                name="date_of_birth" value="{{ old('date_of_birth') }}" >
                                                 <div class="text-danger" id="dob-error" style="display: none;">Age should not be less than 21 years</div>
                                             @error('date_of_birth')
                                             <div class="text-danger">{{ $message }}</div>
@@ -203,7 +202,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="city_of_birth">City Of Birth</label>
-                                            <select name="city_of_birth" class="form-control" id="citySelect" required>
+                                            <select name="city_of_birth" class="form-control" id="citySelect" >
                                                 <option value="" selected disabled>Select City</option>
                                                 @foreach($cities as $city)
                                                     <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
@@ -218,9 +217,9 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="cnic">CNIC</label>
+                                            <label class="text-danger" for="cnic">CNIC *</label>
                                             <input type="number" class="form-control" id="cnic" name="cnic"
-                                                value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X" required>
+                                                value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X" >
                                             @error('cnic')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -230,7 +229,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="cnic_expiry_date">CNIC Expiry Date</label>
                                             <input type="date" class="form-control" id="cnic_expiry_date"
-                                                name="cnic_expiry_date" value="{{ old('cnic_expiry_date') }}" required>
+                                                name="cnic_expiry_date" value="{{ old('cnic_expiry_date') }}" >
                                             @error('cnic_expiry_date')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -241,7 +240,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="passport">Passport #</label>
                                             <input type="text" class="form-control" id="passport" name="passport"
-                                                value="{{ old('passport') }}" required>
+                                                value="{{ old('passport') }}" >
                                             @error('passport')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -249,9 +248,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="passport_issue_place">Passport Place Of
-                                                Issue</label>
-                                                <select name="passport_issue_place" class="form-control" required>
+                                            <label class="text-danger" for="passport_issue_place">Passport Place Of Issue</label>
+                                                <select name="passport_issue_place" class="form-control" >
                                                     <option value="" selected disabled>Select City</option>
                                                     @foreach($cities as $city)
                                                         <option value="{{ strtolower($city->name) }}"
@@ -271,7 +269,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="doi">Data Of Issue/Passport</label>
                                             <input type="date" class="form-control" id="doi" name="doi"
-                                                value="{{ old('doi') }}" required>
+                                                value="{{ old('doi') }}" >
                                             @error('doi')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -281,7 +279,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="doe">Data Of Expiry/Passport</label>
                                             <input type="date" class="form-control" id="doe" name="doe"
-                                                value="{{ old('doe') }}" required>
+                                                value="{{ old('doe') }}" >
                                             @error('doe')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -291,8 +289,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="religion">Religion</label>
-                                            <select name="religion" class="form-control" required>
+                                            <label class="text-danger" for="religion">Religion *</label>
+                                            <select name="religion" class="form-control" >
                                                 <option value="" selected disabled>Select Religion</option>
                                                 @foreach (['Muslim', 'Hindu', 'Christian', 'Buddhist', 'Jewish', 'Sikh']
                                                 as $religion)
@@ -309,8 +307,8 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="martial_status">Marital Status</label>
-                                            <select name="martial_status" class="form-control" required>
+                                            <label class="text-danger" for="martial_status">Marital Status *</label>
+                                            <select name="martial_status" class="form-control" >
                                                 <option value="" selected disabled>Select Marital</option>
                                                 <option value="single">Single</option>
                                                 <option value="married">Married</option>
@@ -327,7 +325,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="next_of_kin">Next Of Kin</label>
                                             <input type="text" class="form-control" id="next_of_kin" name="next_of_kin"
-                                                value="{{ old('next_of_kin') }}" required>
+                                                value="{{ old('next_of_kin') }}" >
                                             @error('next_of_kin')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -336,7 +334,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="relation">Relation</label>
-                                            <select class="form-control" id="relation" name="relation" required>
+                                            <select class="form-control" id="relation" name="relation" >
                                                 <option value="">Select Relation</option>
                                                 @foreach (['Father', 'Mother', 'Brother', 'Sister', 'Spouse', 'Friend',
                                                 'Other'] as $relation)
@@ -356,7 +354,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="kin_cnic">Kin CNIC</label>
                                             <input type="number" class="form-control" id="kin_cnic" name="kin_cnic"
-                                                value="{{ old('kin_cnic') }}" placeholder="XXXXX-XXXXXXX-X" required>
+                                                value="{{ old('kin_cnic') }}" placeholder="XXXXX-XXXXXXX-X" >
                                             @error('kin_cnic')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -365,7 +363,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="shoe_size">Shoe Size</label>
-                                            <select name="shoe_size" class="form-control" required>
+                                            <select name="shoe_size" class="form-control" >
                                                 <option value="" selected disabled>Select Shoe Size</option>
                                                 <option value="small">Small</option>
                                                 <option value="medium">Medium</option>
@@ -380,7 +378,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="cover_size">Cover Size</label>
-                                            <select name="cover_size" class="form-control" required>
+                                            <select name="cover_size" class="form-control" >
                                                 <option value="" selected disabled>Select Cover Size</option>
                                                 @for ($i = 36; $i <= 46; $i++) <option value="{{ $i }}">{{ $i }}
                                                     </option>
@@ -394,8 +392,8 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="acdemic_qualification">Academic
-                                                Qualification</label>
-                                            <select name="acdemic_qualification" class="form-control" required>
+                                                Qualification *</label>
+                                            <select name="acdemic_qualification" class="form-control" >
                                                 <option value="" selected disabled>Select Qualification</option>
                                                 <option value="no_formal_education">No Formal Education</option>
                                                 <option value="primary">Primary Education</option>
@@ -416,7 +414,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="technical_qualification">Technical
-                                                Qualification (Optional)</label>
+                                                Qualification *</label>
 
                                             <select name="technical_qualification" id="qualification"
                                                 class="form-control">
@@ -577,7 +575,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="experience">Years of Experience (Local)</label>
                                             <input type="number" name="experience_local" class="form-control" min="0"
-                                                placeholder="Enter Years of Experience" required>
+                                                placeholder="Enter Years of Experience" >
                                             @error('experience_local')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -585,9 +583,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="experience">Years of Experience (Gulf)</label>
+                                            <label class="text-danger" for="experience">Years of Experience (Gulf) *</label>
                                             <input type="number" name="experience_gulf" class="form-control" min="0"
-                                                placeholder="Enter Years of Experience" required>
+                                                placeholder="Enter Years of Experience" >
                                             @error('experience_gulf')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -599,7 +597,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="present_address">Present Address</label>
                                             <textarea class="form-control" id="present_address"
-                                                name="present_address" required>{{ old('present_address') }}</textarea>
+                                                name="present_address" >{{ old('present_address') }}</textarea>
                                             @error('present_address')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -611,7 +609,7 @@
                                                 <label class="text-danger" for="present_address_phone">Phone</label>
                                                 <input type="tel" class="form-control" id="present_address_phone"
                                                     name="present_address_phone"
-                                                    value="{{ old('present_address_phone') }}" required>
+                                                    value="{{ old('present_address_phone') }}" >
                                                 @error('present_address_phone')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -622,7 +620,7 @@
                                                 <label class="text-danger" for="present_address_mobile">Mobile</label>
                                                 <input type="tel" class="form-control" id="present_address_mobile"
                                                     name="present_address_mobile"
-                                                    value="{{ old('present_address_mobile') }}" required>
+                                                    value="{{ old('present_address_mobile') }}" >
                                                 @error('present_address_mobile')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -632,7 +630,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="email">Email</label>
                                                 <input type="email" class="form-control" id="email" name="email"
-                                                    value="{{ old('email') }}" required>
+                                                    value="{{ old('email') }}" >
                                                 @error('email')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -641,8 +639,8 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="text-danger" for="present_address_city">Present Address
-                                                    City</label>
-                                                    <select name="present_address_city" id="present_address_city" class="form-control" required>
+                                                    City *</label>
+                                                    <select name="present_address_city" id="present_address_city" class="form-control" >
                                                         <option value="" disabled {{ old('present_address_city', $HumanResource->present_address_city ?? '') == '' ? 'selected' : '' }}>
                                                             Select City
                                                         </option>
@@ -667,7 +665,7 @@
                                             <label class="text-danger" for="permanent_address">Permanent
                                                 Address</label>
                                             <textarea class="form-control" id="permanent_address"
-                                                name="permanent_address" required>{{ old('permanent_address') }}</textarea>
+                                                name="permanent_address" >{{ old('permanent_address') }}</textarea>
                                             @error('permanent_address')
                                             <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -679,7 +677,7 @@
                                                 <label class="text-danger" for="permanent_address_phone">Phone</label>
                                                 <input type="phone" class="form-control" id="permanent_address_phone"
                                                     name="permanent_address_phone"
-                                                    value="{{ old('permanent_address_phone') }}" required>
+                                                    value="{{ old('permanent_address_phone') }}" >
                                                 @error('permanent_address_phone')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -690,7 +688,7 @@
                                                 <label class="text-danger" for="permanent_address_mobile">Mobile</label>
                                                 <input type="tel" class="form-control" id="permanent_address_mobile"
                                                     name="permanent_address_mobile"
-                                                    value="{{ old('permanent_address_mobile') }}" required>
+                                                    value="{{ old('permanent_address_mobile') }}" >
                                                 @error('permanent_address_mobile')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -700,7 +698,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="permanent_address_city">Permanent
                                                     Address City</label>
-                                                    <select name="permanent_address_city" id="permanent_address_city" class="form-control" required>
+                                                    <select name="permanent_address_city" id="permanent_address_city" class="form-control" >
                                                         <option value="" disabled {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == '' ? 'selected' : '' }}>
                                                             Select City
                                                         </option>
@@ -723,7 +721,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="permanent_address_province">Permanent
                                                     Address Province</label>
-                                                    <select name="permanent_address_province" class="form-control" required>
+                                                    <select name="permanent_address_province" class="form-control" >
                                                         <option value="" selected disabled>Select Province</option>
                                                         @foreach($provinces as $data)
                                                             <option value="{{ $data->name }}">{{ $data->name }}</option>
@@ -740,8 +738,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="citizenship">Citizenship</label>
-                                            <select name="citizenship" class="form-control" required>
+                                            <label class="text-danger" for="citizenship">Citizenship *</label>
+                                            <select name="citizenship" class="form-control" >
                                                 <option value="" selected disabled>Select Citizenship</option>
                                                 <option value="Pakistani">Pakistani</option>
                                                 <option value="Other">Other</option>
@@ -756,7 +754,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="district_of_domicile">District Of
                                                 Domicile</label>
-                                                <select name="district_of_domicile" id="district_of_domicile" class="form-control" required>
+                                                <select name="district_of_domicile" id="district_of_domicile" class="form-control" >
                                                     <option value="" selected disabled>Select District</option>
                                                     @foreach($districts as $district)
                                                         <option value="{{ $district->name }}"
@@ -774,8 +772,8 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="gender">Gender</label>
-                                            <select name="gender" class="form-control" required>
+                                            <label class="text-danger" for="gender">Gender *</label>
+                                            <select name="gender" class="form-control" >
                                                 <option value="" selected disabled>Select Gender</option>
                                                 <option value="male">Male</option>
                                                 <option value="female">Female</option>
@@ -792,7 +790,7 @@
                                 {{-- <div class="row col-md-12"> --}}
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="refference">Reference (Optional)</label>
+                                            <label class="text-danger" for="refference">Reference</label>
                                             <input type="text" class="form-control" id="refference" name="refference"
                                                 value="{{ old('refference') }}">
                                             @error('refference')
@@ -803,7 +801,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="performance_appraisal">Performance-Appraisal
-                                                Awarded % (Optional)</label>
+                                                Awarded %</label>
                                             <input type="text" class="form-control" id="performance_appraisal"
                                                 name="performance_appraisal" value="{{ old('performance_appraisal') }}">
                                             @error('performance_appraisal')
@@ -816,7 +814,7 @@
                                             <label class="text-danger" for="min_salary">Min Acceptable Salary %</label>
                                             <div class="input-group">
                                                 <!-- Currency Dropdown -->
-                                                <select name="currancy" class="form-control" id="currancy" required>
+                                                <select name="currancy" class="form-control" id="currancy" >
                                                     <option value="" selected disabled> Currency</option>
                                                     @foreach($curencies as $country)
                                                         <option value="{{ $country->currency_symbol }}"
@@ -827,7 +825,7 @@
                                                 </select>
                                         
                                                 <!-- Salary Input -->
-                                                <input type="number" class="form-control" id="min_salary" name="min_salary" value="{{ old('min_salary') }}" required>
+                                                <input type="number" class="form-control" id="min_salary" name="min_salary" value="{{ old('min_salary') }}" >
                                             </div>
                                             @error('min_salary')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -839,7 +837,7 @@
                                 {{-- <div class="row col-md-12"> --}}
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label class="text-danger" for="comment">Comment (Optional)</label>
+                                            <label class="text-danger" for="comment">Comment</label>
                                             <input type="text" class="form-control" id="comment" name="comment"
                                                 value="{{ old('comment') }}">
                                             @error('comment')
@@ -850,7 +848,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger" for="status">Status</label>
-                                            <select name="status" class="form-control" id="status" required>
+                                            <select name="status" class="form-control" id="status" >
                                                 <option value="" selected disabled>Select Status</option>
                                                 <option value="1">Pending</option>
                                                 <option value="2">Approved</option>

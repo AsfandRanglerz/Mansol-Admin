@@ -131,7 +131,7 @@
 
                                        <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="name">Name</label>
+                                                <label class="text-danger" for="name">Name *</label>
                                                 <input type="text" class="form-control" id="name" name="name"
                                                     value="{{ old('name', $HumanResource->name) }}">
                                                 <div class="invalid-feedback"></div>
@@ -139,7 +139,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="son_of">S/O</label>
+                                                <label class="text-danger" for="son_of">S/O *</label>
                                                 <input type="text" class="form-control" id="son_of" name="son_of"
                                                     value="{{ old('son_of', $HumanResource->son_of) }}">
                                                 <div class="invalid-feedback"></div>
@@ -200,7 +200,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="cnic">CNIC</label>
+                                                <label class="text-danger" for="cnic">CNIC *</label>
                                                 <input type="number" class="form-control" id="cnic" name="cnic"
                                                     value="{{ old('cnic', $HumanResource->cnic) }}">
                                             </div>
@@ -258,7 +258,7 @@
                                         
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="relation">Religion</label>
+                                                <label class="text-danger" for="relation">Religion *</label>
                                                 <select name="religion" class="form-control">
                                                     <option value="" selected disabled>Select Religion</option>
                                                     @foreach (['Muslim', 'Hindu', 'Christian', 'Buddhist', 'Jewish', 'Sikh'] as $religion)
@@ -276,7 +276,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="martial_status">Marital Status</label>
+                                                <label class="text-danger" for="martial_status">Marital Status *</label>
                                                 <select name="martial_status" id="martial_status" class="form-control">
                                                     <option value="" disabled
                                                         {{ old('martial_status', $HumanResource->martial_status ?? '') == '' ? 'selected' : '' }}>
@@ -372,7 +372,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="acdemic_qualification">Academic
-                                                    Qualification</label>
+                                                    Qualification *</label>
                                                 <select name="acdemic_qualification" id="acdemic_qualification"
                                                     class="form-control">
                                                     <option value="" disabled
@@ -414,7 +414,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="technical_qualification">Technical Qualification</label>
+                                                <label class="text-danger" for="technical_qualification">Technical Qualification *</label>
                                                 <select name="technical_qualification" id="qualification" class="form-control">
                                                     <option value="" selected disabled>Select Qualification</option>
                                             
@@ -606,7 +606,7 @@
                                         
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="experience">Years of Experience (Gulf)</label>
+                                                <label class="text-danger" for="experience">Years of Experience (Gulf) *</label>
                                                 <input type="number" name="experience_gulf" class="form-control"
                                                        min="0" 
                                                        placeholder="Enter Years of Experience"
@@ -621,7 +621,7 @@
                                         <div class="form-group">
                                             <label class="text-danger" for="district_of_domicile">District Of
                                                 Domicile</label>
-                                                <select name="district_of_domicile" id="district_of_domicile" class="form-control" required>
+                                                <select name="district_of_domicile" id="district_of_domicile" class="form-control" >
                                                     <option value="" selected disabled>Select District</option>
                                                     @foreach($districts as $district)
                                                         <option value="{{ $district->name }}"
@@ -671,7 +671,7 @@
                                                 <div class="form-group">
                                                     <label class="text-danger" for="present_address_city">Present Address
                                                         City</label>
-                                                        <select name="present_address_city" id="present_address_city" class="form-control" required>
+                                                        <select name="present_address_city" id="present_address_city" class="form-control" >
                                                             <option value="" disabled {{ old('present_address_city', $HumanResource->present_address_city ?? '') == '' ? 'selected' : '' }}>
                                                                 Select City
                                                             </option>
@@ -720,7 +720,7 @@
                                                 <div class="form-group">
                                                     <label class="text-danger" for="permanent_address_city">Permanent
                                                         Address City</label>
-                                                        <select name="permanent_address_city" id="permanent_address_city" class="form-control" required>
+                                                        <select name="permanent_address_city" id="permanent_address_city" class="form-control" >
                                                             <option value="" disabled {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == '' ? 'selected' : '' }}>
                                                                 Select City
                                                             </option>
@@ -742,7 +742,7 @@
                                                 <div class="form-group">
                                                     <label class="text-danger" for="permanent_address_province">Permanent
                                                         Address Province</label>
-                                                        <select name="permanent_address_province" class="form-control" required>
+                                                        <select name="permanent_address_province" class="form-control" >
                                                             <option value="" selected disabled>Select Province</option>
                                                             @foreach($provinces as $data)
                                                                 <option value="{{ $data->name }}" {{ $data->name == $HumanResource->permanent_address_province ? 'selected' : '' }}>{{ $data->name }}</option>
@@ -759,7 +759,7 @@
                                         
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="citizenship">Citizenship</label>
+                                                <label class="text-danger" for="citizenship">Citizenship *</label>
                                                 <select name="citizenship" class="form-control">
                                                     <option value="" selected disabled>Select Citizenship</option>
                                                     <option value="Pakistani" 
@@ -781,7 +781,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="gender">Gender</label>
+                                                <label class="text-danger" for="gender">Gender *</label>
                                                 <select name="gender" id="gender" class="form-control">
                                                     <option value="" disabled
                                                         {{ old('gender', $HumanResource->gender ?? '') == '' ? 'selected' : '' }}>
@@ -832,7 +832,7 @@
                                                     %</label>
                                                     <div class="input-group">
                                                         <!-- Currency Dropdown -->
-                                                        <select name="currancy" class="form-control" id="currancy" required>
+                                                        <select name="currancy" class="form-control" id="currancy" >
                                                             <option value="" selected disabled> Currency</option>
                                                             @foreach ($curencies as $country)
                                                             <option value="{{ $country->currency_symbol }}"
@@ -843,7 +843,7 @@
                                                         </select>
                                                 
                                                         <!-- Salary Input -->
-                                                        <input type="number" class="form-control" id="min_salary" name="min_salary" value="{{ $HumanResource->min_salary }}"  required>
+                                                        <input type="number" class="form-control" id="min_salary" name="min_salary" value="{{ $HumanResource->min_salary }}"  >
                                                     </div>
                                             </div>
                                         </div>
@@ -1009,7 +1009,7 @@
                              <div class="col-md-6">
                                 <div class="form-group">
                                      <label class="text-danger" for="city_of_interview">Interview Location</label>
-                                            <select name="city_of_interview" class="form-control" id="cityOfInterview" required>
+                                            <select name="city_of_interview" class="form-control" id="cityOfInterview" >
                                                 <option value="" selected disabled>Select Location</option>
                                                 @foreach($cities as $city)
                                                     <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
