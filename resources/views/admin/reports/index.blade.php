@@ -17,6 +17,11 @@
                                 <div class="form-group col-sm-12 mb-2 d-flex align-items-start">
                                     <button class="btn btn-danger" id="filterButton" onclick="clearFilters()">Clear
                                         Filters</button>
+                                        <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="file" name="file" required>
+                                            <button type="submit" class="btn btn-success">Import</button>
+                                        </form>
                                 </div>
                                 <div class="form-group col-sm-3 mb-2">
                                     <label for="periodSelect">Select Companies</label>

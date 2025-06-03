@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\MianCraftController;
 use App\Http\Controllers\Admin\NominationsController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\HumanResourceController;
+use App\Http\Controllers\Admin\BulkFeatureController;
 use App\Http\Controllers\Admin\TermConditionController;
 use App\Http\Controllers\HumanResouce\HRProfileController;
 use App\Http\Controllers\Admin\ApprovedApplicantsController;
@@ -148,6 +149,21 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::post('/jobHistory-update',  'updateHistory')->name('history.update');
         Route::get('/get-demob-data',  'getMobData')->name('get-demob-data');
     });
+
+      // ############ Human Resource ################# 
+    Route::controller(BulkFeatureController::class)->group(function () {
+        Route::post('/human-resource/import',  'import')->name('humanresource.import.data');
+        // Route::get('/human-resource/create',  'create')->name('humanresource.create');
+        // Route::post('/human-resource/store',  'store')->name('humanresource.store');
+        // Route::get('/human-resource-edit/{id}',  'edit')->name('humanresource.edit');
+        // Route::post('/human-resource-update/{id}',  'update')->name('humanresource.update');
+        // Route::delete('/human-resource-destroy/{id}',  'destroy')->name('humanresource.destroy');
+        // Route::post('/update-history',  'mobDemob')->name('jobHistory.update');
+        // Route::post('/jobHistory-update',  'updateHistory')->name('history.update');
+        // Route::get('/get-demob-data',  'getMobData')->name('get-demob-data');
+    });
+
+
     // ############ Human Resource Steps #################
     Route::controller(HrStepController::class)->group(function () {
         Route::post('/submit-step/{step}',  'submitStep')->name('submit.step');
