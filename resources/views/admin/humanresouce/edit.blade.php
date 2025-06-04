@@ -30,13 +30,13 @@
                                                 <input type="number" class="form-control" id="registration"
                                                     name="registration"
                                                     value="{{ old('registration', $HumanResource->registration) }}"
-                                                     readonly>
+                                                    readonly>
                                                 @error('registration')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                     
+
                                         {{-- @if ($company)
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -63,12 +63,12 @@
                                             </div>
                                         </div>
                                         @endif --}}
-                                        @if (empty($company))
+                                        @if (empty($company) && $histories->isEmpty())
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="text-danger" for="craft">Application for Post</label>
-                                                    <input type="text" value="{{ optional($craft)->name }}" readonly class="form-control">
-
+                                                    <input type="text" value="{{ optional($craft)->name }}" readonly
+                                                        class="form-control">
                                                     @error('craft')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
@@ -76,17 +76,18 @@
                                             </div>
 
                                             <input type="hidden" name="craft_id" value="{{ $craft->id ?? null }}">
-                                            
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="text-danger" for="sub_craft">Sub-Craft</label>
-                                                    <input type="text" value="{{ $subCraft->name ?? null }}" readonly class="form-control">
+                                                    <input type="text" value="{{ $subCraft->name ?? null }}" readonly
+                                                        class="form-control">
                                                     @error('sub_craft')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
-                                            
+
                                             <input type="hidden" name="sub_craft_id" value="{{ $subCraft->id ?? null }}">
                                         @endif
                                         {{-- <div class="col-md-4">
@@ -122,14 +123,34 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="medical_doc">Approval Document</label>
-                                                <input type="file" class="form-control" id="medical_doc" name="medical_doc">
+
+                                                <div class="input-group">
+                                                    {{-- File Input --}}
+                                                    <input type="file" class="form-control" id="medical_doc"
+                                                        name="medical_doc"
+                                                        accept=".pdf,application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+
+                                                    {{-- Eye Button if file exists --}}
+                                                    @if (!empty($HumanResource->medical_doc))
+                                                        <div class="input-group-append">
+                                                            <a href="{{ asset('/' . $HumanResource->medical_doc) }}"
+                                                                target="_blank" class="btn btn-danger"
+                                                                title="View Document">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                {{-- Error --}}
                                                 @error('medical_doc')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
-                                       <div class="col-md-4">
+
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="name">Name *</label>
                                                 <input type="text" class="form-control" id="name" name="name"
@@ -227,15 +248,15 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="passport_issue_place">Passport Place Of
                                                     Issue</label>
-                                                    <select name="passport_issue_place" class="form-control">
-                                                        <option value="" selected disabled>Select City</option>
-                                                        @foreach ($cities as $city)
-                                                            <option value="{{ strtolower($city->name) }}"
-                                                                {{ old('passport_issue_place', strtolower($HumanResource->passport_issue_place ?? '')) == strtolower($city->name) ? 'selected' : '' }}>
-                                                                {{ $city->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
+                                                <select name="passport_issue_place" class="form-control">
+                                                    <option value="" selected disabled>Select City</option>
+                                                    @foreach ($cities as $city)
+                                                        <option value="{{ strtolower($city->name) }}"
+                                                            {{ old('passport_issue_place', strtolower($HumanResource->passport_issue_place ?? '')) == strtolower($city->name) ? 'selected' : '' }}>
+                                                            {{ $city->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
 
                                             </div>
                                         </div>
@@ -255,7 +276,7 @@
                                             </div>
                                         </div>
 
-                                        
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="relation">Religion *</label>
@@ -414,229 +435,151 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="technical_qualification">Technical Qualification *</label>
-                                                <select name="technical_qualification" id="qualification" class="form-control">
+                                                <label class="text-danger" for="technical_qualification">Technical
+                                                    Qualification *</label>
+                                                <select name="technical_qualification" id="qualification"
+                                                    class="form-control">
                                                     <option value="" selected disabled>Select Qualification</option>
-                                            
+
                                                     <optgroup label="Academic Degrees">
-                                                        <optgroup label="Bachelor's Degrees">
-                                                            @foreach ([
-                                                                'Bachelor of Mechanical Engineering',
-                                                                'Bachelor of Electrical Engineering',
-                                                                'Bachelor of Civil Engineering',
-                                                                'Bachelor of Chemical Engineering',
-                                                                'Bachelor of Petroleum Engineering',
-                                                                'Bachelor of Environmental Sciences',
-                                                                'Bachelor of Mechatronics Engineering',
-                                                                'Bachelor of Mining Engineering',
-                                                                'Bachelor of Sustainable Energy Engineering',
-                                                                'Bachelor of Architecture Engineering',
-                                                                'Bachelor of Computer Sciences',
-                                                                'Bachelor of Information Technology',
-                                                                'Bachelor of Telecommunication Engineering',
-                                                                'Bachelor of Business Administration',
-                                                                'Bachelor of Business Management',
-                                                                'Bachelor of Commerce',
-                                                                'Bachelor of Accounts & Finance',
-                                                                'Bachelor of Marketing & International Marketing',
-                                                                'Bachelor of Political Science',
-                                                                'Bachelor of HRM'
-                                                            ] as $qualification)
-                                                                <option value="{{ $qualification }}" 
-                                                                    {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
-                                                                    {{ $qualification }}
-                                                                </option>
-                                                            @endforeach
-                                                        </optgroup>
-                                            
-                                                        <optgroup label="Master's Degrees">
-                                                            @foreach ([
-                                                                'Master in Physics',
-                                                                'Master in Public Administration'
-                                                            ] as $qualification)
-                                                                <option value="{{ $qualification }}" 
-                                                                    {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
-                                                                    {{ $qualification }}
-                                                                </option>
-                                                            @endforeach
-                                                        </optgroup>
+                                                    <optgroup label="Bachelor's Degrees">
+                                                        @foreach (['Bachelor of Mechanical Engineering', 'Bachelor of Electrical Engineering', 'Bachelor of Civil Engineering', 'Bachelor of Chemical Engineering', 'Bachelor of Petroleum Engineering', 'Bachelor of Environmental Sciences', 'Bachelor of Mechatronics Engineering', 'Bachelor of Mining Engineering', 'Bachelor of Sustainable Energy Engineering', 'Bachelor of Architecture Engineering', 'Bachelor of Computer Sciences', 'Bachelor of Information Technology', 'Bachelor of Telecommunication Engineering', 'Bachelor of Business Administration', 'Bachelor of Business Management', 'Bachelor of Commerce', 'Bachelor of Accounts & Finance', 'Bachelor of Marketing & International Marketing', 'Bachelor of Political Science', 'Bachelor of HRM'] as $qualification)
+                                                            <option value="{{ $qualification }}"
+                                                                {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
+                                                                {{ $qualification }}
+                                                            </option>
+                                                        @endforeach
                                                     </optgroup>
-                                            
+
+                                                    <optgroup label="Master's Degrees">
+                                                        @foreach (['Master in Physics', 'Master in Public Administration'] as $qualification)
+                                                            <option value="{{ $qualification }}"
+                                                                {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
+                                                                {{ $qualification }}
+                                                            </option>
+                                                        @endforeach
+                                                    </optgroup>
+                                                    </optgroup>
+
                                                     <optgroup label="Diplomas">
-                                                        @foreach ([
-                                                            '3-Yrs Diploma in Electrical Engineering',
-                                                            '3-Yrs Diploma in Mechanical Engineering',
-                                                            'Diploma in Business Administration',
-                                                            'Diploma in Health and Safety Management',
-                                                            'Diploma in DHMS (4 Yrs)',
-                                                            'Diploma in Optical Fiber Cables',
-                                                            'Welding Diploma',
-                                                            'Diploma - G.Fitter',
-                                                            'Diploma - Mechanical',
-                                                            'DAE Electronic',
-                                                            'Two Year Diploma'
-                                                        ] as $qualification)
-                                                            <option value="{{ $qualification }}" 
+                                                        @foreach (['3-Yrs Diploma in Electrical Engineering', '3-Yrs Diploma in Mechanical Engineering', 'Diploma in Business Administration', 'Diploma in Health and Safety Management', 'Diploma in DHMS (4 Yrs)', 'Diploma in Optical Fiber Cables', 'Welding Diploma', 'Diploma - G.Fitter', 'Diploma - Mechanical', 'DAE Electronic', 'Two Year Diploma'] as $qualification)
+                                                            <option value="{{ $qualification }}"
                                                                 {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
                                                                 {{ $qualification }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
-                                            
+
                                                     <optgroup label="1-Yr Diploma">
-                                                        @foreach ([
-                                                            'DTI SAFETY INSPECTOR',
-                                                            'DTI WELDER (3G)',
-                                                            'DTI ADVANCE WELDER (6G)',
-                                                            'DTI MAINTENANCE FITTER',
-                                                            'DTI SAFETY ASSISTANT'
-                                                        ] as $qualification)
-                                                            <option value="{{ $qualification }}" 
+                                                        @foreach (['DTI SAFETY INSPECTOR', 'DTI WELDER (3G)', 'DTI ADVANCE WELDER (6G)', 'DTI MAINTENANCE FITTER', 'DTI SAFETY ASSISTANT'] as $qualification)
+                                                            <option value="{{ $qualification }}"
                                                                 {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
                                                                 {{ $qualification }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
-                                            
+
                                                     <optgroup label="Technical & Vocational Training">
-                                                        @foreach ([
-                                                            'Apprenticeship Training',
-                                                            'Trade Test Qualified',
-                                                            'Technical Training For Abu Dhabi Industries',
-                                                            'MCITP (Microsoft Certified IT Professionals)',
-                                                            'IGC NEBOSH',
-                                                            'IOSH Management Safety',
-                                                            'OSHA SAFETY AND HEALTH COURSES'
-                                                        ] as $qualification)
-                                                            <option value="{{ $qualification }}" 
+                                                        @foreach (['Apprenticeship Training', 'Trade Test Qualified', 'Technical Training For Abu Dhabi Industries', 'MCITP (Microsoft Certified IT Professionals)', 'IGC NEBOSH', 'IOSH Management Safety', 'OSHA SAFETY AND HEALTH COURSES'] as $qualification)
+                                                            <option value="{{ $qualification }}"
                                                                 {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
                                                                 {{ $qualification }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
-                                            
+
                                                     <optgroup label="MTTI Certifications">
-                                                        @foreach ([
-                                                            'FABRICATOR PIPE (MTTI) CERTIFIED',
-                                                            'PIPE & PLATE FABRICATOR (MTTI) CERTIFIED',
-                                                            'FITTER GENERAL (MTTI) CERTIFIED',
-                                                            'PIPE WELDER 6G (MTTI) CERTIFIED',
-                                                            'PLATE WELDER 3G (MTTI) CERTIFIED',
-                                                            'RIGGER (MTTI) CERTIFIED',
-                                                            'SAFETY ASSISTANT (MTTI) CERTIFIED',
-                                                            'SAFETY INSPECTOR (MTTI) CERTIFIED',
-                                                            'SCAFOLDER (MTTI) CERTIFIED'
-                                                        ] as $qualification)
-                                                            <option value="{{ $qualification }}" 
+                                                        @foreach (['FABRICATOR PIPE (MTTI) CERTIFIED', 'PIPE & PLATE FABRICATOR (MTTI) CERTIFIED', 'FITTER GENERAL (MTTI) CERTIFIED', 'PIPE WELDER 6G (MTTI) CERTIFIED', 'PLATE WELDER 3G (MTTI) CERTIFIED', 'RIGGER (MTTI) CERTIFIED', 'SAFETY ASSISTANT (MTTI) CERTIFIED', 'SAFETY INSPECTOR (MTTI) CERTIFIED', 'SCAFOLDER (MTTI) CERTIFIED'] as $qualification)
+                                                            <option value="{{ $qualification }}"
                                                                 {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
                                                                 {{ $qualification }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
-                                            
+
                                                     <optgroup label="Other Certifications">
-                                                        @foreach ([
-                                                            'ELECTRICIAN COURSE',
-                                                            'PLUMBER COURSE',
-                                                            'FRONT OFFICE MANAGEMENT COURSE',
-                                                            'COMPUTER SHORT COURSE'
-                                                        ] as $qualification)
-                                                            <option value="{{ $qualification }}" 
+                                                        @foreach (['ELECTRICIAN COURSE', 'PLUMBER COURSE', 'FRONT OFFICE MANAGEMENT COURSE', 'COMPUTER SHORT COURSE'] as $qualification)
+                                                            <option value="{{ $qualification }}"
                                                                 {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
                                                                 {{ $qualification }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
-                                            
+
                                                     <optgroup label="Specific Skills">
-                                                        @foreach ([
-                                                            'Welder',
-                                                            'Fitter',
-                                                            'General Fitter',
-                                                            'Pipe Fitter',
-                                                            'Rigger',
-                                                            'Steel Fixure',
-                                                            'Fabricator',
-                                                            'Millwright',
-                                                            'K Technician',
-                                                            'Instrument Technician'
-                                                        ] as $qualification)
-                                                            <option value="{{ $qualification }}" 
+                                                        @foreach (['Welder', 'Fitter', 'General Fitter', 'Pipe Fitter', 'Rigger', 'Steel Fixure', 'Fabricator', 'Millwright', 'K Technician', 'Instrument Technician'] as $qualification)
+                                                            <option value="{{ $qualification }}"
                                                                 {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
                                                                 {{ $qualification }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
-                                            
+
                                                     <optgroup label="Other">
-                                                        @foreach ([
-                                                            'NO TECHNICAL EDUCATION',
-                                                            'Electronic / Electrical',
-                                                            'Mechanical',
-                                                            'Auto Mobile'
-                                                        ] as $qualification)
-                                                            <option value="{{ $qualification }}" 
+                                                        @foreach (['NO TECHNICAL EDUCATION', 'Electronic / Electrical', 'Mechanical', 'Auto Mobile'] as $qualification)
+                                                            <option value="{{ $qualification }}"
                                                                 {{ old('technical_qualification', $HumanResource->technical_qualification ?? '') == $qualification ? 'selected' : '' }}>
                                                                 {{ $qualification }}
                                                             </option>
                                                         @endforeach
                                                     </optgroup>
-                                            
+
                                                 </select>
-                                            
+
                                                 @error('technical_qualification')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            
+
                                         </div>
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="experience">Years of Experience (Local)</label>
+                                                <label class="text-danger" for="experience">Years of Experience
+                                                    (Local)</label>
                                                 <input type="number" name="experience_local" class="form-control"
-                                                       min="0" 
-                                                       placeholder="Enter Years of Experience"
-                                                       value="{{ old('experience', $HumanResource->experience_local ?? '') }}">
+                                                    min="0" placeholder="Enter Years of Experience"
+                                                    value="{{ old('experience', $HumanResource->experience_local ?? '') }}">
                                                 @error('experience')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="experience">Years of Experience (Gulf) *</label>
+                                                <label class="text-danger" for="experience">Years of Experience (Gulf)
+                                                    *</label>
                                                 <input type="number" name="experience_gulf" class="form-control"
-                                                       min="0" 
-                                                       placeholder="Enter Years of Experience"
-                                                       value="{{ old('experience', $HumanResource->experience_gulf ?? '') }}">
+                                                    min="0" placeholder="Enter Years of Experience"
+                                                    value="{{ old('experience', $HumanResource->experience_gulf ?? '') }}">
                                                 @error('experience')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        
-                                            <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="text-danger" for="district_of_domicile">District Of
-                                                Domicile</label>
-                                                <select name="district_of_domicile" id="district_of_domicile" class="form-control" >
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="text-danger" for="district_of_domicile">District Of
+                                                    Domicile</label>
+                                                <select name="district_of_domicile" id="district_of_domicile"
+                                                    class="form-control">
                                                     <option value="" selected disabled>Select District</option>
-                                                    @foreach($districts as $district)
+                                                    @foreach ($districts as $district)
                                                         <option value="{{ $district->name }}"
                                                             {{ old('district_of_domicile', $HumanResource->district_of_domicile ?? '') == $district->name ? 'selected' : '' }}>
                                                             {{ $district->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            @error('district_of_domicile')
-                                            <div class="text-danger">{{ $message }}</div>
-                                            @enderror
+                                                @error('district_of_domicile')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                         </div>
-                                    </div>                                            
-                                        
-                                        
+
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="present_address">Present Address</label>
@@ -671,17 +614,19 @@
                                                 <div class="form-group">
                                                     <label class="text-danger" for="present_address_city">Present Address
                                                         City</label>
-                                                        <select name="present_address_city" id="present_address_city" class="form-control" >
-                                                            <option value="" disabled {{ old('present_address_city', $HumanResource->present_address_city ?? '') == '' ? 'selected' : '' }}>
-                                                                Select City
+                                                    <select name="present_address_city" id="present_address_city"
+                                                        class="form-control">
+                                                        <option value="" disabled
+                                                            {{ old('present_address_city', $HumanResource->present_address_city ?? '') == '' ? 'selected' : '' }}>
+                                                            Select City
+                                                        </option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ strtolower($city->name) }}"
+                                                                {{ old('present_address_city', $HumanResource->present_address_city ?? '') == strtolower($city->name) ? 'selected' : '' }}>
+                                                                {{ $city->name }}
                                                             </option>
-                                                            @foreach($cities as $city)
-                                                                <option value="{{ strtolower($city->name) }}"
-                                                                    {{ old('present_address_city', $HumanResource->present_address_city ?? '') == strtolower($city->name) ? 'selected' : '' }}>
-                                                                    {{ $city->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
+                                                        @endforeach
+                                                    </select>
                                                     @error('present_address_city')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
@@ -720,17 +665,19 @@
                                                 <div class="form-group">
                                                     <label class="text-danger" for="permanent_address_city">Permanent
                                                         Address City</label>
-                                                        <select name="permanent_address_city" id="permanent_address_city" class="form-control" >
-                                                            <option value="" disabled {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == '' ? 'selected' : '' }}>
-                                                                Select City
+                                                    <select name="permanent_address_city" id="permanent_address_city"
+                                                        class="form-control">
+                                                        <option value="" disabled
+                                                            {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == '' ? 'selected' : '' }}>
+                                                            Select City
+                                                        </option>
+                                                        @foreach ($cities as $city)
+                                                            <option value="{{ strtolower($city->name) }}"
+                                                                {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == strtolower($city->name) ? 'selected' : '' }}>
+                                                                {{ $city->name }}
                                                             </option>
-                                                            @foreach($cities as $city)
-                                                                <option value="{{ strtolower($city->name) }}"
-                                                                    {{ old('permanent_address_city', $HumanResource->permanent_address_city ?? '') == strtolower($city->name) ? 'selected' : '' }}>
-                                                                    {{ $city->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
+                                                        @endforeach
+                                                    </select>
                                                     @error('permanent_address_city')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
@@ -742,31 +689,33 @@
                                                 <div class="form-group">
                                                     <label class="text-danger" for="permanent_address_province">Permanent
                                                         Address Province</label>
-                                                        <select name="permanent_address_province" class="form-control" >
-                                                            <option value="" selected disabled>Select Province</option>
-                                                            @foreach($provinces as $data)
-                                                                <option value="{{ $data->name }}" {{ $data->name == $HumanResource->permanent_address_province ? 'selected' : '' }}>{{ $data->name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        
+                                                    <select name="permanent_address_province" class="form-control">
+                                                        <option value="" selected disabled>Select Province</option>
+                                                        @foreach ($provinces as $data)
+                                                            <option value="{{ $data->name }}"
+                                                                {{ $data->name == $HumanResource->permanent_address_province ? 'selected' : '' }}>
+                                                                {{ $data->name }}</option>
+                                                        @endforeach
+                                                    </select>
+
                                                 </div>
                                             </div>
                                         </div>
 
 
-                                        
 
-                                        
+
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="citizenship">Citizenship *</label>
                                                 <select name="citizenship" class="form-control">
                                                     <option value="" selected disabled>Select Citizenship</option>
-                                                    <option value="Pakistani" 
+                                                    <option value="Pakistani"
                                                         {{ old('citizenship', $HumanResource->citizenship ?? '') == 'Pakistani' ? 'selected' : '' }}>
                                                         Pakistani
                                                     </option>
-                                                    <option value="Other" 
+                                                    <option value="Other"
                                                         {{ old('citizenship', $HumanResource->citizenship ?? '') == 'Other' ? 'selected' : '' }}>
                                                         Other
                                                     </option>
@@ -777,7 +726,7 @@
                                             </div>
                                         </div>
 
-                                        
+
 
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -808,7 +757,7 @@
                                             </div>
 
                                         </div>
-                                        
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="refference">Reference</label>
@@ -830,21 +779,22 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="min_salary">Min Acceptable Salary
                                                     %</label>
-                                                    <div class="input-group">
-                                                        <!-- Currency Dropdown -->
-                                                        <select name="currancy" class="form-control" id="currancy" >
-                                                            <option value="" selected disabled> Currency</option>
-                                                            @foreach ($curencies as $country)
+                                                <div class="input-group">
+                                                    <!-- Currency Dropdown -->
+                                                    <select name="currancy" class="form-control" id="currancy">
+                                                        <option value="" selected disabled> Currency</option>
+                                                        @foreach ($curencies as $country)
                                                             <option value="{{ $country->currency_symbol }}"
                                                                 {{ strtolower(old('currancy', $HumanResource->currancy ?? '')) == strtolower($country->currency_symbol) ? 'selected' : '' }}>
                                                                 {{ $country->currency_symbol }}
                                                             </option>
                                                         @endforeach
-                                                        </select>
-                                                
-                                                        <!-- Salary Input -->
-                                                        <input type="number" class="form-control" id="min_salary" name="min_salary" value="{{ $HumanResource->min_salary }}"  >
-                                                    </div>
+                                                    </select>
+
+                                                    <!-- Salary Input -->
+                                                    <input type="number" class="form-control" id="min_salary"
+                                                        name="min_salary" value="{{ $HumanResource->min_salary }}">
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -854,35 +804,33 @@
                                                     value="{{ old('comment', $HumanResource->comment) }}">
                                             </div>
                                         </div>
-                                        
+
                                         @if (is_null($company))
-                                            
-                                        
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="status">Status</label>
-                                                <select name="status" class="form-control">
-                                                    <option value="" disabled
-                                                        {{ old('status', $HumanResource->status) === null ? 'selected' : '' }}>
-                                                        Select Status</option>
-                                                    <option value="1"
-                                                        {{ old('status', $HumanResource->status) == 1 ? 'selected' : '' }}>
-                                                        Pending</option>
-                                                    <option value="2"
-                                                        {{ old('status', $HumanResource->status) == 2 ? 'selected' : '' }}>
-                                                        Approved</option>
-                                                    <option value="0"
-                                                        {{ old('status', $HumanResource->status) == 0 ? 'selected' : '' }}>
-                                                         Rejected</option>
-                                                </select>
-                                                @error('status')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="text-danger" for="status">Status</label>
+                                                    <select name="status" class="form-control">
+                                                        <option value="" disabled
+                                                            {{ old('status', $HumanResource->status) === null ? 'selected' : '' }}>
+                                                            Select Status</option>
+                                                        <option value="1"
+                                                            {{ old('status', $HumanResource->status) == 1 ? 'selected' : '' }}>
+                                                            Pending</option>
+                                                        <option value="2"
+                                                            {{ old('status', $HumanResource->status) == 2 ? 'selected' : '' }}>
+                                                            Approved</option>
+                                                        <option value="0"
+                                                            {{ old('status', $HumanResource->status) == 0 ? 'selected' : '' }}>
+                                                            Rejected</option>
+                                                    </select>
+                                                    @error('status')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
                                             </div>
-                                        </div>
                                         @endif
                                         @if ($company)
-                                        <input type="hidden" name="status" value="3">
+                                            <input type="hidden" name="status" value="3">
                                         @endif
                                     </div>
                                     <div class="modal-footer justify-content-center">
@@ -890,260 +838,268 @@
                                     </div>
                                 </form>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-header text-center d-flex justify-content-between align-items-center">
-                    @if ($nominat)
+                        @if ($nominat)
                             <a class="btn btn-primary" disabled title="Please Demob" onclick="showToaster()">Nominate</a>
                         @else
-                            <a class="btn btn-primary" onclick="showUserModel('createDriverModel', {{ $HumanResource->id }})">Nominate</a>
+                            <a class="btn btn-primary"
+                                onclick="showUserModel('createDriverModel', {{ $HumanResource->id }})">Nominate</a>
                         @endif
                         <h4 class="flex-grow-1 text-center m-0">Job History</h4>
                         <div style="width: 75px;"></div> <!-- Empty space to balance the button width -->
                     </div>
-                    
 
-                <div class="card-body table-striped table-bordered table-responsive">
-                    <table class="table responsive" id="table_id_events">
-                        <thead>
-                            <tr>
-                                <th>Sr.</th>
-                                <th>Company</th>
-                                <th>Interview Location</th>
-                                <th>Project</th>
-                                <th>Craft</th>
-                                <th>Sub-Craft</th>
-                                <th>Application Date</th>
-                                <th>Mob-Date</th>
-                                <th>Demob-Date</th>
-                                <th scope="col-2">Actions</th>
-                              </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($histories as $data)
-                            <tr>
-                                    <td>
-                                        {{ $loop->iteration }}
-                                    </td>
-                                    <td>
-                                        {{ $data->company->name ?? 'N/A' }}
-                                    </td>
-                                     <td>
-                                        {{ $data->city_of_interview ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $data->project->project_name ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $data->craft->name ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $data->subCraft->name ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $data->application_date ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $data->mob_date ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        {{ $data->demobe_date ?? 'N/A' }}
-                                    </td>
-                                    <td class="">
-                                        <div class="row m-1">
-                                            <div class="col-md-6 mb-2">
-                                                <button type="button"
-                                                    class="btn btn-primary editDriverBtn"
-                                                    data-id="{{ $data->id }}"><span class="fa fa-edit"></span></button>
-                                            </div>
-                                            <div class="col-md-6 mb-2">
-                                                <form action="{{ route('humanresource.destroy', $data->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-flat show_confirm"
-                                                        data-toggle="tooltip"><span class="fa fa-trash"></span></button>
-                                                </form>
-                                            </div>
-                                        </div>                                        
-                                    </td>
+
+                    <div class="card-body table-striped table-bordered table-responsive">
+                        <table class="table responsive" id="table_id_events">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>Company</th>
+                                    <th>Interview Location</th>
+                                    <th>Project</th>
+                                    <th>Craft</th>
+                                    <th>Sub-Craft</th>
+                                    <th>Application Date</th>
+                                    <th>Mob-Date</th>
+                                    <th>Demob-Date</th>
+                                    <th scope="col-2">Actions</th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($histories as $data)
+                                    <tr>
+                                        <td>
+                                            {{ $loop->iteration }}
+                                        </td>
+                                        <td>
+                                            {{ $data->company->name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->city_of_interview ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->project->project_name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->craft->name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->subCraft->name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->application_date ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->mob_date ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->demobe_date ?? 'N/A' }}
+                                        </td>
+                                        <td class="">
+                                            <div class="row m-1">
+                                                <div class="col-md-6 mb-2">
+                                                    <button type="button" class="btn btn-primary editDriverBtn"
+                                                        data-id="{{ $data->id }}"><span
+                                                            class="fa fa-edit"></span></button>
+                                                </div>
+                                                {{-- <div class="col-md-6 mb-2">
+                                                    <form action="{{ route('humanresource.destroy', $data->id) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="btn btn-danger btn-flat show_confirm"
+                                                            data-toggle="tooltip"><span
+                                                                class="fa fa-trash"></span></button>
+                                                    </form>
+                                                </div> --}}
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
-                           
-                        </tbody>
-                    </table>
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
         </section>
         <!-- add Hobby Modal -->
-        <div class="modal fade" id="createDriverModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header justify-content-center">
-                    <h5 class="modal-title text-center" id="exampleModalLabel">Add Job History</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="createDriverForm" enctype="multipart/form-data" action="{{route('history.update')}}" method="POST">
-                        @csrf
-                        <input type="hidden" name="human_resource_id" id="human_resource_id">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="start_date">Company</label>
-                                    <select name="company_id" id="company_id" class="form-control">
-                                        <option value="">Select Company</option>
-                                        @foreach ($companies as $company)
-                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback"></div>
+        <div class="modal fade" id="createDriverModel" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center">
+                        <h5 class="modal-title text-center" id="exampleModalLabel">Add Job History</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createDriverForm" enctype="multipart/form-data"
+                            action="{{ route('history.update') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="human_resource_id" id="human_resource_id">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="start_date">Company</label>
+                                        <select name="company_id" id="company_id" class="form-control">
+                                            <option value="">Select Company</option>
+                                            @foreach ($companies as $company)
+                                                <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
-                            </div>
-                             <div class="col-md-6">
-                                <div class="form-group">
-                                     <label class="text-danger" for="city_of_interview">Interview Location</label>
-                                            <select name="city_of_interview" class="form-control" id="cityOfInterview" >
-                                                <option value="" selected disabled>Select Location</option>
-                                                @foreach($cities as $city)
-                                                    <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            
-                                            @error('city_of_interview')
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-danger" for="city_of_interview">Interview Location</label>
+                                        <select name="city_of_interview" class="form-control" id="cityOfInterview">
+                                            <option value="" selected disabled>Select Location</option>
+                                            @foreach ($cities as $city)
+                                                <option value="{{ strtolower($city->name) }}">{{ $city->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        @error('city_of_interview')
                                             <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                    <div class="invalid-feedback"></div>
+                                        @enderror
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="text-danger" for="project_id">Project</label>
-                                    <select name="project_id" id="project_id" class="form-control">
-                                        <option value="" selected disabled>Select Project</option>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-danger" for="project_id">Project</label>
+                                        <select name="project_id" id="project_id" class="form-control">
+                                            <option value="" selected disabled>Select Project</option>
+                                        </select>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-danger" for="demand_id">Demand</label>
+                                        <select name="demand_id" id="demand_id" class="form-control">
+                                            <option value="" selected disabled>Select Demand</option>
+                                        </select>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="text-danger" for="demand_id">Demand</label>
-                                    <select name="demand_id" id="demand_id" class="form-control">
-                                        <option value="" selected disabled>Select Demand</option>
-                                    </select>
-                                    <div class="invalid-feedback"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="start_date">Craft</label>
+                                        <select name="craft_id" id="craft" class="form-control">
+                                            <option value="">Select Craft</option>
+                                            @foreach ($crafts as $craft)
+                                                <option value="{{ $craft->name }}">{{ $craft->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="start_date">Craft</label>
-                                    <select name="craft_id" id="craft" class="form-control">
-                                        <option value="">Select Craft</option>
-                                        @foreach ($crafts as $craft)
-                                            <option value="{{ $craft->name }}">{{ $craft->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="form-group">
                                         <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
                                         <select name="sub_craft_id" class="form-control" id="sub_craft">
                                             <option value="" selected disabled>Select Sub-Craft</option>
                                         </select>
                                         @error('sub_craft')
-                                        <div class="text-danger">{{ $message }}</div>
+                                            <div class="text-danger">{{ $message }}</div>
                                         @enderror
-                                    <div class="invalid-feedback"></div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="start_date">Application Date</label>
-                                    <input type="date" class="form-control" id="editStartDate" name="application_date" value="{{ date('Y-m-d') }}" readonly>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="start_date">Application Date</label>
+                                        <input type="date" class="form-control" id="editStartDate"
+                                            name="application_date" value="{{ date('Y-m-d') }}" readonly>
 
-                                    <div class="invalid-feedback"></div>
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary create-ethnicity">Create</button>
-                        </div>
-                    </form>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary create-ethnicity">Create</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
         <!-- Edit Hobby Modal -->
         <div class="modal fade" id="editDriverModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" id="mymodal" role="document">
-            <div class="modal-content">
-                <div class="modal-header justify-content-center">
-                    <h5 class="modal-title" id="exampleModalLabel">Demob</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="editDriverForm" enctype="multipart/form-data" action="{{route('jobHistory.update')}}" method="POST">
-                        @csrf
-                        <input type="hidden" id="editDriverId" name="id">        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="end_date">Mob Date</label>
-                                    <input type="date" class="form-control" id="mobDate" name="start_date">
-                                    <div class="invalid-feedback"></div>
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" id="mymodal" role="document">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center">
+                        <h5 class="modal-title" id="exampleModalLabel">Demob</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editDriverForm" enctype="multipart/form-data"
+                            action="{{ route('jobHistory.update') }}" method="POST">
+                            @csrf
+                            <input type="hidden" id="editDriverId" name="id">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="end_date">Mob Date</label>
+                                        <input type="date" class="form-control" id="mobDate" name="start_date">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="end_date">Demob Date</label>
+                                        <input type="date" class="form-control" id="deMobDate" name="end_date">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="end_date">Demob Date</label>
-                                    <input type="date" class="form-control" id="deMobDate" name="end_date">
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                        </div>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="submit" class="btn btn-primary update-history">Update</button>
-                </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" class="btn btn-primary update-history">Update</button>
+                    </div>
                     </form>
 
+                </div>
             </div>
-        </div>
         </div>
 
     </div>
 @endsection
 
 @section('js')
-<script>
-       function showToaster() {
-                toastr.warning("Please demobilize the current job before nominating!", "Action Blocked");
+    <script>
+        function showToaster() {
+            toastr.warning("Please demobilize the current job before nominating!", "Action Blocked");
         }
-</script>
-<script>
-    $(document).ready(function() {
-     
-        $('#table_id_events').DataTable()
-    })
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    </script>
+    <script>
+        $(document).ready(function() {
+
+            $('#table_id_events').DataTable()
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script type="text/javascript">
         $('.show_confirm').click(function(event) {
             var form = $(this).closest("form");
@@ -1168,69 +1124,68 @@
             toastr.success('{{ \Illuminate\Support\Facades\Session::get('message') }}');
         </script>
     @endif --}}
-        <script>
+    <script>
+        $(document).on('click', '#craft', function() {
+            var craftId = $(this).val();
+            $.ajax({
+                url: "{{ route('get-sub-crafts') }}",
+                type: "GET",
+                data: {
+                    craft_id: craftId
+                },
+                success: function(data) {
+                    $('#sub_craft').empty();
+                    $('#sub_craft').append(
+                        '<option value="" selected disabled>Select Sub-Craft</option>');
 
-            $(document).on('click','#craft', function () {
-                        var craftId = $(this).val();
-                        $.ajax({
-                            url: "{{ route('get-sub-crafts') }}",
-                            type: "GET",
-                            data: {
-                                craft_id: craftId
-                            },
-                            success: function (data) {
-                                $('#sub_craft').empty();
-                                $('#sub_craft').append(
-                                    '<option value="" selected disabled>Select Sub-Craft</option>');
-                                
 
-                                $.each(data, function (key, value) {
-                                    $('#sub_craft').append('<option value="' + value.id +
-                                        '">' + value.name + '</option>');
-                                });
-                            }
-                        });
+                    $.each(data, function(key, value) {
+                        $('#sub_craft').append('<option value="' + value.id +
+                            '">' + value.name + '</option>');
                     });
-            //add 
-            function showUserModel(id, humanResourceId) {
-                $(`#${id}`).modal('show');
-                $('#createDriverModel').find('input, textarea, select').val('');
-                $('#clonedInputsContainer').empty();
-                $('#createDriverForm')[0].reset(); // Reset the form after successful submission
-                $('#human_resource_id').val(humanResourceId);
-                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                if (csrfToken) {
-                    if (!$('input[name="_token"]').length) {
-                        $('#createDriverForm').prepend(`<input type="hidden" name="_token" value="${csrfToken}">`);
-                    } else {
-                        $('input[name="_token"]').val(csrfToken);
-                    }
                 }
-            };
-
-            function getDemobData(id) {
-                $.ajax({
-                    url: "{{ route('get-demob-data') }}",
-                    type: "GET",
-                    data: {
-                        id: id
-                    },
-                    success: function(data) {
-                        console.log(data.demobe_date);
-                        $('#mobDate').val(data.mob_date);
-                        $('#deMobDate').val(data.demobe_date);
-                    }
-                });
-            }
-
-            $(document).on('click', '.editDriverBtn', function () {
-                var id = $(this).data('id');
-                $('#editDriverId').val(id);
-                $('.update-history').attr('data', id);
-                $('#editDriverModel').modal('show');
-                getDemobData(id); // Now this will work
             });
-            $('#company_id').on('change', function () {
+        });
+        //add 
+        function showUserModel(id, humanResourceId) {
+            $(`#${id}`).modal('show');
+            $('#createDriverModel').find('input, textarea, select').val('');
+            $('#clonedInputsContainer').empty();
+            $('#createDriverForm')[0].reset(); // Reset the form after successful submission
+            $('#human_resource_id').val(humanResourceId);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if (csrfToken) {
+                if (!$('input[name="_token"]').length) {
+                    $('#createDriverForm').prepend(`<input type="hidden" name="_token" value="${csrfToken}">`);
+                } else {
+                    $('input[name="_token"]').val(csrfToken);
+                }
+            }
+        };
+
+        function getDemobData(id) {
+            $.ajax({
+                url: "{{ route('get-demob-data') }}",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                success: function(data) {
+                    console.log(data.demobe_date);
+                    $('#mobDate').val(data.mob_date);
+                    $('#deMobDate').val(data.demobe_date);
+                }
+            });
+        }
+
+        $(document).on('click', '.editDriverBtn', function() {
+            var id = $(this).data('id');
+            $('#editDriverId').val(id);
+            $('.update-history').attr('data', id);
+            $('#editDriverModel').modal('show');
+            getDemobData(id); // Now this will work
+        });
+        $('#company_id').on('change', function() {
             var companyId = $(this).val();
 
             $.ajax({
@@ -1239,7 +1194,7 @@
                 data: {
                     company_id: companyId
                 },
-                success: function (data) {
+                success: function(data) {
                     $('#project_id').empty();
                     $('#demand_id').empty();
                     $('#sub_craft').empty();
@@ -1250,7 +1205,7 @@
                     $('#sub_craft').append(
                         '<option value="" selected disabled>Select Sub-Craft</option>');
 
-                    $.each(data, function (key, value) {
+                    $.each(data, function(key, value) {
                         $('#project_id').append('<option value="' + value.id +
                             '">' + value.project_name + '</option>');
                     });
@@ -1264,7 +1219,7 @@
             });
         });
 
-        $('#project_id').on('change', function () {
+        $('#project_id').on('change', function() {
             var projectId = $(this).val();
 
             $.ajax({
@@ -1273,123 +1228,140 @@
                 data: {
                     project_id: projectId
                 },
-                success: function (data) {
+                success: function(data) {
                     $('#demand_id').empty();
                     $('#demand_id').append(
                         '<option value="" selected disabled>Select Demand</option>');
 
-                    $.each(data, function (key, value) {
+                    $.each(data, function(key, value) {
                         $('#demand_id').append('<option value="' + value.id +
                             '">Man Power - ' + value.full_name + '</option>');
                     });
                 }
             });
         });
-        </script>
-        <script>
-            $(document).ready(function () {
-                // When company is selected
-                $('#company_id').on('change', function () {
-                    var companyId = $(this).val();
-        
-                    if (companyId) {
-                        $('#project-group').removeClass('d-none');
-                        $('#demand-group').removeClass('d-none');
-                    } else {
-                        $('#project-group').addClass('d-none');
-                        $('#demand-group').addClass('d-none');
-                        $('#craft').closest('.col-md-4').removeClass('d-none');
-                        $('#sub_craft').closest('.col-md-4').removeClass('d-none');
-                    }
-        
-                    // Reset dependent fields
-                    $('#project_id').empty().append('<option value="" selected disabled>Select Project</option>');
-                    $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
-                    $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
-                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
-        
-                    if (companyId) {
-                        $.ajax({
-                            url: "{{ route('get-projects') }}",
-                            type: "GET",
-                            data: { company_id: companyId },
-                            success: function (data) {
-                                $.each(data, function (key, value) {
-                                    $('#project_id').append('<option value="' + value.id + '">' + value.project_name + '</option>');
-                                });
-                            }
-                        });
-                    }
-                });
-        
-                // When project is selected
-                $('#project_id').on('change', function () {
-                    var projectId = $(this).val();
-        
-                    $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
-                    $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
-                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
-        
-                    if (projectId) {
-                        $.ajax({
-                            url: "{{ route('get-demand') }}",
-                            type: "GET",
-                            data: { project_id: projectId },
-                            success: function (data) {
-                                $.each(data, function (key, value) {
-                                    $('#demand_id').append('<option value="' + value.id + '">Man Power - ' + value.manpower + '</option>');
-                                });
-                            }
-                        });
-                    }
-                });
-        
-                // When demand is selected
-                $('#demand_id').on('change', function () {
-                    var demandId = $(this).val();
-        
-                    $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
-                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
-        
-                    if (demandId) {
-                        $.ajax({
-                            url: "{{ route('get-crafts-by-demand') }}",
-                            type: "GET",
-                            data: { demand_id: demandId },
-                            success: function (data) {
-                                if (data.length > 0) {
-                                    $.each(data, function (key, value) {
-                                        $('#craft').append('<option value="' + value.id + '">' + value.name + '</option>');
-                                    });
-                                    // Automatically select the first craft
-                                    $('#craft').val(data[0].id).trigger('change');
-                                }
-                            }
-                        });
-                    }
-                });
-        
-                // When craft is selected
-                $('#craft').on('change', function () {
-                    var craftId = $(this).val();
-        
-                    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
-        
-                    if (craftId) {
-                        $.ajax({
-                            url: "{{ route('get-sub-crafts') }}",
-                            type: "GET",
-                            data: { craft_id: craftId },
-                            success: function (data) {
-                                $.each(data, function (key, value) {
-                                    $('#sub_craft').append('<option value="' + value.id + '">' + value.name + '</option>');
-                                });
-                            }
-                        });
-                    }
-                });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // When company is selected
+            $('#company_id').on('change', function() {
+                var companyId = $(this).val();
+
+                if (companyId) {
+                    $('#project-group').removeClass('d-none');
+                    $('#demand-group').removeClass('d-none');
+                } else {
+                    $('#project-group').addClass('d-none');
+                    $('#demand-group').addClass('d-none');
+                    $('#craft').closest('.col-md-4').removeClass('d-none');
+                    $('#sub_craft').closest('.col-md-4').removeClass('d-none');
+                }
+
+                // Reset dependent fields
+                $('#project_id').empty().append(
+                    '<option value="" selected disabled>Select Project</option>');
+                $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+                $('#sub_craft').empty().append(
+                    '<option value="" selected disabled>Select Sub-Craft</option>');
+
+                if (companyId) {
+                    $.ajax({
+                        url: "{{ route('get-projects') }}",
+                        type: "GET",
+                        data: {
+                            company_id: companyId
+                        },
+                        success: function(data) {
+                            $.each(data, function(key, value) {
+                                $('#project_id').append('<option value="' + value.id +
+                                    '">' + value.project_name + '</option>');
+                            });
+                        }
+                    });
+                }
             });
-        </script>
+
+            // When project is selected
+            $('#project_id').on('change', function() {
+                var projectId = $(this).val();
+
+                $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+                $('#sub_craft').empty().append(
+                    '<option value="" selected disabled>Select Sub-Craft</option>');
+
+                if (projectId) {
+                    $.ajax({
+                        url: "{{ route('get-demand') }}",
+                        type: "GET",
+                        data: {
+                            project_id: projectId
+                        },
+                        success: function(data) {
+                            $.each(data, function(key, value) {
+                                $('#demand_id').append('<option value="' + value.id +
+                                    '">Man Power - ' + value.manpower + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
+
+            // When demand is selected
+            $('#demand_id').on('change', function() {
+                var demandId = $(this).val();
+
+                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+                $('#sub_craft').empty().append(
+                    '<option value="" selected disabled>Select Sub-Craft</option>');
+
+                if (demandId) {
+                    $.ajax({
+                        url: "{{ route('get-crafts-by-demand') }}",
+                        type: "GET",
+                        data: {
+                            demand_id: demandId
+                        },
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $.each(data, function(key, value) {
+                                    $('#craft').append('<option value="' + value.id +
+                                        '">' + value.name + '</option>');
+                                });
+                                // Automatically select the first craft
+                                $('#craft').val(data[0].id).trigger('change');
+                            }
+                        }
+                    });
+                }
+            });
+
+            // When craft is selected
+            $('#craft').on('change', function() {
+                var craftId = $(this).val();
+
+                $('#sub_craft').empty().append(
+                    '<option value="" selected disabled>Select Sub-Craft</option>');
+
+                if (craftId) {
+                    $.ajax({
+                        url: "{{ route('get-sub-crafts') }}",
+                        type: "GET",
+                        data: {
+                            craft_id: craftId
+                        },
+                        success: function(data) {
+                            $.each(data, function(key, value) {
+                                $('#sub_craft').append('<option value="' + value.id +
+                                    '">' + value.name + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
     {{-- <script>
         $(document).ready(function() {
             // Check if company_id is selected on page load
@@ -1466,7 +1438,7 @@
             }
         });
     </script> --}}
-    
-    
-    
+
+
+
 @endsection
