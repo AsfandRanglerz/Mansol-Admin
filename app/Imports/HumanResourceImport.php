@@ -10,8 +10,9 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 
-class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue, WithValidation
+class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue, WithValidation,WithCalculatedFormulas 
 {
     /**
      * This method is called for each chunk of rows (size defined in chunkSize()).
@@ -21,17 +22,26 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
      */
     public function collection(Collection $rows)
     {
+        $cleanRows = [];
         foreach ($rows as $row) {
-            // Normalize keys: trim & lowercase for safety
+            if (!is_array($row) && method_exists($row, 'toArray')) {
+                $row = $row->toArray();
+            }
+            if (!is_array($row)) {
+                Log::error('Import row skipped: Row is not an array', ['row' => $row]);
+                continue;
+            }
             $cleanRow = [];
-            foreach ($row->toArray() as $key => $value) {
+            foreach ($row as $key => $value) {
                 $cleanKey = trim(strtolower($key));
                 $cleanRow[$cleanKey] = $value;
             }
+            $cleanRows[] = $cleanRow;
+        }
 
-            Log::info('Dispatching row:', $cleanRow);
-
-            HumanResourceImportJob::dispatch($cleanRow);
+        if (!empty($cleanRows)) {
+            Log::info('Dispatching batch of rows', ['count' => count($cleanRows)]);
+            HumanResourceImportJob::dispatch($cleanRows);
         }
     }
 
