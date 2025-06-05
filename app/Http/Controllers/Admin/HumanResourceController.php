@@ -87,7 +87,7 @@ class HumanResourceController extends Controller
             'cnic_expiry_date' => 'nullable|date',
             'doi' => 'nullable|date',
             'doe' => 'nullable|date',
-            'passport' => 'nullable|string|max:255',
+            'passport' => 'nullable|string|max:255|unique:human_resources,passport',
             'passport_issue_place' => 'nullable|string|max:255',
             'religion' => 'required|string|max:255',
             'martial_status' => 'required|string|max:255',
@@ -119,6 +119,7 @@ class HumanResourceController extends Controller
             'experience_gulf' => 'required',
         ]);
 
+        // dd($request->all());
         if ($request->hasfile('medical_doc')) {
             $file = $request->file('medical_doc');
             $extension = $file->getClientOriginalExtension(); // getting image extension
@@ -189,7 +190,7 @@ class HumanResourceController extends Controller
             $data['craft_id'] = $request->craft_id;
             $data['sub_craft_id'] = $request->sub_craft_id;
             // }
-            
+            // dd($data);
             $HumanResource =  HumanResource::create($data);
             // return $HumanResource;
 
@@ -283,8 +284,12 @@ class HumanResourceController extends Controller
             'curencies',
         ));
     }
+
+
     public function update(Request $request, $id)
     {
+        $HumanResource = HumanResource::findOrFail($id);
+
         $request->validate([
             'registration' => 'nullable|string|max:255',
             // 'application_date' => 'nullable|date',
@@ -305,7 +310,7 @@ class HumanResourceController extends Controller
             'cnic_expiry_date' => 'nullable|date',
             'doi' => 'nullable|date',
             'doe' => 'nullable|date',
-            'passport' => 'nullable|string|max:255',
+            'passport' => 'nullable|string|max:255|unique:human_resources,passport,' . $HumanResource->id,
             'passport_issue_place' => 'nullable|string|max:255',
             'religion' => 'required|string|max:255',
             'martial_status' => 'nullable|string|max:255',
@@ -335,7 +340,7 @@ class HumanResourceController extends Controller
         ]);
     
         try {
-            $HumanResource = HumanResource::findOrFail($id);
+            // $HumanResource = HumanResource::findOrFail($id);
     
             if ($request->hasFile('medical_doc')) {
                 $destination = 'public/admin/assets/img/users/' . $HumanResource->medical_doc;
@@ -349,7 +354,7 @@ class HumanResourceController extends Controller
                 $file->move('public/admin/assets/medical_doc', $filename);
                 $medical_doc = 'public/admin/assets/medical_doc/' . $filename;
             } else {
-                $medical_doc = $HumanResource->medical_doc; // Preserve existing if no new file
+                $medical_doc = $HumanResource->medical_doc;
             }
     
             $HumanResource->update([
