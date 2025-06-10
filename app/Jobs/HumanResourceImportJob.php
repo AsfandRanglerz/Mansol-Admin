@@ -47,42 +47,44 @@ class HumanResourceImportJob implements ShouldQueue
                 }
 
                 // Create or get related models
-                if (empty($row['company_name'])) {
-                    Log::warning('Skipping row due to missing company_name.', $row);
-                    continue;
-                }
+                // if (empty($row['company_name'])) {
+                //     Log::warning('Skipping row due to missing company_name.', $row);
+                //     continue;
+                // }
                 $company = Company::where('name', $row['company_name'])->first();
-                if (!$company) {
+                if (!$company && !empty($row['company_name'])) {
                     Log::warning('Skipping row because company does not exist: ' . $row['company_name'], $row);
                     continue;
                 }
-
-                // Compute registration/project_code logic safely
-                $lastReg = Project::pluck('project_code')->filter()->map(fn($v) => intval($v))->toArray();
-                $maxValue = !empty($lastReg) ? max($lastReg) : 2000;
-                $registration = $maxValue >= 2000 ? $maxValue + 1 : 2001;
-
-                $project = Project::firstOrCreate(
-                    [
-                        'project_name' => $row['project_name'],
-                        'company_id' => $company->id,
-                    ],
-                    [
-                        'project_code' => $registration,
-                    ]
-                );
-
+                
                 $craft = MainCraft::firstOrCreate(['name' => $row['craft_name']]);
                 $subCraft = SubCraft::firstOrCreate([
                     'name' => $row['sub_craft_name'] ?? null,
                     'craft_id' => $craft->id,
                 ]);
-                $demand = Demand::firstOrCreate([
-                    'project_id' => $project->id,
-                    'craft_id' => $craft->id,
-                ]);
+                if($company){
+                    // Compute registration/project_code logic safely
+                    $lastReg = Project::pluck('project_code')->filter()->map(fn($v) => intval($v))->toArray();
+                    $maxValue = !empty($lastReg) ? max($lastReg) : 2000;
+                    $registration = $maxValue >= 2000 ? $maxValue + 1 : 2001;
+    
+                    $project = Project::firstOrCreate(
+                        [
+                            'project_name' => $row['project_name'],
+                            'company_id' => $company->id,
+                        ],
+                        [
+                            'project_code' => $registration,
+                        ]
+                    );
+                    $demand = Demand::firstOrCreate([
+                        'project_id' => $project->id,
+                        'craft_id' => $craft->id,
+                    ]);
+                }
 
-                $password = random_int(10000000, 99999999);
+                // $password = random_int(10000000, 99999999);
+                $password = 12345678; // Default password for new human resources
                 // Compute registration number for HumanResource
                 $lastReg = HumanResource::pluck('registration')->toArray();
                 $filteredValues = array_filter($lastReg, function ($value) {
@@ -214,6 +216,7 @@ class HumanResourceImportJob implements ShouldQueue
                     'min_salary' => $row['min_salary'] ?? null,
                     'comment' => $row['comment'] ?? null,
                     'image' => 'public/admin/assets/images/users/avatar.png',
+                    'currancy' => $row['currancy'] ?? null,
                     'craft_id' => $craft->id,
                     'sub_craft_id' => $subCraft->id,
                     'city_of_interview' => strtolower($row['city_of_interview'] ?? null),

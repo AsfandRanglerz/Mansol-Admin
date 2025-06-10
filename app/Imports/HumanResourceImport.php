@@ -65,10 +65,7 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
         return [
             '*.email' => 'required|email',
             '*.name' => 'required|string',
-            '*.company_name' => 'required|string',
-            '*.project_name' => 'required|string',
             '*.craft_name' => 'required|string',
-            '*.sub_craft_name' => 'nullable|string',
             // Add more validation as needed for your columns
         ];
     }
