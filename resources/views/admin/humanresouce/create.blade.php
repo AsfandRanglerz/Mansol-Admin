@@ -92,13 +92,16 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="craft">Application for Post</label>
                                                 <select name="craft_id" class="form-control" id="craft">
-    <option value="" disabled {{ old('craft_id', $HumanResource->craft_id ?? '') == '' ? 'selected' : '' }}>Select Craft</option>
-    @foreach ($crafts as $craft)
-        <option value="{{ $craft->id }}" {{ old('craft_id', $HumanResource->craft_id ?? '') == $craft->id ? 'selected' : '' }}>
-            {{ $craft->name }}
-        </option>
-    @endforeach
-</select>
+                                                    <option value="" disabled
+                                                        {{ old('craft_id', $HumanResource->craft_id ?? '') == '' ? 'selected' : '' }}>
+                                                        Select Craft</option>
+                                                    @foreach ($crafts as $craft)
+                                                        <option value="{{ $craft->id }}"
+                                                            {{ old('craft_id', $HumanResource->craft_id ?? '') == $craft->id ? 'selected' : '' }}>
+                                                            {{ $craft->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
 
                                                 @error('craft_id')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -110,9 +113,9 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="sub_craft">Sub-Craft</label>
                                                 <select name="sub_craft_id" class="form-control" id="sub_craft">
-    <option value="" disabled>Select Sub-Craft</option>
-    {{-- Options will be filled via AJAX --}}
-</select>
+                                                    <option value="" disabled>Select Sub-Craft</option>
+                                                    {{-- Options will be filled via AJAX --}}
+                                                </select>
                                                 @error('sub_craft')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -1335,45 +1338,53 @@
 
             // When craft is selected
             const selectedCraftId = "{{ old('craft_id', $HumanResource->craft_id ?? '') }}";
-        const selectedSubCraftId = "{{ old('sub_craft_id', $HumanResource->sub_craft_id ?? '') }}";
+            const selectedSubCraftId = "{{ old('sub_craft_id', $HumanResource->sub_craft_id ?? '') }}";
 
-        // If a craft is already selected (in edit mode), trigger AJAX to load sub-crafts
-        if (selectedCraftId) {
-            $('#craft').val(selectedCraftId).trigger('change');
+            // If a craft is already selected (in edit mode), trigger AJAX to load sub-crafts
+            if (selectedCraftId) {
+                $('#craft').val(selectedCraftId).trigger('change');
 
-            $.ajax({
-                url: "{{ route('get-sub-crafts') }}",
-                type: "GET",
-                data: { craft_id: selectedCraftId },
-                success: function(data) {
-                    $('#sub_craft').empty().append('<option value="" disabled>Select Sub-Craft</option>');
-                    $.each(data, function(key, value) {
-                        const isSelected = selectedSubCraftId == value.id ? 'selected' : '';
-                        $('#sub_craft').append('<option value="' + value.id + '" ' + isSelected + '>' + value.name + '</option>');
-                    });
-                }
-            });
-        }
-
-        // When craft is changed manually
-        $('#craft').on('change', function () {
-            var craftId = $(this).val();
-
-            $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
-
-            if (craftId) {
                 $.ajax({
                     url: "{{ route('get-sub-crafts') }}",
                     type: "GET",
-                    data: { craft_id: craftId },
-                    success: function (data) {
-                        $.each(data, function (key, value) {
-                            $('#sub_craft').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    data: {
+                        craft_id: selectedCraftId
+                    },
+                    success: function(data) {
+                        $('#sub_craft').empty().append(
+                            '<option value="" disabled>Select Sub-Craft</option>');
+                        $.each(data, function(key, value) {
+                            const isSelected = selectedSubCraftId == value.id ? 'selected' : '';
+                            $('#sub_craft').append('<option value="' + value.id + '" ' +
+                                isSelected + '>' + value.name + '</option>');
                         });
                     }
                 });
             }
-        });
+
+            // When craft is changed manually
+            $('#craft').on('change', function() {
+                var craftId = $(this).val();
+
+                $('#sub_craft').empty().append(
+                    '<option value="" selected disabled>Select Sub-Craft</option>');
+
+                if (craftId) {
+                    $.ajax({
+                        url: "{{ route('get-sub-crafts') }}",
+                        type: "GET",
+                        data: {
+                            craft_id: craftId
+                        },
+                        success: function(data) {
+                            $.each(data, function(key, value) {
+                                $('#sub_craft').append('<option value="' + value.id +
+                                    '">' + value.name + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
         });
     </script>
 

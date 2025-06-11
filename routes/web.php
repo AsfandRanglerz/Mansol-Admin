@@ -188,9 +188,12 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('/reports',  'index')->name('reports.index');
     });
     // ############ Notifications #################
-    Route::controller(NotificationController::class)->group(function () {
-        Route::get('/notification',  'index')->name('notification.index');
-    });
+    Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
+    Route::get('/fetch-recipients', [NotificationController::class, 'fetchRecipients']);
+    Route::post('/notifications', [NotificationController::class, 'store'])->name('notifications.store');
+    Route::put('/notifications/{id}', [NotificationController::class, 'update'])->name('notifications.update');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+
 });
 
 // ######################### Human Rescourse ############################
