@@ -49,7 +49,8 @@ class SubAdminController extends Controller
         }
 
         /**generate random password */
-        $password = random_int(10000000, 99999999);
+        // $password = random_int(10000000, 99999999);
+        $password = 12345678;
 
         // Create a new subadmin record
         SubAdmin::create([
@@ -64,7 +65,7 @@ class SubAdminController extends Controller
         $message['email'] = $request->email;
         $message['password'] = $password;
 
-        Mail::to($request->email)->send(new UserLoginPassword($message));
+        // Mail::to($request->email)->send(new UserLoginPassword($message));
 
         // Return success message
         return redirect()->route('subadmin.index')->with(['message' => 'Subadmin Created Successfully']);

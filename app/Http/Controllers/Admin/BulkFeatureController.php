@@ -15,7 +15,7 @@ class BulkFeatureController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
         ]);
-
+ 
         try {
             Log::info('Starting Excel import.');
 

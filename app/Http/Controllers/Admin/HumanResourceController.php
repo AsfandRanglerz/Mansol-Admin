@@ -131,8 +131,9 @@ class HumanResourceController extends Controller
         }
 
         /**generate random password */
-        $password = random_int(10000000, 99999999);
-
+        // $password = random_int(10000000, 99999999);
+        $password = 12345678;
+        
         // Create a new subadmin record
         $data = [
             'name' => $request->name,
@@ -212,7 +213,7 @@ class HumanResourceController extends Controller
         $message['email'] = $request->email;
         $message['password'] = $password;
 
-        Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
+        // Mail::to($request->email)->send(new HumanResourceUserLoginPassword($message));
         if (!empty($request->input('company_id'))) {
                     $history = JobHistory::create([
                         'human_resource_id' => $HumanResource->id,

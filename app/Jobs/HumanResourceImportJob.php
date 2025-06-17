@@ -35,16 +35,16 @@ class HumanResourceImportJob implements ShouldQueue
 
                 Log::info('Processing row keys:', array_keys($row));
 
-                if (empty($row['email']) || !filter_var($row['email'], FILTER_VALIDATE_EMAIL)) {
-                    Log::warning('Skipping row due to invalid or missing email.', $row);
-                    continue;
-                }
+                // if (empty($row['email']) || !filter_var($row['email'], FILTER_VALIDATE_EMAIL)) {
+                //     Log::warning('Skipping row due to invalid or missing email.', $row);
+                //     continue;
+                // }
 
-                if (HumanResource::where('email', $row['email'])->exists()) {
-                    // Skip duplicates
-                    Log::info('Skipping duplicate email: ' . $row['email']);
-                    continue;
-                }
+                // if (HumanResource::where('email', $row['email'])->exists()) {
+                //     // Skip duplicates
+                //     Log::info('Skipping duplicate email: ' . $row['email']);
+                //     continue;
+                // }
 
                 // Create or get related models
                 // if (empty($row['company_name'])) {

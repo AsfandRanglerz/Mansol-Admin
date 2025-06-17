@@ -11,6 +11,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
+                    <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="file" name="file" required>
+                                            <button type="submit" class="btn btn-success">Import</button>
+                                        </form>
                 </div>
                 <div class="modal-body">
                     <form id="createSubadminForm" enctype="multipart/form-data">

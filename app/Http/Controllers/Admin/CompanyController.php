@@ -40,7 +40,8 @@ class CompanyController extends Controller
         }
 
         /**generate random password */
-        $password = random_int(10000000, 99999999);
+        // $password = random_int(10000000, 99999999);
+        $password = 12345678;
 
         // Create a new subadmin record
         Company::create([
@@ -55,7 +56,7 @@ class CompanyController extends Controller
         $message['email'] = $request->email;
         $message['password'] = $password;
 
-        Mail::to($request->email)->send(new CompanyLoginPassword($message));
+        // Mail::to($request->email)->send(new CompanyLoginPassword($message));
 
         // Return success message
         return redirect()->route('companies.index')->with(['message' => 'Company Created Successfully']);
