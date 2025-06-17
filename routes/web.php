@@ -196,6 +196,10 @@ Route::prefix('admin')->middleware('admin')->group(function () {
 
 });
 
+// HR and company notification 
+Route::view('/user-notification', 'notification.show');
+
+
 // ######################### Human Rescourse ############################
 Route::get('/human-resource', [HumanResouceAuthController::class, 'getHrLoginPage']);
 Route::post('human-resource/login', [HumanResouceAuthController::class, 'loginHR']);
@@ -208,6 +212,7 @@ Route::post('/generate-nbp-form', [HumanResouceController::class, 'generateForm8
 Route::post('/generate-challan-92', [HumanResouceController::class, 'generateForm9'])->name('generate.filled.pdf');
 Route::post('/generate-life-insurance', [HumanResouceController::class, 'generateForm10'])->name('generate.filled.pdf');
 Route::post('/generate-fsa-form', [HumanResouceController::class, 'generateForm11'])->name('generate.filled.pdf');
+
 Route::prefix('human-resource')->middleware('humanresource')->group(function () {
     Route::get('dashboard', [HumanResouceController::class, 'getdashboard'])->name('human-resouce.dashboard');
     Route::get('profile', [HumanResouceController::class, 'getProfile']);

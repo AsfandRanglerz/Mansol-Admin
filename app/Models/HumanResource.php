@@ -26,12 +26,19 @@ class HumanResource extends Authenticatable
         return $this->belongsTo(SubCraft::class, 'sub_craft_id', 'id');
     }
 
-    public function hrSteps(){
-        return $this->hasMany(HrStep::class,'human_resource_id');
+    public function hrSteps()
+    {
+        return $this->hasMany(HrStep::class, 'human_resource_id');
     }
 
-    public function jobHistory(){
-        return $this->hasMany(JobHistory::class,'human_resource_id');
+    public function jobHistory()
+    {
+        return $this->hasMany(JobHistory::class, 'human_resource_id');
+    }
+
+
+    public function notificationTargets()
+    {
+        return $this->morphMany(NotificationTarget::class, 'targetable');
     }
 }
- 

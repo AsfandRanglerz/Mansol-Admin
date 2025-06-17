@@ -14,4 +14,9 @@ class NotificationTarget extends Model
     {
         return $this->morphTo();
     }
+
+    public function notification()
+    {
+        return $this->belongsTo(Notification::class);
+    }
 }

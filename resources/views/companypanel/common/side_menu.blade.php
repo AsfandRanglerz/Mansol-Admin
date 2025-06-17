@@ -12,21 +12,47 @@
                             data-feather="home"></i>Dashboard</span></a>
             </li>
             {{-- Demands --}}
-            <li class="dropdown {{ request()->is('company/company-projects*') || request()->is('company/project-demands*') || request()->is('company/demand-nominees*') ? 'active' : '' }}">
+            <li
+                class="dropdown {{ request()->is('company/company-projects*') || request()->is('company/project-demands*') || request()->is('company/demand-nominees*') ? 'active' : '' }}">
                 <a href="{{ route('companyProject.index') }}" class="nav-link px-2">
                     <span><i class="fas fa-tasks"></i> Projects</span>
                 </a>
             </li>
             {{-- Notifications --}}
-            <li class="dropdown {{ request()->is('company/notification*') ? 'active' : '' }}">
-                <a href="{{ route('notificationCompany.index') }}" class="nav-link">
-                    <span><i data-feather="bell"></i>Notifcations</span>
-                    <div id="orderCounter"
-                        class="badge rounded-circle {{ request()->is('human-resouce/notification*') ? 'bg-white text-danger' : 'bg-danger text-white' }}">
-                        1
-                    </div>
-                </a>
-            </li>
+            {{-- Notifications --}}
+<li class="dropdown {{ request()->is('company/notification*') ? 'active' : '' }}">
+    <a href="{{ route('notificationCompany.index') }}" class="nav-link d-flex align-items-center">
+        <i data-feather="bell"></i>
+        <span class="ml-2">Notifications</span>
+
+        @php
+            use App\Models\NotificationTarget;
+            use Illuminate\Support\Facades\Auth;
+
+            $company = Auth::guard('company')->user();
+            $unreadCount = 0;
+
+            if ($company) {
+                $unreadCount = NotificationTarget::where('targetable_type', \App\Models\Company::class)
+                    ->where('targetable_id', $company->id)
+                    ->where(function ($q) {
+                        $q->where('is_read', 0)->orWhereNull('is_read');
+                    })
+                    ->count();
+            }
+        @endphp
+
+        @if ($unreadCount > 0)
+            <div id="orderCounter"
+                class="badge rounded-circle {{ request()->is('company/notification*') ? 'bg-white text-danger' : 'bg-danger text-white' }}"
+                style="margin-left: auto; margin-right: 10px; font-size: 12px; padding: 4px 7px;">
+                {{ $unreadCount }}
+            </div>
+        @endif
+    </a>
+</li>
+
+
             {{-- <li class="dropdown {{ request()->is('admin/company*') ? 'active' : '' }}">
                 <a href="{{ route('company.index') }}" class="nav-link"><i data-feather="users"></i><span>Company</span></a>
             </li> --}}

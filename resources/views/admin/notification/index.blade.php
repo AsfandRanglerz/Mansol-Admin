@@ -1,6 +1,7 @@
 @extends('admin.layout.app')
 @section('title', 'Notification')
 @section('content')
+
     <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -13,16 +14,20 @@
                 </div>
                 <div class="modal-body">
                     <form id="createSubadminForm" enctype="multipart/form-data">
+                        <input type="hidden" name="target_ids_by_type" id="target_ids_by_type">
+
                         <div class="row">
                             <input type="hidden" id="draft_id" name="draft_id">
 
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="user_type">User Type</label>
-                                    <select name="user_type[]" id="user_type" class="form-control" multiple required>
+                                    <select id="user_type" name="user_type" class="form-control">
+                                        <option value="">Select Type</option>
                                         <option value="company">Company</option>
                                         <option value="human_resource">Human Resource</option>
                                     </select>
+
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -30,10 +35,17 @@
                             <div class="col-md-12" id="target_container" style="display:none;">
                                 <div class="form-group">
                                     <label for="target_ids">Select Recipients</label>
+
+                                    <div class="form-check mb-2">
+                                        <input type="checkbox" class="form-check-input" id="select_all_recipients"
+                                            onchange="toggleSelectAllRecipients(this)">
+                                        <label class="form-check-label" for="select_all_recipients">Select All
+                                            Recipients</label>
+                                    </div>
+
                                     <select name="target_ids[]" id="target_ids" class="form-control" multiple>
                                         {{-- Options will be loaded dynamically --}}
                                     </select>
-                                    <small class="text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple.</small>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -75,13 +87,13 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>User Type</label>
-                                        <select name="user_type[]" class="form-control user_type_edit" multiple required>
+                                        <select name="user_type" class="form-control user_type_edit" required>
+                                            <option value="">Select Type</option>
                                             <option value="company"
-                                                {{ str_contains($notification->type, 'company') ? 'selected' : '' }}>Company
-                                            </option>
+                                                {{ $notification->type === 'company' ? 'selected' : '' }}>Company</option>
                                             <option value="human_resource"
-                                                {{ str_contains($notification->type, 'human_resource') ? 'selected' : '' }}>
-                                                Human Resource</option>
+                                                {{ $notification->type === 'human_resource' ? 'selected' : '' }}>Human
+                                                Resource</option>
                                         </select>
                                     </div>
                                 </div>
@@ -89,7 +101,18 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Recipients</label>
-                                        <select name="target_ids[]" class="form-control target_ids_edit" multiple required>
+
+                                        <div class="form-check mb-2">
+                                            <input type="checkbox" class="form-check-input select-all-edit"
+                                                data-target="#target_ids_edit_{{ $notification->id }}"
+                                                id="select_all_recipients_edit_{{ $notification->id }}">
+                                            <label class="form-check-label"
+                                                for="select_all_recipients_edit_{{ $notification->id }}">Select All
+                                                Recipients</label>
+                                        </div>
+
+                                        <select name="target_ids[]" id="target_ids_edit_{{ $notification->id }}"
+                                            class="form-control target_ids_edit" multiple required>
                                             @if (str_contains($notification->type, 'company') || $notification->type === 'both')
                                                 <optgroup label="Companies">
                                                     @foreach ($companies as $company)
@@ -114,6 +137,7 @@
                                         </select>
                                     </div>
                                 </div>
+
 
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -173,15 +197,35 @@
                                                     @endif
                                                 </td>
                                                 <td>
+                                                    @php
+                                                        $targets = $notification->targets;
+                                                        $displayTargets = $targets->take(2);
+                                                        $remainingCount = $targets->count() - $displayTargets->count();
+                                                    @endphp
+
                                                     <ul class="list-unstyled mb-0">
-                                                        @foreach ($notification->targets as $target)
+                                                        @foreach ($displayTargets as $target)
                                                             <li>{{ $target->targetable->name ?? 'N/A' }}</li>
                                                         @endforeach
+                                                        @if ($remainingCount > 0)
+                                                            <li><span class="text-muted">+{{ $remainingCount }}
+                                                                    more</span></li>
+                                                        @endif
                                                     </ul>
                                                 </td>
-                                                <td>{{ $notification->message }}</td>
+
                                                 <td>
-                                                    <div class="d-flex gap-4">
+                                                    @php
+                                                        $words = explode(' ', $notification->message);
+                                                        $shortMessage = implode(' ', array_slice($words, 0, 5));
+                                                    @endphp
+                                                    {{ $shortMessage }}@if (count($words) > 5)
+                                                        ...
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center"
+                                                        style="gap: 10px;">
                                                         <a class="btn btn-primary" data-toggle="modal"
                                                             data-target="#editCompanyModal-{{ $notification->id }}">
                                                             Edit
@@ -261,24 +305,34 @@
             const $targetContainer = $('#target_container');
             const $targetSelect = $('#target_ids');
 
-            if (!selectedType) return;
+            if (!selectedType) {
+                $targetContainer.hide();
+                $targetSelect.empty();
+                return;
+            }
 
-            // Show the container
+            // Show the target container
             $targetContainer.show();
 
             // Clear existing options
             $targetSelect.empty();
 
-            // Load data from route
+            // Load recipients via AJAX
             $.ajax({
                 url: "{{ url('admin/fetch-recipients') }}",
                 type: 'GET',
                 data: {
-                    types: selectedType
+                    type: selectedType // now just a single value
                 },
                 success: function(data) {
                     data.forEach(function(item) {
-                        $targetSelect.append(new Option(item.name, item.id));
+                        $targetSelect.append(
+                            $('<option>', {
+                                value: item.id,
+                                text: item.name,
+                                'data-type': item.type
+                            })
+                        );
                     });
                 },
                 error: function() {
@@ -288,14 +342,22 @@
         });
 
         function submitForm() {
-            // Add CSRF token to header
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             });
 
-            let formData = new FormData(document.getElementById('createSubadminForm'));
+            const selectedType = $('#user_type').val();
+            const selectedIds = $('#target_ids').val() || [];
+
+            const targetsByType = {
+                [selectedType]: selectedIds
+            };
+
+            $('#target_ids_by_type').val(JSON.stringify(targetsByType));
+
+            const formData = new FormData(document.getElementById('createSubadminForm'));
 
             $.ajax({
                 url: "{{ route('notifications.store') }}",
@@ -304,18 +366,14 @@
                 processData: false,
                 contentType: false,
                 beforeSend: function() {
-                    // Optional: Disable button to prevent multiple clicks
                     $('.btn-primary').attr('disabled', true).text('Submitting...');
                 },
-                success: function(res) {
-                    alert(res.message);
+                success: function() {
                     location.reload();
                 },
                 error: function(xhr) {
                     let response = xhr.responseJSON;
-
                     if (response && response.errors) {
-                        // Show validation errors
                         for (const [key, messages] of Object.entries(response.errors)) {
                             $(`[name="${key}"]`).addClass('is-invalid')
                                 .siblings('.invalid-feedback').text(messages[0]).show();
@@ -323,16 +381,21 @@
                     } else {
                         alert('Failed to send notification.');
                     }
-
                     console.log(xhr.responseText);
                 },
                 complete: function() {
-                    // Re-enable button
                     $('.btn-primary').attr('disabled', false).text('Create');
                 }
             });
         }
+
+        function toggleSelectAllRecipients(checkbox) {
+            const isChecked = checkbox.checked;
+            $('#target_ids option').prop('selected', isChecked);
+            $('#target_ids').trigger('change');
+        }
     </script>
+
 
     <script>
         function submitEditForm(id) {
@@ -343,12 +406,9 @@
             formData.append('_method', 'PUT');
             formData.append('message', message);
 
-            let userTypeSelect = form.querySelector('select[name="user_type[]"]');
-            if (userTypeSelect) {
-                Array.from(userTypeSelect.selectedOptions).forEach(option => {
-                    formData.append('user_type[]', option.value);
-                });
-            }
+            let userType = form.querySelector('select[name="user_type"]').value;
+            formData.append('user_type', userType);
+
 
             let targetSelect = form.querySelector('select[name="target_ids[]"]');
             if (targetSelect) {
@@ -373,7 +433,7 @@
                     $(`#editCompanyModal-${id} .btn-primary`).prop('disabled', true).text('Updating...');
                 },
                 success: function(res) {
-                    alert(res.message);
+                    // alert(res.message);
                     location.reload();
                 },
                 error: function(xhr) {
@@ -400,8 +460,30 @@
             });
             $('.user_type_edit').select2({
                 placeholder: 'Select Type',
-                width: '100%'
+                width: '100%',
+                minimumResultsForSearch: Infinity // disables search for only 2 options
             });
+
+        });
+
+        $(document).on('change', '.select-all-edit', function() {
+            const targetSelect = $($(this).data('target'));
+            const isChecked = $(this).is(':checked');
+            targetSelect.find('option').prop('selected', isChecked);
+            targetSelect.trigger('change');
+        });
+
+        $(document).on('change', '.target_ids_edit', function() {
+            const select = $(this);
+            const allOptions = select.find('option');
+            const selectedOptions = select.find('option:selected');
+            const relatedCheckbox = select.closest('.form-group').find('.select-all-edit');
+
+            if (allOptions.length === selectedOptions.length) {
+                relatedCheckbox.prop('checked', true);
+            } else {
+                relatedCheckbox.prop('checked', false);
+            }
         });
     </script>
 
