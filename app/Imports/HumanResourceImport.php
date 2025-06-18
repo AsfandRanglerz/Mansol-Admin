@@ -70,4 +70,3 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
         ];
     }
 }
- 

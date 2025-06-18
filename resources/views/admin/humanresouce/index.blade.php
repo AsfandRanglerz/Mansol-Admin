@@ -1,7 +1,7 @@
 @extends('admin.layout.app')
 @section('title', 'Human Resources')
 @section('content')
-
+ 
     <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -83,12 +83,24 @@
                             <div class="card-header">
                                 <div class="col-12">
                                     <h4>Human Resources</h4>
+                                    <h6 class="text-muted text-danger" style="font-style: italic;">
+                                            Note: The default password for all humanresources is <strong>12345678</strong>. This passowrd is automatically genrated when a new humanresource created.
+                                    </h6>
                                 </div>
                             </div>
-                            <div class="card-body table-striped table-bordered table-responsive">
-                                <a class="btn btn-primary mb-3 text-white" href="{{route('humanresource.create')}}">
-                                    Add Human Recource
-                                </a>
+                                <div class="card-body table-striped table-bordered table-responsive">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-1">
+                                        <a class="btn btn-primary text-white" href="{{ route('humanresource.create') }}">
+                                            Add Human Resource
+                                        </a>
+
+                                        <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
+                                            @csrf
+                                            <input type="file" name="file" required class="form-control">
+                                            <button type="submit" class="btn btn-success ml-3">Import</button>
+                                        </form>
+                                    </div>
+
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>

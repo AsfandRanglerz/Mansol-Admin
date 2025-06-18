@@ -316,7 +316,9 @@
                                 <div class="col-12">
 
                                     <h4>Companies</h4>
-
+                                          <h6 class="text-muted text-danger" style="font-style: italic;">
+                                            Note: The default password for all companies is <strong>12345678</strong>. This passowrd is automatically genrated when a new company created.
+                                          </h6>
                                 </div>
 
                             </div>

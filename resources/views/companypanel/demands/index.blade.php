@@ -39,7 +39,7 @@
                                                 <td>{{ $demand->demobilization }} </td>
                                                 <td>
                                                     <a href="
-                                                    {{-- {{ route('companynominees.index', $demand->id) }} --}}
+                                                    {{ route('companynominees.index', $demand->id) }}
                                                      " class="btn btn-primary">View</a>
                                                 </td>
                                                 <td> 

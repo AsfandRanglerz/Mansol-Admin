@@ -570,7 +570,7 @@
                         </div>
                     </form>
                 </div>
-
+ 
                 {{-- Step 2: Medical Report (Previously Step 6) + Visa Form (Previously Step 8) + Air Booking (Previously Step 9) --}}
                 <div class="form-section" data-step="2">
                     <form id="form-step-2" action="{{ route('submit.step', ['step' => 2]) }}" method="POST"

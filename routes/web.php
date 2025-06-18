@@ -218,6 +218,7 @@ Route::prefix('human-resource')->middleware('humanresource')->group(function () 
     Route::get('profile', [HumanResouceController::class, 'getProfile']);
     Route::post('update-profile', [HumanResouceController::class, 'update_profile']);
     Route::get('logout', [HumanResouceController::class, 'logout']);
+    Route::get('steps-data', [HumanResouceController::class, 'hrStepsData']);
     
     /**officer */
     Route::get('officer/status/{id}', [OfficerController::class, 'status'])->name('officer.status');

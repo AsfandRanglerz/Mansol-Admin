@@ -10,7 +10,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $project->project_name }} - {{ $craft->name }} - (Nominees)</h4>
+                                    <h4>{{ $project->project_name }} - {{ $craft->name }} - (Assigned)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
@@ -20,6 +20,7 @@
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Name</th>
+                                            <th>Details</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
@@ -28,6 +29,10 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $nominee->humanResource->name }} </td>
+                                                <td>
+                                                    <a href="{{ route('humanresource.details', $nominee->humanResource->id) }}"
+                                                        class="btn btn-primary">View</a>
+                                                </td>
                                                 <td>
                                                     <div class="badge badge-success badge-shadow">Assigned</div>
                                                 </td>

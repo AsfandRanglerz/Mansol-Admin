@@ -47,7 +47,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger">Sub-Craft</label>
-                                            <input type="text" class="form-control" value="{{ $SubCraft->name }}" readonly>
+                                            <input type="text" class="form-control" value="{{ $SubCraft->name ?? '' }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -65,12 +65,28 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label class="text-danger">Approval Document</label>
-                                            @if ($user->medical_doc)
-                                            <a class="btn btn-primary form-control" href="{{ asset($user->medical_doc) }}" download="">Download</a>
-                                            @else
-                                            <span class="form-control">Document not found</span>
-                                            @endif
-                                        </div>
+                                             {{-- Eye Button if file exists --}}
+                                                    @if (!empty($user->medical_doc))
+                                                        <div class="input-group-append">
+                                                            <a href="{{ asset('/' . $user->medical_doc) }}"
+                                                                target="_blank" class="btn btn-danger"
+                                                                title="View Document">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                       <div class="input-group">
+                                                        <div class="input-group-append">
+                                                            <span class="btn btn-danger disabled">
+                                                                <i class="fa fa-eye-slash"></i>
+                                                            </span>
+                                                        </div>
+                                                        <div class="ml-2 align-self-center text-danger">
+                                                            No document uploaded
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                        </div>  
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -323,6 +339,73 @@
                     </div>
                 </div>
             </div>
+             <div class="card">
+                    <div class="card-header text-center d-flex justify-content-between align-items-center">
+                        {{-- @if ($nominat)
+                            <a class="btn btn-primary" disabled title="Please Demob" onclick="showToaster()">Nominate</a>
+                        @else
+                            <a class="btn btn-primary"
+                                onclick="showUserModel('createDriverModel', {{ $HumanResource->id }})">Nominate</a>
+                        @endif --}}
+                        <h4 class="flex-grow-1 text-center m-0">Job History</h4>
+                        <div style="width: 75px;"></div> <!-- Empty space to balance the button width -->
+                    </div>
+
+
+                    <div class="card-body table-striped table-bordered table-responsive">
+                        <table class="table responsive" id="table_id_events">
+                            <thead>
+                                <tr>
+                                    <th>Sr.</th>
+                                    <th>Company</th>
+                                    <th>Interview Location</th>
+                                    <th>Project</th>
+                                    <th>Craft</th>
+                                    <th>Sub-Craft</th>
+                                    <th>Application Date</th>
+                                    <th>Mob-Date</th>
+                                    <th>Demob-Date</th>
+                                    {{-- <th scope="col-2">Actions</th> --}}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($histories as $data)
+                                    <tr>
+                                        <td>
+                                            {{ $loop->iteration }}
+                                        </td>
+                                        <td>
+                                            {{ $data->company->name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->city_of_interview ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->project->project_name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->craft->name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->subCraft->name ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->application_date ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->mob_date ?? 'N/A' }}
+                                        </td>
+                                        <td>
+                                            {{ $data->demobe_date ?? 'N/A' }}
+                                        </td>
+                                      
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
         </div>
     </section>
 </div>

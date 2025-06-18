@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Models\JobHistory;
+
 // Pdf module
 use setasign\Fpdi\Tcpdf\Fpdi;
 
@@ -25,6 +27,14 @@ class HumanResouceController extends Controller
     {
         $data = HumanResource::find(Auth::guard('humanresource')->id());
         return view('humanresouce.auth.profile', compact('data'));
+    }
+
+    public function hrStepsData(){
+        $HumanResource  = HumanResource::with(['hrSteps'])
+        ->where('id', Auth::guard('humanresource')->id())
+        ->first();
+        // return $HumanResource;
+        return view('humanresouce.attachements.index', compact('HumanResource'));
     }
 
     public function update_profile(Request $request)
