@@ -83,6 +83,27 @@
             toastr.warning("{{ session('warning') }}");
         @endif
     </script>
+
+    <script>
+        $(document).ready(function() {
+            function updateOrderCounter() {
+                $.ajax({
+                    url: "{{ route('notifications.count') }}",
+                    type: 'GET',
+                  success: function(response) {
+                        const count = response.count || 0;
+                        $('#orderCounter').text(count);
+                        console.log("Order count updated: " + count);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+            updateOrderCounter();
+            setInterval(updateOrderCounter, 1000);
+        });
+    </script>
     @yield('js')
 </body>
 

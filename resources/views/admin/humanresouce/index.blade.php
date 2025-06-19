@@ -175,7 +175,14 @@
                                                 </button>
                                             </td>
                                             <td>{{ $HumanResource->name ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->email ?? 'null' }}</td>
+                                            <td>
+                                            @if(!empty($HumanResource->email))
+                                                <a href="mailto:{{ $HumanResource->email }}">{{ $HumanResource->email }}</a>
+                                            @else
+                                                null
+                                            @endif
+                                        </td>
+
                                             <td>{{ $HumanResource->cnic ?? 'null' }}</td>
                                             <td>{{ $HumanResource->application_date ?? 'null' }}</td>
                                             <td>

@@ -13,13 +13,37 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $notifications = Notification::with('targets.targetable')->latest()->get();
-
+        $notifications = Notification::with('targets.targetable')->whereNull('document_type')->latest()->get();
+        $expiryNotifications = Notification::with('targets.targetable')->whereNotNull('document_type')->latest()->get();
+        // return $expiryNotifications;
         $companies = Company::select('id', 'name')->get();
         $humanResources = HumanResource::select('id', 'name')->get();
 
-        return view('admin.notification.index', compact('notifications', 'companies', 'humanResources'));
+        return view('admin.notification.index', compact('expiryNotifications','notifications', 'companies', 'humanResources'));
     }
+
+     public function count()
+    {
+        $orderCount = Notification::whereNotNull('document_type')->where('seen',0)->count();
+        return response()->json(['count' => $orderCount]);
+    }
+       public function read($id)
+    {
+        $data = Notification::where('id',$id)->first();
+        if ($data) {
+            $data->seen = 1;
+            $data->save();
+        }
+        return redirect()->back()->with('message', 'Notification marked as read');
+    }
+
+    public function readAll()
+    {
+        // return "ok";
+        Notification::query()->update(['seen' => 1]);
+        return redirect()->back()->with('message', 'All Notifications marked as read');
+    }
+
 
 
 

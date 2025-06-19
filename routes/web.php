@@ -194,6 +194,10 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::put('/notifications/{id}', [NotificationController::class, 'update'])->name('notifications.update');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 
+    Route::get('/notification/count', [NotificationController::class, 'count'])->name('notifications.count');
+    Route::get('/notification/read/{id}', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::get('/notification/read-all/', [NotificationController::class, 'readAll'])->name('notifications.read.all');
+
 });
 
 // HR and company notification 

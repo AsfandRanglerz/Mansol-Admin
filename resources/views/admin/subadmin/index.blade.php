@@ -109,7 +109,9 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $subAdmin->name }}</td>
-                                                <td>{{ $subAdmin->email }}</td>
+                                                <td>
+                                                    <a href="mailto:{{ $subAdmin->email }}">{{ $subAdmin->email }}</a>
+                                                    </td>
                                                 <td>{{ $subAdmin->role->title }}</td>
                                                 <td>
                                                     <img src="{{ asset( $subAdmin->image) }}" alt=""

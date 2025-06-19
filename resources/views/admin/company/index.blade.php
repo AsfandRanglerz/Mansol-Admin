@@ -365,7 +365,16 @@
 
                                             <td>{{ $company->name }}</td>
 
-                                            <td>{{ $company->email }}</td>
+                                           <td>
+                                            @if(!empty($company->email))
+                                                <a href="mailto:{{ $company->email }}">{{ $company->email }}</a>
+                                            @else
+                                                null
+                                            @endif
+                                        </td>
+
+                                                    <td>{{ $company->projects->count() }}</td>
+
 
                                             <td><a href="{{ route('project.index', $company->id) }}" class="btn btn-primary">
 

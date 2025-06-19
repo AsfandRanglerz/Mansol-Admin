@@ -157,104 +157,152 @@
         </div>
     @endforeach
 
-    <div class="main-content" style="min-height: 562px;">
-        <section class="section">
-            <div class="section-body">
-                <div class="row">
-                    <div class="col-12 col-md-12 col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="col-12">
-                                    <h4>Notifcation</h4>
-                                </div>
+   <div class="main-content" style="min-height: 562px;">
+    <section class="section">
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="col-12">
+                                <h4>Notifications</h4>
                             </div>
-                            <div class="card-body table-striped table-bordered table-responsive">
-                                <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
-                                    data-target="#createSubadminModal">
-                                    Create
-                                </a>
-                                <table class="table text-center" id="table_id_events">
-                                    <thead>
-                                        <tr>
-                                            <th>Sr.</th>
-                                            <th>User Type</th>
-                                            <th>Name</th>
-                                            <th>Message</th>
-                                            <th scope="col">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($notifications as $index => $notification)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>
-                                                    @if ($notification->type === 'both')
-                                                        Company, Human Resource
-                                                    @elseif ($notification->type === 'company')
-                                                        Company
-                                                    @elseif ($notification->type === 'human_resource')
-                                                        Human Resource
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @php
-                                                        $targets = $notification->targets;
-                                                        $displayTargets = $targets->take(2);
-                                                        $remainingCount = $targets->count() - $displayTargets->count();
-                                                    @endphp
-
-                                                    <ul class="list-unstyled mb-0">
-                                                        @foreach ($displayTargets as $target)
-                                                            <li>{{ $target->targetable->name ?? 'N/A' }}</li>
-                                                        @endforeach
-                                                        @if ($remainingCount > 0)
-                                                            <li><span class="text-muted">+{{ $remainingCount }}
-                                                                    more</span></li>
-                                                        @endif
-                                                    </ul>
-                                                </td>
-
-                                                <td>
-                                                    @php
-                                                        $words = explode(' ', $notification->message);
-                                                        $shortMessage = implode(' ', array_slice($words, 0, 5));
-                                                    @endphp
-                                                    {{ $shortMessage }}@if (count($words) > 5)
-                                                        ...
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center align-items-center"
-                                                        style="gap: 10px;">
-                                                        <a class="btn btn-primary" data-toggle="modal"
-                                                            data-target="#editCompanyModal-{{ $notification->id }}">
-                                                            Edit
-                                                        </a>
-                                                        <form
-                                                            action="{{ route('notifications.destroy', $notification->id) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-danger btn-flat show_confirm"
-                                                                data-toggle="tooltip">Delete</button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-
-                                </table>
-                            </div>
-
                         </div>
+
+                        <div class="card-body">
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs mb-3" id="notificationTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="my-notifications-tab" data-toggle="tab"
+                                       href="#my-notifications" role="tab">My Notifications</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="expiry-notifications-tab" data-toggle="tab"
+                                       href="#expiry-notifications" role="tab">Document Expiry Notifications</a>
+                                </li>
+                            </ul>
+                        
+
+                            <!-- Tab Panes -->
+                            <div class="tab-content" id="notificationTabContent">
+                                <!-- My Notifications Tab -->
+                                <div class="tab-pane fade show active" id="my-notifications" role="tabpanel">
+                                    <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
+                                       data-target="#createSubadminModal">
+                                        Create
+                                    </a>
+
+                                    <div class="card-body table-striped table-bordered table-responsive">
+                                        <table class="table responsive" id="table_id_events">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr.</th>
+                                                    <th>User Type</th>
+                                                    <th>Name</th>
+                                                    <th>Message</th>
+                                                    <th scope="col">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($notifications as $index => $notification)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>
+                                                            @if ($notification->type === 'both')
+                                                                Company, Human Resource
+                                                            @elseif ($notification->type === 'company')
+                                                                Company
+                                                            @elseif ($notification->type === 'human_resource')
+                                                                Human Resource
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @php
+                                                                $targets = $notification->targets;
+                                                                $displayTargets = $targets->take(2);
+                                                                $remainingCount = $targets->count() - $displayTargets->count();
+                                                            @endphp
+
+                                                            <ul class="list-unstyled mb-0">
+                                                                @foreach ($displayTargets as $target)
+                                                                    <li>{{ $target->targetable->name ?? 'N/A' }}</li>
+                                                                @endforeach
+                                                                @if ($remainingCount > 0)
+                                                                    <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
+                                                                @endif
+                                                            </ul>
+                                                        </td>
+                                                        <td>
+                                                            @php
+                                                                $words = explode(' ', $notification->message);
+                                                                $shortMessage = implode(' ', array_slice($words, 0, 5));
+                                                            @endphp
+                                                            {{ $shortMessage }}@if (count($words) > 5)...@endif
+                                                        </td>
+                                                        <td>
+                                                            <div class="d-flex justify-content-center align-items-center" style="gap: 10px;">
+                                                                <a class="btn btn-primary" data-toggle="modal"
+                                                                   data-target="#editCompanyModal-{{ $notification->id }}">
+                                                                    Edit
+                                                                </a>
+                                                                <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-danger btn-flat show_confirm"
+                                                                            data-toggle="tooltip">Delete</button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Document Expiry Notifications Tab -->
+                                <div class="tab-pane fade" id="expiry-notifications" role="tabpanel">
+                                        <div class="d-flex">
+                                            <a href="{{route('notifications.read.all')}}" class="btn btn-primary mb-3 text-white">Mark All as read</a>
+                                        </div>
+                                    <div class="card-body table-striped table-bordered table-responsive mt-3">
+                                        <table class="table responsive" id="table_id_expiry">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sr.</th>
+                                                    <th>Name</th>
+                                                    <th>Document Type</th>
+                                                    <th>Expiry Date</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($expiryNotifications as $index => $item)
+                                                    @foreach ($item->targets as $target)
+                                                        <tr>
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ $target->targetable->name ?? 'N/A' }}</td>
+                                                            <td>{{ $item->document_type }}</td>
+                                                            <td>{{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}</td>
+                                                            <td><a href="{{route('notifications.read',$item->id)}}" class="btn btn-primary text-white">Mark as read</a></td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> <!-- /tab-content -->
+
+                        </div> <!-- /card-body -->
+
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+</div>
+
 
 @endsection
 
@@ -262,7 +310,8 @@
 
     <script>
         $(document).ready(function() {
-            $('#table_id_events').DataTable()
+            $('#table_id_events').DataTable();
+            $('#table_id_expiry').DataTable();
         })
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>

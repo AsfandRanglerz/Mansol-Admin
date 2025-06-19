@@ -76,7 +76,11 @@
             {{-- Notifications --}}
             <li class="dropdown {{ request()->is('admin/notification*') ? 'active' : '' }}">
                 <a href="{{ route('notification.index') }}" class="nav-link">
-                    <span><i data-feather="bell"></i>Notifcations</span>
+                    <span><i data-feather="bell"></i>Notifcations
+                    <div id="orderCounter"
+                            class="badge {{ request()->is('admin/notification*') ? 'bg-white text-danger' : 'bg-danger text-white' }} rounded-circle ">
+                        </div>
+                    </span>
                 </a>
             </li>
             {{-- <li class="dropdown {{ request()->is('admin/about*') ? 'active' : '' }}">
