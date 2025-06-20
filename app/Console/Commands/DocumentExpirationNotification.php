@@ -124,7 +124,7 @@ class DocumentExpirationNotification extends Command
 
         if ($cnicHrs->isNotEmpty()) {
             foreach ($cnicHrs as $hr) {
-                $hr->update(['cnic_notified' => true]);
+                // $hr->update(['cnic_notified' => true]);
 
                 $cnicNotification = Notification::create([
                     'type' => 'human_resource',
@@ -148,7 +148,7 @@ class DocumentExpirationNotification extends Command
 
         if ($passportHrs->isNotEmpty()) {
             foreach ($passportHrs as $hr) {
-                $hr->update(['passport_notified' => true]);
+                // $hr->update(['passport_notified' => true]);
 
                 $passportNotification = Notification::create([
                     'type' => 'human_resource',

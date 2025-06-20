@@ -271,6 +271,7 @@
                                                 <tr>
                                                     <th>Sr.</th>
                                                     <th>Name</th>
+                                                    <th>Email</th>
                                                     <th>Document Type</th>
                                                     <th>Expiry Date</th>
                                                     <th>Action</th>
@@ -282,9 +283,19 @@
                                                         <tr>
                                                             <td>{{ $index + 1 }}</td>
                                                             <td>{{ $target->targetable->name ?? 'N/A' }}</td>
+                                                            <td>
+                                                                 <a href="mailto:{{ $target->targetable->email }}">{{ $target->targetable->email }}</a>
+                                                            </td>
                                                             <td>{{ $item->document_type }}</td>
                                                             <td>{{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}</td>
-                                                            <td><a href="{{route('notifications.read',$item->id)}}" class="btn btn-primary text-white">Mark as read</a></td>
+                                                            <td>
+                                                              @if($item->seen == 0)
+                                                                    <a href="{{ route('notifications.read', $item->id) }}" class="btn btn-primary text-white">
+                                                                        read</a>
+                                                                @else
+                                                                    <span class="badge bg-success text-white">Seen</span>
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 @endforeach
