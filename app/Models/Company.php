@@ -14,8 +14,8 @@ class Company extends Authenticatable
     protected $guarded = [];
 
     public function notificationTargets()
-{
-    return $this->morphMany(NotificationTarget::class, 'targetable');
-}
+    {
+        return $this->morphMany(NotificationTarget::class, 'targetable');
+    }
 
 }

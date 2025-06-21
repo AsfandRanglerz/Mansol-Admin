@@ -145,7 +145,7 @@ class ProjectsController extends Controller
 
     public function getProjects(Request $request)
     {
-        $projects = Project::where('company_id', $request->company_id)->orderBy('project_name', 'asc')->get();
+        $projects = Project::where('company_id', $request->company_id)->orderBy('project_name', 'asc')->get(); 
         return response()->json($projects);
     }
 }

@@ -15,6 +15,10 @@ class HumanResource extends Authenticatable
     // {
     //     return $this->hasMany(MainCraft::class, 'craft_id', 'id');
     // }
+public function nominates()
+{
+    return $this->hasMany(Nominate::class, 'human_resource_id');
+}
 
     public function Crafts()
     {
