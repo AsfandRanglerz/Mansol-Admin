@@ -9,6 +9,6 @@
         Reset Password
     @endcomponent
 
-    Thanks
+    Thanks,
     {{ config('app.name') }}
 @endcomponent

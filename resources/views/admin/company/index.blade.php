@@ -40,7 +40,7 @@
 
                                 <div class="form-group">
 
-                                    <label for="name">Name</label>
+                                    <label for="name">Name <span class="text-danger">*</span></label>
 
                                     <input type="text" class="form-control" id="name" name="name" required>
 
@@ -72,7 +72,7 @@
 
                                 <div class="form-group">
 
-                                    <label for="email">Email</label>
+                                    <label for="email">Email <span class="text-danger">*</span></label>
 
                                     <input type="email" class="form-control" id="email" name="email" required>
 
@@ -86,7 +86,7 @@
 
                                 <div class="form-group">
 
-                                    <label for="status">Active Status</label>
+                                    <label for="status">Active Status <span class="text-danger">*</span></label>
 
                                     <select name="status" class="form-control">
 
@@ -314,7 +314,7 @@
                             <div class="card-header">
 
                                 <div class="col-12">
-
+{{-- {{ session('message') }} --}}
                                     <h4>Companies</h4>
                                           <h6 class="text-muted text-danger" style="font-style: italic;">
                                             Note: The default password for all companies is <strong>12345678</strong>. This passowrd is automatically genrated when a new company created.
@@ -373,8 +373,7 @@
                                             @endif
                                         </td>
 
-                                                    <td>{{ $company->projects->count() }}</td>
-
+                                                    
 
                                             <td><a href="{{ route('project.index', $company->id) }}" class="btn btn-primary">
 
@@ -440,13 +439,13 @@
 
 @section('js')
 
-
+    
 
     <script>
 
         $(document).ready(function() {
 
-            $('#table_id_events').DataTable()
+            $('#table_id_events').DataTable();
 
 
 

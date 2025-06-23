@@ -27,110 +27,115 @@ use App\Mail\HumanResourceUserLoginPassword;
 class HumanResourceController extends Controller
 {
   public function index(Request $request)
-{
-    // Static dropdown data 
-        $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
-        $projects = Project::where('is_active', '=', '1')->orderBy('project_name', 'asc')->get();
-        $demands = Demand::where('is_active', '=', 1)->latest()->get();
+    {
+            // Static dropdown data 
+            $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
+            $projects = Project::where('is_active', '=', '1')->orderBy('project_name', 'asc')->get();
+            $demands = Demand::where('project_id', $request->project_id)->orderBy('manpower', 'asc')->get();
+            // Append concatenated name to each demand
+            $demands->transform(function ($demand) {
+                $demand->full_name = $demand->manpower . ' - ' . $demand->craft?->name;
+                return $demand;
+            });
 
-    // Base query
-    $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
-        ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
-        ->latest();
+        // Base query
+        $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
+            ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
+            ->latest();
 
-    // Filters via 'nominates' relation
-    if (
-        $request->filled('company_id') ||
-        $request->filled('project_id') ||
-        $request->filled('demand_id')
-    ) {
-        $query->whereHas('nominates', function ($q) use ($request) {
-            // Filter by project
-            if ($request->filled('project_id')) {
-                $q->where('project_id', $request->project_id);
-            }
-
-            // Filter by demand
-            if ($request->filled('demand_id')) {
-                $q->where('demand_id', $request->demand_id);
-            }
-
-            // Filter by company through project
-            if ($request->filled('company_id')) {
-                $q->whereHas('project', function ($subQ) use ($request) {
-                    $subQ->where('company_id', $request->company_id);
-                });
-            }
-        });
-    }
-
-    // Filters via 'nominates' relation
-    if (
-        $request->filled('medically_fit') ||
-        $request->filled('visa_expiry')
-    ) {
-        $query->whereHas('hrSteps', function ($q) use ($request) {
-            // Filter by project
-            if ($request->filled('medically_fit')) {
-                $q->where('step_number',6)->where('medically_fit', $request->medically_fit);
-            }
-
-            // Filter by demand
-            if ($request->filled('visa_expiry')) {
-                   $value = $request->input('passport_expiry');
-                if($value = 'Valid'){
-                     $q->where('step_number',6)->whereDate('visa_expiry_date', '>=', now());
-                } elseif($value = 'Expired'){
-                     $q->where('step_number',6)->whereDate('visa_expiry_date', '<', now());
+        // Filters via 'nominates' relation
+        if (
+            $request->filled('company_id') ||
+            $request->filled('project_id') ||
+            $request->filled('demand_id')
+        ) {
+            $query->whereHas('nominates', function ($q) use ($request) {
+                // Filter by project
+                if ($request->filled('project_id')) {
+                    $q->where('project_id', $request->project_id);
                 }
-                // $q->where('step_number',6)->where('visa_expiry_date', $request->visa_expiry);
+
+                // Filter by demand
+                if ($request->filled('demand_id')) {
+                    $q->where('demand_id', $request->demand_id);
+                }
+
+                // Filter by company through project
+                if ($request->filled('company_id')) {
+                    $q->whereHas('project', function ($subQ) use ($request) {
+                        $subQ->where('company_id', $request->company_id);
+                    });
+                }
+            });
+        }
+
+        // Filters via 'nominates' relation
+        if (
+            $request->filled('medically_fit') ||
+            $request->filled('visa_expiry')
+        ) {
+            $query->whereHas('hrSteps', function ($q) use ($request) {
+                // Filter by project
+                if ($request->filled('medically_fit')) {
+                    $q->where('step_number',6)->where('medically_fit', $request->medically_fit);
+                }
+
+                // Filter by demand
+                if ($request->filled('visa_expiry')) {
+                    $value = $request->input('passport_expiry');
+                    if($value = 'Valid'){
+                        $q->where('step_number',6)->whereDate('visa_expiry_date', '>=', now());
+                    } elseif($value = 'Expired'){
+                        $q->where('step_number',6)->whereDate('visa_expiry_date', '<', now());
+                    }
+                    // $q->where('step_number',6)->where('visa_expiry_date', $request->visa_expiry);
+                }
+            });
+        }
+
+        // // Other direct filters
+        // if ($request->has('medically_fit') && $request->medically_fit !== null) {
+        //     $query->where('medically_fit', $request->input('medically_fit'));
+        // }
+
+        if ($request->filled('cnic_expiry')) {
+            $value = $request->input('cnic_expiry');
+            if($value = 'Valid'){
+                $query->whereDate('cnic_expiry_date', '>=', now());
+            } elseif($value = 'Expired'){
+                $query->whereDate('cnic_expiry_date', '<', now());
             }
-        });
-    }
-
-    // // Other direct filters
-    // if ($request->has('medically_fit') && $request->medically_fit !== null) {
-    //     $query->where('medically_fit', $request->input('medically_fit'));
-    // }
-
-    if ($request->filled('cnic_expiry')) {
-        $value = $request->input('cnic_expiry');
-        if($value = 'Valid'){
-            $query->whereDate('cnic_expiry_date', '>=', now());
-        } elseif($value = 'Expired'){
-            $query->whereDate('cnic_expiry_date', '<', now());
+            // $query->whereDate('cnic_expiry_date', $request->input('cnic_expiry'));
         }
-        // $query->whereDate('cnic_expiry_date', $request->input('cnic_expiry'));
-    }
 
-    if ($request->filled('passport_expiry')) {
-        $value = $request->input('passport_expiry');
-        if($value = 'Valid'){
-            $query->whereDate('doe', '>=', now());
-        } elseif($value = 'Expired'){
-            $query->whereDate('doe', '<', now());
+        if ($request->filled('passport_expiry')) {
+            $value = $request->input('passport_expiry');
+            if($value = 'Valid'){
+                $query->whereDate('doe', '>=', now());
+            } elseif($value = 'Expired'){
+                $query->whereDate('doe', '<', now());
+            }
         }
+
+        // if ($request->filled('visa_expiry')) {
+        //     $query->whereDate('visa_expiry', $request->input('visa_expiry'));
+        // }
+
+        // Get filtered data
+        $HumanResources = $query->get();
+
+        // Count for total (unfiltered)
+        $count = $query->whereIn('status', [1, 3, 2, 0])->count();
+        $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
+        return view('admin.humanresouce.index', compact(
+            'HumanResources',
+            'companies',
+            'projects',
+            'demands',
+            'count',
+            'medically_fit'
+        ));
     }
-
-    // if ($request->filled('visa_expiry')) {
-    //     $query->whereDate('visa_expiry', $request->input('visa_expiry'));
-    // }
-
-    // Get filtered data
-    $HumanResources = $query->get();
-
-    // Count for total (unfiltered)
-    $count = $query->whereIn('status', [1, 3, 2, 0])->count();
-    $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
-    return view('admin.humanresouce.index', compact(
-        'HumanResources',
-        'companies',
-        'projects',
-        'demands',
-        'count',
-        'medically_fit'
-    ));
-}
 
 
     public function create()

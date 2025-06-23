@@ -1,7 +1,23 @@
 @extends('admin.layout.app')
 @section('title', 'Human Resources')
 @section('content')
- 
+{{-- <head>
+    <!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+</head> --}}
+<style>
+@media print {
+    .noExport {
+        display: none !important;
+    }
+}
+.custom-red-btn {
+    background-color: #d5363c !important;
+    color: white !important;
+    border: none;
+}
+</style>
     <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -198,7 +214,7 @@
                                             <div class="col-md-3 d-flex align-items-center">
                                                 <div class="row w-100">
                                                     <div class="col-6 pr-1">
-                                                        <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+                                                        <button type="submit" class="btn btn-primary" style="width:max-content">Apply Filter</button>
                                                     </div>
                                                     <div class="col-6 pl-1">
                                                         <a href="{{ route('humanresource.index') }}" class="btn btn-secondary w-100">Clear Filter</a>
@@ -222,10 +238,10 @@
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
-                                            <th>Sr.</th>
+                                            <th class="noExport">Sr.</th>
                                             <th>Id No.</th>
-                                            <th>Photo</th>
-                                            <th>Documents</th>
+                                            <th class="noExport">Photo</th>
+                                            <th class="noExport">Documents</th>
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>CNIC</th>
@@ -233,7 +249,7 @@
                                             <th>Appication for Post Craft</th>
                                             <th>Sub-Craft</th>
                                             <th>Approvals #</th>
-                                            <th>Approvals Document</th>
+                                            <th class="noExport">Approvals Document</th>
                                             <th>S/O</th>
                                             <th>Mother Name</th>
                                             <th>Date Of Birth</th>
@@ -268,23 +284,23 @@
                                             <th>Min Acceptable Salary</th>
                                             <th>Comment</th>
                                             <th>Status</th>
-                                            <th scope="col">Actions</th>
+                                            <th scope="col" class="noExport">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($HumanResources as $HumanResource)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                            <td class="noExport">{{ $loop->iteration }}</td>
                                             <td>{{ $HumanResource->registration ?? 'null' }}</td>
                                               @php
                                                     $step4 = $HumanResource->hrSteps->firstWhere('step_number', 4);
                                                 @endphp
 
-                                                <td>
+                                                <td class="noExport">
                                                     <img src="{{ $step4 ? asset($step4->file_name) : asset('public/admin/assets/images/avator.png') }}" 
                                                         alt="Step 4 Image" width="50" height="50">
                                                 </td>
-                                            <td>
+                                            <td class="noExport">
                                                 <button data-toggle="modal"    data-target="#createHRModal-{{ $HumanResource->id }}"
                                                     class="btn btn-primary text-white d-flex align-items-center"
                                                     href="{{ route('humanresource.index') }}">
@@ -310,7 +326,7 @@
                                                 {{ $HumanResource->SubCrafts->name ?? 'null' }}
                                             </td>
                                             <td>{{ $HumanResource->approvals ?? 'null' }}</td>
-                                            <td>
+                                            <td class="noExport">
                                                 @if ($HumanResource->medical_doc)
                                                     <a href="{{ asset($HumanResource->medical_doc) }}" download>Download File</a>
                                                 @endif
@@ -360,7 +376,7 @@
                                                     <div class="badge badge-info badge-shadow">Nominated</div>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="noExport">
                                                 <div class="d-flex gap-4">
                                                     <a href="{{ route('humanresource.edit', $HumanResource->id) }}"
                                                         class="btn btn-primary">Edit</a>
@@ -394,6 +410,31 @@
 
 @section('js')
 
+    <script>
+        $(document).ready(function() {
+            var table = $('#table_id_events').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':not(.noExport)' // Exclude columns with 'noExport' class
+                        }
+                    },
+                   {
+                extend: 'print',
+                exportOptions: {
+                    columns: ':not(.noExport)'
+                },
+                className: 'custom-red-btn',
+                text: 'PDF' // Renamed button label
+                }
+                ],
+                scrollX: true,
+                responsive: true
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $('#table_id_events').DataTable();

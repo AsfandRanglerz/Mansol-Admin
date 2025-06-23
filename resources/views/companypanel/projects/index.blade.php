@@ -17,10 +17,22 @@
 
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
-                                        <tr>
+                                        <tr> 
                                             <th>Sr.</th>
                                             <th>Project Code</th>
-                                            <th>Projects</th>
+                                            <th>Project Name</th>
+                                            <th>Man-Power Location City</th>
+                                            <th>Project Location</th>
+                                            <th>Project Start Date</th>
+                                            <th>Project End Date</th>
+                                            <th>Permission #</th>
+                                            <th>Permission Date</th>
+                                            <th>Project Currency</th>
+                                            <th>On Going?</th>
+                                            <th>Power-of-Attorney received?</th>
+                                            <th>Demand Letter Received?</th>
+                                            <th>Permission Letter Received</th>
+                                            <th>Additional Project Notes</th>
                                             <th>Demands</th>
                                             <th>Status</th>
                                         </tr>
@@ -30,7 +42,19 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $project->project_code }}</td>
-                                                <td>{{ $project->project_name }} </td>
+                                            <td>{{ $project->project_name }}</td>
+                                            <td>{{ $project->manpower_location }}</td>
+                                            <td>{{ $project->project_location }}</td>
+                                            <td>{{ $project->project_start_date->format('Y-m-d') }}</td>
+                                            <td>{{ $project->project_end_date ? $project->project_end_date->format('Y-m-d') : 'N/A' }}</td>
+                                            <td>{{ $project->permission }}</td>
+                                            <td>{{ $project->permission_date ? $project->permission_date->format('Y-m-d') : 'N/A' }}</td>
+                                            <td>{{ strtoupper($project->project_currency) }}</td>
+                                            <td>{{ $project->is_ongoing == 'checked' ? 'Yes' : 'No' }}</td>
+                                            <td>{{ $project->poa_received == 'checked' ? 'Yes' : 'No' }}</td>
+                                            <td>{{ $project->demand_letter_received == 'checked' ? 'Yes' : 'No' }}</td>
+                                            <td>{{ $project->permission_letter_received == 'checked' ? 'Yes' : 'No' }}</td>
+                                            <td>{{ $project->additional_notes }}</td>
                                                 <td>
                                                     <a href="
                                                     {{ route('companydemands.index', $project->id) }}

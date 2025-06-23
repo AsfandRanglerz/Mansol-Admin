@@ -52,7 +52,7 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
      */
     public function chunkSize(): int
     {
-        return 1000;   // e.g., 1,000 rows per job
+        return 500;   // e.g., 1,000 rows per job
     }
 
     /**
@@ -63,10 +63,6 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
     public function rules(): array
     {
         return [
-            '*.email' => 'required|email',
-            '*.name' => 'required|string',
-            '*.craft_name' => 'required|string',
-            // Add more validation as needed for your columns
         ];
     }
 }

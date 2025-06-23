@@ -184,7 +184,7 @@ class HumanResourceImportJob implements ShouldQueue
                     'date_of_birth' => $dateOfBirth,
                     'city_of_birth' => $row['city_of_birth'] ?? null,
                     'city_of_interview' => $row['city_of_interview'] ?? null,
-                    'cnic' => $row['cnic'] ?? null,
+                    'cnic' => $this->sanitizeCnic($row['cnic'] ?? null),
                     'cnic_expiry_date' => $cnicExpiryDate,
                     'doi' => $doi,
                     'doe' => $doe,
@@ -251,4 +251,33 @@ class HumanResourceImportJob implements ShouldQueue
             }
         }
     }
+
+    private function sanitizeCnic($value)
+    {
+        try {
+            // Convert to string safely
+            $value = trim((string) $value);
+
+            // Check for scientific notation like 3.31E+12
+            if (preg_match('/E\+/', strtoupper($value))) {
+                $value = number_format((float)$value, 0, '', '');
+            }
+
+            // Remove all non-numeric characters
+            $value = preg_replace('/[^0-9]/', '', $value);
+
+            // If length is 13 (valid CNIC), return it
+            if (strlen($value) === 13) {
+                return $value;
+            }
+
+            // Log if invalid
+            Log::warning("Invalid CNIC format or length: " . $value);
+            return null;
+        } catch (\Throwable $e) {
+            Log::error("Error in sanitizeCnic: " . $e->getMessage());
+            return null;
+        }
+    }
+
 }

@@ -15,7 +15,7 @@
                                     <!-- Name Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name"
                                                 required>
                                             <div class="invalid-feedback"></div>
@@ -26,7 +26,7 @@
                                     <!-- Email Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="email">Email</label>
+                                            <label for="email">Email <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="email" name="email"
                                                 required>
                                             <div class="invalid-feedback"></div>
@@ -39,7 +39,7 @@
                                     <!-- Role Dropdown -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="role">Role</label>
+                                            <label for="role">Role <span class="text-danger">*</span></label>
                                             <select name="role_id" id="role" class="form-control" required>
                                                 <option value="" selected disabled>Select Role</option>
                                                 @foreach ($roles as $role)
@@ -56,7 +56,7 @@
                                     <!-- Status Dropdown -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group mb-2">
-                                            <label for="status">Status</label>
+                                            <label for="status">Status <span class="text-danger">*</span></label>
                                             <select name="status" id="status" class="form-control" required>
                                                 <option value="" {{ old('status') === null ? 'selected' : '' }}
                                                     disabled>Select an Option</option>

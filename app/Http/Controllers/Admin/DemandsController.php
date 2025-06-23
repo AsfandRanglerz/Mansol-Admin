@@ -41,7 +41,7 @@ class DemandsController extends Controller
             'mobilization' => 'required|string|max:255',
             'demobilization' => 'required|string|max:255',
             'is_active' => 'required|string|max:255',
-        ]);
+        ]); 
 
         Demand::create([
             'project_id' => $request->project_id,

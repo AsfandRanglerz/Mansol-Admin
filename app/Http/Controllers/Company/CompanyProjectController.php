@@ -23,7 +23,7 @@ class CompanyProjectController extends Controller
     {
         $user_id = auth()->guard('company')->user()->id;
         $projects = Project::where('company_id', $user_id)->orderBy('is_active', 'desc')->latest()->get();
-        // dd($projects);
+        // return $projects;
         return view('companypanel.projects.index', compact('projects'));
     } 
 

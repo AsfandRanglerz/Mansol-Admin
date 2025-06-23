@@ -24,7 +24,7 @@
                                 <div class="form-group">
                                     <label for="craft_id">Select Craft</label>
                                     <select name="craft_id" class="form-control">
-                                        <option value="" selected disabled>Select Craft</option>
+                                        <option value="" selected disabled>Select Craft <span class="text-danger">*</span></option>
                                         @foreach ($crafts as $craft)
                                             <option value="{{ $craft->id }}">{{ $craft->name }}</option>
                                         @endforeach
@@ -34,35 +34,35 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="manpower">Manpower</label>
+                                    <label for="manpower">Manpower <span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="manpower" name="manpower" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="salary">Salary</label>
+                                    <label for="salary">Salary <span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="salary" name="salary">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="mobilization">Mobilization</label>
+                                    <label for="mobilization">Mobilization <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="mobilization" name="mobilization" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="demobilization">Demobilization</label>
+                                    <label for="demobilization">Demobilization <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="demobilization" name="demobilization" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="confirmpassword">Status</label>
+                                    <label for="confirmpassword">Status <span class="text-danger">*</span></label>
                                     <select name="is_active" class="form-control">
                                         <option value="1">Active</option>
                                         <option value="0">Deactive</option>

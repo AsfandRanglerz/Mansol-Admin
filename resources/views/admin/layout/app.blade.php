@@ -25,6 +25,12 @@
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
 
+    <!-- Select2 CSS -->
+     <link rel="stylesheet" href="{{ asset('public/admin/assets/css/datatables.css') }}">
+    <!-- DataTable excel export buttons links -->
+    <link rel="stylesheet" href="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/admin/assets/bundles/datatables/datatables.min.css') }}">
+
 </head>
 
 <body>
@@ -55,9 +61,36 @@
     <script src="{{ asset('public/admin/assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js') }}">
     </script>
     <script src="{{ asset('public/admin/assets/js/page/datatables.js') }}"></script>
+ <!-- DataTable excel export buttons links -->
+    <script src="{{ asset('public/admin/assets/bundles/datatables/Buttons-2.4.1/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('public/admin/assets/bundles/datatables/JSZip-3.10.1/jszip.min.js') }}"></script>
+<script src="{{ asset('public/admin/assets/bundles/datatables/Buttons-2.4.1/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('public/admin/assets/bundles/datatables/Buttons-2.4.1/js/buttons.print.min.js') }}"></script>
+    
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
+
+    <script>
+        $(document).ready(function() {
+            function updateOrderCounter() {
+                $.ajax({
+                    url: "{{ route('notifications.count') }}",
+                    type: 'GET',
+                  success: function(response) {
+                        const count = response.count || 0;
+                        $('#orderCounter').text(count);
+                        console.log("Order count updated: " + count);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+            updateOrderCounter();
+            setInterval(updateOrderCounter, 1000);
+        });
+    </script>
     <script>
         toastr.options = {
             "closeButton": false,
@@ -82,27 +115,6 @@
         @if (session('warning'))
             toastr.warning("{{ session('warning') }}");
         @endif
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            function updateOrderCounter() {
-                $.ajax({
-                    url: "{{ route('notifications.count') }}",
-                    type: 'GET',
-                  success: function(response) {
-                        const count = response.count || 0;
-                        $('#orderCounter').text(count);
-                        console.log("Order count updated: " + count);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(error);
-                    }
-                });
-            }
-            updateOrderCounter();
-            setInterval(updateOrderCounter, 1000);
-        });
     </script>
     @yield('js')
 </body>

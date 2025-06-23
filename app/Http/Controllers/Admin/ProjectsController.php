@@ -57,7 +57,7 @@ class ProjectsController extends Controller
             'permission_letter_received' => 'nullable|string',
             'additional_notes' => 'nullable|string',
             'is_active' => 'nullable|string',
-        ]);
+        ]); 
         
         // dd($request);
         Project::create([
