@@ -10,7 +10,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $project->project_name }} - {{ $craft->name }} - (Assigned)</h4>
+                                    <h4>{{ $project->project_name }} - {{ $craft->name }} - (Assigned Resources)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">

@@ -64,7 +64,7 @@
                                         <option value="" selected disabled>Select Location Country</option>
                                         @foreach($countries as $country)
                                             <option value="{{ $country->title }}"
-                                                    data-currency-symbol="{{ $country->currency_symbol }}"
+                                                    data-currency-symbol="{{ $country->currency_code }}"
                                                 {{ old('project_location', $HumanResource->project_location ?? '') == strtolower($country->title) ? 'selected' : '' }}>
                                                 {{ $country->title }}
                                             </option>
@@ -142,14 +142,14 @@
                                     <select name="project_currency" class="form-control" id="project_currency" required>
                                         <option value="" selected disabled>Select Currency</option>
                                         @foreach($countries as $country)
-                                            <option value="{{ $country->currency_symbol }}"
-                                                {{ old('project_currency', $HumanResource->project_currency ?? '') == strtolower($country->currency_symbol) ? 'selected' : '' }}>
-                                                {{ $country->currency_symbol }}
+                                            <option value="{{ $country->currency_code }}"
+                                                {{ old('project_currency', $HumanResource->project_currency ?? '') == strtolower($country->currency_code) ? 'selected' : '' }}>
+                                                {{ $country->currency_code }}
                                             </option>
                                         @endforeach
                                     </select>
                                     
-                                    @error('project_currency')
+                                    @error('currency_code')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                 </div>

@@ -50,7 +50,7 @@
             {{-- Nominations --}}
             <li class="dropdown {{ request()->is('admin/nominations*') ? 'active' : '' }}">
                 <a href="{{ route('nominations.index') }}" class="nav-link  px-2">
-                    <span><i class="fas fa-award"></i> Nominations</span>
+                    <span><i class="fas fa-award"></i> Assigned Resources</span>
                 </a>
             </li>
             {{-- Company --}}
@@ -67,11 +67,11 @@
             </li> --}}
 
             {{-- Reports --}}
-            <li class="dropdown {{ request()->is('admin/reports*') ? 'active' : '' }}">
+            {{-- <li class="dropdown {{ request()->is('admin/reports*') ? 'active' : '' }}">
                 <a href="{{ route('reports.index') }}" class="nav-link px-2">
                     <span><i class="fas fa-chart-line"></i> Reports</span>
                 </a>
-            </li>
+            </li> --}}
 
             {{-- Notifications --}}
             <li class="dropdown {{ request()->is('admin/notification*') ? 'active' : '' }}">
