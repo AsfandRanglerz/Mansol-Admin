@@ -91,7 +91,17 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
+                                @php
+                                    $canCreate = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Admins', 'create'));
+                                        $canEdit = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Admins', 'edit'));
+                                        $canDelete = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Admins', 'delete'));
+                                @endphp
+                                @if ($canCreate)
                                 <a class="btn btn-primary mb-3 text-white" href="{{ route('subadmin.create') }}">Add Sub-Admin</a>
+                                @endif
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
@@ -126,8 +136,11 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-4">
+                                                        @if($canEdit)
                                                         <a href="{{ route('subadmin.edit', $subAdmin->id) }}"
                                                         class="btn btn-primary">Edit</a>
+                                                        @endif
+                                                        @if($canDelete)
                                                         <form action="{{ route('subadmin.destroy', $subAdmin->id) }}"
                                                             method="POST" style="display:inline-block; margin-left: 10px">
                                                             @csrf
@@ -136,6 +149,12 @@
                                                                 class="btn btn-danger btn-flat show_confirm"
                                                                 data-toggle="tooltip">Delete</button>
                                                         </form>
+                                                        @endif
+                                                        @if(!($canEdit || $canDelete))
+                                                            <div class="alert alert-danger text-center py-2" role="alert">
+                                                                <strong>Access Denied</strong>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>

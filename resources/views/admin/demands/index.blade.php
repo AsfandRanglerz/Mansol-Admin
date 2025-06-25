@@ -182,17 +182,27 @@
                                     <h4>{{ $company->name }} - {{ $project->project_name }} - (Demands)</h4>
                                 </div>
                             </div>
-                            <div class="card-body table-striped table-bordered table-responsive">
+                            <div class="card-body table-striped table-bordered table-responsive">         
+                                @php
+                                    $canCreate = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Demands', 'create'));
+                                        $canEdit = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Demands', 'edit'));
+                                        $canDelete = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Demands', 'delete'));
+                                @endphp
+                                @if ($canCreate)
                                 <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
                                     data-target="#createDemandModal">
                                     Add Demand
                                 </a>
+                                @endif
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Craft</th>
-                                            <th>Nominees</th>
+                                            <th>Assigned Resources</th>
                                             <th>Man Power</th>
                                             <th>Salary</th>
                                             <th>Mobilization</th>
@@ -207,7 +217,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $demand->craft->name }}</td>
                                                 <td>
-                                                    <a class="btn btn-primary" href="{{ route('nominate.index', ['craft_id' => $demand->craft->id, 'demand_id' => $demand->id, 'project_id' => $project->id]) }}">Add</a>
+                                                    <a class="btn btn-primary" href="{{ route('nominate.index', ['craft_id' => $demand->craft->id, 'demand_id' => $demand->id, 'project_id' => $project->id]) }}">View</a>
                                                 </td>
                                                 <td>{{ $demand->manpower }}</td>
                                                 <td>{{ $demand->salary }} {{ strtoupper($demand->project->project_currency) }}</td>
@@ -222,15 +232,23 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-4">
-                                                        <a href="#" class="btn btn-success mr-2" data-toggle="modal"
-                                                        data-target="#editDemandModal-{{ $demand->id }}">Edit</a>
-
-                                                        <form action="{{ route('demand.destroy', $demand->id) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <input type="hidden"  name="project_id" value="{{ $demand->project->id }}">
-                                                            <button type="submit" class="btn btn-danger show_confirm">Delete</button>
-                                                        </form>
+                                                        @if ($canEdit)
+                                                            <a href="#" class="btn btn-success mr-2" data-toggle="modal"
+                                                            data-target="#editDemandModal-{{ $demand->id }}">Edit</a>
+                                                        @endif
+                                                        @if ($canDelete)
+                                                            <form action="{{ route('demand.destroy', $demand->id) }}" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <input type="hidden"  name="project_id" value="{{ $demand->project->id }}">
+                                                                <button type="submit" class="btn btn-danger show_confirm">Delete</button>
+                                                            </form>
+                                                        @endif
+                                                        @if(!($canEdit || $canDelete))
+                                                            <div class="alert alert-danger text-center py-2" role="alert">
+                                                                <strong>Access Denied</strong>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>

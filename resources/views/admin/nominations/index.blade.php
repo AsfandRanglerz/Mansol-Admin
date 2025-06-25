@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('title', 'Nominations')
+@section('title', 'Assigned Resources')
 
 @section('content')
 

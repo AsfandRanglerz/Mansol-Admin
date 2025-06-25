@@ -224,10 +224,19 @@
                                         </form>
 
                                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-1">
+                                         @php
+                                        $canCreate = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Human Resources', 'create'));
+                                        $canEdit = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Human Resources', 'edit'));
+                                        $canDelete = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Human Resources', 'delete'));
+                                        @endphp
+                                        @if ($canCreate)
                                         <a class="btn btn-primary text-white" href="{{ route('humanresource.create') }}">
                                             Add Human Resource
                                         </a>
-
+                                        @endif
                                         <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
                                             @csrf
                                             <input type="file" name="file" required class="form-control">
@@ -378,16 +387,25 @@
                                             </td>
                                             <td class="noExport">
                                                 <div class="d-flex gap-4">
-                                                    <a href="{{ route('humanresource.edit', $HumanResource->id) }}"
-                                                        class="btn btn-primary">Edit</a>
-                                                    <form action="{{ route('humanresource.destroy', $HumanResource->id) }}"
-                                                        method="POST" style="display:inline-block; margin-left: 10px">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                            class="btn btn-danger btn-flat show_confirm"
-                                                            data-toggle="tooltip">Delete</button>
-                                                    </form>
+                                                    @if ($canEdit)
+                                                        <a href="{{ route('humanresource.edit', $HumanResource->id) }}"
+                                                            class="btn btn-primary">Edit</a>
+                                                    @endif
+                                                    @if ($canDelete)
+                                                        <form action="{{ route('humanresource.destroy', $HumanResource->id) }}"
+                                                            method="POST" style="display:inline-block; margin-left: 10px">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="btn btn-danger btn-flat show_confirm"
+                                                                data-toggle="tooltip">Delete</button>
+                                                        </form>
+                                                    @endif
+                                                    @if(!($canEdit || $canDelete))
+                                                            <div class="alert alert-danger text-center py-2" role="alert">
+                                                                <strong>Access Denied</strong>
+                                                            </div>
+                                                     @endif
                                                 </div>
                                             </td>
                                         </tr>

@@ -325,14 +325,24 @@
 
                             <div class="card-body table-striped table-bordered table-responsive">
 
+                                 @php
+                                    $canCreate = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Companies', 'create'));
+                                        $canEdit = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Companies', 'edit'));
+                                        $canDelete = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Companies', 'delete'));
+                                        $canViewProject = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Projects', 'view'));
+                                @endphp
+                                @if ($canCreate)
                                 <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
 
                                     data-target="#createCompanyModal">
 
                                     Add Company
-
                                 </a>
-
+                                @endif
                                 <table class="table responsive" id="table_id_events">
 
                                     <thead>
@@ -375,9 +385,17 @@
 
                                                     
 
-                                            <td><a href="{{ route('project.index', $company->id) }}" class="btn btn-primary">
-
-                                                    View</a></td>
+                                            <td>
+                                                @if ($canViewProject)
+                                                    <a href="{{ route('project.index', $company->id) }}" class="btn btn-primary">
+                                                        View</a>
+                                                @else
+                                                    <div class="alert alert-danger text-center py-2" role="alert">
+                                                        <strong>Access Denied</strong>
+                                                    </div>
+                                                @endif
+                                                
+                                                </td>
 
                                                     <td>
 
@@ -392,11 +410,13 @@
                                                         @endif
 
                                                     </td>
-
-                                                    <td><a href="#" class="btn btn-success" data-toggle="modal"
-
+                                                    
+                                                    <td>
+                                                        @if ($canEdit)
+                                                        <a href="#" class="btn btn-success" data-toggle="modal"
                                                         data-target="#editCompanyModal-{{ $company->id }}">Edit</a>
-
+                                                        @endif
+                                                        @if ($canDelete)
                                                         <form action="{{ route('company.destroy', $company->id) }}" method="POST" style="display: inline-block;">
 
                                                             @csrf
@@ -405,7 +425,15 @@
 
                                                             <button type="submit" class="btn btn-danger show_confirm">Delete</button>
 
-                                                        </form>                   </td>
+                                                        </form>                   
+                                                        @endif
+                                                      
+                                                        @if(!($canEdit || $canDelete))
+                                                            <div class="alert alert-danger text-center py-2" role="alert">
+                                                                <strong>Access Denied</strong>
+                                                            </div>
+                                                        @endif
+                                                    </td>
 
                                         </tr>
 

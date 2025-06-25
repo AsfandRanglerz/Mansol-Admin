@@ -11,8 +11,8 @@ class sideMenu extends Model
     protected $guarded=[];
 
     public function rolePermissions()
-{
-    return $this->hasMany(RolePermission::class, 'sideMenu_id');
-}
+    {
+        return $this->hasMany(RolePermission::class, 'sideMenu_id');
+    }
 
 }

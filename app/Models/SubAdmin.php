@@ -18,4 +18,27 @@ class SubAdmin extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
+    public static function hasSpecificPermission($subadminId, $sideMenuName, $permissionType)
+    {
+        $subadmin = self::with('role.rolePermission.sideMenu')->find($subadminId);
+
+        if (!$subadmin || !$subadmin->role) {
+            return false;
+        }
+
+        foreach ($subadmin->role->rolePermission as $permission) {
+            if (
+                $permission->sideMenu &&
+                strtolower($permission->sideMenu->name) === strtolower($sideMenuName) &&
+                strtolower($permission->name) === strtolower($permissionType)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
 }

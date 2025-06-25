@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPasswordMail;
 use App\Models\Admin;
+use App\Models\SubAdmin;
 use App\Models\Company;
 use App\Models\HumanResource;
 use Illuminate\Http\Request;
@@ -21,12 +22,22 @@ class AdminController extends Controller
         $total_human_resoures = HumanResource::where('status', '=', 2)->get()->count();
         $total_companies = Company::get()->count();
         $total_projects = HumanResource::get()->count();
-        // dd($total_projects);
+        // dd([
+        //     'admin' => Auth::guard('admin')->check(),
+        //     'subadmin' => Auth::guard('subadmin')->check(),
+        //         ]);
+
         return view('admin.index', compact('total_human_resoures', 'total_projects', 'total_companies'));
     }
     public function getProfile()
     {
-        $data = Admin::find(Auth::guard('admin')->id());
+        if (auth::guard('admin')->check()) {
+            // return 'admin';
+            $data = Admin::find(Auth::guard('admin')->id());
+        }elseif(auth::guard('subadmin')->check()){
+            // return "subadmin";
+            $data = SubAdmin::find(Auth::guard('subadmin')->id());
+        }
         return view('admin.auth.profile', compact('data'));
     }
 
@@ -35,7 +46,6 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            'phone' => 'required'
         ]);
         $data = $request->only(['name', 'email', 'phone']);
         if ($request->hasfile('image')) {
@@ -45,8 +55,12 @@ class AdminController extends Controller
             $file->move(public_path('/admin/assets/images/users/'), $filename);
             $data['image'] = 'public/admin/assets/images/users/' . $filename;
         }
-        
-        Admin::find(Auth::guard('admin')->id())->update($data);
+        if (auth::guard('admin')->check()) {
+            // return 'admin';
+            Admin::find(Auth::guard('admin')->id())->update($data);
+        }elseif(auth::guard('subadmin')->check()){
+            SubAdmin::find(Auth::guard('subadmin')->id())->update($data);
+        }
         return back()->with(['status' => true, 'message' => 'Profile Updated Successfully']);
     }
     public function forgetPassword()
@@ -56,8 +70,17 @@ class AdminController extends Controller
     public function adminResetPasswordLink(Request $request)
     {
         $request->validate([
-            'email' => 'required|exists:admins,email',
-        ]);
+            'email' => 'required|email',
+            ]);
+
+            $email = $request->email;
+
+            $exists = DB::table('admins')->where('email', $email)->exists()
+                    || DB::table('sub_admins')->where('email', $email)->exists();
+
+            if (!$exists) {
+                return back()->withErrors(['message' => 'This email does not exist']);
+            }
         $exists = DB::table('password_resets')->where('email', $request->email)->first();
         if ($exists) {
             return back()->with('message', 'Reset Password link has been already sent');
@@ -99,16 +122,23 @@ class AdminController extends Controller
         $tags_data = [
             'password' => bcrypt($request->password)
         ];
-        if (Admin::where('email', $request->email)->update($tags_data)) {
+        if (Admin::where('email', $request->email)->update($tags_data) || SubAdmin::where('email', $request->email)->update($tags_data)) {
             DB::table('password_resets')->where('email', $request->email)->delete();
             return redirect('admin-login')->with('message','Password Reset Successfully!');
         }
     }
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
+        if (Auth::guard('admin')->check()) {
+            Auth::guard('admin')->logout();
+        } elseif (Auth::guard('subadmin')->check()) {
+            Auth::guard('subadmin')->logout();
+        }   
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('admin-login')->with('message', 'Log Out Successfully');
     }
+
 }

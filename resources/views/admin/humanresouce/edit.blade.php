@@ -607,7 +607,7 @@
                                                 <div class="form-group">
                                                     <label class="text-danger" for="email">Email</label>
                                                     <input type="email" class="form-control"
-                                                        value="{{ $HumanResource->email }}" readonly>
+                                                        value="{{ $HumanResource->email }}" name="email">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">

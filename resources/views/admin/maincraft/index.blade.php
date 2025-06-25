@@ -13,7 +13,19 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
+                                 @php
+                                    $canCreate = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Main Crafts', 'create'));
+                                        $canEdit = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Main Crafts', 'edit'));
+                                        $canDelete = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Main Crafts', 'delete'));
+                                        $canViewSub = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Crafts', 'view'));
+                                @endphp
+                                @if ($canCreate)
                                 <a class="btn btn-primary mb-3 text-white" href="{{ route('maincraft.create') }}">Add Craft</a>
+                                @endif
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
@@ -29,8 +41,16 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $mainCraft->name }}</td>
-                                            <td><a href="{{ route('subcraft.index', $mainCraft->id) }}"
-                                                class="btn btn-primary" style="margin-left: 10px">View</a></td>
+                                            <td>
+                                                @if ($canViewSub)
+                                                    <a href="{{ route('subcraft.index', $mainCraft->id) }}"
+                                                    class="btn btn-primary" style="margin-left: 10px">View</a>
+                                                @else
+                                                    <div class="alert alert-danger text-center py-2" role="alert">
+                                                        <strong>Access Denied</strong>
+                                                    </div>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($mainCraft->status == 1)
                                                     <div class="badge badge-success badge-shadow">Activated</div>
@@ -40,16 +60,25 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-4">
-                                                    <a href="{{ route('maincraft.edit', $mainCraft->id) }}"
-                                                    class="btn btn-primary">Edit</a>
-                                                    <form action="{{ route('maincraft.destroy', $mainCraft->id) }}"
-                                                        method="POST" style="display:inline-block; margin-left: 10px">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                            class="btn btn-danger btn-flat show_confirm"
-                                                            data-toggle="tooltip">Delete</button>
-                                                    </form>
+                                                    @if ($canEdit)
+                                                        <a href="{{ route('maincraft.edit', $mainCraft->id) }}"
+                                                        class="btn btn-primary">Edit</a>
+                                                    @endif
+                                                    @if ($canDelete)
+                                                        <form action="{{ route('maincraft.destroy', $mainCraft->id) }}"
+                                                            method="POST" style="display:inline-block; margin-left: 10px">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="btn btn-danger btn-flat show_confirm"
+                                                                data-toggle="tooltip">Delete</button>
+                                                        </form>
+                                                    @endif
+                                                    @if(!($canEdit || $canDelete))
+                                                            <div class="alert alert-danger text-center py-2" role="alert">
+                                                                <strong>Access Denied</strong>
+                                                            </div>
+                                                        @endif
                                                 </div>
                                             </td>
                                         </tr>

@@ -48,7 +48,7 @@ Admin routes
 Route::get('/', function () {
     return redirect('/admin-login');
 });
-Route::get('/admin-login', [AuthController::class, 'getLoginPage']);
+Route::get('/admin-login', [AuthController::class, 'getLoginPage'])->name('login');
 Route::post('admin/login', [AuthController::class, 'Login']);
 Route::get('/admin-forgot-password', [AdminController::class, 'forgetPassword']);
 Route::post('/admin-reset-password-link', [AdminController::class, 'adminResetPasswordLink']);
@@ -73,76 +73,76 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::resource('faq', FaqController::class);
     // ############ Roles #################
     Route::controller(RolesController::class)->group(function () {
-        Route::get('/roles',  'index')->name('roles.index');
-        Route::get('/roles-create',  'create')->name('roles.create');
-        Route::post('/roles-store',  'store')->name('roles.store');
-        Route::get('/roles-edit/{id}',  'edit')->name('roles.edit');
-        Route::post('/roles-update/{id}',  'update')->name('roles.update');
-        Route::delete('/roles-destroy/{id}',  'destroy')->name('roles.destroy');
+        Route::get('/roles',  'index')->name('roles.index')->middleware(['check.permission:Roles,view']);
+        Route::get('/roles-create',  'create')->name('roles.create')->middleware(['check.permission:Roles,create']);
+        Route::post('/roles-store',  'store')->name('roles.store')->middleware(['check.permission:Roles,create']);
+        Route::get('/roles-edit/{id}',  'edit')->name('roles.edit')->middleware(['check.permission:Roles,edit']);
+        Route::post('/roles-update/{id}',  'update')->name('roles.update')->middleware(['check.permission:Roles,edit']);
+        Route::delete('/roles-destroy/{id}',  'destroy')->name('roles.destroy')->middleware(['check.permission:Roles,delete']);
     });
     // ############ Mian Craft #################
     Route::controller(MainCraftController::class)->group(function () {
-        Route::get('/mainCraft',  'index')->name('maincraft.index');
-        Route::get('/mainCraft-create',  'create')->name('maincraft.create');
-        Route::post('/mainCraft-store',  'store')->name('maincraft.store');
-        Route::get('/mainCraft-edit/{id}',  'edit')->name('maincraft.edit');
-        Route::post('/mainCraft-update/{id}',  'update')->name('maincraft.update');
-        Route::delete('/mainCraft-destroy/{id}',  'destroy')->name('maincraft.destroy');
-        Route::get('/get-sub-crafts', 'getSubCrafts')->name('get-sub-crafts');
-        Route::get('/get-all-crafts', 'getAllCrafts')->name('get-all-crafts');
+        Route::get('/mainCraft',  'index')->name('maincraft.index')->middleware(['check.permission:Main Crafts,view']);
+        Route::get('/mainCraft-create',  'create')->name('maincraft.create')->middleware(['check.permission:Main Crafts,create']);
+        Route::post('/mainCraft-store',  'store')->name('maincraft.store')->middleware(['check.permission:Main Crafts,create']);
+        Route::get('/mainCraft-edit/{id}',  'edit')->name('maincraft.edit')->middleware(['check.permission:Main Crafts,edit']);
+        Route::post('/mainCraft-update/{id}',  'update')->name('maincraft.update')->middleware(['check.permission:Main Crafts,edit']);
+        Route::delete('/mainCraft-destroy/{id}',  'destroy')->name('maincraft.destroy')->middleware(['check.permission:Main Crafts,delete']);
+        Route::get('/get-sub-crafts', 'getSubCrafts')->name('get-sub-crafts')->middleware(['check.permission:Sub Crafts,view']);
+        Route::get('/get-all-crafts', 'getAllCrafts')->name('get-all-crafts')->middleware(['check.permission:Sub Crafts,view']);
     });
 
 
     Route::controller(SubCraftController::class)->group(function () {
-        Route::get('/Craftsub/{id}',  'index')->name('subcraft.index');
-        Route::post('/Craftsub-store',  'store')->name('subcraft.store');
-        Route::post('/Craftsub-update/{id}',  'update')->name('subcraft.update');
-        Route::delete('/Craftsub-destroy/{id}',  'destroy')->name('subcraft.destroy');
+        Route::get('/Craftsub/{id}',  'index')->name('subcraft.index')->middleware(['check.permission:Sub Crafts,view']);
+        Route::post('/Craftsub-store',  'store')->name('subcraft.store')->middleware(['check.permission:Sub Crafts,create']);
+        Route::post('/Craftsub-update/{id}',  'update')->name('subcraft.update')->middleware(['check.permission:Sub Crafts,edit']);
+        Route::delete('/Craftsub-destroy/{id}',  'destroy')->name('subcraft.destroy')->middleware(['check.permission:Sub Crafts,delete']);
     });
 
     // ############ Sub Admin #################
     Route::controller(SubAdminController::class)->group(function () {
-        Route::get('/subadmin',  'index')->name('subadmin.index');
-        Route::get('/subadmin-create',  'create')->name('subadmin.create');
-        Route::post('/subadmin-store',  'store')->name('subadmin.store');
-        Route::get('/subadmin-edit/{id}',  'edit')->name('subadmin.edit');
-        Route::post('/subadmin-update/{id}',  'update')->name('subadmin.update');
-        Route::delete('/subadmin-destroy/{id}',  'destroy')->name('subadmin.destroy');
+        Route::get('/subadmin',  'index')->name('subadmin.index')->middleware(['check.permission:Sub Admins,view']);
+        Route::get('/subadmin-create',  'create')->name('subadmin.create')->middleware(['check.permission:Sub Admins,create']);
+        Route::post('/subadmin-store',  'store')->name('subadmin.store')->middleware(['check.permission:Sub Admins,create']);
+        Route::get('/subadmin-edit/{id}',  'edit')->name('subadmin.edit')->middleware(['check.permission:Sub Admins,edit']);
+        Route::post('/subadmin-update/{id}',  'update')->name('subadmin.update')->middleware(['check.permission:Sub Admins,edit']);
+        Route::delete('/subadmin-destroy/{id}',  'destroy')->name('subadmin.destroy')->middleware(['check.permission:Sub Admins,delete']);
     });
 
     // ############ Companies #################
     Route::controller(CompanyController::class)->group(function () {
-        Route::get('/companies',  'index')->name('companies.index');
-        Route::post('/company-store',  'store')->name('companies.store');
-        Route::post('/company-update/{id}',  'update')->name('company.update');
-        Route::delete('/company-destroy/{id}',  'destroy')->name('company.destroy');
+        Route::get('/companies',  'index')->name('companies.index')->middleware(['check.permission:Companies,view']);
+        Route::post('/company-store',  'store')->name('companies.store')->middleware(['check.permission:Companies,create']);
+        Route::post('/company-update/{id}',  'update')->name('company.update')->middleware(['check.permission:Companies,edit']);
+        Route::delete('/company-destroy/{id}',  'destroy')->name('company.destroy')->middleware(['check.permission:Companies,delete']);
     });
     // ############ Projects #################
     Route::controller(ProjectsController::class)->group(function () {
-        Route::get('/companies-projects/{id}',  'index')->name('project.index');
-        Route::post('/project-store',  'store')->name('project.store');
-        Route::post('/project-update/{id}',  'update')->name('project.update');
-        Route::delete('/project-destroy/{id}',  'destroy')->name('project.destroy');
+        Route::get('/companies-projects/{id}',  'index')->name('project.index')->middleware(['check.permission:Projects,view']);
+        Route::post('/project-store',  'store')->name('project.store')->middleware(['check.permission:Projects,create']);
+        Route::post('/project-update/{id}',  'update')->name('project.update')->middleware(['check.permission:Projects,edit']);
+        Route::delete('/project-destroy/{id}',  'destroy')->name('project.destroy')->middleware(['check.permission:Projects,delete']);
 
-        Route::get('/get-projects',  'getProjects')->name('get-projects');
+        Route::get('/get-projects',  'getProjects')->name('get-projects')->middleware(['check.permission:Projects,view']);
     });
     // ############ Demands #################
     Route::controller(DemandsController::class)->group(function () {
-        Route::get('/demands/{id}',  'index')->name('demands.index');
-        Route::post('/demand',  'store')->name('demand.store');
-        Route::post('/demand-update/{id}',  'update')->name('demand.update');
-        Route::delete('/demand-destroy/{id}',  'destroy')->name('demand.destroy');
-        Route::get('/get-demand', 'getDemand')->name('get-demand');
-        Route::get('/get-crafts-by-demand', 'getCrafts')->name('get-crafts-by-demand');
+        Route::get('/demands/{id}',  'index')->name('demands.index')->middleware(['check.permission:Demands,view']);
+        Route::post('/demand',  'store')->name('demand.store')->middleware(['check.permission:Demands,create']);
+        Route::post('/demand-update/{id}',  'update')->name('demand.update')->middleware(['check.permission:Demands,edit']);
+        Route::delete('/demand-destroy/{id}',  'destroy')->name('demand.destroy')->middleware(['check.permission:Demands,delete']);
+        Route::get('/get-demand', 'getDemand')->name('get-demand')->middleware(['check.permission:Demands,view']);
+        Route::get('/get-crafts-by-demand', 'getCrafts')->name('get-crafts-by-demand')->middleware(['check.permission:Demands,view']);
     });
     // ############ Human Resource ################# 
     Route::controller(HumanResourceController::class)->group(function () {
-        Route::get('/human-resource',  'index')->name('humanresource.index');
-        Route::get('/human-resource/create',  'create')->name('humanresource.create');
-        Route::post('/human-resource/store',  'store')->name('humanresource.store');
-        Route::get('/human-resource-edit/{id}',  'edit')->name('humanresource.edit');
-        Route::post('/human-resource-update/{id}',  'update')->name('humanresource.update');
-        Route::delete('/human-resource-destroy/{id}',  'destroy')->name('humanresource.destroy');
+        Route::get('/human-resource',  'index')->name('humanresource.index')->middleware(['check.permission:Human Resources,view']);
+        Route::get('/human-resource/create',  'create')->name('humanresource.create')->middleware(['check.permission:Human Resources,create']);
+        Route::post('/human-resource/store',  'store')->name('humanresource.store')->middleware(['check.permission:Human Resources,create']);
+        Route::get('/human-resource-edit/{id}',  'edit')->name('humanresource.edit')->middleware(['check.permission:Human Resources,edit']);
+        Route::post('/human-resource-update/{id}',  'update')->name('humanresource.update')->middleware(['check.permission:Human Resources,update']);
+        Route::delete('/human-resource-destroy/{id}',  'destroy')->name('humanresource.destroy')->middleware(['check.permission:Human Resources,delete']);
         Route::post('/update-history',  'mobDemob')->name('jobHistory.update');
         Route::post('/jobHistory-update',  'updateHistory')->name('history.update');
         Route::get('/get-demob-data',  'getMobData')->name('get-demob-data');
@@ -188,11 +188,11 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('/reports',  'index')->name('reports.index');
     });
     // ############ Notifications #################
-    Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index');
+    Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index')->middleware(['check.permission:Notifications,view']);
     Route::get('/fetch-recipients', [NotificationController::class, 'fetchRecipients']);
-    Route::post('/notifications', [NotificationController::class, 'store'])->name('notifications.store');
+    Route::post('/notifications', [NotificationController::class, 'store'])->name('notifications.store')->middleware(['check.permission:Notifications,create']);
     Route::put('/notifications/{id}', [NotificationController::class, 'update'])->name('notifications.update');
-    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy')->middleware(['check.permission:Notifications,delete']);
 
     Route::get('/notification/count', [NotificationController::class, 'count'])->name('notifications.count');
     Route::get('/notification/read/{id}', [NotificationController::class, 'read'])->name('notifications.read');

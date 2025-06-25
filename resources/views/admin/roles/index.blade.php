@@ -384,7 +384,13 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
+                                @php
+                                $canCreate = Auth::guard('admin')->check() || 
+                                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Roles', 'create'));
+                            @endphp
+                            @if ($canCreate)
                                 <a class="btn btn-primary mb-3 text-white" href="{{ route('roles.create') }}">Add Role</a>
+                            @endif    
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
@@ -414,14 +420,24 @@
                                                 <div class="d-flex gap-4">
                                                     {{-- <a href="{{ route('roles.edit', $role->id) }}"
                                                         class="btn btn-primary" style="margin-left: 10px">Edit</a> --}}
-                                                    <form action="{{ route('roles.destroy', $role->id) }}"
-                                                        method="POST" style="display:inline-block;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                            class="btn btn-danger btn-flat show_confirm"
-                                                            data-toggle="tooltip">Delete</button>
-                                                    </form>
+                                                    @php
+                                                        $canDelete = Auth::guard('admin')->check() || 
+                                                            (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Roles', 'delete'));
+                                                    @endphp
+                                                    @if ($canDelete)
+                                                        <form action="{{ route('roles.destroy', $role->id) }}"
+                                                            method="POST" style="display:inline-block;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="btn btn-danger btn-flat show_confirm"
+                                                                data-toggle="tooltip">Delete</button>
+                                                        </form>
+                                                    @else
+                                                        <div class="alert alert-danger text-center py-2" role="alert">
+                                                            <strong>Access Denied</strong>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>

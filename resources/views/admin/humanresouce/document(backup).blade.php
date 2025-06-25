@@ -268,8 +268,8 @@
                                 )->file_name;
                             @endphp
                             <input type="file" class="form-control" name="cv" accept=".pdf"
-                                onchange="previewPDF(this, 'cvPreview-{{ $HumanResource->id }}')" />
-                            <iframe id="cvPreview-{{ $HumanResource->id }}" class="border-0 mt-2 {{ $cv ? '' : 'd-none' }}"
+                                onchange="previewPDF(this, 'cvPreview')" />
+                            <iframe id="cvPreview" class="border-0 mt-2 {{ $cv ? '' : 'd-none' }}"
                                 src="{{ $cv ? asset($cv) : '' }}" width="100%" height="300px"></iframe>
                         </div>
 
@@ -287,9 +287,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_1" accept="image/*"
-                                    onchange="previewImage(this, 'passportFrontPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'passportFrontPreview')" />
                                 <div class="position-relative">
-                                    <img id="passportFrontPreview-{{ $HumanResource->id }}"
+                                    <img id="passportFrontPreview"
                                         class="img-fluid mt-2 border rounded {{ $passportFront ? '' : 'd-none' }}"
                                         src="{{ $passportFront ? asset($passportFront) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" />
@@ -310,8 +310,8 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_2" accept="image/*"
-                                    onchange="previewImage(this, 'passportBackPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative"><img id="passportBackPreview-{{ $HumanResource->id }}"
+                                    onchange="previewImage(this, 'passportBackPreview')" />
+                                <div class="position-relative"><img id="passportBackPreview"
                                         class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
                                         src="{{ $passportBack ? asset($passportBack) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
@@ -333,8 +333,8 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_3" accept="image/*"
-                                    onchange="previewImage(this, 'passportPreviewThree-{{ $HumanResource->id }}')" />
-                                <div class="position-relative"><img id="passportPreviewThree-{{ $HumanResource->id }}"
+                                    onchange="previewImage(this, 'passportPreviewThree')" />
+                                <div class="position-relative"><img id="passportPreviewThree"
                                         class="img-fluid mt-2 border rounded {{ $passportImageThree ? '' : 'd-none' }}"
                                         src="{{ $passportImageThree ? asset($passportImageThree) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
@@ -360,9 +360,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="cnic_front" accept="image/*"
-                                    onchange="previewImage(this, 'cnicFrontPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'cnicFrontPreview')" />
                                 <div class="position-relative">
-                                    <img id="cnicFrontPreview-{{ $HumanResource->id }}"
+                                    <img id="cnicFrontPreview"
                                         class="img-fluid mt-2 border rounded {{ $cnicFront ? '' : 'd-none' }}"
                                         src="{{ $cnicFront ? asset($cnicFront) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" />
@@ -383,9 +383,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="cnic_back" accept="image/*"
-                                    onchange="previewImage(this, 'cnicBackPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'cnicBackPreview')" />
                                 <div class="position-relative">
-                                    <img id="cnicBackPreview-{{ $HumanResource->id }}"
+                                    <img id="cnicBackPreview"
                                         class="img-fluid mt-2 border rounded {{ $cnicBack ? '' : 'd-none' }}"
                                         src="{{ $cnicBack ? asset($cnicBack) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" />
@@ -411,9 +411,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="photo" accept="image/*"
-                                    onchange="previewImage(this, 'photoPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'photoPreview')" />
                                 <div class="position-relative">
-                                    <img id="photoPreview-{{ $HumanResource->id }}"
+                                    <img id="photoPreview"
                                         class="img-fluid mt-2 border rounded {{ $photo ? '' : 'd-none' }}"
                                         src="{{ $photo ? asset($photo) : '' }}"
                                         style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
@@ -441,9 +441,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="police_verification" accept="image/*"
-                                    onchange="previewImage(this, 'policeCertificate-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'policeCertificate')" />
                                 <div class="position-relative">
-                                    <img id="policeCertificate-{{ $HumanResource->id }}"
+                                    <img id="policeCertificate"
                                         class="img-fluid mt-2 border rounded {{ $policePhoto ? '' : 'd-none' }}"
                                         src="{{ $policePhoto ? asset($policePhoto) : '' }}"
                                         style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
@@ -471,9 +471,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="account_detail" accept="image/*"
-                                    onchange="previewImage(this, 'accountDetail-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'accountDetail')" />
                                 <div class="position-relative">
-                                    <img id="accountDetail-{{ $HumanResource->id }}"
+                                    <img id="accountDetail"
                                         class="img-fluid mt-2 border rounded {{ $accountPhoto ? '' : 'd-none' }}"
                                         src="{{ $accountPhoto ? asset($accountPhoto) : '' }}"
                                         style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
@@ -501,9 +501,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="update_appraisal" accept="image/*"
-                                    onchange="previewImage(this, 'updatedAppraisal-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'updatedAppraisal')" />
                                 <div class="position-relative">
-                                    <img id="updatedAppraisal-{{ $HumanResource->id }}"
+                                    <img id="updatedAppraisal"
                                         class="img-fluid mt-2 border rounded {{ $appraisalPhoto ? '' : 'd-none' }}"
                                         src="{{ $appraisalPhoto ? asset($appraisalPhoto) : '' }}"
                                         style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
@@ -533,9 +533,9 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="nok_cnic_front" accept="image/*"
-                                    onchange="previewImage(this, 'nokCnicFrontPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'nokCnicFrontPreview')" />
                                 <div class="position-relative">
-                                    <img id="nokCnicFrontPreview-{{ $HumanResource->id }}"
+                                    <img id="nokCnicFrontPreview"
                                         class="img-fluid mt-2 border rounded {{ $nokCnicFront ? '' : 'd-none' }}"
                                         src="{{ $nokCnicFront ? asset($nokCnicFront) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" />
@@ -556,12 +556,12 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="nok_cnic_back" accept="image/*"
-                                    onchange="previewImage(this, 'nokCnicBackPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewImage(this, 'nokCnicBackPreview')" />
                                 <div class="position-relative">
                                     <button class="btn btn-primary position-absolute download-btn">
                                         <span class="fa-solid fa-download"></span>
                                     </button>
-                                    <img id="nokCnicBackPreview-{{ $HumanResource->id }}"
+                                    <img id="nokCnicBackPreview"
                                         class="img-fluid mt-2 border rounded {{ $nokCnicBack ? '' : 'd-none' }}"
                                         src="{{ $nokCnicBack ? asset($nokCnicBack) : '' }}"
                                         style="width: 100%; height: 5.5cm; object-fit: contain;" />
@@ -660,9 +660,9 @@
                                 <label>Upload Medical Report</label>
                                 <input type="file" class="form-control" name="medical_report"
                                     accept=".pdf,image/*"
-                                    onchange="previewUploadedFile(this, 'medicalReportPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewUploadedFile(this, 'medicalReportPreview')" />
                                 <div class="mt-2">
-                                    <a id="medicalReportPreview-{{ $HumanResource->id }}" href="{{ $medical_report }}" target="_blank"
+                                    <a id="medicalReportPreview" href="{{ $medical_report }}" target="_blank"
                                         class="btn btn-info {{ $medical_report ? '' : 'd-none' }}">
                                         View Uploaded Report
                                     </a>
@@ -724,9 +724,9 @@
                             <div class="col-md-6 mt-3">
                                 <label for="scanned_visa">Scanned Visa</label>
                                 <input type="file" class="form-control" name="scanned_visa" accept=".pdf,image/*"
-                                onchange="previewUploadedFile(this, 'visaPreview-{{ $HumanResource->id }}')" />
+                                onchange="previewUploadedFile(this, 'visaPreview')" />
                                 <div class="mt-2">
-                                    <a id="visaPreview-{{ $HumanResource->id }}" href="{{ $scanned_visa }}" target="_blank"
+                                    <a id="visaPreview" href="{{ $scanned_visa }}" target="_blank"
                                         class="btn btn-info {{ $scanned_visa ? '' : 'd-none' }}">
                                         View Uploaded Visa
                                     </a>
@@ -787,9 +787,9 @@
                             <div class="col-md-6 mt-3">
                                 <label for="upload_ticket">Upload Ticket</label>
                                 <input type="file" class="form-control" name="upload_ticket" accept=".pdf,image/*"
-                                    onchange="previewUploadedFile(this, 'ticketPreview-{{ $HumanResource->id }}')" />
+                                    onchange="previewUploadedFile(this, 'ticketPreview')" />
                                 <div class="mt-2">
-                                    <a id="ticketPreview-{{ $HumanResource->id }}" href="{{ $upload_ticket }}" target="_blank"
+                                    <a id="ticketPreview" href="{{ $upload_ticket }}" target="_blank"
                                         class="btn btn-info {{ $upload_ticket ? '' : 'd-none' }}">
                                         View Uploaded Ticket
                                     </a>

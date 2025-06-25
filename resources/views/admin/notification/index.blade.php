@@ -186,12 +186,21 @@
                             <!-- Tab Panes -->
                             <div class="tab-content" id="notificationTabContent">
                                 <!-- My Notifications Tab -->
-                                <div class="tab-pane fade show active" id="my-notifications" role="tabpanel">
+                                <div class="tab-pane fade show active" id="my-notifications" role="tabpanel"> 
+                                @php
+                                    $canCreate = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Notifications', 'create'));
+                                        $canEdit = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Notifications', 'edit'));
+                                        $canDelete = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Notifications', 'delete'));
+                                @endphp
+                                @if ($canCreate)
                                     <a class="btn btn-primary mb-3 text-white" data-toggle="modal"
                                        data-target="#createSubadminModal">
                                         Create
                                     </a>
-
+                                @endif
                                     <div class="card-body table-striped table-bordered table-responsive">
                                         <table class="table responsive" id="table_id_events">
                                             <thead>
@@ -241,16 +250,22 @@
                                                         </td>
                                                         <td>
                                                             <div class="d-flex justify-content-center align-items-center" style="gap: 10px;">
-                                                                <a class="btn btn-primary" data-toggle="modal"
+                                                                {{-- <a class="btn btn-primary" data-toggle="modal"
                                                                    data-target="#editCompanyModal-{{ $notification->id }}">
                                                                     Edit
-                                                                </a>
-                                                                <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger btn-flat show_confirm"
-                                                                            data-toggle="tooltip">Delete</button>
-                                                                </form>
+                                                                </a> --}}
+                                                                @if ($canDelete)
+                                                                    <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-danger btn-flat show_confirm"
+                                                                                data-toggle="tooltip">Delete</button>
+                                                                    </form>
+                                                                @else
+                                                                    <div class="alert alert-danger text-center py-2" role="alert">
+                                                                        <strong>Access Denied</strong>
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         </td>
                                                     </tr>

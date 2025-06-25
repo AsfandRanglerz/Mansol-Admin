@@ -18,47 +18,85 @@
                 <a href="{{ route('officer.index') }}" class="nav-link"><i data-feather="users"></i><span>Officer</span></a>
             </li> --}}
             {{-- Roles --}}
+              @php
+                $canViewRoles = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Roles', 'view'));
+            @endphp
+            @if ($canViewRoles)
             <li class="dropdown {{ request()->is('admin/roles*') ? 'active' : '' }}">
                 <a href="{{ route('roles.index') }}" class="nav-link">
                     <span><i data-feather="shield"></i>Roles</span>
                 </a>
             </li>
-
+            @endif
+            
             {{-- SubAdmin --}}
-            <li class="dropdown {{ request()->is('admin/subadmin*') ? 'active' : '' }}">
-                <a href="{{ route('subadmin.index') }}" class="nav-link"><span><i data-feather="user"></i>Sub
-                        Admins</span></a>
-            </li>
+            @php
+                $canViewSubadmin = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Admins', 'view'));
+            @endphp
+            @if ($canViewSubadmin)
+                <li class="dropdown {{ request()->is('admin/subadmin*') ? 'active' : '' }}">
+                    <a href="{{ route('subadmin.index') }}" class="nav-link"><span><i data-feather="user"></i>Sub Admins</span></a>
+                </li>
+            @endif
+
             {{-- Main Craft --}}
-            <li class="dropdown {{ request()->is('admin/mainCraft*') || request()->is('admin/Craftsub*') ? 'active' : '' }}">
-                <a href="{{ route('maincraft.index') }}" class="nav-link">
-                    <span><i data-feather="scissors"></i> Main Crafts</span>
-                </a>
-            </li>
+            @php
+                $canViewCrafts = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Main Crafts', 'view'));
+            @endphp
+            @if ($canViewCrafts)
+                <li class="dropdown {{ request()->is('admin/mainCraft*') || request()->is('admin/Craftsub*') ? 'active' : '' }}">
+                    <a href="{{ route('maincraft.index') }}" class="nav-link"><span><i data-feather="scissors"></i> Main Crafts</span></a>
+                </li>
+            @endif
+
             {{-- Human Resource --}}
-            <li class="dropdown {{ request()->is('admin/human-resource*') ? 'active' : '' }}">
-                <a href="{{ route('humanresource.index') }}" class="nav-link">
-                    <span><i data-feather="users"></i>Human Resources</span>
-                </a>
-            </li>
-            {{-- approved-applicant --}}
-            <li class="dropdown {{ request()->is('admin/approved-applicant*') ? 'active' : '' }}">
-                <a href="{{ route('approved.applicants.index') }}" class="nav-link px-2">
-                    <span><i class="fas fa-thumbs-up"></i> Approved Applicants</span>
-                </a>
-            </li>
+            @php
+                $canViewHR = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Human Resources', 'view'));
+            @endphp
+            @if ($canViewHR)
+                <li class="dropdown {{ request()->is('admin/human-resource*') ? 'active' : '' }}">
+                    <a href="{{ route('humanresource.index') }}" class="nav-link"><span><i data-feather="users"></i>Human Resources</span></a>
+                </li>
+            @endif
+
+            {{-- Approved Applicants --}}
+                <li class="dropdown {{ request()->is('admin/approved-applicant*') ? 'active' : '' }}">
+                    <a href="{{ route('approved.applicants.index') }}" class="nav-link px-2">
+                        <span><i class="fas fa-thumbs-up"></i> Approved Applicants</span>
+                    </a>
+                </li>
+          
+
             {{-- Nominations --}}
-            <li class="dropdown {{ request()->is('admin/nominations*') ? 'active' : '' }}">
-                <a href="{{ route('nominations.index') }}" class="nav-link  px-2">
-                    <span><i class="fas fa-award"></i> Assigned Resources</span>
-                </a>
-            </li>
-            {{-- Company --}}
-            <li class="dropdown {{ request()->is('admin/companies*') || request()->is('admin/demands*') || request()->is('admin/nominate*') ? 'active' : '' }}">
-                <a href="{{ route('companies.index') }}" class="nav-link">
-                    <span><i data-feather="briefcase"></i>Companies</span>
-                </a>
-            </li>
+            @php
+                $canViewNominations = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Assigned Resources', 'view'));
+            @endphp
+            @if ($canViewNominations)
+                <li class="dropdown {{ request()->is('admin/nominations*') ? 'active' : '' }}">
+                    <a href="{{ route('nominations.index') }}" class="nav-link px-2">
+                        <span><i class="fas fa-award"></i> Assigned Resources</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Companies --}}
+            @php
+                $canViewCompanies = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Companies', 'view'));
+            @endphp
+            @if ($canViewCompanies)
+                <li class="dropdown {{ request()->is('admin/companies*') || request()->is('admin/demands*') || request()->is('admin/nominate*') ? 'active' : '' }}">
+                    <a href="{{ route('companies.index') }}" class="nav-link">
+                        <span><i data-feather="briefcase"></i>Companies</span>
+                    </a>
+                </li>
+            @endif
+
             {{-- Demands --}}
             {{-- <li class="dropdown {{ request()->is('admin/demands*') ? 'active' : '' }}">
                 <a href="{{ route('demands.index') }}" class="nav-link px-2">
@@ -74,6 +112,11 @@
             </li> --}}
 
             {{-- Notifications --}}
+             @php
+                $canViewNotification = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Notifications', 'view'));
+            @endphp
+            @if ($canViewNotification)
             <li class="dropdown {{ request()->is('admin/notification*') ? 'active' : '' }}">
                 <a href="{{ route('notification.index') }}" class="nav-link">
                     <span><i data-feather="bell"></i>Notifcations
@@ -83,6 +126,7 @@
                     </span>
                 </a>
             </li>
+            @endif
             {{-- <li class="dropdown {{ request()->is('admin/about*') ? 'active' : '' }}">
                 <a href="{{ route('about.index') }}" class="nav-link"><span><i data-feather="info"></i>About
                         Us</span></a>

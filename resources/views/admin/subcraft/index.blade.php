@@ -111,7 +111,17 @@
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
+                                @php
+                                    $canCreate = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Crafts', 'create'));
+                                        $canEdit = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Crafts', 'edit'));
+                                        $canDelete = Auth::guard('admin')->check() || 
+                                        (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Sub Crafts', 'delete'));
+                                @endphp
+                                @if ($canCreate)
                                 <a class="btn btn-primary mb-3 text-white" href="#" data-toggle="modal" data-target="#createSubCraftModal">Add Sub-Craft</a>
+                                @endif
                                 <table class="table responsive" id="table_id_events">
                                     <thead>
                                         <tr>
@@ -135,8 +145,11 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex gap-4">
+                                                        @if ($canEdit)
                                                         <a href="#" data-toggle="modal" data-target="#editSubCraftModal-{{ $subCraft->id }}"
                                                             class="btn btn-primary">Edit</a>
+                                                        @endif
+                                                        @if ($canDelete)
                                                         <form action="{{ route('subcraft.destroy', $subCraft->id) }}"
                                                             method="POST" style="display:inline-block; margin-left: 10px">
                                                             @csrf
@@ -146,6 +159,12 @@
                                                                 class="btn btn-danger btn-flat show_confirm"
                                                                 data-toggle="tooltip">Delete</button>
                                                         </form>
+                                                        @endif
+                                                     @if(!($canEdit || $canDelete))
+                                                            <div class="alert alert-danger text-center py-2" role="alert">
+                                                                <strong>Access Denied</strong>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>
