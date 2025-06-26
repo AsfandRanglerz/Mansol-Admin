@@ -36,7 +36,7 @@ class MainCraftController extends Controller
         ]);
 
         // Return success message
-        return redirect()->route('maincraft.index')->with(['message' => 'MainCraft Created Successfully']);
+        return redirect()->route('maincraft.index')->with(['message' => 'Main Craft Created Successfully']);
     }
 
 
@@ -63,7 +63,7 @@ class MainCraftController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('maincraft.index')->with('message', 'MainCraft Updated Successfully');
+        return redirect()->route('maincraft.index')->with('message', 'Main Craft Updated Successfully');
     }
 
     public function destroy($id)
@@ -71,9 +71,9 @@ class MainCraftController extends Controller
         // return $id;
         try{
             MainCraft::destroy($id);
-            return redirect()->route('maincraft.index')->with(['message' => 'MainCraft Deleted Successfully']);
+            return redirect()->route('maincraft.index')->with(['message' => 'Main Craft Deleted Successfully']);
         } catch (QueryException $e) {
-            return redirect()->route('maincraft.index')->with(['error' => 'This MainCraft cannot be deleted as it is linked to Human Resources or Company Demands.']);
+            return redirect()->route('maincraft.index')->with(['error' => 'This Main Craft cannot be deleted as it is linked to Human Resources or Company Demands.']);
         }
     }
 

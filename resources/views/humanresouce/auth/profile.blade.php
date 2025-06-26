@@ -85,7 +85,7 @@
 
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-md-6 col-12">
+                                                    {{-- <div class="form-group col-md-6 col-12">
                                                         <label>Phone</label>
                                                         <input type="tel" name="present_address_mobile" value="{{ $data->present_address_mobile }}"
                                                             class="form-control" value="">
@@ -94,7 +94,7 @@
                                                                 Please fill in the email
                                                             </div>
                                                         @enderror
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                             <div class="card-footer text-center mb-0 ">

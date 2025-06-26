@@ -24,7 +24,7 @@
                                             <th>Salary</th>
                                             <th>Mobilization</th>
                                             <th>Demobilization</th>
-                                            <th>Nominees</th>
+                                            <th>Assigned Resources</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>

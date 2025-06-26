@@ -44,7 +44,7 @@
 
                                             <th>Project Id</th>
 
-                                            <th>Nominee Name</th>
+                                            <th>Name</th>
 
                                             <th>Project Name</th>
 

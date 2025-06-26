@@ -20,6 +20,7 @@ class HRNotificationController extends Controller
 
         $notifications = NotificationTarget::where('targetable_type', \App\Models\HumanResource::class)
             ->with('notification')
+            ->where('targetable_id', $userId)
             ->latest()
             ->get();
 

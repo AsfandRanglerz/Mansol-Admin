@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Notification')
+@section('title', 'Notifications')
 @section('content')
 
     <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -225,13 +225,15 @@
                                                                 Human Resource
                                                             @endif
                                                         </td>
-                                                        <td>
+                                                       <td
                                                             @php
                                                                 $targets = $notification->targets;
                                                                 $displayTargets = $targets->take(2);
                                                                 $remainingCount = $targets->count() - $displayTargets->count();
+                                                                $allTargetNames = $targets->pluck('targetable.name')->filter()->implode(', ');
                                                             @endphp
-
+                                                            title="{{ $allTargetNames }}"
+                                                        >
                                                             <ul class="list-unstyled mb-0">
                                                                 @foreach ($displayTargets as $target)
                                                                     <li>{{ $target->targetable->name ?? 'N/A' }}</li>
@@ -241,6 +243,7 @@
                                                                 @endif
                                                             </ul>
                                                         </td>
+
                                                         <td>
                                                             @php
                                                                 $words = explode(' ', $notification->message);
@@ -278,7 +281,7 @@
                                 <!-- Document Expiry Notifications Tab -->
                                 <div class="tab-pane fade" id="expiry-notifications" role="tabpanel">
                                         <div class="d-flex">
-                                            <a href="{{route('notifications.read.all')}}" class="btn btn-primary mb-3 text-white">Mark All as read</a>
+                                            <a href="{{route('notifications.read.all')}}" class="btn btn-primary mb-3 text-white">Mark All As Read</a>
                                         </div>
                                     <div class="card-body table-striped table-bordered table-responsive mt-3">
                                         <table class="table responsive" id="table_id_expiry">
@@ -359,7 +362,7 @@
                     }
                 });
         });
-    </script>
+    </script> 
     <script>
         $(document).ready(function() {
             $('#target_ids').select2({
@@ -444,6 +447,7 @@
                     $('.btn-primary').attr('disabled', true).text('Submitting...');
                 },
                 success: function() {
+                    toastr.success('Notification Sent Successfully');
                     location.reload();
                 },
                 error: function(xhr) {

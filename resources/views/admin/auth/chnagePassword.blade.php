@@ -18,16 +18,20 @@
                             <form method="POST" action="{{url('admin-reset-password')}}">
                                  @csrf
                                 <input value="{{$user->email}}" type="hidden" name="email" >
-                                <div class="form-group">
-                                    <label for="password">New Password</label>
-                                    <input id="password" type="password" class="form-control pwstrength" data-indicator="pwindicator" name="password" tabindex="2" >
-                                    @error('password') <span class="text-danger">{{$errors->first('password')}}</span> @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label for="password-confirm">Confirm Password</label>
-                                    <input id="password-confirm" type="password" class="form-control" name="confirmed" tabindex="2" >
-                                    @error('confirmed') <span class="text-danger">{{$errors->first('confirmed')}}</span> @enderror
-                                </div>
+                                <div class="form-group position-relative">
+                                        <label for="password">New Password</label>
+                                        <input id="password" type="password" class="form-control pwstrength" data-indicator="pwindicator" name="password" tabindex="2" placeholder="password">
+                                        <span toggle="#password" class="fa fa-fw fa-eye toggle-password" style="position:absolute; right:15px; top:38px; cursor:pointer;"></span>
+                                        @error('password') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="form-group position-relative">
+                                        <label for="password-confirm">Confirm Password</label>
+                                        <input id="password-confirm" type="password" class="form-control" name="confirmed" tabindex="2" placeholder="password">
+                                        <span toggle="#password-confirm" class="fa fa-fw fa-eye toggle-password" style="position:absolute; right:15px; top:38px; cursor:pointer;"></span>
+                                        @error('confirmed') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+
                                 <div class="form-group mb-0">
                                     <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
                                         Reset Password
@@ -41,4 +45,19 @@
         </div>
     </section>
 @endsection
+@section('script')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggles = document.querySelectorAll('.toggle-password');
 
+        toggles.forEach(toggle => {
+            toggle.addEventListener('click', function () {
+                const input = document.querySelector(this.getAttribute('toggle'));
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        });
+    });
+</script>

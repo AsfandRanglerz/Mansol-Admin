@@ -845,10 +845,10 @@
                 <div class="card">
                     <div class="card-header text-center d-flex justify-content-between align-items-center">
                         @if ($nominat)
-                            <a class="btn btn-primary" disabled title="Please Demob" onclick="showToaster()">Nominate</a>
+                            <a class="btn btn-primary" disabled title="Please Demob" onclick="showToaster()">Assign</a>
                         @else
                             <a class="btn btn-primary"
-                                onclick="showUserModel('createDriverModel', {{ $HumanResource->id }})">Nominate</a>
+                                onclick="showUserModel('createDriverModel', {{ $HumanResource->id }})">Assign</a>
                         @endif
                         <h4 class="flex-grow-1 text-center m-0">Job History</h4>
                         <div style="width: 75px;"></div> <!-- Empty space to balance the button width -->
@@ -955,7 +955,7 @@
                                             @foreach ($companies as $company)
                                                 <option value="{{ $company->id }}">{{ $company->name }}</option>
                                             @endforeach
-                                        </select>
+                                        </select> 
                                         <div class="invalid-feedback"></div>
                                     </div>
                                 </div>
@@ -1090,7 +1090,7 @@
 @section('js')
     <script>
         function showToaster() {
-            toastr.warning("Please demobilize the current job before nominating!", "Action Blocked");
+            toastr.warning("Please demobilize the current job before assigning!", "Action Blocked");
         }
     </script>
     <script>
@@ -1211,7 +1211,7 @@
                     });
 
                     if ($('#status option[value="3"]').length === 0) {
-                        $('#status').empty().append('<option value="3" selected>Nominate</option>');
+                        $('#status').empty().append('<option value="3" selected>Assign</option>');
                     } else {
                         $('#status').val('3');
                     }

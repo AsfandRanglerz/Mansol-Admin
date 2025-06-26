@@ -68,7 +68,7 @@ class SubAdminController extends Controller
         // Mail::to($request->email)->send(new UserLoginPassword($message));
 
         // Return success message
-        return redirect()->route('subadmin.index')->with(['message' => 'Subadmin Created Successfully']);
+        return redirect()->route('subadmin.index')->with(['message' => 'Sub-Admin Created Successfully']);
     }
 
     public function edit($id)
@@ -114,13 +114,13 @@ class SubAdminController extends Controller
             // 'image' => $image,
         ]);
 
-        return redirect()->route('subadmin.index')->with('message', 'SubAdmin Updated Successfully');
+        return redirect()->route('subadmin.index')->with('message', 'Sub-Admin Updated Successfully');
     }
 
     public function destroy($id)
     {
         // return $id;
         SubAdmin::destroy($id);
-        return redirect()->route('subadmin.index')->with(['message' => 'SubAdmin Deleted Successfully']);
+        return redirect()->route('subadmin.index')->with(['message' => 'Sub-Admin Deleted Successfully']);
     }
 }

@@ -1,5 +1,5 @@
 @extends('humanresouce.layout.app')
-@section('title', 'Human Resource')
+@section('title', 'My Profile')
 @section('content')
 
 <div class="main-content" style="min-height: 562px;">

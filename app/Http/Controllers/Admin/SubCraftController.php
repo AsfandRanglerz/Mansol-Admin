@@ -37,7 +37,7 @@ class SubCraftController extends Controller
         ]);
 
         // Redirect to the subcraft index page with a success message
-        return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['message' => 'SubCraft Created Successfully']);
+        return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['message' => 'Sub-Craft Created Successfully']);
     }
 
 
@@ -57,7 +57,7 @@ class SubCraftController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with('message', 'SubCraft Updated Successfully');
+        return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with('message', 'Sub-Craft Updated Successfully');
     }
 
     public function destroy(Request $request, $id)
@@ -65,9 +65,9 @@ class SubCraftController extends Controller
         // return $id;
         try{
             SubCraft::destroy($id);
-            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['message' => 'SubCraft Deleted Successfully']);
+            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['message' => 'Sub-Craft Deleted Successfully']);
         } catch (QueryException $e){
-            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['error' => 'This SubCraft cannot be deleted as it is linked to Human Resources or Company Demands.']);
+            return redirect()->route('subcraft.index', ['id' => $request->craft_id])->with(['error' => 'This Sub-Craft cannot be deleted as it is linked to Human Resources or Company Demands.']);
         }
     }
 }

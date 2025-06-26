@@ -36,7 +36,7 @@ class CompanyController extends Controller
             $file->move(public_path('admin/assets/images/company/'), $filename);
             $image = 'public/admin/assets/images/company/' . $filename;
         } else {
-            $image = 'public/admin/assets/images/company/1675332882.jpg';
+            $image = 'public/admin/assets/images/avator.png';
         }
 
         /**generate random password */

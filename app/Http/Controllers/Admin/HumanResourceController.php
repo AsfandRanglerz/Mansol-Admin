@@ -31,110 +31,111 @@ class HumanResourceController extends Controller
             // Static dropdown data 
             $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
             $projects = Project::where('is_active', '=', '1')->orderBy('project_name', 'asc')->get();
-            $demands = Demand::where('project_id', $request->project_id)->orderBy('manpower', 'asc')->get();
+            
+            $demands = Demand::where('project_id', $request->project_id)->where('is_active', '=', '1')->orderBy('manpower', 'asc')->get();
             // Append concatenated name to each demand
             $demands->transform(function ($demand) {
                 $demand->full_name = $demand->manpower . ' - ' . $demand->craft?->name;
                 return $demand;
             });
 
-        // Base query
-        $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
-            ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
-            ->latest();
+            // Check if any filter is present
+            $hasFilters = $request->filled('company_id') ||
+                          $request->filled('project_id') ||
+                          $request->filled('demand_id') ||
+                          $request->filled('medically_fit') ||
+                          $request->filled('visa_expiry') ||
+                          $request->filled('cnic_expiry') ||
+                          $request->filled('passport_expiry');
 
-        // Filters via 'nominates' relation
-        if (
-            $request->filled('company_id') ||
-            $request->filled('project_id') ||
-            $request->filled('demand_id')
-        ) {
-            $query->whereHas('nominates', function ($q) use ($request) {
-                // Filter by project
-                if ($request->filled('project_id')) {
-                    $q->where('project_id', $request->project_id);
-                }
+            if ($hasFilters) {
+                // Base query
+                $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
+                    ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
+                    ->latest();
 
-                // Filter by demand
-                if ($request->filled('demand_id')) {
-                    $q->where('demand_id', $request->demand_id);
-                }
-
-                // Filter by company through project
-                if ($request->filled('company_id')) {
-                    $q->whereHas('project', function ($subQ) use ($request) {
-                        $subQ->where('company_id', $request->company_id);
+                // Filters via 'nominates' relation
+                if (
+                    $request->filled('company_id') ||
+                    $request->filled('project_id') ||
+                    $request->filled('demand_id')
+                ) {
+                    $query->whereHas('nominates', function ($q) use ($request) {
+                        // Filter by project
+                        if ($request->filled('project_id')) {
+                            $q->where('project_id', $request->project_id);
+                        }
+                        // Filter by demand
+                        if ($request->filled('demand_id')) {
+                            $q->where('demand_id', $request->demand_id);
+                        }
+                        // Filter by company through project
+                        if ($request->filled('company_id')) {
+                            $q->whereHas('project', function ($subQ) use ($request) {
+                                $subQ->where('company_id', $request->company_id);
+                            });
+                        }
                     });
                 }
-            });
-        }
 
-        // Filters via 'nominates' relation
-        if (
-            $request->filled('medically_fit') ||
-            $request->filled('visa_expiry')
-        ) {
-            $query->whereHas('hrSteps', function ($q) use ($request) {
-                // Filter by project
-                if ($request->filled('medically_fit')) {
-                    $q->where('step_number',6)->where('medically_fit', $request->medically_fit);
+                // Filters via 'hrSteps' relation
+                if (
+                    $request->filled('medically_fit') ||
+                    $request->filled('visa_expiry')
+                ) {
+                    $query->whereHas('hrSteps', function ($q) use ($request) {
+                        if ($request->filled('medically_fit')) {
+                            $q->where('step_number',6)->where('medically_fit', $request->medically_fit);
+                        }
+                        if ($request->filled('visa_expiry')) {
+                            $value = $request->input('passport_expiry');
+                            if($value == 'Valid'){
+                                $q->where('step_number',6)->whereDate('visa_expiry_date', '>=', now());
+                            } elseif($value == 'Expired'){
+                                $q->where('step_number',6)->whereDate('visa_expiry_date', '<', now());
+                            }
+                        }
+                    });
                 }
 
-                // Filter by demand
-                if ($request->filled('visa_expiry')) {
-                    $value = $request->input('passport_expiry');
-                    if($value = 'Valid'){
-                        $q->where('step_number',6)->whereDate('visa_expiry_date', '>=', now());
-                    } elseif($value = 'Expired'){
-                        $q->where('step_number',6)->whereDate('visa_expiry_date', '<', now());
+                if ($request->filled('cnic_expiry')) {
+                    $value = $request->input('cnic_expiry');
+                    if($value == 'Valid'){
+                        $query->whereDate('cnic_expiry_date', '>=', now());
+                    } elseif($value == 'Expired'){
+                        $query->whereDate('cnic_expiry_date', '<', now());
                     }
-                    // $q->where('step_number',6)->where('visa_expiry_date', $request->visa_expiry);
                 }
-            });
-        }
 
-        // // Other direct filters
-        // if ($request->has('medically_fit') && $request->medically_fit !== null) {
-        //     $query->where('medically_fit', $request->input('medically_fit'));
-        // }
+                if ($request->filled('passport_expiry')) {
+                    $value = $request->input('passport_expiry');
+                    if($value == 'Valid'){
+                        $query->whereDate('doe', '>=', now());
+                    } elseif($value == 'Expired'){
+                        $query->whereDate('doe', '<', now());
+                    }
+                }
 
-        if ($request->filled('cnic_expiry')) {
-            $value = $request->input('cnic_expiry');
-            if($value = 'Valid'){
-                $query->whereDate('cnic_expiry_date', '>=', now());
-            } elseif($value = 'Expired'){
-                $query->whereDate('cnic_expiry_date', '<', now());
+                $HumanResources = $query->get();
+                $count = $query->whereIn('status', [1, 3, 2, 0])->count();
+            } else {
+                // No filters: get all HumanResources and count
+                $HumanResources = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
+                    ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
+                    ->latest()
+                    ->get();
+                $count = HumanResource::whereIn('status', [1, 3, 2, 0])->count();
             }
-            // $query->whereDate('cnic_expiry_date', $request->input('cnic_expiry'));
-        }
 
-        if ($request->filled('passport_expiry')) {
-            $value = $request->input('passport_expiry');
-            if($value = 'Valid'){
-                $query->whereDate('doe', '>=', now());
-            } elseif($value = 'Expired'){
-                $query->whereDate('doe', '<', now());
-            }
-        }
-
-        // if ($request->filled('visa_expiry')) {
-        //     $query->whereDate('visa_expiry', $request->input('visa_expiry'));
-        // }
-
-        // Get filtered data
-        $HumanResources = $query->get();
-
-        // Count for total (unfiltered)
-        $count = $query->whereIn('status', [1, 3, 2, 0])->count();
-        $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
-        return view('admin.humanresouce.index', compact(
-            'HumanResources',
-            'companies',
-            'projects',
-            'demands',
-            'count',
-            'medically_fit'
-        ));
+            $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
+            return view('admin.humanresouce.index', compact(
+                'HumanResources',
+                'companies',
+                'projects',
+                'demands',
+                'count',
+                'medically_fit'
+            ));
     }
 
 
@@ -345,9 +346,9 @@ class HumanResourceController extends Controller
         $craft = MainCraft::find($HumanResource->craft_id);
         $nominates = Nominate::where('human_resource_id', $id)->first();
         $subCraft = SubCraft::find($HumanResource->sub_craft_id);
-        $companies = Company::latest()->get();
-        $crafts = MainCraft::latest()->get();
-        $subCrafts = SubCraft::latest()->get();
+        $companies = Company::where('is_active', '=', '1')->latest()->get();
+        $crafts = MainCraft::where('status',1)->latest()->get();
+        $subCrafts = SubCraft::where('status',1)->latest()->get();
     
         $project = null;
         $company = null;
@@ -557,7 +558,7 @@ class HumanResourceController extends Controller
                         'city_of_interview'        => $request->city_of_interview ?? null,
                     ]);
         }
-        return redirect()->back()->with(['message' => 'Human Resource has been Nominated Successfully']);
+        return redirect()->back()->with(['message' => 'Human Resource has been Assigned Successfully']);
     }
 
 

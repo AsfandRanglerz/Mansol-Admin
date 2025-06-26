@@ -25,7 +25,7 @@ class DemandsController extends Controller
             ->whereNotIn('id', $assignedCraftIds)
             ->get();
 
-        $demands = Demand::with(['project', 'craft'])->where('project_id', $id)->orderBy('is_active', 'desc')->latest()->get();
+        $demands = Demand::with(['project', 'craft'])->where('project_id', $id)->orderBy('is_active', 'desc')->where('is_active',1)->latest()->get();
         // dd($demands);
         return view('admin.demands.index', compact('crafts', 'demands', 'project_id', 'project', 'company'));
     }
@@ -101,7 +101,7 @@ class DemandsController extends Controller
 
     public function getDemand(Request $request)
     { 
-        $demands = Demand::where('project_id', $request->project_id)->orderBy('manpower', 'asc')->get();
+        $demands = Demand::where('project_id', $request->project_id)->where('is_active',1)->orderBy('manpower', 'asc')->get();
          // Append concatenated name to each demand
         $demands->transform(function ($demand) {
             $demand->full_name = $demand->manpower . ' - ' . $demand->craft?->name;

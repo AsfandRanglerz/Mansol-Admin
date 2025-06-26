@@ -101,7 +101,7 @@
                                     <h4>Human Resources</h4>
                                     <h6 class="badge bg-primary text-white">Total Count: {{ $count }}</h6>
                                     <h6 class="text-muted text-danger" style="font-style: italic;">
-                                            Note: The default password for all humanresources is <strong>12345678</strong>. This passowrd is automatically genrated when a new humanresource created.
+                                            Note: The default password for all human resources is <strong>12345678</strong>. This password is automatically generated when a new human resource created.
                                     </h6>
                                 </div>
                             </div>
@@ -382,7 +382,7 @@
                                                 @elseif ($HumanResource->status == 0)
                                                     <div class="badge badge-danger badge-shadow">Rejected</div>
                                                 @elseif ($HumanResource->status == 3)
-                                                    <div class="badge badge-info badge-shadow">Nominated</div>
+                                                    <div class="badge badge-info badge-shadow">Assigned</div>
                                                 @endif
                                             </td>
                                             <td class="noExport">
@@ -427,7 +427,26 @@
 @endsection
 
 @section('js')
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script type="text/javascript">
+        $('.show_confirm').click(function(event) {
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
+            event.preventDefault();
+            swal({
+                    title: `Are you sure you want to delete this record?`,
+                    text: "If you delete this, it will be gone forever.",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        form.submit();
+                    }
+                });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             var table = $('#table_id_events').DataTable({
@@ -522,25 +541,6 @@
             });
         })
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
-            event.preventDefault();
-            swal({
-                    title: `Are you sure you want to delete this record?`,
-                    text: "If you delete this, it will be gone forever.",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        form.submit();
-                    }
-                });
-        });
-    </script>
+    
     <script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
 @endsection

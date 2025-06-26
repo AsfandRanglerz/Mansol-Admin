@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('title', 'Nominees')
+@section('title', 'Assigned Resources')
 @section('content')
     <style>
         .select2-container {
@@ -57,7 +57,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="col-12">
-                                    <h4>{{ $company->name }} - {{ $project->project_name }} - (Nominees)</h4>
+                                    <h4>{{ $company->name }} - {{ $project->project_name }} - (Assigned)</h4>
                                 </div>
                             </div>
                             <div class="card-body table-striped table-bordered table-responsive">
@@ -69,7 +69,7 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
-                                            <th>Nominee Name</th>
+                                            <th>Name</th>
                                             
                                         </tr>
                                     </thead>

@@ -19,7 +19,7 @@ class AdminController extends Controller
     //
     public function getdashboard()
     {
-        $total_human_resoures = HumanResource::where('status', '=', 2)->get()->count();
+        $total_human_resoures = HumanResource::count();
         $total_companies = Company::get()->count();
         $total_projects = HumanResource::get()->count();
         // dd([

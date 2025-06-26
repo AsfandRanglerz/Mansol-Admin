@@ -42,7 +42,7 @@ class HumanResouceController extends Controller
         $request->validate([
             'name' => 'required',
             // 'email' => 'required',
-            'present_address_mobile' => 'required'
+            // 'present_address_mobile' => 'required'
         ]);
         $data = $request->only(['name', 'email', 'present_address_mobile']);
         if ($request->hasfile('image')) {

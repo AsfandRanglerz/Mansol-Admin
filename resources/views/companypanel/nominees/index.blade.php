@@ -1,5 +1,5 @@
 @extends('companypanel.layout.app')
-@section('title', 'Nominees')
+@section('title', 'Assigned Resources')
 @section('content')
 
     <div class="main-content" style="min-height: 562px;">

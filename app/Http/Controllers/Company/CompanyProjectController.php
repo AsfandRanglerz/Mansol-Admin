@@ -41,7 +41,7 @@ class CompanyProjectController extends Controller
         // return $nominees;
         if ($nominees->isEmpty()) {
             // Handle empty case — return back, error message, or default values
-            return back()->with('error', 'No Humanresource found for this Demand');
+            return back()->with('error', 'No Human Resource Assigned for this Demand');
         }
         $project = Project::where('id', $nominees->first()->project->id)->first();
         $craft = MainCraft::where('id', $nominees->first()->craft->id)->first();

@@ -64,11 +64,14 @@
             @endif
 
             {{-- Approved Applicants --}}
+            @if (Auth::guard('admin')->check())
                 <li class="dropdown {{ request()->is('admin/approved-applicant*') ? 'active' : '' }}">
                     <a href="{{ route('approved.applicants.index') }}" class="nav-link px-2">
                         <span><i class="fas fa-thumbs-up"></i> Approved Applicants</span>
                     </a>
                 </li>
+                
+            @endif
           
 
             {{-- Nominations --}}

@@ -1,5 +1,5 @@
 @extends('companypanel.layout.app')
-@section('title', 'Nominies Details')
+@section('title', 'Assigned Resource Details')
 @section('content')
 
     <div class="main-content" style="min-height: 562px;">
@@ -160,7 +160,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="name">Name *</label>
+                                                <label class="text-danger" for="name">Name </label>
                                                 <input type="text" class="form-control" id="name" name="name"
                                                     value="{{ old('name', $HumanResource->name) }}">
                                                 <div class="invalid-feedback"></div>
@@ -168,7 +168,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="son_of">S/O *</label>
+                                                <label class="text-danger" for="son_of">S/O </label>
                                                 <input type="text" class="form-control" id="son_of" name="son_of"
                                                     value="{{ old('son_of', $HumanResource->son_of) }}">
                                                 <div class="invalid-feedback"></div>
@@ -229,7 +229,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="cnic">CNIC *</label>
+                                                <label class="text-danger" for="cnic">CNIC </label>
                                                 <input type="number" class="form-control" id="cnic" name="cnic"
                                                     value="{{ old('cnic', $HumanResource->cnic) }}">
                                             </div>
@@ -287,7 +287,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="relation">Religion *</label>
+                                                <label class="text-danger" for="relation">Religion </label>
                                                 <select name="religion" class="form-control">
                                                     <option value="" selected disabled>Select Religion</option>
                                                     @foreach (['Muslim', 'Hindu', 'Christian', 'Buddhist', 'Jewish', 'Sikh'] as $religion)
@@ -305,7 +305,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="martial_status">Marital Status *</label>
+                                                <label class="text-danger" for="martial_status">Marital Status </label>
                                                 <select name="martial_status" id="martial_status" class="form-control">
                                                     <option value="" disabled
                                                         {{ old('martial_status', $HumanResource->martial_status ?? '') == '' ? 'selected' : '' }}>
@@ -401,7 +401,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="acdemic_qualification">Academic
-                                                    Qualification *</label>
+                                                    Qualification </label>
                                                 <select name="acdemic_qualification" id="acdemic_qualification"
                                                     class="form-control">
                                                     <option value="" disabled
@@ -444,7 +444,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="technical_qualification">Technical
-                                                    Qualification *</label>
+                                                    Qualification </label>
                                                 <select name="technical_qualification" id="qualification"
                                                     class="form-control">
                                                     <option value="" selected disabled>Select Qualification</option>
@@ -557,7 +557,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="experience">Years of Experience (Gulf)
-                                                    *</label>
+                                                    </label>
                                                 <input type="number" name="experience_gulf" class="form-control"
                                                     min="0" placeholder="Enter Years of Experience"
                                                     value="{{ old('experience', $HumanResource->experience_gulf ?? '') }}">
@@ -716,7 +716,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="citizenship">Citizenship *</label>
+                                                <label class="text-danger" for="citizenship">Citizenship </label>
                                                 <select name="citizenship" class="form-control">
                                                     <option value="" selected disabled>Select Citizenship</option>
                                                     <option value="Pakistani"
@@ -738,7 +738,7 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="gender">Gender *</label>
+                                                <label class="text-danger" for="gender">Gender </label>
                                                 <select name="gender" id="gender" class="form-control">
                                                     <option value="" disabled
                                                         {{ old('gender', $HumanResource->gender ?? '') == '' ? 'selected' : '' }}>

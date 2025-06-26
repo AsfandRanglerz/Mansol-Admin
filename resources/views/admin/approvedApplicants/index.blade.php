@@ -60,7 +60,7 @@
                                             <th>Min Acceptable Salary</th>
                                             <th>Comment</th>
                                             <th>Status</th>
-                                            <th scope="col">Actions</th>
+                                            {{-- <th scope="col">Actions</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -115,7 +115,7 @@
                                             <td>
                                                 <div class="badge badge-success badge-shadow">Approved</div>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <form action="{{ route('approved.applicant.destroy', $HumanResource->id) }}"
                                                     method="POST">
                                                     @csrf
@@ -124,7 +124,7 @@
                                                         class="btn btn-danger btn-flat show_confirm"
                                                         data-toggle="tooltip">Delete</button>
                                                 </form>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         @endforeach
                                     </tbody>

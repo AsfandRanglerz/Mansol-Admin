@@ -10,7 +10,8 @@ class ApprovedApplicantsController extends Controller
 {
     public function index()
     {
-        $HumanResources = HumanResource::where('status', 2)->latest('updated_at')->get();
+        $HumanResources = HumanResource::where('status', 2)
+        ->latest('updated_at')->get();
         // dd($HumanResources);
         return view('admin.approvedApplicants.index', compact('HumanResources'));
     }
@@ -18,7 +19,11 @@ class ApprovedApplicantsController extends Controller
     public function destroy($id)
     {
         // return $id;
-        HumanResource::destroy($id);
-        return redirect()->route('approved.applicants.index')->with(['message' => 'Nomination Deleted Successfully']);
+        // HumanResource::destroy($id);
+        $data = HumanResource::findOrFail($id);
+        if (!$data) {
+            $data->update(['delete_by_admin' => 1]); // Mark as deleted
+        }
+        return redirect()->route('approved.applicants.index')->with(['message' => 'Assigned Resource Deleted Successfully']);
     }
 }

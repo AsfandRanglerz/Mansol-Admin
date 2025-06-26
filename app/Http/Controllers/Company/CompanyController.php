@@ -33,9 +33,8 @@ class CompanyController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            'phone' => 'required'
         ]);
-        $data = $request->only(['name', 'email', 'phone']);
+        $data = $request->only(['name', 'email','phone']);
         if ($request->hasfile('image')) {
             $file = $request->file('image');
             $extension = $file->getClientOriginalExtension(); // getting image extension

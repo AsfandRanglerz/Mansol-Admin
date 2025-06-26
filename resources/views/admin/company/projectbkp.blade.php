@@ -268,15 +268,9 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="text-danger" for="project_location">Project Location</label>
-                                    <select name="project_location" class="form-control edit-project-location" id="edit_project_location_{{ $project->id }}">
-                                        <option value="" disabled>Select Location Country</option>
-                                        @foreach($countries as $country)
-                                            <option value="{{ $country->title }}"
-                                                    data-currency-symbol="{{ $country->currency_code }}"
-                                                {{ strtolower($project->project_location) == strtolower($country->title) ? 'selected' : '' }}>
-                                                {{ $country->title }}
-                                            </option>
-                                        @endforeach
+                                    <select name="project_location" class="form-control" id="project_location">
+                                        <option value="{{ $project->project_location }}" selected>{{ $project->project_location }}</option>
+                                        <!-- Add other project location options here -->
                                     </select>
                                 </div>
                             </div>
@@ -289,7 +283,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="text-danger" for="project_end_date">Project End Date</label>
-                                    <input type="date" class="form-control" id="project_end_date" name="project_end_date" value="{{ $project->project_end_date ? $project->project_end_date->format('Y-m-d') : '' }}">
+                                    <input type="date" class="form-control" id="project_start_date" name="project_start_date" value="{{ $project->project_end_date ? $project->project_end_date->format('Y-m-d') : '' }}">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -307,14 +301,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="text-danger" for="project_currency">Project Currency</label>
-                                    <select name="project_currency" class="form-control edit-project-currency" id="edit_project_currency_{{ $project->id }}">
-                                        <option value="" disabled>Select Currency</option>
-                                        @foreach($countries as $country)
-                                            <option value="{{ $country->currency_code }}"
-                                                {{ strtolower($project->project_currency) == strtolower($country->currency_code) ? 'selected' : '' }}>
-                                                {{ $country->currency_code }}
-                                            </option>
-                                        @endforeach
+                                    <select name="project_currency" class="form-control" id="project_currency">
+                                        <option value="$" {{ $project->project_currency == '$' ? 'selected' : '' }}>Select Currency</option>
                                     </select>
                                 </div>
                             </div>
@@ -509,7 +497,6 @@
 
 @section('js')
 <script>
-    // For create modal
     document.getElementById('project_location').addEventListener('change', function () {
         const selectedOption = this.options[this.selectedIndex];
         const currencySymbol = selectedOption.getAttribute('data-currency-symbol');
@@ -522,21 +509,6 @@
             }
         }
     });
-
-    // For edit modals
-    @foreach ($projects as $project)
-    document.getElementById('edit_project_location_{{ $project->id }}').addEventListener('change', function () {
-        const selectedOption = this.options[this.selectedIndex];
-        const currencySymbol = selectedOption.getAttribute('data-currency-symbol');
-        const currencySelect = document.getElementById('edit_project_currency_{{ $project->id }}');
-        for (let i = 0; i < currencySelect.options.length; i++) {
-            if (currencySelect.options[i].value.toLowerCase() === currencySymbol.toLowerCase()) {
-                currencySelect.selectedIndex = i;
-                break;
-            }
-        }
-    });
-    @endforeach
 </script>
     <script>
         $(document).ready(function() {

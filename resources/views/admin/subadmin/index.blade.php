@@ -86,7 +86,7 @@
                                 <div class="col-12">
                                     <h4>Sub Admins</h4>
                                     <h6 class="text-muted text-danger" style="font-style: italic;">
-                                            Note: The default password for all sub-admins is <strong>12345678</strong>. This passowrd is automatically genrated when a new sub-admin created.
+                                            Note: The default password for all sub-admins is <strong>12345678</strong>. This password is automatically generated when a new sub-admin created.
                                     </h6>
                                 </div>
                             </div>
