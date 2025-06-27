@@ -23,7 +23,7 @@ class BulkFeatureController extends Controller
 
             Log::info('Excel import completed successfully.');
 
-            return back()->with('success', 'Users imported successfully!');
+            return back()->with('message', 'Excel file Imported Successfully. The data is now being processed — it may take a while to complete');
         } catch (\Throwable $e) {
             Log::error('Import failed: ' . $e->getMessage());
 

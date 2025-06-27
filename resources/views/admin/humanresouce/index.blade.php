@@ -429,23 +429,26 @@
 @section('js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script type="text/javascript">
-        $('.show_confirm').click(function(event) {
+     $(document).ready(function () {
+       $(document).on('click', '.show_confirm', function(event){
+            event.preventDefault(); // prevent default button action first
             var form = $(this).closest("form");
             var name = $(this).data("name");
-            event.preventDefault();
+
             swal({
-                    title: `Are you sure you want to delete this record?`,
-                    text: "If you delete this, it will be gone forever.",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        form.submit();
-                    }
-                });
+                title: "Are you sure you want to delete this record?",
+                text: "If you delete this, it will be gone forever.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    form.submit();
+                }
+            });
         });
+    });
     </script>
     <script>
         $(document).ready(function() {

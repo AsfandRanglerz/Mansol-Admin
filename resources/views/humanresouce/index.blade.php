@@ -21,7 +21,7 @@
                                                     @elseif ($user->status == 2)
                                                         Approved
                                                     @elseif ($user->status == 3)
-                                                        Nominated
+                                                        Assigned
                                                     @endif
                                                 </span>
                                                 </h2> 

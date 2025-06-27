@@ -17,6 +17,7 @@ class HumanResourceImportJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $rows;
+    protected $header = null; // Store header row for mapping
 
     public function __construct(array $rows)
     {
@@ -31,7 +32,38 @@ class HumanResourceImportJob implements ShouldQueue
                     Log::error('HumanResourceImportJob row skipped: Row is not an array', ['row' => $row]);
                     continue;
                 }
+
+                // If all keys are numeric, treat as a data row or header row
+                if (array_keys($row) === range(0, count($row) - 1)) {
+                    // If header not set, treat this row as header
+                    if ($this->header === null) {
+                        // Check if this row looks like a header (contains 'company_name' etc)
+                        $lowerRow = array_map('strtolower', $row);
+                        if (in_array('company_name', $lowerRow)) {
+                            $this->header = $lowerRow;
+                            continue; // skip header row
+                        } else {
+                            // No header found, skip this row
+                            Log::warning('Skipping row: header not found and row is numeric', ['row' => $row]);
+                            continue;
+                        }
+                    } else {
+                        // Map numeric row to associative using header
+                        $row = array_combine($this->header, $row);
+                        if ($row === false) {
+                            Log::warning('Skipping row: header/data count mismatch', ['row' => $row]);
+                            continue;
+                        }
+                    }
+                }
+
                 $row = array_change_key_case($row, CASE_LOWER);
+
+                // Skip if required key missing
+                if (!isset($row['company_name'])) {
+                    Log::warning('Skipping row: missing company_name', ['row' => $row]);
+                    continue;
+                }
 
                 Log::info('Processing row keys:', array_keys($row));
 
@@ -168,59 +200,61 @@ class HumanResourceImportJob implements ShouldQueue
                     }
                 }
 
-                $hr = HumanResource::create([
-                    'name' => $row['name'] ?? '',
-                    'email' => $row['email'],
-                    'approvals' => strtolower($row['approvals'] ?? null),
-                    'password' => bcrypt($password),
-                    // 'status' => $row['status'] ?? null,
-                    'registration' => $registration ?? null,
-                    'application_date' => $applicationDate,
-                    'experience_local' => $row['experience_local'] ?? null,
-                    'experience_gulf' => $row['experience_gulf'] ?? null,
-                    'son_of' => $row['son_of'] ?? null,
-                    'mother_name' => $row['mother_name'] ?? null,
-                    'blood_group' => strtolower($row['blood_group'] ?? null),
-                    'date_of_birth' => $dateOfBirth,
-                    'city_of_birth' => $row['city_of_birth'] ?? null,
-                    'city_of_interview' => $row['city_of_interview'] ?? null,
-                    'cnic' => $this->sanitizeCnic($row['cnic'] ?? null),
-                    'cnic_expiry_date' => $cnicExpiryDate,
-                    'doi' => $doi,
-                    'doe' => $doe,
-                    'passport' => $row['passport'] ?? null,
-                    'passport_issue_place' => strtolower($row['passport_issue_place'] ?? null),
-                    'religion' => strtolower($row['religion'] ?? null),
-                    'martial_status' => strtolower($row['martial_status'] ?? null),
-                    'next_of_kin' => $row['next_of_kin'] ?? null,
-                    'relation' => strtolower($row['relation'] ?? null),
-                    'kin_cnic' => $row['kin_cnic'] ?? null,
-                    'shoe_size' => strtolower($row['shoe_size'] ?? null),
-                    'cover_size' => $row['cover_size'] ?? null,
-                    'acdemic_qualification' => strtolower($row['acdemic_qualification'] ?? null),
-                    'technical_qualification' => $row['technical_qualification'] ?? null,
-                    'district_of_domicile' => $row['district_of_domicile'] ?? null,
-                    'present_address' => $row['present_address'] ?? null,
-                    'present_address_phone' => $row['present_address_phone'] ?? null,
-                    'present_address_mobile' => $row['present_address_mobile'] ?? null,
-                    'present_address_city' => strtolower($row['present_address_city'] ?? null),
-                    'permanent_address' => $row['permanent_address'] ?? null,
-                    'permanent_address_phone' => $row['permanent_address_phone'] ?? null,
-                    'permanent_address_mobile' => $row['permanent_address_mobile'] ?? null,
-                    'permanent_address_city' => strtolower($row['permanent_address_city'] ?? null),
-                    'permanent_address_province' => $row['permanent_address_province'] ?? null,
-                    'gender' => strtolower($row['gender'] ?? null),
-                    'citizenship' => $row['citizenship'] ?? null,
-                    'refference' => $row['refference'] ?? null,
-                    'performance_appraisal' => $row['performance_appraisal'] ?? null,
-                    'min_salary' => $row['min_salary'] ?? null,
-                    'comment' => $row['comment'] ?? null,
-                    'image' => 'public/admin/assets/images/users/avatar.png',
-                    'currancy' => $row['currancy'] ?? null,
-                    'craft_id' => $craft->id,
-                    'sub_craft_id' => $subCraft->id,
-                    'city_of_interview' => strtolower($row['city_of_interview'] ?? null),
-                ]);
+                $hr = HumanResource::updateOrCreate(
+                    ['cnic' => $this->sanitizeCnic($row['cnic'] ?? null)], // Find by sanitized CNIC
+                    [
+                        'name' => $row['name'] ?? '',
+                        'status' => $company ? 3 : 1,
+                        'email' => $row['email'],
+                        'approvals' => strtolower($row['approvals'] ?? null),
+                        'password' => bcrypt($password),
+                        'registration' => $registration ?? null,
+                        'application_date' => $applicationDate,
+                        'experience_local' => $row['experience_local'] ?? null,
+                        'experience_gulf' => $row['experience_gulf'] ?? null,
+                        'son_of' => $row['son_of'] ?? null,
+                        'mother_name' => $row['mother_name'] ?? null,
+                        'blood_group' => strtolower($row['blood_group'] ?? null),
+                        'date_of_birth' => $dateOfBirth,
+                        'city_of_birth' => $row['city_of_birth'] ?? null,
+                        'city_of_interview' => strtolower($row['city_of_interview'] ?? null),
+                        'cnic_expiry_date' => $cnicExpiryDate,
+                        'doi' => $doi,
+                        'doe' => $doe,
+                        'passport' => $row['passport'] ?? null,
+                        'passport_issue_place' => strtolower($row['passport_issue_place'] ?? null),
+                        'religion' => strtolower($row['religion'] ?? null),
+                        'martial_status' => strtolower($row['martial_status'] ?? null),
+                        'next_of_kin' => $row['next_of_kin'] ?? null,
+                        'relation' => strtolower($row['relation'] ?? null),
+                        'kin_cnic' => $row['kin_cnic'] ?? null,
+                        'shoe_size' => strtolower($row['shoe_size'] ?? null),
+                        'cover_size' => $row['cover_size'] ?? null,
+                        'acdemic_qualification' => strtolower($row['acdemic_qualification'] ?? null),
+                        'technical_qualification' => $row['technical_qualification'] ?? null,
+                        'district_of_domicile' => $row['district_of_domicile'] ?? null,
+                        'present_address' => $row['present_address'] ?? null,
+                        'present_address_phone' => $row['present_address_phone'] ?? null,
+                        'present_address_mobile' => $row['present_address_mobile'] ?? null,
+                        'present_address_city' => strtolower($row['present_address_city'] ?? null),
+                        'permanent_address' => $row['permanent_address'] ?? null,
+                        'permanent_address_phone' => $row['permanent_address_phone'] ?? null,
+                        'permanent_address_mobile' => $row['permanent_address_mobile'] ?? null,
+                        'permanent_address_city' => strtolower($row['permanent_address_city'] ?? null),
+                        'permanent_address_province' => $row['permanent_address_province'] ?? null,
+                        'gender' => strtolower($row['gender'] ?? null),
+                        'citizenship' => $row['citizenship'] ?? null,
+                        'refference' => $row['refference'] ?? null,
+                        'performance_appraisal' => $row['performance_appraisal'] ?? null,
+                        'min_salary' => $row['min_salary'] ?? null,
+                        'comment' => $row['comment'] ?? null,
+                        'image' => 'public/admin/assets/images/users/avatar.png',
+                        'currancy' => $row['currancy'] ?? null,
+                        'craft_id' => $craft->id,
+                        'sub_craft_id' => $subCraft->id,
+                    ]
+                );
+
 
                 if (!empty($company->id)) {
                     Nominate::create([

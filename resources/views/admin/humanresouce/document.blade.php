@@ -1129,7 +1129,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        toastr.success(`Step ${currentStep} saved successfully.`);
+                        toastr.success(`Step ${currentStep} saved successfully`);
 
                         if (currentStep < maxSteps) {
                             currentStep++;
@@ -1137,7 +1137,7 @@
                         } else {
                             // Close the modal on the last step
                             modal.modal("hide");
-                            toastr.success("All steps completed successfully!");
+                            toastr.success("All steps completed successfully");
                         }
                     },
                     error: function(xhr, status, error) {

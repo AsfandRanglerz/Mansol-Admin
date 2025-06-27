@@ -304,6 +304,7 @@ class HumanResourceController extends Controller
             $craft = Demand::find($request->demand_id);
 
             $HR->craft_id = $craft->craft_id;
+            $HR->status = 3;
             $HR->save();
 
             Nominate::create([
@@ -345,6 +346,7 @@ class HumanResourceController extends Controller
     
         $craft = MainCraft::find($HumanResource->craft_id);
         $nominates = Nominate::where('human_resource_id', $id)->first();
+        // return $nominates;
         $subCraft = SubCraft::find($HumanResource->sub_craft_id);
         $companies = Company::where('is_active', '=', '1')->latest()->get();
         $crafts = MainCraft::where('status',1)->latest()->get();
@@ -534,17 +536,25 @@ class HumanResourceController extends Controller
         if($HumanResource){
             $HumanResource->craft_id = $request->craft_id;
             $HumanResource->sub_craft_id = $request->sub_craft_id;
+            $HumanResource->status = 3;
             $HumanResource->save();
         }
         if(!empty($request->input('company_id'))) {
             // $HumanResource = HumanResource::where('email', $request->email)->first();
             $craft = Demand::find($request->demand_id);
-            Nominate::where('human_resource_id', $HumanResource->id)->update([
-                'craft_id' => $craft->craft_id,
+            // return $craft->craft_id;
+           $data = Nominate::updateOrCreate(
+            [
                 'human_resource_id' => $HumanResource->id,
+            ],
+            [
+                'craft_id' => $craft->craft_id,
                 'demand_id' => $request->demand_id,
                 'project_id' => $request->project_id,
-            ]);
+            ]
+        );
+
+            // return $data;
         }
         if(!empty($request->input('company_id')) || !empty($request->input('craft_id'))) {
                     $history = JobHistory::create([

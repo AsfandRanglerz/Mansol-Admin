@@ -14,9 +14,9 @@
         <li class="dropdown"><a href="#" data-toggle="dropdown"
                 class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 @if (Auth::guard('admin')->check())
-                    <img alt="image" src="{{ asset( isset(Auth::guard('admin')->user()->image) ? Auth::guard('admin')->user()->image: 'public/admin/assets/images/user.png') }}" class="user-img-radious-style"> 
+                    <img alt="image" src="{{ asset( isset(Auth::guard('admin')->user()->image) ? Auth::guard('admin')->user()->image: 'public/admin/assets/images/avator.png') }}" class="user-img-radious-style"> 
                 @elseif(Auth::guard('subadmin')->check())
-                    <img alt="image" src="{{ asset( isset(Auth::guard('subadmin')->user()->image) ? Auth::guard('subadmin')->user()->image: 'public/admin/assets/images/user.png') }}" class="user-img-radious-style"> 
+                    <img alt="image" src="{{ asset( isset(Auth::guard('subadmin')->user()->image) ? Auth::guard('subadmin')->user()->image: 'public/admin/assets/images/avator.png') }}" class="user-img-radious-style"> 
                 @endif
                 
                 <span
