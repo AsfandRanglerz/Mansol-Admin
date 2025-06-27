@@ -111,7 +111,7 @@
                                             {{-- Company --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                <label class="text-danger" for="company_id">Company</label>
+                                                <label class="" for="company_id">Company</label>
                                                 <select name="company_id" id="company_id" class="form-control">
                                                     <option value="">Select Company</option>
                                                     @foreach ($companies as $company)
@@ -124,7 +124,7 @@
                                             {{-- Project --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                <label class="text-danger" for="project_id">Project</label>
+                                                <label class="" for="project_id">Project</label>
                                                 <select name="project_id" id="project_id" class="form-control">
                                                     <option value="" selected disabled>Select Project</option>
                                                     @foreach ($projects as $project)
@@ -142,7 +142,7 @@
                                             {{-- Demand --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                <label class="text-danger" for="demand_id">Demand</label>
+                                                <label class="" for="demand_id">Demand</label>
                                                 <select name="demand_id" id="demand_id" class="form-control">
                                                     <option value="" selected disabled>Select Demand</option>
                                                     
@@ -189,7 +189,7 @@
                                             {{-- Passport Expiry Date --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                <label for="passport_expiry" class="form-label">Passport Expiry Date</label>
+                                                <label for="passport_expiry" class="form-label">Passport Expiry Status</label>
                                                <select name="passport_expiry" id="passport_expiry" class="form-control">
                                                         <option value="">Select Status</option>
                                                         <option value="Valid" {{ request('passport_expiry') == 'Valid' ? 'selected' : '' }}>Valid</option>
@@ -201,7 +201,7 @@
                                             {{-- Visa Expiry Date --}}
                                             <div class="col-md-3">
                                                 <div class="form-group"> 
-                                                <label for="visa_expiry" class="form-label">Visa Expiry Date</label>
+                                                <label for="visa_expiry" class="form-label">Visa Expiry Status</label>
                                                 <select name="visa_expiry" id="visa_expiry" class="form-control">
                                                         <option value="">Select Status</option>
                                                         <option value="Valid" {{ request('visa_expiry') == 'Valid' ? 'selected' : '' }}>Valid</option>
@@ -249,7 +249,7 @@
                                         <tr>
                                             <th class="noExport">Sr.</th>
                                             <th>Id No.</th>
-                                            <th class="noExport">Photo</th>
+                                            <th class="noExport">Passport Photo</th>
                                             <th class="noExport">Documents</th>
                                             <th>Name</th>
                                             <th>Email</th>
@@ -277,13 +277,13 @@
                                             <th>Experience (Gulf)</th>
                                             <th>District Of Domicile</th>
                                             <th>Present Address</th>
-                                            <th>Phone</th>
-                                            <th>Mobile</th>
+                                            <th>Present Address Phone</th>
+                                            <th>Present Address Mobile</th>
                                             <th>Permanent Address</th>
                                             <th>Present Address City</th>
                                             <th>Permanent Address</th>
-                                            <th>Phone</th>
-                                            <th>Mobile</th>
+                                            <th>Permanent Address Phone</th>
+                                            <th>Permanent Address Mobile</th>
                                             <th>Gender</th>
                                             <th>Permanent Address City</th>
                                             <th>Permanent Address Province</th>

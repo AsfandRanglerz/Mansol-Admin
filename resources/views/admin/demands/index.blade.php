@@ -118,35 +118,35 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="manpower">Manpower</label>
+                                    <label for="manpower">Manpower <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="manpower" name="manpower" value="{{ $demand->manpower }}">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="salary">Salary</label>
+                                    <label for="salary">Salary <span class="text-danger">*</span></label>
                                     <input type="number" class="form-control" id="salary" name="salary"  value="{{ $demand->salary }}">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="mobilization">Mobilization</label>
+                                    <label for="mobilization">Mobilization <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="mobilization" name="mobilization"  value="{{ $demand->mobilization }}">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="demobilization">Demobilization</label>
+                                    <label for="demobilization">Demobilization <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="demobilization" name="demobilization"  value="{{ $demand->demobilization }}">
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="is_active">Status</label>
+                                    <label for="is_active">Status <span class="text-danger">*</span></label>
                                     <select name="is_active" class="form-control">
                                         @if ($demand->is_active == 0)
                                             <option value="1">Deactive</option>
@@ -233,7 +233,7 @@
                                                 <td>
                                                     <div class="d-flex gap-4">
                                                         @if ($canEdit)
-                                                            <a href="#" class="btn btn-success mr-2" data-toggle="modal"
+                                                            <a href="#" class="btn btn-primary mr-2" data-toggle="modal"
                                                             data-target="#editDemandModal-{{ $demand->id }}">Edit</a>
                                                         @endif
                                                         @if ($canDelete)

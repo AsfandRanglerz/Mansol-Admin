@@ -16,14 +16,14 @@
                                     <!-- Name Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $mainCraft->name) }}" required>
                                         </div>
                                     </div>
 
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group mb-2">
-                                            <label for="status">Status</label>
+                                            <label for="status">Status <span class="text-danger">*</span></label>
                                             <select name="status" id="status" class="form-control" required>
                                                 <option value="" {{ old('status') === null ? 'selected' : '' }} disabled>Select an Option</option>
                                                 <option value="1" {{ old('status', $mainCraft->status) == '1' ? 'selected' : '' }}>Active</option>

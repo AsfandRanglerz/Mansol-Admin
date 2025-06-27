@@ -21,14 +21,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="name">Name</label>
+                                    <label for="name">Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-2">
-                                    <label for="status">Status</label>
+                                    <label for="status">Status <span class="text-danger">*</span></label>
                                     <select name="status" id="status" class="form-control" required>
                                         <option value="" {{ old('status') === null ? 'selected' : '' }}
                                             disabled>Select an Option</option>
@@ -72,14 +72,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="name">Name</label>
+                                    <label for="name">Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name" value="{{ $subCraft->name }}" required>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="status">Status</label>
+                                    <label for="status">Status <span class="text-danger">*</span></label>
                                     <select name="status" id="status" class="form-control" required>
                                         <option value="1" {{ $subCraft->status == 1 ? 'selected' : '' }}>Active</option>
                                         <option value="0" {{ $subCraft->status == 0 ? 'selected' : '' }}>Deactive</option>

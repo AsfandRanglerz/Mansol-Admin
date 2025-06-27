@@ -185,7 +185,7 @@
 
                                     <div class="form-group">
 
-                                        <label for="name">Name</label>
+                                        <label for="name">Name <span class="text-danger">*</span></label>
 
                                         <input type="text" class="form-control" id="name" name="name" value="{{ $company->name }}">
 
@@ -217,7 +217,7 @@
 
                                     <div class="form-group">
 
-                                        <label for="email">Email</label>
+                                        <label for="email">Email <span class="text-danger">*</span></label>
 
                                         <input type="email" class="form-control" value="{{ $company->email }}" readonly>
 
@@ -231,7 +231,7 @@
 
                                     <div class="form-group">
 
-                                        <label for="status">Active Status</label>
+                                        <label for="status">Active Status <span class="text-danger">*</span></label>
 
                                         <select name="status" class="form-control">
 
@@ -265,7 +265,7 @@
 
                                     <div class="form-group">
 
-                                        <label for="image">Image</label>
+                                        <label for="image">Profile Image</label>
 
                                         <input type="file" class="form-control" id="image" name="image">
 
@@ -353,6 +353,8 @@
 
                                             <th>Name</th>
 
+                                            <th>Profile Image</th>
+
                                             <th>Email</th>
 
                                             <th>Projects</th>
@@ -372,8 +374,17 @@
                                         <tr>
 
                                             <td>{{ $loop->iteration }}</td>
+ <td>{{ $company->name }}</td>
+                                            <td>
+                                            <img src="{{ asset($company->image ?? 'public/admin/assets/images/avator.png') }}"
+                                                onerror="this.onerror=null;this.src='{{ asset('public/admin/assets/images/avator.png') }}';"
+                                                alt="Company Image"
+                                                width="50"
+                                                height="50">
+                                        </td>
 
-                                            <td>{{ $company->name }}</td>
+
+                                           
 
                                            <td>
                                             @if(!empty($company->email))
@@ -413,7 +424,7 @@
                                                     
                                                     <td>
                                                         @if ($canEdit)
-                                                        <a href="#" class="btn btn-success" data-toggle="modal"
+                                                        <a href="#" class="btn btn-primary" data-toggle="modal"
                                                         data-target="#editCompanyModal-{{ $company->id }}">Edit</a>
                                                         @endif
                                                         @if ($canDelete)

@@ -125,10 +125,10 @@
                                                     <div class="form-group col-md-6 col-12">
 
                                                         <label>Email</label>
-
                                                         <input type="email" name="email" value="{{ $data->email }}"
+                                                            class="form-control"
+                                                            @if(auth()->guard('subadmin')->check()) readonly @endif>
 
-                                                            class="form-control">
 
                                                         @error('email')
 

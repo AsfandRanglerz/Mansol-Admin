@@ -21,8 +21,8 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="user_type">User Type</label>
-                                    <select id="user_type" name="user_type" class="form-control">
+                                    <label for="user_type">User Type <span class="text-danger">*</span></label>
+                                    <select id="user_type" name="user_type" class="form-control" required>
                                         <option value="">Select Type</option>
                                         <option value="company">Company</option>
                                         <option value="human_resource">Human Resource</option>
@@ -34,7 +34,7 @@
 
                             <div class="col-md-12" id="target_container" style="display:none;">
                                 <div class="form-group">
-                                    <label for="target_ids">Select Recipients</label>
+                                    <label for="target_ids">Select Recipients <span class="text-danger">*</span></label>
 
                                     <div class="form-check mb-2">
                                         <input type="checkbox" class="form-check-input" id="select_all_recipients"
@@ -43,7 +43,7 @@
                                             Recipients</label>
                                     </div>
 
-                                    <select name="target_ids[]" id="target_ids" class="form-control" multiple>
+                                    <select name="target_ids[]" id="target_ids" class="form-control" multiple required>
                                         {{-- Options will be loaded dynamically --}}
                                     </select>
                                     <div class="invalid-feedback"></div>
@@ -53,8 +53,8 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="email">Message</label>
-                                    <textarea type="text" class="form-control" name="message"></textarea>
+                                    <label for="email">Message <span class="text-danger">*</span></label>
+                                    <textarea type="text" class="form-control" name="message" required></textarea>
                                     <div class="invalid-feedback"></div>
                                 </div>
                             </div>
@@ -451,17 +451,32 @@
                     location.reload();
                 },
                 error: function(xhr) {
-                    let response = xhr.responseJSON;
-                    if (response && response.errors) {
-                        for (const [key, messages] of Object.entries(response.errors)) {
-                            $(`[name="${key}"]`).addClass('is-invalid')
-                                .siblings('.invalid-feedback').text(messages[0]).show();
-                        }
-                    } else {
-                        alert('Failed to send notification.');
-                    }
-                    console.log(xhr.responseText);
-                },
+    let response = xhr.responseJSON;
+    if (response && response.errors) {
+        // Clear previous errors
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').text('').hide();
+
+        for (const [key, messages] of Object.entries(response.errors)) {
+            // Handle 'target_ids' => field with name="target_ids[]"
+            let selector = key === 'target_ids'
+                ? '[name="target_ids[]"]'
+                : `[name="${key}"]`;
+
+            const $field = $(selector);
+
+            if ($field.length) {
+                $field.addClass('is-invalid');
+                $field.siblings('.invalid-feedback').text(messages[0]).show();
+            }
+        }
+    } else {
+        alert('Failed to send notification.');
+    }
+
+    console.log(xhr.responseText);
+},
+
                 complete: function() {
                     $('.btn-primary').attr('disabled', false).text('Create');
                 }

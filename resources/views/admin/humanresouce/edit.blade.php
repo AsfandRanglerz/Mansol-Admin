@@ -961,7 +961,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="text-danger" for="city_of_interview">Interview Location</label>
+                                        <label class="" for="city_of_interview">Interview Location</label>
                                         <select name="city_of_interview" class="form-control" id="cityOfInterview">
                                             <option value="" selected disabled>Select Location</option>
                                             @foreach ($cities as $city)
@@ -980,7 +980,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="text-danger" for="project_id">Project</label>
+                                        <label class="" for="project_id">Project</label>
                                         <select name="project_id" id="project_id" class="form-control">
                                             <option value="" selected disabled>Select Project</option>
                                         </select>
@@ -989,7 +989,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="text-danger" for="demand_id">Demand</label>
+                                        <label class="" for="demand_id">Demand</label>
                                         <select name="demand_id" id="demand_id" class="form-control">
                                             <option value="" selected disabled>Select Demand</option>
                                         </select>
@@ -1012,7 +1012,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="text-danger" for="sub_craft">Sub-Craft (Optional)</label>
+                                        <label class="" for="sub_craft">Sub-Craft (Optional)</label>
                                         <select name="sub_craft_id" class="form-control" id="sub_craft">
                                             <option value="" selected disabled>Select Sub-Craft</option>
                                         </select>

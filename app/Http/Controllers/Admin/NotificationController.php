@@ -54,7 +54,8 @@ class NotificationController extends Controller
     {
         $request->validate([
             'user_type' => 'required|in:company,human_resource',
-            'target_ids_by_type' => 'required|string',
+           'target_ids' => 'required|array',
+        'target_ids.*' => 'string',
             'message' => 'required|string',
         ]);
 

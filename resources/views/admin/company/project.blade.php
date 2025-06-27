@@ -245,7 +245,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="text-danger" for="project_name">Project Name</label>
+                                    <label class="text-danger" for="project_name">Project Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="project_name" name="project_name" value="{{ $project->project_name }}">
                                 </div>
                             </div>
@@ -261,13 +261,7 @@
                             </div> --}}
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="text-danger" for="manpower_location">Man-Power Location City</label>
-                                    <input type="text" class="form-control" id="manpower_location" name="manpower_location" value="{{ $project->manpower_location }}" required>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="text-danger" for="project_location">Project Location</label>
+                                    <label class="text-danger" for="project_location">Project Location <span class="text-danger">*</span></label>
                                     <select name="project_location" class="form-control edit-project-location" id="edit_project_location_{{ $project->id }}">
                                         <option value="" disabled>Select Location Country</option>
                                         @foreach($countries as $country)
@@ -282,7 +276,13 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="text-danger" for="project_start_date">Project Start Date</label>
+                                    <label class="text-danger" for="manpower_location">Man-Power Location City <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="manpower_location" name="manpower_location" value="{{ $project->manpower_location }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="text-danger" for="project_start_date">Project Start Date <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" id="project_start_date" name="project_start_date" value="{{ $project->project_start_date ? $project->project_start_date->format('Y-m-d') : '' }}">
                                 </div>
                             </div>
@@ -306,7 +306,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="text-danger" for="project_currency">Project Currency</label>
+                                    <label class="text-danger" for="project_currency">Project Currency <span class="text-danger">*</span></label>
                                     <select name="project_currency" class="form-control edit-project-currency" id="edit_project_currency_{{ $project->id }}">
                                         <option value="" disabled>Select Currency</option>
                                         @foreach($countries as $country)
@@ -471,7 +471,7 @@
                                             <td>
                                                 <div class="d-flex gap-4">
                                                     @if ($canEdit)
-                                                    <a href="#" class="btn btn-success" data-toggle="modal"
+                                                    <a href="#" class="btn btn-primary" data-toggle="modal"
                                                         data-target="#editProjectModal-{{ $project->id }}">Edit</a>
                                                     @endif
                                                     @if ($canDelete)

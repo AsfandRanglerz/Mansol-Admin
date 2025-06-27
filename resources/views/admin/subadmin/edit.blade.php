@@ -16,7 +16,7 @@
                                     <!-- Name Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
+                                            <label for="name">Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name" value="{{ $subAdmin->name }}" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
@@ -25,7 +25,7 @@
                                     <!-- Email Field -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="email">Email</label>
+                                            <label for="email">Email <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="email" name="email" value="{{ $subAdmin->email }}" required>
                                             <div class="invalid-feedback"></div>
                                         </div>
@@ -34,7 +34,7 @@
                                     <!-- Role Dropdown -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group">
-                                            <label for="role">Role</label>
+                                            <label for="role">Role <span class="text-danger">*</span></label>
                                             <select name="role_id" id="role" class="form-control" required>
                                                 <option value="" disabled>Select Role</option>
                                                 @foreach ($roles as $role)
@@ -50,7 +50,7 @@
                                     <!-- Status Dropdown -->
                                     <div class="col-sm-6 pl-sm-0 pr-sm-3">
                                         <div class="form-group mb-2">
-                                            <label for="status">Status</label>
+                                            <label for="status">Status <span class="text-danger">*</span></label>
                                             <select name="status" id="status" class="form-control">
                                                 <option value="" disabled>Select an Option</option>
                                                 <option value="1" {{ $subAdmin->status == 1 ? 'selected' : '' }}>Active</option>

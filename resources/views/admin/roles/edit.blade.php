@@ -44,7 +44,7 @@
                                     <!-- Role Name -->
                                     <div class="col-sm-6">
                                         <div class="form-group mb-2">
-                                            <label for="title">Role Name</label>
+                                            <label for="title">Role Name <span class="text-danger">*</span></label>
                                             <input type="text" name="title" id="title" class="form-control"
                                                 placeholder="Enter Role Name" value="{{ old('title', $role->title) }}"
                                                 disabled>
@@ -57,7 +57,7 @@
                                     <!-- Status -->
                                     <div class="col-sm-6">
                                         <div class="form-group mb-2">
-                                            <label for="status">Status</label>
+                                            <label for="status">Status <span class="text-danger">*</span></label>
                                             <select name="status" id="status" class="form-control">
                                                 <option value="" disabled>Select an Option</option>
                                                 <option value="1"
