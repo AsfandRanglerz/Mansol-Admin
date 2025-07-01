@@ -146,7 +146,9 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::post('/update-history',  'mobDemob')->name('jobHistory.update');
         Route::post('/jobHistory-update',  'updateHistory')->name('history.update');
         Route::get('/get-demob-data',  'getMobData')->name('get-demob-data');
+        Route::post('admin/human-resource/ajax','ajax')->name('humanresource.ajax');
     });
+    
 
       // ############ Human Resource ################# 
     Route::controller(BulkFeatureController::class)->group(function () {

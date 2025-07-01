@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPasswordMail;
 use App\Models\Admin;
+use App\Models\Project;
 use App\Models\SubAdmin;
 use App\Models\Company;
 use App\Models\HumanResource;
@@ -21,7 +22,7 @@ class AdminController extends Controller
     {
         $total_human_resoures = HumanResource::count();
         $total_companies = Company::get()->count();
-        $total_projects = HumanResource::get()->count();
+        $total_projects = Project::get()->count();
         // dd([
         //     'admin' => Auth::guard('admin')->check(),
         //     'subadmin' => Auth::guard('subadmin')->check(),

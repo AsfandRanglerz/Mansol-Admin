@@ -43,9 +43,10 @@ class HumanResourceImportJob implements ShouldQueue
                             $this->header = $lowerRow;
                             continue; // skip header row
                         } else {
-                            // No header found, skip this row
-                            Log::warning('Skipping row: header not found and row is numeric', ['row' => $row]);
-                            continue;
+                            // No header found, treat this row as header anyway (optional header)
+                            $this->header = $lowerRow;
+                            Log::warning('Header row not detected by name, using first numeric row as header.', ['row' => $row]);
+                            continue; // skip this row, treat as header
                         }
                     } else {
                         // Map numeric row to associative using header
@@ -59,11 +60,11 @@ class HumanResourceImportJob implements ShouldQueue
 
                 $row = array_change_key_case($row, CASE_LOWER);
 
-                // Skip if required key missing
-                if (!isset($row['company_name'])) {
-                    Log::warning('Skipping row: missing company_name', ['row' => $row]);
-                    continue;
-                }
+                // // Skip if required key missing
+                // if (!isset($row['company_name'])) {
+                //     Log::warning('Skipping row: missing company_name', ['row' => $row]);
+                //     continue;
+                // }
 
                 Log::info('Processing row keys:', array_keys($row));
 
@@ -83,11 +84,15 @@ class HumanResourceImportJob implements ShouldQueue
                 //     Log::warning('Skipping row due to missing company_name.', $row);
                 //     continue;
                 // }
-                $company = Company::where('name', $row['company_name'])->first();
-                if (!$company && !empty($row['company_name'])) {
-                    Log::warning('Skipping row because company does not exist: ' . $row['company_name'], $row);
-                    continue;
+                $company = null;
+                if (!empty($row['company_name'])) {
+                    $company = Company::where('name', $row['company_name'])->first();
                 }
+                // Make company optional: do not skip if not found
+                // if (!$company && !empty($row['company_name'])) {
+                //     Log::warning('Skipping row because company does not exist: ' . $row['company_name'], $row);
+                //     continue;
+                // }
                 
                 $craft = MainCraft::firstOrCreate(['name' => $row['craft_name']]);
                 $subCraft = SubCraft::firstOrCreate([
@@ -205,7 +210,7 @@ class HumanResourceImportJob implements ShouldQueue
                     [
                         'name' => $row['name'] ?? '',
                         'status' => $company ? 3 : 1,
-                        'email' => $row['email'],
+                        'email' => $row['email'] ?? null,
                         'approvals' => strtolower($row['approvals'] ?? null),
                         'password' => bcrypt($password),
                         'registration' => $registration ?? null,
