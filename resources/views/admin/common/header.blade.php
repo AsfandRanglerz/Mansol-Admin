@@ -24,12 +24,12 @@
             <div class="dropdown-menu dropdown-menu-right pullDown">
                 <div class="dropdown-title">
                   @if (Auth::guard('admin')->check())
-                    {{ Auth::guard('admin')->user()->name }} 
+                    Hello, {{ Auth::guard('admin')->user()->name }} 
                 @elseif(Auth::guard('subadmin')->check())
-                   {{Auth::guard('subadmin')->user()->name}} 
+                   Hello, {{Auth::guard('subadmin')->user()->name}} 
                 @endif
                 </div>
-                <a href="{{ url('admin/profile') }}" class="dropdown-item has-icon"> <i class="far fa-user"></i> Profile
+                <a href="{{ url('admin/profile') }}" class="dropdown-item has-icon"> <i class="fa fa-cog"></i> Settings
                     <div class="dropdown-divider"></div>
                     <a href="{{ url('admin/logout') }}" class="dropdown-item has-icon text-danger"> <i
                             class="fas fa-sign-out-alt"></i>

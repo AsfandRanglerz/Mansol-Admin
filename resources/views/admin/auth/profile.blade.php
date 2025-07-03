@@ -1,6 +1,6 @@
 @extends('admin.layout.app')
 
-@section('title', 'Profile')
+@section('title', 'Settings')
 
 @section('content')
 
@@ -91,12 +91,6 @@
                                             enctype="multipart/form-data">
 
                                             @csrf
-
-                                            <div class="card-header">
-
-                                                <h4>Edit Profile</h4>
-
-                                            </div>
 
                                             <div class="card-body">
 
