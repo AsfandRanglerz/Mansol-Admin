@@ -80,7 +80,7 @@ class AdminController extends Controller
                     || DB::table('sub_admins')->where('email', $email)->exists();
 
             if (!$exists) {
-                return back()->withErrors(['message' => 'This email does not exist']);
+                return back()->with(['error' => 'This email does not exist']);
             }
         $exists = DB::table('password_resets')->where('email', $request->email)->first();
         if ($exists) {
