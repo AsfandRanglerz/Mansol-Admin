@@ -27,11 +27,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="file" name="file" required>
-                                            <button type="submit" class="btn btn-success">Import</button>
-                                        </form>
+                            <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="file" required>
+                                <button type="submit" class="btn btn-success">Import</button>
+                            </form>
                 </div>
                 <div class="modal-body">
                     <form id="createSubadminForm" enctype="multipart/form-data">
@@ -310,12 +310,16 @@
                                                         alt="Step 4 Image" width="50" height="50">
                                                 </td>
                                             <td class="noExport">
-                                                <button data-toggle="modal"    data-target="#createHRModal-{{ $HumanResource->id }}"
-                                                    class="btn btn-primary text-white d-flex align-items-center"
-                                                    href="{{ route('humanresource.index') }}">
-                                                    <span class="fa-solid fa-plus mr-2"></span>
-                                                    <p class="m-0 text-white">Attachments</p>
-                                                </button>
+                                                <button 
+    class="btn btn-primary text-white d-flex align-items-center open-modal-btn" 
+    data-id="{{ $HumanResource->id }}"
+    data-toggle="modal" 
+    data-target="#dynamicHRModal"
+>
+    <span class="fa-solid fa-plus mr-2"></span>
+    <p class="m-0 text-white">Attachments</p>
+</button>
+
                                             </td>
                                             <td>{{ $HumanResource->name ?? 'null' }}</td>
                                             <td>
@@ -544,6 +548,30 @@
             });
         })
     </script>
-    
+    <script>
+    $(document).on('click', '.open-modal-btn', function () {
+        var hrId = $(this).data('id');
+            $('#dynamic-modal-content').html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>');
+
+            $.ajax({
+                url: "{{ route('hr.modal.content') }}", // Define this route
+                type: 'GET',
+                data: { id: hrId },
+                success: function (response) {
+                    $('#dynamic-modal-content').html(response);
+                },
+                error: function (xhr, status, error) {
+                console.error('AJAX Error:', {
+                    status: status,
+                    error: error,
+                    response: xhr.responseText
+                });
+
+                $('#dynamic-modal-content').html('<p class="text-danger text-center">Failed to load content.</p>');
+                }
+            });
+        });
+</script>
+
     <script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
 @endsection

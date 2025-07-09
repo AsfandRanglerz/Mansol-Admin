@@ -665,4 +665,11 @@ class HumanResourceController extends Controller
 
         // ...existing code...
     }
+
+    public function getModalContent(Request $request)
+    {
+        $HumanResource = HumanResource::with('hrSteps')->findOrFail($request->id);
+        return view('admin.humanresouce.partials.modal', compact('HumanResource'))->render(); // partial blade file
+    }
+
 }

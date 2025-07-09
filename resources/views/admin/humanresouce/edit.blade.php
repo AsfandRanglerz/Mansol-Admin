@@ -155,7 +155,9 @@
                                                 <label class="text-danger" for="name">Name *</label>
                                                 <input type="text" class="form-control" id="name" name="name"
                                                     value="{{ old('name', $HumanResource->name) }}">
-                                                <div class="invalid-feedback"></div>
+                                                @error('name')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -163,7 +165,9 @@
                                                 <label class="text-danger" for="son_of">S/O *</label>
                                                 <input type="text" class="form-control" id="son_of" name="son_of"
                                                     value="{{ old('son_of', $HumanResource->son_of) }}">
-                                                <div class="invalid-feedback"></div>
+                                                  @error('son_of')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
 
@@ -224,6 +228,9 @@
                                                 <label class="text-danger" for="cnic">CNIC *</label>
                                                 <input type="number" class="form-control" id="cnic" name="cnic"
                                                     value="{{ old('cnic', $HumanResource->cnic) }}">
+                                                    @error('cnic')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -289,7 +296,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('relation')
+                                                @error('religion')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -553,7 +560,7 @@
                                                 <input type="number" name="experience_gulf" class="form-control"
                                                     min="0" placeholder="Enter Years of Experience"
                                                     value="{{ old('experience', $HumanResource->experience_gulf ?? '') }}">
-                                                @error('experience')
+                                                @error('experience_gulf')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>

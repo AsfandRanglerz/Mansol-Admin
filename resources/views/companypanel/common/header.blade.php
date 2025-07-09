@@ -17,7 +17,7 @@
                     class="d-sm-none d-lg-inline-block"></span></a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
                 <div class="dropdown-title">{{ Auth::guard('company')->user()->name }}</div>
-                <a href="{{ url('company/profile') }}" class="dropdown-item has-icon"> <i class="far fa-user"></i> Profile
+                <a href="{{ url('company/profile') }}" class="dropdown-item has-icon"> <i class="fa fa-cog"></i> Settings
                     <div class="dropdown-divider"></div>
                     <a href="{{ url('company/logout') }}" class="dropdown-item has-icon text-danger"> <i
                             class="fas fa-sign-out-alt"></i>

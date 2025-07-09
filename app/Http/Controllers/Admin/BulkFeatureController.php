@@ -18,10 +18,12 @@ class BulkFeatureController extends Controller
  
         try {
             Log::info('Starting Excel import.');
-
+            $start = now();
+            Log::info("Import started at: $start");
             Excel::import(new HumanResourceImport, $request->file('file'));
-
             Log::info('Excel import completed successfully.');
+            $end = now();
+            Log::info("Import dispatched at: $end");
 
             return back()->with('message', 'Excel file Imported Successfully. The data is now being processed — it may take a while to complete');
         } catch (\Throwable $e) {

@@ -240,4 +240,7 @@ Route::prefix('human-resource')->middleware('humanresource')->group(function () 
         Route::get('/notification',  'index')->name('notificationHumanResouce.index');
     });
 });
+
+Route::get('/hr/modal-content', [HumanResourceController::class, 'getModalContent'])->name('hr.modal.content');
+
 require __DIR__ . '/company.php';
