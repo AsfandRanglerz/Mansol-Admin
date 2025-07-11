@@ -9,6 +9,7 @@ use App\Models\Distric;
 use App\Models\Province;
 use App\Models\Country;
 use App\Models\Demand;
+use App\Models\Lab;
 use App\Models\Company;
 use App\Models\Project;
 use App\Models\Nominate;
@@ -23,122 +24,368 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\QueryException;
 use Facade\Ignition\QueryRecorder\Query;
 use App\Mail\HumanResourceUserLoginPassword;
-
+use Carbon\Carbon;
 class HumanResourceController extends Controller
 {
+    // public function index(Request $request)
+    //     {
+    //             // Static dropdown data 
+    //             $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
+    //             $projects = Project::where('is_active', '=', '1')->orderBy('project_name', 'asc')->get();
+                
+    //             $demands = Demand::where('project_id', $request->project_id)->where('is_active', '=', '1')->orderBy('manpower', 'asc')->get();
+    //             // Append concatenated name to each demand
+    //             $demands->transform(function ($demand) {
+    //                 $demand->full_name = $demand->manpower . ' - ' . $demand->craft?->name;
+    //                 return $demand;
+    //             });
+
+
+    //             // Check if any filter is present
+    //             $hasFilters = $request->filled('company_id') ||
+    //                         $request->filled('project_id') ||
+    //                         $request->filled('demand_id') ||
+    //                         $request->filled('medically_fit') ||
+    //                         $request->filled('visa_expiry') ||
+    //                         $request->filled('cnic_expiry') ||
+    //                         $request->filled('passport_expiry');
+
+    //             if ($hasFilters) {
+    //                 // Base query
+    //                 $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
+    //                     ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
+    //                     ->latest();
+
+    //                 // Filters via 'nominates' relation
+    //                 if (
+    //                     $request->filled('company_id') ||
+    //                     $request->filled('project_id') ||
+    //                     $request->filled('demand_id')
+    //                 ) {
+    //                     $query->whereHas('nominates', function ($q) use ($request) {
+    //                         // Filter by project
+    //                         if ($request->filled('project_id')) {
+    //                             $q->where('project_id', $request->project_id);
+    //                         }
+    //                         // Filter by demand
+    //                         if ($request->filled('demand_id')) {
+    //                             $q->where('demand_id', $request->demand_id);
+    //                         }
+    //                         // Filter by company through project
+    //                         if ($request->filled('company_id')) {
+    //                             $q->whereHas('project', function ($subQ) use ($request) {
+    //                                 $subQ->where('company_id', $request->company_id);
+    //                             });
+    //                         }
+    //                     });
+    //                 }
+
+    //                 // Filters via 'hrSteps' relation
+    //                 if (
+    //                     $request->filled('medically_fit') ||
+    //                     $request->filled('visa_expiry')
+    //                 ) {
+    //                     $query->whereHas('hrSteps', function ($q) use ($request) {
+    //                         if ($request->filled('medically_fit')) {
+    //                             $q->where('step_number',6)->where('medically_fit', $request->medically_fit);
+    //                         }
+    //                         if ($request->filled('visa_expiry')) {
+    //                             $value = $request->input('passport_expiry');
+    //                             if($value == 'Valid'){
+    //                                 $q->where('step_number',6)->whereDate('visa_expiry_date', '>=', now());
+    //                             } elseif($value == 'Expired'){
+    //                                 $q->where('step_number',6)->whereDate('visa_expiry_date', '<', now());
+    //                             }
+    //                         }
+    //                     });
+    //                 }
+
+    //                 if ($request->filled('cnic_expiry')) {
+    //                     $value = $request->input('cnic_expiry');
+    //                     if($value == 'Valid'){
+    //                         $query->whereDate('cnic_expiry_date', '>=', now());
+    //                     } elseif($value == 'Expired'){
+    //                         $query->whereDate('cnic_expiry_date', '<', now());
+    //                     }
+    //                 }
+
+    //                 if ($request->filled('passport_expiry')) {
+    //                     $value = $request->input('passport_expiry');
+    //                     if($value == 'Valid'){
+    //                         $query->whereDate('doe', '>=', now());
+    //                     } elseif($value == 'Expired'){
+    //                         $query->whereDate('doe', '<', now());
+    //                     }
+    //                 }
+
+    //                 $HumanResources = $query->get();
+    //                 $count = $query->whereIn('status', [1, 3, 2, 0])->count();
+    //             } else {
+    //                 // No filters: get all HumanResources and count
+    //                 $HumanResources = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
+    //                     ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
+    //                     ->latest()
+    //                     ->get();
+    //                 $count = HumanResource::whereIn('status', [1, 3, 2, 0])->count();
+    //             }
+
+    //             $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
+    //             return view('admin.humanresouce.index', compact(
+    //                 'HumanResources',
+    //                 'companies',
+    //                 'projects',
+    //                 'demands',
+    //                 'count',
+    //                 'medically_fit'
+    //             ));
+    //     }
+
+
+    public function ajax(Request $request)
+    {
+        $columns = [
+            'registration', 'passport_photo', 'id', 'name', 'email', 'cnic', 'application_date',
+            'craft', 'sub_craft', 'approvals', 'approvals_document', 'son_of', 'mother_name', 'date_of_birth',
+            'cnic_expiry_date', 'doi', 'doe', 'passport', 'next_of_kin', 'relation', 'kin_cnic', 'shoe_size',
+            'cover_size', 'acdemic_qualification', 'technical_qualification', 'experience_local', 'experience_gulf',
+            'district_of_domicile', 'present_address', 'present_address_phone', 'present_address_mobile',
+            'permanent_address', 'present_address_city', 'permanent_address_phone', 'permanent_address_mobile',
+            'gender', 'permanent_address_city', 'permanent_address_province', 'citizenship', 'refference',
+            'performance_appraisal', 'min_salary', 'comment', 'status', 'id','visa_type','visa_status','visa_expiry_date',
+            'visa_issue_date'
+        ];
+
+        // Always get the total count (without filters)
+        $totalData = HumanResource::count();
+
+        $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps']);
+
+        // Filtering
+        if (
+            $request->filled('company_id') ||
+            $request->filled('project_id') ||
+            $request->filled('demand_id')
+        ) {
+            $query->whereHas('nominates', function ($q) use ($request) {
+                if ($request->filled('project_id')) {
+                    $q->where('project_id', $request->project_id);
+                }
+                if ($request->filled('demand_id')) {
+                    $q->where('demand_id', $request->demand_id);
+                }
+                if ($request->filled('company_id')) {
+                    $q->whereHas('project', function ($subQ) use ($request) {
+                        $subQ->where('company_id', $request->company_id);
+                    });
+                }
+            });
+        }
+
+        if (
+            $request->filled('medically_fit') ||
+            $request->filled('visa_expiry') ||
+            $request->filled('visa_type')
+        ) {
+            $query->whereHas('hrSteps', function ($q) use ($request) {
+                if ($request->filled('medically_fit')) {
+                    $q->where('step_number', 6)->where('medically_fit', $request->medically_fit);
+                }
+                 if ($request->filled('visa_type')) {
+                    $q->where('step_number', 6)->where('visa_type', $request->visa_type);
+                }
+                if ($request->filled('visa_expiry')) {
+                    $value = $request->input('passport_expiry');
+                    if ($value == 'Valid') {
+                        $q->where('step_number', 6)->whereDate('visa_expiry_date', '>=', now());
+                    } elseif ($value == 'Expired') {
+                        $q->where('step_number', 6)->whereDate('visa_expiry_date', '<', now());
+                    }
+                }
+            });
+        }
+
+        if ($request->filled('cnic_expiry')) {
+            $value = $request->input('cnic_expiry');
+            if ($value == 'Valid') {
+                $query->whereDate('cnic_expiry_date', '>=', now());
+            } elseif ($value == 'Expired') {
+                $query->whereDate('cnic_expiry_date', '<', now());
+            }
+        }
+
+        if ($request->filled('passport_expiry')) {
+            $value = $request->input('passport_expiry');
+            if ($value == 'Valid') {
+                $query->whereDate('doe', '>=', now());
+            } elseif ($value == 'Expired') {
+                $query->whereDate('doe', '<', now());
+            }
+        }
+        // Extract raw inputs once
+        $dateFromRaw = $request->input('date_from');
+        $dateToRaw   = $request->input('date_to');
+        if ($dateFromRaw && $dateToRaw) {
+            $query->whereBetween('application_date', [
+                Carbon::parse($dateFromRaw)->startOfDay(), 
+                Carbon::parse($dateToRaw)->endOfDay()
+            ]);
+        } elseif ($dateFromRaw) {
+            $query->whereDate('application_date', '>=',
+                Carbon::parse($dateFromRaw)->format('Y-m-d'));
+        } elseif ($dateToRaw) {
+            $query->whereDate('application_date', '<=',
+                Carbon::parse($dateToRaw)->format('Y-m-d'));
+        }
+        // Searching
+        $search = $request->input('search.value');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name',                     'like', "%{$search}%")
+                    ->orWhere('registration',           'like', "%{$search}%")
+                    ->orWhere('email',                  'like', "%{$search}%")
+                    ->orWhere('cnic',                   'like', "%{$search}%")
+                    ->orWhere('application_date',       'like', "%{$search}%")
+                    ->orWhere('approvals',              'like', "%{$search}%")
+                    ->orWhere('passport',               'like', "%{$search}%")
+                    ->orWhere('gender',                 'like', "%{$search}%")
+                    ->orWhere('permanent_address_city', 'like', "%{$search}%")   
+                    ->orWhere('permanent_address_province','like', "%{$search}%")
+                    ->orWhere('citizenship',            'like', "%{$search}%")
+                    ->orWhere('refference',             'like', "%{$search}%")
+                    ->orWhere('performance_appraisal',  'like', "%{$search}%")
+                    ->orWhere('min_salary',             'like', "%{$search}%")
+                    ->orWhereHas('Crafts', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Get filtered count before pagination
+        $filteredQuery = clone $query;
+        $totalFiltered = $filteredQuery->count();
+
+        // Ordering
+        $orderColIndex = $request->input('order.0.column', 0);
+        $orderCol = $columns[$orderColIndex] ?? 'id';
+        $orderDir = $request->input('order.0.dir', 'asc');
+        if (in_array($orderCol, ['name', 'registration', 'email', 'cnic'])) {
+            $query->orderBy($orderCol, $orderDir);
+        } else {
+            $query->latest();
+        }
+
+        // Pagination
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 10);
+        if ($length != -1) {
+            $query->skip($start)->take($length);
+        }
+
+        $data = $query->get();
+
+        // Format data for DataTables (plain data, no HTML)
+        $result = [];
+        foreach ($data as $row) {
+            $step4 = $row->hrSteps->firstWhere('step_number', 4);
+            $step6 = $row->hrSteps->firstWhere('step_number', 6);
+            $visa_status = 'N/A';
+            if ($step6 && $step6->visa_expiry_date !== null) {
+                $visa_status = $step6->visa_expiry_date >= now() ? 'Valid' : 'Expired';
+            }
+            $result[] = [
+                'registration' => $row->registration ?? '',
+                'passport_photo' => $step4 ? $step4->file_name : '',
+                'visa_type' => $step6 ? $step6->visa_type : '',
+                'visa_status' => $visa_status,
+                'visa_issue_date' => $step6 ? $step6->visa_issue_date : '',
+                'visa_expiry_date' => $step6 ? $step6->visa_expiry_date : '',
+                'id' => $row->id,
+                'name' => $row->name ?? '',
+                'email' => $row->email ?? '',
+                'cnic' => $row->cnic ?? '',
+                'application_date' => $row->application_date ?? '',
+                'craft' => $row->Crafts->name ?? '',
+                'sub_craft' => $row->SubCrafts->name ?? '',
+                'approvals' => $row->approvals ?? '',
+                'approvals_document' => $row->medical_doc ?? '',
+                'son_of' => $row->son_of ?? '',
+                'mother_name' => $row->mother_name ?? '',
+                'date_of_birth' => $row->date_of_birth ?? '',
+                'cnic_expiry_date' => $row->cnic_expiry_date ?? '',
+                'doi' => $row->doi ?? '',
+                'doe' => $row->doe ?? '',
+                'passport' => $row->passport ?? '',
+                'next_of_kin' => $row->next_of_kin ?? '',
+                'relation' => $row->relation ?? '',
+                'kin_cnic' => $row->kin_cnic ?? '',
+                'shoe_size' => $row->shoe_size ?? '',
+                'cover_size' => $row->cover_size ?? '',
+                'acdemic_qualification' => $row->acdemic_qualification ?? '',
+                'technical_qualification' => $row->technical_qualification ?? '',
+                'experience_local' => $row->experience_local ?? '',
+                'experience_gulf' => $row->experience_gulf ?? '',
+                'district_of_domicile' => $row->district_of_domicile ?? '',
+                'present_address' => $row->present_address ?? '',
+                'present_address_phone' => $row->present_address_phone ?? '',
+                'present_address_mobile' => $row->present_address_mobile ?? '',
+                'permanent_address' => $row->permanent_address ?? '',
+                'present_address_city' => $row->present_address_city ?? '',
+                'permanent_address_phone' => $row->permanent_address_phone ?? '',
+                'permanent_address_mobile' => $row->permanent_address_mobile ?? '',
+                'gender' => $row->gender ?? '',
+                'permanent_address_city' => $row->permanent_address_city ?? '',
+                'permanent_address_province' => $row->permanent_address_province ?? '',
+                'citizenship' => $row->citizenship ?? '',
+                'refference' => $row->refference ?? '',
+                'performance_appraisal' => $row->performance_appraisal ?? '',
+                'min_salary' => $row->min_salary ?? '',
+                'comment' => $row->comment ?? '',
+                'status' => $row->status ?? '',
+            ];
+        }
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $result,
+        ]);
+    }
     public function index(Request $request)
         {
-                // Static dropdown data 
-                $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
-                $projects = Project::where('is_active', '=', '1')->orderBy('project_name', 'asc')->get();
-                
-                $demands = Demand::where('project_id', $request->project_id)->where('is_active', '=', '1')->orderBy('manpower', 'asc')->get();
-                // Append concatenated name to each demand
-                $demands->transform(function ($demand) {
-                    $demand->full_name = $demand->manpower . ' - ' . $demand->craft?->name;
-                    return $demand;
-                });
+            // Only load dropdown/filter data and count, not all records
+            $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
+            $projects = Project::where('is_active', '=', '1')->orderBy('project_name', 'asc')->get();
+            $demands = Demand::where('project_id', $request->project_id)->where('is_active', '=', '1')->orderBy('manpower', 'asc')->get();
+            $demands->transform(function ($demand) {
+                $demand->full_name = $demand->manpower . ' - ' . $demand->craft?->name;
+                return $demand;
+            });
 
-                // Check if any filter is present
-                $hasFilters = $request->filled('company_id') ||
-                            $request->filled('project_id') ||
-                            $request->filled('demand_id') ||
-                            $request->filled('medically_fit') ||
-                            $request->filled('visa_expiry') ||
-                            $request->filled('cnic_expiry') ||
-                            $request->filled('passport_expiry');
 
-                if ($hasFilters) {
-                    // Base query
-                    $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
-                        ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
-                        ->latest();
-
-                    // Filters via 'nominates' relation
-                    if (
-                        $request->filled('company_id') ||
-                        $request->filled('project_id') ||
-                        $request->filled('demand_id')
-                    ) {
-                        $query->whereHas('nominates', function ($q) use ($request) {
-                            // Filter by project
-                            if ($request->filled('project_id')) {
-                                $q->where('project_id', $request->project_id);
-                            }
-                            // Filter by demand
-                            if ($request->filled('demand_id')) {
-                                $q->where('demand_id', $request->demand_id);
-                            }
-                            // Filter by company through project
-                            if ($request->filled('company_id')) {
-                                $q->whereHas('project', function ($subQ) use ($request) {
-                                    $subQ->where('company_id', $request->company_id);
-                                });
-                            }
-                        });
-                    }
-
-                    // Filters via 'hrSteps' relation
-                    if (
-                        $request->filled('medically_fit') ||
-                        $request->filled('visa_expiry')
-                    ) {
-                        $query->whereHas('hrSteps', function ($q) use ($request) {
-                            if ($request->filled('medically_fit')) {
-                                $q->where('step_number',6)->where('medically_fit', $request->medically_fit);
-                            }
-                            if ($request->filled('visa_expiry')) {
-                                $value = $request->input('passport_expiry');
-                                if($value == 'Valid'){
-                                    $q->where('step_number',6)->whereDate('visa_expiry_date', '>=', now());
-                                } elseif($value == 'Expired'){
-                                    $q->where('step_number',6)->whereDate('visa_expiry_date', '<', now());
-                                }
-                            }
-                        });
-                    }
-
-                    if ($request->filled('cnic_expiry')) {
-                        $value = $request->input('cnic_expiry');
-                        if($value == 'Valid'){
-                            $query->whereDate('cnic_expiry_date', '>=', now());
-                        } elseif($value == 'Expired'){
-                            $query->whereDate('cnic_expiry_date', '<', now());
-                        }
-                    }
-
-                    if ($request->filled('passport_expiry')) {
-                        $value = $request->input('passport_expiry');
-                        if($value == 'Valid'){
-                            $query->whereDate('doe', '>=', now());
-                        } elseif($value == 'Expired'){
-                            $query->whereDate('doe', '<', now());
-                        }
-                    }
-
-                    $HumanResources = $query->get();
-                    $count = $query->whereIn('status', [1, 3, 2, 0])->count();
-                } else {
-                    // No filters: get all HumanResources and count
-                    $HumanResources = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
+            $count = HumanResource::whereIn('status', [1, 3, 2, 0])->count();
+            $HumanResources = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
                         ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
                         ->latest()
                         ->get();
-                    $count = HumanResource::whereIn('status', [1, 3, 2, 0])->count();
-                }
-
-                $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
-                return view('admin.humanresouce.index', compact(
-                    'HumanResources',
-                    'companies',
-                    'projects',
-                    'demands',
-                    'count',
-                    'medically_fit'
-                ));
+            $references = HumanResource::select('refference')
+                ->whereNotNull('refference')
+                ->distinct()
+                ->get()
+                ->pluck('refference')
+                ->toArray();
+            $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
+            return view('admin.humanresouce.index', compact(
+                'companies',
+                'HumanResources',
+                'projects',
+                'demands',
+                'count',
+                'medically_fit',
+                'references'
+            ));
         }
-
-
+        
     public function create()
     {
         $crafts = MainCraft::where('status', '=', 1)->latest()->get();
@@ -669,7 +916,8 @@ class HumanResourceController extends Controller
     public function getModalContent(Request $request)
     {
         $HumanResource = HumanResource::with('hrSteps')->findOrFail($request->id);
-        return view('admin.humanresouce.partials.modal', compact('HumanResource'))->render(); // partial blade file
+        $labs = Lab::latest()->get();
+        return view('admin.humanresouce.partials.modal', compact('HumanResource','labs'))->render(); // partial blade file
     }
 
 }

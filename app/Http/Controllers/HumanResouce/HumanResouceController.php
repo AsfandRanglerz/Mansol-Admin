@@ -53,7 +53,7 @@ class HumanResouceController extends Controller
             $data['image'] = 'public/admin/assets/images/users/' . $filename;
         }
         HumanResource::find(Auth::guard('humanresource')->id())->update($data);
-        return back()->with(['status' => true, 'message' => 'Profile Updated Successfully']);
+        return back()->with(['status' => true, 'message' => 'Settings Updated Successfully']);
     }
     public function forgetPassword()
     {

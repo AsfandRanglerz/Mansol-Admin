@@ -43,7 +43,7 @@ class CompanyController extends Controller
             $data['image'] = 'public/admin/assets/images/users/' . $filename;
         }
         Company::find(Auth::guard('company')->id())->update($data);
-        return back()->with(['status' => true, 'message' => 'Profile Updated Successfully']);
+        return back()->with(['status' => true, 'message' => 'Settings Updated Successfully']);
     }
     public function forgetPassword()
     {

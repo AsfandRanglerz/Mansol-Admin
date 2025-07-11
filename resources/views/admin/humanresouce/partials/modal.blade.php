@@ -638,12 +638,22 @@
                             <div class="col-md-6 mt-3">
                                 <label>Lab</label>
                                 <select name="lab" class="form-control" required>
-                                    <option value="" disabled {{ !$lab ? 'selected' : '' }}>Select an Option
-                                    </option>
-                                    <option value="Lab 1" {{ $lab == 'Lab 1' ? 'selected' : '' }}>Lab 1</option>
-                                    <option value="Lab 2" {{ $lab == 'Lab 2' ? 'selected' : '' }}>Lab 2</option>
-                                    <option value="Lab 3" {{ $lab == 'Lab 3' ? 'selected' : '' }}>Lab 3</option>
-                                </select>
+                                        {{-- default placeholder --}}
+                                        <option value="" disabled {{ empty($lab) ? 'selected' : '' }}>Select an Option</option>
+
+                                        {{-- dynamic options --}}
+                                        @foreach($labs as $item)
+                                            @php
+                                                // agar $item object hai to uska name lo, warna string hi hai
+                                                $value = is_object($item) ? $item->lab_name : $item;
+                                            @endphp
+
+                                            <option value="{{ $value }}" {{ ($lab ?? '') === $value ? 'selected' : '' }}>
+                                                {{ $value }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
                             </div>
                             {{-- Comments --}}
                             <div class="col-md-6 mt-3">
@@ -694,6 +704,12 @@
                                     <option value="" disabled {{ !$visa_type ? 'selected' : '' }}>Select an Option</option>
                                     <option value="Work Permit" {{ $visa_type == 'Work Permit' ? 'selected' : '' }}>Work Permit</option>
                                     <option value="Visit Visa" {{ $visa_type == 'Visit Visa' ? 'selected' : '' }}>Visit Visa</option>
+                                    <option value="B-1" {{ $visa_type == 'B-1' ? 'selected' : '' }}>B-1</option>
+                                    <option value="DEB" {{ $visa_type == 'DEB' ? 'selected' : '' }}>DEB</option>
+                                    <option value="Single Entry" {{ $visa_type == 'Single Entry' ? 'selected' : '' }}>Single Entry</option>
+                                      <option value="EV" {{ $visa_type == 'EV' ? 'selected' : '' }}>EV</option>
+                                    <option value="Work Visa" {{ $visa_type == 'Work Visa' ? 'selected' : '' }}>Work Visa</option>
+                                    <option value="WORK VISIT VISA" {{ $visa_type == 'WORK VISIT VISA' ? 'selected' : '' }}>WORK VISIT VISA</option>
                                     {{-- ...other options... --}}
                                 </select>
                             </div>
