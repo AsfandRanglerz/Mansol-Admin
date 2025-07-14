@@ -462,16 +462,16 @@
                                                         {{ old('acdemic_qualification', $record->acdemic_qualification ?? '') == '' ? 'selected' : '' }}>
                                                         Select Qualification</option>
                                                     @foreach ([
-            'no_formal_education' => 'No Formal Education',
-            'primary' => 'Primary Education',
-            'secondary' => 'Secondary Education',
-            'high_school' => 'High School Diploma',
-            'bachelor' => "Bachelor's Degree",
-            'master' => "Master's Degree",
-            'doctorate' => 'Doctorate (PhD)',
-            'professional_certification' => 'Professional Certification',
-            'other' => 'Other',
-        ] as $key => $label)
+                                                                'no_formal_education' => 'No Formal Education',
+                                                                'primary' => 'Primary Education',
+                                                                'secondary' => 'Secondary Education',
+                                                                'high_school' => 'High School Diploma',
+                                                                'bachelor' => "Bachelor's Degree",
+                                                                'master' => "Master's Degree",
+                                                                'doctorate' => 'Doctorate (PhD)',
+                                                                'professional_certification' => 'Professional Certification',
+                                                                'other' => 'Other',
+                                                            ] as $key => $label)
                                                         <option value="{{ $key }}"
                                                             {{ old('acdemic_qualification', $record->acdemic_qualification ?? '') == $key ? 'selected' : '' }}>
                                                             {{ $label }}
@@ -1000,7 +1000,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="refference">Reference</label>
                                                 <input type="text" class="form-control" id="refference"
-                                                    name="refference" value="{{ old('refference') }}">
+                                                    name="refference" value="{{ old('refference') }}" pattern="[A-Za-z\s]+">
                                                 @error('refference')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror

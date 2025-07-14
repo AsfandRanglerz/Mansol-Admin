@@ -16,7 +16,7 @@
                 <img alt="image" src="{{ asset( isset(Auth::guard('humanresource')->user()->image) ? Auth::guard('humanresource')->user()->image: 'public/admin/assets/images/users/avatar.png') }}" class="user-img-radious-style"> <span
                     class="d-sm-none d-lg-inline-block"></span></a>
             <div class="dropdown-menu dropdown-menu-right pullDown">
-                <div class="dropdown-title">{{ Auth::guard('humanresource')->user()->name }}</div>
+                <div class="dropdown-title">HELLO, {{ Auth::guard('humanresource')->user()->name }}</div>
                 <a href="{{ url('human-resource/profile') }}" class="dropdown-item has-icon"> <i class="fa fa-cog"></i> Settings
                     <div class="dropdown-divider"></div>
                     <a href="{{ url('human-resource/logout') }}" class="dropdown-item has-icon text-danger"> <i

@@ -152,7 +152,7 @@ class HumanResourceController extends Controller
             'permanent_address', 'present_address_city', 'permanent_address_phone', 'permanent_address_mobile',
             'gender', 'permanent_address_city', 'permanent_address_province', 'citizenship', 'refference',
             'performance_appraisal', 'min_salary', 'comment', 'status', 'id','visa_type','visa_status','visa_expiry_date',
-            'visa_issue_date'
+            'visa_issue_date','flight_route','flight_date','passport_taken_status', 'cnic_taken_status','blood_group','religion','interview_location'
         ];
 
         // Always get the total count (without filters)
@@ -164,7 +164,8 @@ class HumanResourceController extends Controller
         if (
             $request->filled('company_id') ||
             $request->filled('project_id') ||
-            $request->filled('demand_id')
+            $request->filled('demand_id') ||
+            $request->filled('craft_id') 
         ) {
             $query->whereHas('nominates', function ($q) use ($request) {
                 if ($request->filled('project_id')) {
@@ -172,6 +173,11 @@ class HumanResourceController extends Controller
                 }
                 if ($request->filled('demand_id')) {
                     $q->where('demand_id', $request->demand_id);
+                }
+                if($request->filled('company_id') && $request->filled('project_id') && $request->filled('demand_id')){
+                    if ($request->filled('craft_id')) {
+                        $q->where('craft_id', $request->craft_id);
+                    }
                 }
                 if ($request->filled('company_id')) {
                     $q->whereHas('project', function ($subQ) use ($request) {
@@ -184,7 +190,10 @@ class HumanResourceController extends Controller
         if (
             $request->filled('medically_fit') ||
             $request->filled('visa_expiry') ||
-            $request->filled('visa_type')
+            $request->filled('visa_type') ||
+            $request->filled('flight_date') ||
+            $request->filled('cnic_taken') ||
+            $request->filled('passport_taken')
         ) {
             $query->whereHas('hrSteps', function ($q) use ($request) {
                 if ($request->filled('medically_fit')) {
@@ -192,6 +201,11 @@ class HumanResourceController extends Controller
                 }
                  if ($request->filled('visa_type')) {
                     $q->where('step_number', 6)->where('visa_type', $request->visa_type);
+                }
+                if ($request->filled('flight_date')) {
+                    $date = Carbon::parse($request->flight_date)->format('Y-m-d');
+                    $q->where('step_number', 6)->whereDate('flight_date',$date);
+                    // return $date;
                 }
                 if ($request->filled('visa_expiry')) {
                     $value = $request->input('passport_expiry');
@@ -201,9 +215,66 @@ class HumanResourceController extends Controller
                         $q->where('step_number', 6)->whereDate('visa_expiry_date', '<', now());
                     }
                 }
+                if ($request->filled('cnic_taken')) {
+                    $value = $request->input('cnic_taken');
+                    if($value == 'Taken'){
+                        $q->where('step_number', 3)->where('file_type','cnic front')
+                        ->where('file_name', '!=', null);
+                        // $q->where('step_number', 3)->where('file_type','cnic back')
+                        // ->where('file_name', '!=', null);
+                    } elseif($value == 'Not Taken'){
+                        $q->where('step_number', 3)->where('file_type','cnic front')
+                        ->whereNull('file_name');
+                        // $q->where('step_number', 3)->where('file_type','cnic back')
+                        // ->whereNull('file_name');
+                    }
+                }
+                if ($request->filled('passport_taken')) {
+                    $value = $request->input('passport_taken');
+                    if($value == 'Taken'){
+                        $q->where('step_number', 2)->where('file_type','passport front')
+                        ->where('file_name', '!=', null);
+                        // $q->where('step_number', 2)->where('file_type','passport back')
+                        // ->where('file_name', '!=', null);
+                        // $q->where('step_number', 2)->where('file_type','passport third image')
+                        // ->where('file_name', '!=', null);
+                    } elseif($value == 'Not Taken'){
+                        $q->where('step_number', 2)->where('file_type','passport front')
+                        ->whereNull('file_name');
+                        // $q->where('step_number', 2)->where('file_type','passport back')
+                        // ->whereNull('file_name');
+                        //  $q->where('step_number', 2)->where('file_type','passport third image')
+                        // ->whereNull('file_name');
+                    }
+                }
             });
         }
 
+        if ($request->filled('refference')) {
+            $value = $request->input('refference');
+                $query->where('refference', $value);
+        }
+        if ($request->filled('craft_id')) {
+            $value = $request->input('craft_id');
+                $query->where('craft_id', $value);
+        }
+        if ($request->filled('interview_location')) {
+            $value = $request->input('interview_location');
+                $query->where('city_of_interview', $value);
+        }
+        if($request->filled('mobilized')){
+            $value = $request->input('mobilized');
+            if($value == 'Mobilized'){
+                $query->whereHas('jobHistory', function ($q){
+                    $q->where('mob_date', '!=', null)
+                      ->where('mob_date', '!=', '');
+                });
+            } elseif($value == 'Not Yet Mobilized'){
+                $query->whereHas('jobHistory', function ($q){
+                    $q->whereNull('mob_date');
+                });
+            }
+        }
         if ($request->filled('cnic_expiry')) {
             $value = $request->input('cnic_expiry');
             if ($value == 'Valid') {
@@ -211,6 +282,19 @@ class HumanResourceController extends Controller
             } elseif ($value == 'Expired') {
                 $query->whereDate('cnic_expiry_date', '<', now());
             }
+        }
+        if ($request->filled('blood_group')) {
+            $value = $request->input('blood_group');
+                $query->where('blood_group',$value);
+        }
+
+        if ($request->filled('religion')) {
+            $value = $request->input('religion');
+                $query->where('religion',$value);
+        }
+        if ($request->filled('approvals')) {
+            $value = $request->input('approvals');
+                $query->where('approvals',$value);
         }
 
         if ($request->filled('passport_expiry')) {
@@ -282,12 +366,22 @@ class HumanResourceController extends Controller
         }
 
         $data = $query->get();
-
+        
         // Format data for DataTables (plain data, no HTML)
         $result = [];
         foreach ($data as $row) {
             $step4 = $row->hrSteps->firstWhere('step_number', 4);
             $step6 = $row->hrSteps->firstWhere('step_number', 6);
+            $cnic_front = $row->hrSteps->where('step_number', 3)->where('file_type','cnic front')
+                        ->where('file_name', '!=', null)->first();
+            $cnic_back = $row->hrSteps->where('step_number', 3)->where('file_type','cnic back')
+                        ->where('file_name', '!=', null)->first();
+            $passport_front = $row->hrSteps->where('step_number', 2)->where('file_type','passport front')
+                        ->where('file_name', '!=', null)->first();
+            $passport_back = $row->hrSteps->where('step_number', 2)->where('file_type','passport back')
+                        ->where('file_name', '!=', null)->first();
+            $passport_third_image = $row->hrSteps->where('step_number', 2)->where('file_type','passport third image')
+                        ->where('file_name', '!=', null)->first();
             $visa_status = 'N/A';
             if ($step6 && $step6->visa_expiry_date !== null) {
                 $visa_status = $step6->visa_expiry_date >= now() ? 'Valid' : 'Expired';
@@ -299,6 +393,10 @@ class HumanResourceController extends Controller
                 'visa_status' => $visa_status,
                 'visa_issue_date' => $step6 ? $step6->visa_issue_date : '',
                 'visa_expiry_date' => $step6 ? $step6->visa_expiry_date : '',
+                'flight_date' => $step6 ? $step6->flight_date : '',
+                'flight_route' => $step6 ? $step6->flight_route : '',
+                'cnic_taken_status' => ($cnic_front && $cnic_back) ? 'Taken' : 'Not Taken',
+                'passport_taken_status' => ($passport_front && $passport_back && $passport_third_image) ? 'Taken' : 'Not Taken',
                 'id' => $row->id,
                 'name' => $row->name ?? '',
                 'email' => $row->email ?? '',
@@ -333,22 +431,29 @@ class HumanResourceController extends Controller
                 'permanent_address_phone' => $row->permanent_address_phone ?? '',
                 'permanent_address_mobile' => $row->permanent_address_mobile ?? '',
                 'gender' => $row->gender ?? '',
+                'blood_group' => $row->blood_group ?? '',
+                'religion' => $row->religion ?? '',
                 'permanent_address_city' => $row->permanent_address_city ?? '',
                 'permanent_address_province' => $row->permanent_address_province ?? '',
                 'citizenship' => $row->citizenship ?? '',
                 'refference' => $row->refference ?? '',
+                'interview_location' => $row->city_of_interview ?? '',
                 'performance_appraisal' => $row->performance_appraisal ?? '',
                 'min_salary' => $row->min_salary ?? '',
                 'comment' => $row->comment ?? '',
                 'status' => $row->status ?? '',
             ];
         }
-
+        $project = null;
+        if($request->input('project_id')){
+            $project = Project::find($request->input('project_id'));
+        }
         return response()->json([
             'draw' => intval($request->input('draw')),
             'recordsTotal' => $totalData,
             'recordsFiltered' => $totalFiltered,
             'data' => $result,
+            'project ' => $project,
         ]);
     }
     public function index(Request $request)
@@ -362,7 +467,8 @@ class HumanResourceController extends Controller
                 return $demand;
             });
 
-
+            $cities = City::orderBy('name')->get();
+            $crafts = MainCraft::where('status', '=', 1)->where('name','!=','')->latest()->get();
             $count = HumanResource::whereIn('status', [1, 3, 2, 0])->count();
             $HumanResources = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])
                         ->orderByRaw("FIELD(status, 1, 3, 2, 0)")
@@ -370,10 +476,12 @@ class HumanResourceController extends Controller
                         ->get();
             $references = HumanResource::select('refference')
                 ->whereNotNull('refference')
+                ->where('refference', '!=', '')
                 ->distinct()
                 ->get()
                 ->pluck('refference')
                 ->toArray();
+            // return $references;
             $medically_fit = $request->input('medically_fit') ? $request->input('medically_fit') : null;
             return view('admin.humanresouce.index', compact(
                 'companies',
@@ -382,7 +490,9 @@ class HumanResourceController extends Controller
                 'demands',
                 'count',
                 'medically_fit',
-                'references'
+                'references',
+                'cities',
+                'crafts'
             ));
         }
         

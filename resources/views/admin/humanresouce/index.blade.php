@@ -164,12 +164,26 @@
                                                 @enderror
                                             </div>
                                             </div>
+
+                                            {{-- Crafts --}}
+                                           <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="craft" class="form-label">Craft</label>
+                                                    <select name="craft" id="craft" class="form-control">
+                                                    <option value="">Select Craft</option>
+                                                        @foreach ($crafts as $data)
+                                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             {{-- Reference --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="reference" class="form-label">References</label>
-                                                    <select name="reference" id="reference" class="form-control">
-                                                        <option value="" disabled selected>Select Reference</option>
+                                                    <label for="refference" class="form-label">Refference</label>
+                                                    <select name="refference" id="refference" class="form-control">
+                                                        <option value="" disabled selected>Select Refference</option>
                                                         @foreach($references as $item)
                                                                 <option value="{{ $item }}">
                                                                     {{ $item }}
@@ -190,21 +204,21 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            {{-- CNCC Expiry Date --}}
+                                            {{-- Application Date From --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="date_from" class="form-label">Application Date From</label>
                                                     <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from') }}">
                                                 </div>
                                             </div>
-                                            {{-- CNCC Expiry Date --}}
+                                            {{-- Application Date To --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="date_to" class="form-label">Application Date To</label>
                                                     <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to') }}">
                                                 </div>
                                             </div>
-                                            {{-- CNCC Expiry Date --}}
+                                            {{-- CNIC Expiry Status --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="cnic_expiry" class="form-label">CNIC Expiry Status</label>
@@ -258,15 +272,121 @@
                                                 </div>
                                             </div>
 
+                                            {{-- Flight Date --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="flight_date" class="form-label">Flight Date</label>
+                                                    <input type="date" name="flight_date" id="flight_date" class="form-control" value="{{ request('flight_date') }}">
+                                                </div>
+                                            </div>
+
+                                            {{-- Mobilized FIlter --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="mobilized">Mobilized</label>
+                                                    <select name="mobilized" class="form-control" id="mobilized">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        <option value="Mobilized">Mobilized</option>
+                                                        <option value="Not Yet Mobilized">Not Yet Mobilized</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- CNIC Taken Filter --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="cnic_taken">CNIC</label>
+                                                    <select name="cnic_taken" class="form-control" id="cnic_taken">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        <option value="Taken">Taken</option>
+                                                        <option value="Not Taken">Not Taken</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+                                            {{-- Passport Taken Filter --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="passport_taken">Passport</label>
+                                                    <select name="passport_taken" class="form-control" id="passport_taken">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        <option value="Taken">Taken</option>
+                                                        <option value="Not Taken">Not Taken</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Blood Group --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="blood_group">Blood Group</label>
+                                                        <select name="blood_group" class="form-control" id="blood_group">
+                                                            <option value="" disabled selected>Select Blood Group</option>
+                                                    @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $blood)
+                                                        <option value="{{ strtolower($blood) }}">
+                                                            {{ $blood }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                    
+                                                </div>
+                                            </div>
+
+
+                                            {{-- Religion --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="religion">Religion</label>
+                                                    <select name="religion" class="form-control" id="religion">
+                                                    <option value="" disabled selected>
+                                                        Select Religion
+                                                    </option>
+                                                    @foreach (['Muslim', 'Hindu', 'Christian', 'Buddhist', 'Jewish', 'Sikh'] as $religion)
+                                                        <option value="{{ strtolower($religion) }}">
+                                                            {{ $religion }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Approval --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="approvals">Approvals</label>
+                                                    <select name="approvals" id="approvals" class="form-control">
+                                                    <option value="" disabled selected>
+                                                        Select Company</option>
+                                                    @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $company)
+                                                        <option value="{{ strtolower($company) }}">
+                                                            {{ $company }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Interview Location --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="interview_location">Interview Location</label>
+                                                    <select name="interview_location" class="form-control" id="interview_location">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        @foreach ($cities as $city)
+                                                        <option value="{{ strtolower($city->name) }}">
+                                                            {{ $city->name }}
+                                                        </option>
+                                                    @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             {{-- Filter Button --}}
-                                            <div class="col-md-3 d-flex align-items-center">
-                                                <div class="row w-100">
-                                                    <div class="col-6 pr-1">
-                                                        <button type="submit" class="btn btn-primary" style="width:max-content">Apply Filter</button>
-                                                    </div>
-                                                    <div class="col-6 pl-1">
-                                                        <button type="button" id="clear-filter-btn" class="btn btn-secondary w-100">Clear Filter</button>
-                                                    </div>
+                                            <div class="col-md-12 d-flex justify-content-end align-items-end mb-3">
+                                                <div class="btn-group">
+                                                    <button type="submit" class="btn btn-primary mr-2">Apply Filter</button>
+                                                    <button type="button" id="clear-filter-btn" class="btn btn-secondary">Clear</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -317,6 +437,7 @@
                                             <th>Sub-Craft</th>
                                             <th>Approvals #</th>
                                             <th class="noExport">Approvals Document</th>
+                                            <th>City Of Interview</th>
                                             <th>S/O</th>
                                             <th>Mother Name</th>
                                             <th>Date Of Birth</th>
@@ -342,6 +463,8 @@
                                             <th>Permanent Address Phone</th>
                                             <th>Permanent Address Mobile</th>
                                             <th>Gender</th>
+                                            <th>Blood Group</th>
+                                            <th>Religion</th>
                                             <th>Permanent Address City</th>
                                             <th>Permanent Address Province</th>
                                             <th>Citizenship</th>
@@ -352,6 +475,10 @@
                                             <th>Visa Status</th>
                                             <th>Visa Issue Date</th>
                                             <th>Visa Expiry Date</th>
+                                            <th>Flight Date</th>
+                                            <th>Flight Route</th>
+                                            <th>CNIC Taken Status</th>
+                                            <th>Passport Taken Status</th>
                                             <th>Comment</th>
                                             <th>Status</th>
                                             <th scope="col" class="noExport">Actions</th>
@@ -439,6 +566,7 @@
                     d.company_id = $('#company_id').val();
                     d.project_id = $('#project_id').val();
                     d.demand_id = $('#demand_id').val();
+                    d.craft_id = $('#craft').val();
                     d.medically_fit = $('#medically_fit').val();
                     d.cnic_expiry = $('#cnic_expiry').val();
                     d.passport_expiry = $('#passport_expiry').val();
@@ -446,6 +574,15 @@
                     d.date_from = $('#date_from').val();
                     d.date_to = $('#date_to').val();
                     d.visa_type = $('#visa_type').val();
+                    d.refference = $('#refference').val();
+                    d.flight_date = $('#flight_date').val();
+                    d.mobilized = $('#mobilized').val();
+                    d.cnic_taken = $('#cnic_taken').val();
+                    d.passport_taken = $('#passport_taken').val();
+                    d.blood_group = $('#blood_group').val();
+                    d.religion = $('#religion').val();
+                    d.approvals = $('#approvals').val();
+                    d.interview_location = $('#interview_location').val();
                 }
             },
             columns: [
@@ -455,9 +592,19 @@
                     if (!data) return '<img src="{{ asset('public/admin/assets/images/avator.png') }}" width="50" height="50">';
                     return '<img src="{{ asset('') }}' + data + '" width="50" height="50">';
                 }},
-                { data: "id", render: function (data, type, row) {
-                    return '<button class="btn btn-primary text-white d-flex align-items-center" data-toggle="modal" data-target="#createHRModal-' + data + '"><span class="fa-solid fa-plus mr-2"></span><p class="m-0 text-white">Attachments</p></button>';
-                }},
+                { 
+                data: "id",
+                render: function (data) {
+                    return `
+                    <button class="btn btn-primary text-white d-flex align-items-center open-modal-btn"
+                            data-id="${data}"
+                            data-toggle="modal"
+                            data-target="#dynamicHRModal">
+                        <span class="fa-solid fa-plus mr-2"></span>
+                        <span class="m-0">Attachments</span>
+                    </button>`;
+                }
+                },
                 { data: "name" },
                 { data: "email", render: function (data) {
                     return data ? '<a href="mailto:' + data + '">' + data + '</a>' : '';
@@ -470,6 +617,7 @@
                 { data: "approvals_document", render: function (data) {
                     return data ? '<a href="{{ asset('') }}' + data + '" download>Download File</a>' : '';
                 }},
+                { data: "interview_location" },
                 { data: "son_of" },
                 { data: "mother_name" },
                 { data: "date_of_birth" },
@@ -495,6 +643,8 @@
                 { data: "permanent_address_phone" },
                 { data: "permanent_address_mobile" },
                 { data: "gender" },
+                { data: "blood_group" },
+                { data: "religion" },
                 { data: "permanent_address_city" },
                 { data: "permanent_address_province" },
                 { data: "citizenship" },
@@ -505,6 +655,10 @@
                 { data: "visa_status" },
                 { data: "visa_issue_date" },
                 { data: "visa_expiry_date" },
+                { data: "flight_date" },
+                { data: "flight_route" },
+                { data: "cnic_taken_status" },
+                { data: "passport_taken_status" },
                 { data: "comment" },
                 { data: "status", render: function (data) {
                     if (data == 1) return '<span class="badge badge-success">Pending</span>';
@@ -548,7 +702,17 @@
                 '#visa_expiry',
                 '#date_from',
                 '#date_to',
-                '#visa_type'
+                '#visa_type',
+                '#refference',
+                '#flight_date',
+                '#mobilized',
+                '#cnic_taken',
+                '#passport_taken',
+                '#blood_group',
+                '#religion',
+                '#approvals',
+                '#interview_location',
+                '#craft',
             ];
             const hasAnyFilter = filters.some(sel => {
                 const val = $(sel).val();
@@ -567,6 +731,7 @@
             $('#company_id').val('');
             $('#project_id').val('');
             $('#demand_id').val('');
+            $('#craft').val('');
             $('#medically_fit').val('');
             $('#cnic_expiry').val('');
             $('#passport_expiry').val('');
@@ -574,6 +739,15 @@
             $('#date_from').val('');
             $('#date_to').val('');
             $('#visa_type').val('');
+            $('#refference').val('');
+            $('#flight_date').val('');
+            $('#mobilized').val('');
+            $('#cnic_taken').val('');
+            $('#passport_taken').val('');
+            $('#blood_group').val('');
+            $('#religion').val('');
+            $('#approvals').val('');
+            $('#interview_location').val('');
             toastr.success('Filter Removed Successfully');
             table.ajax.reload();
         });
@@ -601,8 +775,8 @@
                 '<option value="" selected disabled>Select Project</option>');
             $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
             $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
-            $('#sub_craft').empty().append(
-                '<option value="" selected disabled>Select Sub-Craft</option>');
+            // $('#sub_craft').empty().append(
+            //     '<option value="" selected disabled>Select Sub-Craft</option>');
 
             if (companyId) {
                 $.ajax({
@@ -648,6 +822,33 @@
             }
         });
 
+        // When demand is selected
+            $('#demand_id').on('change', function() {
+                var demandId = $(this).val();
+
+                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+
+                if (demandId) {
+                    $.ajax({
+                        url: "{{ route('get-crafts-by-demand') }}",
+                        type: "GET",
+                        data: {
+                            demand_id: demandId
+                        },
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $.each(data, function(key, value) {
+                                    $('#craft').append('<option value="' + value.id +
+                                        '">' + value.name + '</option>');
+                                });
+                                // Automatically select the first craft
+                                $('#craft').val(data[0].id).trigger('change');
+                            }
+                        }
+                    });
+                }
+            });
+
          $('#importForm').on('submit', function (e) {
         e.preventDefault();
 
@@ -687,6 +888,29 @@
         });
     });
     })
+    $(document).on('click', '.open-modal-btn', function () {
+        var hrId = $(this).data('id');
+            $('#dynamic-modal-content').html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>');
+
+            $.ajax({
+                url: "{{ route('hr.modal.content') }}", // Define this route
+                type: 'GET',
+                data: { id: hrId },
+                success: function (response) {
+                    $('#dynamic-modal-content').html(response);
+                },
+                error: function (xhr, status, error) {
+                console.error('AJAX Error:', {
+                    status: status,
+                    error: error,
+                    response: xhr.responseText
+                });
+
+                $('#dynamic-modal-content').html('<p class="text-danger text-center">Failed to load content.</p>');
+                }
+            });
+        });
+
 </script>
 <script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
 @endsection

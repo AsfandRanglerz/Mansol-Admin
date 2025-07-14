@@ -1192,61 +1192,61 @@
             $('#editDriverModel').modal('show');
             getDemobData(id); // Now this will work
         });
-        $('#company_id').on('change', function() {
-            var companyId = $(this).val();
+        // $('#company_id').on('change', function() {
+        //     var companyId = $(this).val();
 
-            $.ajax({
-                url: "{{ route('get-projects') }}",
-                type: "GET",
-                data: {
-                    company_id: companyId
-                },
-                success: function(data) {
-                    $('#project_id').empty();
-                    $('#demand_id').empty();
-                    $('#sub_craft').empty();
-                    $('#project_id').append(
-                        '<option value="" selected disabled>Select Project</option>');
-                    $('#demand_id').append(
-                        '<option value="" selected disabled>Select Demand</option>');
-                    $('#sub_craft').append(
-                        '<option value="" selected disabled>Select Sub-Craft</option>');
+        //     $.ajax({
+        //         url: "{{ route('get-projects') }}",
+        //         type: "GET",
+        //         data: {
+        //             company_id: companyId
+        //         },
+        //         success: function(data) {
+        //             $('#project_id').empty();
+        //             $('#demand_id').empty();
+        //             $('#sub_craft').empty();
+        //             $('#project_id').append(
+        //                 '<option value="" selected disabled>Select Project</option>');
+        //             $('#demand_id').append(
+        //                 '<option value="" selected disabled>Select Demand</option>');
+        //             $('#sub_craft').append(
+        //                 '<option value="" selected disabled>Select Sub-Craft</option>');
 
-                    $.each(data, function(key, value) {
-                        $('#project_id').append('<option value="' + value.id +
-                            '">' + value.project_name + '</option>');
-                    });
+        //             $.each(data, function(key, value) {
+        //                 $('#project_id').append('<option value="' + value.id +
+        //                     '">' + value.project_name + '</option>');
+        //             });
 
-                    if ($('#status option[value="3"]').length === 0) {
-                        $('#status').empty().append('<option value="3" selected>Assign</option>');
-                    } else {
-                        $('#status').val('3');
-                    }
-                }
-            });
-        });
+        //             if ($('#status option[value="3"]').length === 0) {
+        //                 $('#status').empty().append('<option value="3" selected>Assign</option>');
+        //             } else {
+        //                 $('#status').val('3');
+        //             }
+        //         }
+        //     });
+        // });
 
-        $('#project_id').on('change', function() {
-            var projectId = $(this).val();
+        // $('#project_id').on('change', function() {
+        //     var projectId = $(this).val();
 
-            $.ajax({
-                url: "{{ route('get-demand') }}",
-                type: "GET",
-                data: {
-                    project_id: projectId
-                },
-                success: function(data) {
-                    $('#demand_id').empty();
-                    $('#demand_id').append(
-                        '<option value="" selected disabled>Select Demand</option>');
+        //     $.ajax({
+        //         url: "{{ route('get-demand') }}",
+        //         type: "GET",
+        //         data: {
+        //             project_id: projectId
+        //         },
+        //         success: function(data) {
+        //             $('#demand_id').empty();
+        //             $('#demand_id').append(
+        //                 '<option value="" selected disabled>Select Demand</option>');
 
-                    $.each(data, function(key, value) {
-                        $('#demand_id').append('<option value="' + value.id +
-                            '">Man Power - ' + value.full_name + '</option>');
-                    });
-                }
-            });
-        });
+        //             $.each(data, function(key, value) {
+        //                 $('#demand_id').append('<option value="' + value.id +
+        //                     '">Man Power - ' + value.full_name + '</option>');
+        //             });
+        //         }
+        //     });
+        // });
     </script>
     <script>
         $(document).ready(function() {
