@@ -14,4 +14,9 @@ class HrStep extends Model
     {
         return $this->belongsTo(HumanResource::class);
     }
+
+    public function craft()
+    {
+        return $this->belongsTo(MainCraft::class);
+    }
 }

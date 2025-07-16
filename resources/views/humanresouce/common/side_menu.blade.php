@@ -18,35 +18,38 @@
                 </a>
             </li>
             {{-- Notifications --}}
-<li class="dropdown {{ request()->is('human-resource/notification*') ? 'active' : '' }}">
-    <a href="{{ route('notificationHumanResouce.index') }}" class="nav-link">
-        <span><i data-feather="bell"></i> Notifications</span>
+            <li class="dropdown {{ request()->is('human-resource/notification*') ? 'active' : '' }}">
+                <a href="{{ route('notificationHumanResouce.index') }}" class="nav-link">
+                    <span><i data-feather="bell"></i> Notifications</span>
 
-        @php
-            use App\Models\NotificationTarget;
+                    @php
+                        use App\Models\NotificationTarget;
 
-            $hr = auth('humanresource')->user();
-            $notificationCount = 0;
+                        $hr = auth('humanresource')->user();
+                        $notificationCount = 0;
 
-            if ($hr) {
-                $notificationCount = NotificationTarget::where('targetable_type', \App\Models\HumanResource::class)
-                    ->where('targetable_id', $hr->id)
-                    ->where(function ($q) {
-                        $q->where('is_read', 0)->orWhereNull('is_read');
-                    })
-                    ->count();
-            }
-        @endphp
+                        if ($hr) {
+                            $notificationCount = NotificationTarget::where(
+                                'targetable_type',
+                                \App\Models\HumanResource::class,
+                            )
+                                ->where('targetable_id', $hr->id)
+                                ->where(function ($q) {
+                                    $q->where('is_read', 0)->orWhereNull('is_read');
+                                })
+                                ->count();
+                        }
+                    @endphp
 
-        @if ($notificationCount > 0)
-            <div id="orderCounter"
-                class="badge rounded-circle {{ request()->is('human-resource/notification*') ? 'bg-white text-danger' : 'bg-danger text-white' }}"
-                style="margin-left: 8px; font-size: 12px; padding: 4px 7px;">
-                {{ $notificationCount }}
-            </div>
-        @endif
-    </a>
-</li>
+                    @if ($notificationCount > 0)
+                        <div id="orderCounter"
+                            class="badge rounded-circle {{ request()->is('human-resource/notification*') ? 'bg-white text-danger' : 'bg-danger text-white' }}"
+                            style="margin-left: 8px; font-size: 12px; padding: 4px 7px;">
+                            {{ $notificationCount }}
+                        </div>
+                    @endif
+                </a>
+            </li>
 
 
             {{-- <li class="dropdown {{ request()->is('admin/company*') ? 'active' : '' }}">

@@ -21,4 +21,14 @@ class Demand extends Model
     {
         return $this->belongsTo(MainCraft::class);
     }
+
+    public function humanResources()
+    {
+        return $this->hasMany(HumanResource::class, 'craft_id', 'craft_id');
+    }
+
+    public function nominations()
+    {
+        return $this->hasMany(Nominate::class, 'demand_id', 'id');
+    }
 }
