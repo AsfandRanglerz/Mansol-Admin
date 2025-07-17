@@ -22,9 +22,10 @@ class DemandsController extends Controller
         // dd($company); 
         $assignedCraftIds = Demand::where('project_id', $id)->pluck('craft_id');
         $crafts = MainCraft::where('status', 1)
-            ->whereNotIn('id', $assignedCraftIds)
+            // ->whereNotIn('id', $assignedCraftIds)
+            ->whereNotNull('name')
             ->get();
-
+        
         $demands = Demand::with(['project', 'craft'])->where('project_id', $id)->orderBy('is_active', 'desc')->where('is_active',1)->latest()->get();
         // dd($demands);
         return view('admin.demands.index', compact('crafts', 'demands', 'project_id', 'project', 'company'));

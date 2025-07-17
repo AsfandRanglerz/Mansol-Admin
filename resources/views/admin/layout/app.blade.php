@@ -79,7 +79,8 @@
                     type: 'GET',
                   success: function(response) {
                         const count = response.count || 0;
-                        $('#orderCounter').text(count);
+                        const displayText  = count > 99 ? '99+' : count;
+                        $('#orderCounter').text(displayText);
                         console.log("Order count updated: " + count);
                     },
                     error: function(xhr, status, error) {

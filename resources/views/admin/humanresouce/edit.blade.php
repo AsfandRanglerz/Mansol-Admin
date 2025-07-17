@@ -791,9 +791,9 @@
                                                     <select name="currancy" class="form-control" id="currancy">
                                                         <option value="" selected disabled> Currency</option>
                                                         @foreach ($curencies as $country)
-                                                            <option value="{{ $country->currency_symbol }}"
-                                                                {{ strtolower(old('currancy', $HumanResource->currancy ?? '')) == strtolower($country->currency_symbol) ? 'selected' : '' }}>
-                                                                {{ $country->currency_symbol }}
+                                                            <option value="{{ $country->currency_code }}"
+                                                                {{ strtolower(old('currancy', $HumanResource->currancy ?? '')) == strtolower($country->currency_code) ? 'selected' : '' }}>
+                                                                {{ $country->currency_code }}
                                                             </option>
                                                         @endforeach
                                                     </select>

@@ -17,6 +17,9 @@
                                         <div class="form-group">
                                             <label for="name">Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" id="name" name="name" required>
+                                            @error('name')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -29,6 +32,9 @@
                                                 <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active</option>
                                                 <option value="0" {{ old('status') == '0' ? 'selected' : '' }}>Deactive</option>
                                             </select>
+                                             @error('status')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 

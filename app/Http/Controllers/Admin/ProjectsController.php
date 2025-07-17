@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Country;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProjectsController extends Controller
 {
@@ -44,7 +45,14 @@ class ProjectsController extends Controller
             // 'client_id' => 'nullable|string|max:255',
             'is_ongoing' => 'nullable|string|max:255',
             'project_code' => 'required|string|max:255',
-            'project_name' => 'required|string|max:255',
+            'project_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('projects')->where(function ($query) use ($request) {
+                    return $query->where('company_id', $request->company_id);
+                }),
+            ],
             'project_currency' => 'required|string|max:255',
             'project_location' => 'required|string|max:255',
             'manpower_location' => 'required|string|max:255',
@@ -92,7 +100,14 @@ class ProjectsController extends Controller
             // 'client_id' => 'nullable|string|max:255',
             'is_ongoing' => 'nullable|string|max:255',
             'project_code' => 'required|string|max:255',
-            'project_name' => 'required|string|max:255',
+            'project_name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('projects')->where(function ($query) use ($request) {
+                    return $query->where('company_id', $request->company_id);
+                })->ignore($id),
+            ],
             'project_currency' => 'required|string|max:255',
             'project_location' => 'required|string|max:255',
             'manpower_location' => 'required|string|max:255',

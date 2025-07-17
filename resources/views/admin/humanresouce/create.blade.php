@@ -1030,9 +1030,9 @@
                                                             {{ old('currancy', $HumanResource->currancy ?? '') == '' ? 'selected' : '' }}>
                                                             Currency</option>
                                                         @foreach ($curencies as $country)
-                                                            <option value="{{ strtolower($country->currency_symbol) }}"
-                                                                {{ old('currancy', $HumanResource->currancy ?? '') == strtolower($country->currency_symbol) ? 'selected' : '' }}>
-                                                                {{ $country->currency_symbol }}
+                                                            <option value="{{ strtolower($country->currency_code) }}"
+                                                                {{ old('currancy', $HumanResource->currancy ?? '') == strtolower($country->currency_code) ? 'selected' : '' }}>
+                                                                {{ $country->currency_code }}
                                                             </option>
                                                         @endforeach
                                                     </select>

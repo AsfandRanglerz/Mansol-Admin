@@ -7,6 +7,7 @@ use App\Models\MainCraft;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\Rule;
 
 class SubCraftController extends Controller
 {
@@ -21,12 +22,17 @@ class SubCraftController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
-        // Validate the incoming request data
-        $request->validate([
-            'craft_id' => 'required|exists:main_crafts,id', // Ensure craft_id corresponds to an existing MainCraft
-            'name' => 'required|string|max:255',
-            'status' => 'required',
+         $request->validate([
+            'craft_id' => 'required|exists:main_crafts,id',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('sub_crafts')->where(fn ($query) =>
+                    $query->where('craft_id', $request->craft_id)
+                ),
+            ],
+            'status' => 'required|in:0,1',
         ]);
 
         // Create a new SubCraft record
@@ -44,7 +50,14 @@ class SubCraftController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+             'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('sub_crafts')->where(function ($query) use ($request) {
+                    return $query->where('craft_id', $request->craft_id);
+                })->ignore($id),
+            ],
             'status' => 'required',
         ]);
 

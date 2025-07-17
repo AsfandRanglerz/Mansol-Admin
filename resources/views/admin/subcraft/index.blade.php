@@ -23,7 +23,9 @@
                                 <div class="form-group">
                                     <label for="name">Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name" required>
-                                    <div class="invalid-feedback"></div>
+                                    @error('name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -74,7 +76,9 @@
                                 <div class="form-group">
                                     <label for="name">Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name" value="{{ $subCraft->name }}" required>
-                                    <div class="invalid-feedback"></div>
+                                     @error('name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">

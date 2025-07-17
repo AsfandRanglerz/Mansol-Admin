@@ -344,6 +344,15 @@
                                 </a>
                                 @endif
                                 <table class="table responsive" id="table_id_events">
+                                    {{-- @if ($errors->any())
+                                        <div class="">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li class="text-danger">{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif --}}
 
                                     <thead>
 
@@ -374,7 +383,7 @@
                                         <tr>
 
                                             <td>{{ $loop->iteration }}</td>
- <td>{{ $company->name }}</td>
+                                            <td>{{ $company->name }}</td>
                                             <td>
                                             <img src="{{ asset($company->image ?? 'public/admin/assets/images/avator.png') }}"
                                                 onerror="this.onerror=null;this.src='{{ asset('public/admin/assets/images/avator.png') }}';"

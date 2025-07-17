@@ -520,7 +520,7 @@ class HumanResourceController extends Controller
         $cities = City::orderBy('name')->get();
         // dd($cities);
         $curencies = Country::orderBy('title')->get();
-        // dd($curencies);
+        // dd($curencies); 
         return view('admin.humanresouce.create', compact('provinces','districts','cities','crafts', 'registration', 'companies','curencies'));
     }
 

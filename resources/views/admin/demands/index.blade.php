@@ -97,7 +97,7 @@
                 <div class="modal-body">
                     <form id="editDemandForm" action="{{ route('demand.update', $demand->id) }}" method="POST">
                         @csrf
-                        @method('POST')
+                        @method('POST') 
                         <div class="row">
                             <input type="hidden" id="draft_id" name="draft_id">
                             <input type="hidden" id="project_id" name="project_id" value="{{ $demand->project->id }}">

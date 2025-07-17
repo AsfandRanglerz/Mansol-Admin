@@ -25,7 +25,7 @@ class MainCraftController extends Controller
     {
         // return $request;
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:main_crafts,name',
             'status' => 'required|in:0,1',
         ]);
 
@@ -42,7 +42,7 @@ class MainCraftController extends Controller
 
     public function edit($id)
     {
-
+        
         $mainCraft = MainCraft::find($id);
         // return $subAdmin;
 
@@ -52,7 +52,7 @@ class MainCraftController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|unique:main_crafts,name,'.$id,
             'status' => 'required',
         ]);
 

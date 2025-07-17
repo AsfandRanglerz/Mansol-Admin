@@ -22,7 +22,7 @@ class CompanyController extends Controller
     {
         // dd($request);
         $request->validate([
-            'name' => 'nullable|string|max:255',
+            'name' => 'nullable|string|max:255|unique:companies,name',
             'email' => 'nullable|email',
             'phone' => 'nullable|string',
             'is_active' => 'nullable|in:0,1',
@@ -65,7 +65,7 @@ class CompanyController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'nullable|string|max:255',
+            'name' => 'nullable|string|max:255|unique:companies,name,'.$id,
             'phone' => 'nullable|string',
             'is_active' => 'nullable|in:0,1',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
