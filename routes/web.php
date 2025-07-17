@@ -197,6 +197,8 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('/project-reports/ajax', 'ajaxData')->name('project-reports.ajax');
         Route::get('/flight-reports',  'flightReportIndex')->name('flight-reports.index');
         Route::get('flight-reports/data', 'getFlights')->name('flight-reports.ajax');
+        Route::get('admin/flight-reports/export', 'exportFlightReport')->name('flight-reports.export');
+
     });
 
     // ############ Notifications #################

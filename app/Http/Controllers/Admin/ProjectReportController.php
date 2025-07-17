@@ -10,7 +10,8 @@ use App\Models\Hr;
 use App\Models\HrStep;
 use DataTables;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables as DataTablesDataTables;
+use App\Exports\FlightReportExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProjectReportController extends Controller
 {
@@ -128,10 +129,25 @@ class ProjectReportController extends Controller
                 'approved_for_craft' => $row->humanResource->crafts->name ?? 'N/A',
                 'passport' => $row->humanResource->passport ?? 'N/A',
                 'flight_route' => $row->flight_route ?? 'N/A',
-                'flight_date' => $row->flight_date ?? 'N/A', // 👈 Already string, no need to format
+                'flight_date' => $row->flight_date ?? 'N/A', 
             ];
         });
 
         return response()->json(['data' => $data]);
     }
+
+
+    //     public function exportFlightReport(Request $request)
+    // {
+    //     $flightDate = $request->flight_date;
+
+    //     // Return empty Excel if no date is provided
+    //     if (!$flightDate) {
+    //         return Excel::download(collect([]), 'Flight_Reports.xlsx');
+    //     }
+
+    //     return Excel::download(new FlightReportExport($flightDate), 'Flight_Reports.xlsx');
+    // }
+
+
 }
