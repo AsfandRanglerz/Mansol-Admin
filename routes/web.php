@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\TermConditionController;
 use App\Http\Controllers\HumanResouce\HRProfileController;
 use App\Http\Controllers\Admin\ApprovedApplicantsController;
 use App\Http\Controllers\Admin\HrStepController;
+use App\Http\Controllers\Admin\ProjectReportController as AdminProjectReportController;
 use App\Http\Controllers\HumanResouce\HumanResouceController;
 use App\Http\Controllers\HumanResouce\HRNotificationController;
 use App\Http\Controllers\HumanResouce\HumanResouceAuthController;
@@ -189,6 +190,15 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::controller(ReportsController::class)->group(function () {
         Route::get('/reports',  'index')->name('reports.index');
     });
+
+    Route::controller(AdminProjectReportController::class)->group(function () {
+        Route::get('/project-reports',  'index')->name('project-reports.index');
+        Route::get('/projects-get', 'getProjects')->name('projects-get');
+        Route::get('/project-reports/ajax', 'ajaxData')->name('project-reports.ajax');
+        Route::get('/flight-reports',  'flightReportIndex')->name('flight-reports.index');
+        Route::get('flight-reports/data', 'getFlights')->name('flight-reports.ajax');
+    });
+
     // ############ Notifications #################
     Route::get('/notification', [NotificationController::class, 'index'])->name('notification.index')->middleware(['check.permission:Notifications,view']);
     Route::get('/fetch-recipients', [NotificationController::class, 'fetchRecipients']);
@@ -199,7 +209,6 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::get('/notification/count', [NotificationController::class, 'count'])->name('notifications.count');
     Route::get('/notification/read/{id}', [NotificationController::class, 'read'])->name('notifications.read');
     Route::get('/notification/read-all/', [NotificationController::class, 'readAll'])->name('notifications.read.all');
-
 });
 
 // HR and company notification 

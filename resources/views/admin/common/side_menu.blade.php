@@ -100,12 +100,31 @@
                 </li>
             @endif
 
-            {{-- Demands --}}
-            {{-- <li class="dropdown {{ request()->is('admin/demands*') ? 'active' : '' }}">
-                <a href="{{ route('demands.index') }}" class="nav-link px-2">
-                    <span><i class="fas fa-tasks"></i> Demands</span>
+             {{-- @php
+                $canViewCompanies = Auth::guard('admin')->check() || 
+                    (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Companies', 'view'));
+            @endphp
+            @if ($canViewCompanies)
+                <li class="dropdown {{ request()->is('admin/companies*') || request()->is('admin/demands*') || request()->is('admin/nominate*') ? 'active' : '' }}">
+                    <a href="{{ route('companies.index') }}" class="nav-link">
+                        <span><i data-feather="briefcase"></i>Project Reports</span>
+                    </a>
+                </li>
+            @endif --}}
+
+            {{-- project reports --}}
+            <li class="dropdown {{ request()->is('admin/project-reports*') ? 'active' : '' }}">
+                <a href="{{ route('project-reports.index') }}" class="nav-link">
+                    <span><i data-feather="bar-chart-2"></i>Project Reports</span>
                 </a>
-            </li> --}}
+            </li>
+
+            {{-- flight reports --}}
+            <li class="dropdown {{ request()->is('admin/flight-reports*') ? 'active' : '' }}">
+                <a href="{{ route('flight-reports.index') }}" class="nav-link">
+                    <span><i data-feather="bar-chart-2"></i>Flight Reports</span>
+                </a>
+            </li>
 
             {{-- Reports --}}
             {{-- <li class="dropdown {{ request()->is('admin/reports*') ? 'active' : '' }}">
