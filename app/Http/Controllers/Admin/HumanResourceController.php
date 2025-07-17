@@ -598,7 +598,6 @@ class HumanResourceController extends Controller
             'blood_group' => 'nullable|string|max:3',
             'date_of_birth' => [
                 'nullable',
-                'date',
                 'before_or_equal:' . now()->subYears(21)->format('Y-m-d'),
             ],
             'city_of_birth' => 'nullable|string|max:255',
