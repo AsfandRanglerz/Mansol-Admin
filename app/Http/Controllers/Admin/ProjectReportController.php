@@ -110,23 +110,25 @@ class ProjectReportController extends Controller
 
     public function getFlights(Request $request)
     {
-        $query = HrStep::with(['humanResource:id,name,passport,craft_id', 'humanResource.crafts'])
-            ->where('step_number', 6);
-
-        if ($request->filled('flight_date')) {
-            $query->whereDate('flight_date', $request->flight_date);
+        if (!$request->filled('flight_date')) {
+            return response()->json(['data' => []]);
         }
 
+        $query = HrStep::with(['humanResource:id,name,passport,craft_id', 'humanResource.crafts'])
+            ->where('step_number', 6)
+            ->where('flight_date', $request->flight_date);
+
         $hrSteps = $query->get();
+
 
         $data = $hrSteps->map(function ($row, $index) {
             return [
                 'sr' => $index + 1,
                 'name' => $row->humanResource->name ?? 'N/A',
-                'approved_for_craft' => $row->humanResource->craft->name ?? 'N/A',
+                'approved_for_craft' => $row->humanResource->crafts->name ?? 'N/A',
                 'passport' => $row->humanResource->passport ?? 'N/A',
                 'flight_route' => $row->flight_route ?? 'N/A',
-                'flight_date' => optional($row->flight_date)->format('Y-m-d'),
+                'flight_date' => $row->flight_date ?? 'N/A', // 👈 Already string, no need to format
             ];
         });
 

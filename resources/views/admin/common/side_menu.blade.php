@@ -122,7 +122,7 @@
             {{-- flight reports --}}
             <li class="dropdown {{ request()->is('admin/flight-reports*') ? 'active' : '' }}">
                 <a href="{{ route('flight-reports.index') }}" class="nav-link">
-                    <span><i data-feather="bar-chart-2"></i>Flight Reports</span>
+                    <span><i data-feather="navigation"></i>Flight Reports</span>
                 </a>
             </li>
 
