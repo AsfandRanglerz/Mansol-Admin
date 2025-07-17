@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\SatelliteImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::get('/satellite-image', [SatelliteImageController::class, 'fetchImage']);
 
 Route::group(['namespace' => 'Api'], function () {
     Route::post('register', 'AuthController@register');

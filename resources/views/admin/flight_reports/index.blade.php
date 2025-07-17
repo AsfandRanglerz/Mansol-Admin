@@ -10,9 +10,6 @@
                             <div class="card-header">
                                 <div class="col-12 d-flex justify-content-between align-items-center">
                                     <h4>Flight Reports</h4>
-                                    {{-- <a href="{{ route('flight-reports.export') }}" class="btn btn-success">
-                                        Export with Logo
-                                    </a> --}}
                                 </div>
                             </div>
 
