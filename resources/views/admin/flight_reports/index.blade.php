@@ -111,13 +111,13 @@
 
             $('#filter-form').on('submit', function(e) {
                 e.preventDefault();
-                toastr.success('Filters Applied Successfully');
+                toastr.success('Filter Applied Successfully');
                 table.ajax.reload();
             });
 
             $('#clear-filter-btn').on('click', function() {
                 $('#flight_date').val('');
-                toastr.success('Filters Cleared Successfully');
+                toastr.success('Filter Cleared Successfully');
                 table.clear().draw();
                 table.ajax.reload();
             });

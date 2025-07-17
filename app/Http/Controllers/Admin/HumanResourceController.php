@@ -977,7 +977,7 @@ class HumanResourceController extends Controller
 
             // return $data;
         }
-        if (!empty($request->input('company_id')) || !empty($request->input('craft_id'))) {
+        if (!empty($request->input('company_id'))) {
             $history = JobHistory::create([
                 'human_resource_id' => $HumanResource->id,
                 'company_id'        => $request->company_id ?? null,

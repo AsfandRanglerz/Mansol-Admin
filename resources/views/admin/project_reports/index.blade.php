@@ -26,7 +26,7 @@
                                         <div class="form-group">
                                             <label class="" for="company_id">Company</label>
                                             <select name="company_id" id="company_id" class="form-control">
-                                                <option value="">Select Company</option>
+                                                <option value="" disabled selected>Select Company</option>
                                                 @foreach ($companies as $company)
                                                     <option value="{{ $company->id }}"
                                                         {{ request('company_id') == $company->id ? 'selected' : '' }}>
@@ -58,10 +58,10 @@
 
                                     <div class="col-md-6 d-flex align-items-end">
                                         <div class="form-group">
-                                            <button type="submit" class="btn btn-primary mr-2 mb-0">Apply Filter</button>
+                                            <button type="submit" class="btn btn-primary mr-2 mb-0">Apply Filters</button>
                                             <button type="button" id="clear-filter-btn"
                                                 class="btn btn-secondary mr-2 mb-0">Clear</button>
-                                            <button type="button" id="export-excel-btn" class="btn btn-success mb-0">Export
+                                            <button type="button" id="export-excel-btn" class="btn btn-success mb-0">Generate
                                                 to Excel</button>
                                         </div>
                                     </div>
@@ -118,7 +118,7 @@
                                             <th>Demands</th>
                                             <th>Assigned</th>
                                             <th>Medical Fit</th>
-                                            <th>Repeat</th>
+                                            <th>Medical Repeat</th>
                                             <th>Medical Unfit</th>
                                             <th>Visa Received</th>
                                             <th>Mobilized</th>
@@ -155,7 +155,8 @@
                 dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excelHtml5',
-                    text: 'Export to Excel',
+                    title: 'MANSOLSOFT - PROJECT REPORT',
+                    text: 'Generate Excel Report',
                     className: 'd-none', // hide built-in button
                     exportOptions: {
                         columns: ':not(.noExport)'
@@ -236,7 +237,7 @@
                     toastr.error("Please select at least one filter");
                     return;
                 }
-                toastr.success('Filter Applied');
+                toastr.success('Filters Applied Sucessfully');
                 table.ajax.reload();
             });
 
@@ -262,7 +263,7 @@
                 $('#company_id').val('');
                 $('#project_id').html('<option value="" selected disabled>Select Project</option>');
                 table.clear().draw();
-                toastr.success('Filters cleared');
+                toastr.success('Filters Cleared Successfully');
                 table.ajax.reload();
             });
         });

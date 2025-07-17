@@ -385,7 +385,7 @@
                                             {{-- Filter Button --}}
                                             <div class="col-md-12 d-flex justify-content-end align-items-end mb-3">
                                                 <div class="btn-group">
-                                                    <button type="submit" class="btn btn-primary mr-2">Apply Filter</button>
+                                                    <button type="submit" class="btn btn-primary mr-2">Apply Filters</button>
                                                     <button type="button" id="clear-filter-btn" class="btn btn-secondary">Clear</button>
                                                 </div>
                                             </div>
@@ -535,9 +535,9 @@
                 {
                     extend: 'excelHtml5',
                     exportOptions: { columns: ':not(.noExport)' },
-                    title: 'Human Resources',
+                    title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
                     className: 'btn-export-excel',
-                    text: 'Genrate Excel Report', 
+                    text: 'Generate Excel Report', 
                     action: function(e, dt, button, config) {
                         var self = this;
                         var oldStart = dt.settings()[0]._iDisplayStart;
@@ -591,7 +591,7 @@
                 { data: "passport_photo", render: function (data) {
                     if (!data) return '<img src="{{ asset('public/admin/assets/images/avator.png') }}" width="50" height="50">';
                     return '<img src="{{ asset('') }}' + data + '" width="50" height="50">';
-                }}, 
+                }},
                 { 
                 data: "id",
                 render: function (data) {
@@ -722,7 +722,7 @@
                 toastr.error('Please select at least one filter first');
                 return;                            
             }
-            toastr.success('Filter Applied Successfully');
+            toastr.success('Filters Applied Successfully');
             table.ajax.reload();
         });
 
@@ -748,7 +748,7 @@
             $('#religion').val('');
             $('#approvals').val('');
             $('#interview_location').val('');
-            toastr.success('Filter Removed Successfully');
+            toastr.success('Filters Cleared Successfully');
             table.ajax.reload();
         });
 
