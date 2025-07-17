@@ -206,7 +206,7 @@ class HumanResourceController extends Controller
         // Always get the total count (without filters)
         $totalData = HumanResource::count();
 
-        $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps']);
+        $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])->latest();
 
         // Filtering
         if (
@@ -651,13 +651,20 @@ class HumanResourceController extends Controller
         /**generate random password */
         // $password = random_int(10000000, 99999999);
         $password = 12345678;
+        $lastReg = HumanResource::pluck('registration')->toArray();
+        $filteredValues = array_filter($lastReg, function ($value) {
+            return !is_null($value); // Remove null values
+        });
+        $integerValues = array_map('intval', $filteredValues);
+        $maxValue = !empty($integerValues) ? max($integerValues) : 1000;
 
+        $registration = $maxValue >= 1000 ? $maxValue + 1 : 1001;
         // Create a new subadmin record
         $data = [
             'name' => $request->name,
             'password' => bcrypt($password),
             'status' => $request->status,
-            'registration' => $request->registration,
+            'registration' => $registration,
             'application_date' => $request->application_date,
             'experience_local' => $request->experience_local,
             'experience_gulf' => $request->experience_gulf,

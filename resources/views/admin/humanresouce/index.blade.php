@@ -591,7 +591,7 @@
                 { data: "passport_photo", render: function (data) {
                     if (!data) return '<img src="{{ asset('public/admin/assets/images/avator.png') }}" width="50" height="50">';
                     return '<img src="{{ asset('') }}' + data + '" width="50" height="50">';
-                }},
+                }}, 
                 { 
                 data: "id",
                 render: function (data) {

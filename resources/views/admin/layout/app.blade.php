@@ -89,7 +89,7 @@
                 });
             }
             updateOrderCounter();
-            setInterval(updateOrderCounter, 1000);
+            setInterval(updateOrderCounter, 2000);
         });
     </script>
     <script>

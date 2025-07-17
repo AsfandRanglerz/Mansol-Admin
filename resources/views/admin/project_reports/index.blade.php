@@ -56,7 +56,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3 d-flex align-items-end">
+                                    <div class="col-md-6 d-flex align-items-end">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-primary mr-2 mb-0">Apply Filter</button>
                                             <button type="button" id="clear-filter-btn"
@@ -108,14 +108,15 @@
                                     </div> --}}
 
                                 </form>
-                                <table class="table responsive" id="table_id_events">
+                                <div class="table-responsive">
+                                    <table class="table responsive table-bordered w-100" id="table_id_events">
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
                                             <th>Project</th>
                                             <th>Craft</th>
                                             <th>Demands</th>
-                                            <th>Selected/Document Shared</th>
+                                            <th>Assigned</th>
                                             <th>Medical Fit</th>
                                             <th>Repeat</th>
                                             <th>Medical Unfit</th>
@@ -128,6 +129,7 @@
 
                                     </tbody>
                                 </table>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -142,23 +144,42 @@
 
     <script>
         $(document).ready(function() {
-            // Initialize DataTable once globally
             let table = $('#table_id_events').DataTable({
                 processing: true,
                 serverSide: true,
-                searching: true,
-                paging: true,
+                deferRender: true,
                 scrollX: true,
-                responsive: true,
+                responsive: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100, 250, 500, 1000, -1], [10, 25, 50, 100, 250, 500, 1000, "All"]],
                 dom: 'Bfrtip',
-                buttons: [{
-                    extend: 'excelHtml5',
-                    text: 'Export to Excel',
-                    className: 'd-none', // hide built-in button
-                    exportOptions: {
-                        columns: ':not(.noExport)'
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: { columns: ':not(.noExport)' },
+                        title: 'Project Report',
+                        className: 'btn-export-excel',
+                        text: 'Generate Excel Report',
+                        action: function(e, dt, button, config) {
+                            var self = this;
+                            var oldStart = dt.settings()[0]._iDisplayStart;
+                            dt.one('preXhr', function(e, s, data) {
+                                data.start = 0;
+                                data.length = -1;
+                                dt.one('preDraw', function(e, settings) {
+                                    $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+                                    dt.one('preXhr', function(e, s, data) {
+                                        settings._iDisplayStart = oldStart;
+                                        data.start = oldStart;
+                                    });
+                                    setTimeout(dt.ajax.reload, 0);
+                                    return false;
+                                });
+                            });
+                            dt.ajax.reload();
+                        }
                     }
-                }],
+                ],
                 ajax: {
                     url: "{{ route('project-reports.ajax') }}",
                     data: function(d) {
@@ -176,58 +197,31 @@
                         alert("AJAX load failed. Check console or Laravel logs.");
                     }
                 },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'project',
-                        name: 'project'
-                    },
-                    {
-                        data: 'craft',
-                        name: 'craft'
-                    },
-                    {
-                        data: 'requirements',
-                        name: 'requirements'
-                    },
-                    {
-                        data: 'selected',
-                        name: 'selected'
-                    },
-                    {
-                        data: 'fit',
-                        name: 'fit'
-                    },
-                    {
-                        data: 'repeat',
-                        name: 'repeat'
-                    },
-                    {
-                        data: 'unfit',
-                        name: 'unfit'
-                    },
-                    {
-                        data: 'visa_received',
-                        name: 'visa_received'
-                    },
-                    {
-                        data: 'mobilized',
-                        name: 'mobilized'
-                    }
-                ]
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'project', name: 'project' },
+                    { data: 'craft', name: 'craft' },
+                    { data: 'requirements', name: 'requirements' },
+                    { data: 'selected', name: 'selected' },
+                    { data: 'fit', name: 'fit' },
+                    { data: 'repeat', name: 'repeat' },
+                    { data: 'unfit', name: 'unfit' },
+                    { data: 'visa_received', name: 'visa_received' },
+                    { data: 'mobilized', name: 'mobilized' }
+                ],
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    var total = settings.json ? settings.json.recordsFiltered : api.data().count();
+                    $('#total-count-badge').text('Total Count: ' + total);
+                }
             });
 
-            // Export to Excel button click
+            // Excel button trigger
             $('#export-excel-btn').click(function() {
                 table.button('.buttons-excel').trigger();
             });
 
-
-            // Apply filter
+            // Filter form submit
             $('#filter-form').on('submit', function(e) {
                 e.preventDefault();
                 if (!$('#company_id').val() && !$('#project_id').val()) {
@@ -238,7 +232,7 @@
                 table.ajax.reload();
             });
 
-            // Load project on company change
+            // Load projects on company change
             $('#company_id').on('change', function() {
                 let companyId = $(this).val();
                 $('#project_id').html('<option value="" selected disabled>Select Project</option>');
@@ -259,13 +253,13 @@
             $('#clear-filter-btn').click(function() {
                 $('#company_id').val('');
                 $('#project_id').html('<option value="" selected disabled>Select Project</option>');
-                table.clear().draw();
                 toastr.success('Filters cleared');
+                table.clear().draw();
                 table.ajax.reload();
             });
         });
-    </script>
 
+    </script>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>

@@ -23,13 +23,13 @@
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        {{-- <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="registration">Id No.</label>
                                                 <input type="number" class="form-control" id="registration"
                                                     name="registration" value="{{ $registration }}" readonly>
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -1098,24 +1098,33 @@
     <script>
         $(document).ready(function() {
             $('#createSubadminForm').on('submit', function(event) {
-                var dob = new Date($('#date_of_birth').val());
-                var today = new Date();
-                var age = today.getFullYear() - dob.getFullYear();
-                var monthDifference = today.getMonth() - dob.getMonth();
-                if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
-                    age--;
+                var dobValue = $('#date_of_birth').val();
+
+                // Only validate if a value exists
+                if (dobValue) {
+                    var dob = new Date(dobValue);
+                    var today = new Date();
+                    var age = today.getFullYear() - dob.getFullYear();
+                    var monthDifference = today.getMonth() - dob.getMonth();
+
+                    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
+                        age--;
+                    }
+
+                    if (age < 21) {
+                        event.preventDefault();
+                        $('#dob-error').show();
+                        $('html, body').animate({
+                            scrollTop: $('#date_of_birth').offset().top - 100
+                        }, 'smooth');
+                        return;
+                    }
                 }
-                if (age < 21) {
-                    event.preventDefault();
-                    $('#dob-error').show();
-                    $('html, body').animate({
-                        scrollTop: $('#date_of_birth').offset().top - 100
-                    }, 'smooth');
-                } else {
-                    $('#dob-error').hide();
-                }
+
+                $('#dob-error').hide(); // Hide error if value is empty or valid
             });
         });
+
     </script>
     <script>
         $(document).ready(function() {
