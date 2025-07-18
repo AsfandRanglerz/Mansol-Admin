@@ -673,7 +673,7 @@
                         buttons += '<a href="{{ url('admin/human-resource-edit') }}/' + data + '" class="btn btn-primary">Edit</a>';
                     @endif 
                     @if ($canDelete)
-                        buttons += '<form action="{{ url('admin/human-resource') }}/' + data + '" method="POST" style="display:inline-block; margin-left: 10px">@csrf @method("DELETE")<button type="submit" class="btn btn-danger btn-flat show_confirm" data-toggle="tooltip">Delete</button></form>';
+                        buttons += '<form action="{{ url('admin/human-resource-destroy') }}/' + data + '" method="POST" style="display:inline-block; margin-left: 10px">@csrf @method("DELETE")<button type="submit" class="btn btn-danger btn-flat show_confirm" data-toggle="tooltip">Delete</button></form>';
                     @endif
                     @if (!($canEdit || $canDelete))
                         buttons += '<div class="alert alert-danger text-center py-2" role="alert"><strong>Access Denied</strong></div>';

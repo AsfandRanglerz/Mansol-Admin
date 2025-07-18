@@ -23,11 +23,11 @@ class ProjectReportController extends Controller
         return view('admin.project_reports.index', compact('companies', 'projects'));
     }
 
-    public function ajaxData(Request $request)
+   public function ajaxData(Request $request)
     {
         // If no filters applied, return empty dataset
         if (!$request->filled('company_id') && !$request->filled('project_id')) {
-            return datatables()->of([])->make(true);
+            return response()->json(['data' => []]);
         }
 
         $query = Demand::with([
@@ -44,11 +44,22 @@ class ProjectReportController extends Controller
             $query->whereIn('project_id', $projectIds);
         }
 
-        $demands = $query->withCount([
-            'nominations as selected_count' => fn($q) => $q->whereNotNull('human_resource_id')
-        ])->get();
+        $demands = $query->get();
 
-        $data = $demands->map(function ($demand) {
+        foreach ($demands as $demand) {
+            $demand->selected_count = $demand->nominations
+                ->where('project_id', $demand->project_id)
+                ->where('demand_id', $demand->id)
+                ->where('craft_id', $demand->craft_id)
+                ->whereNotNull('human_resource_id')
+                ->pluck('human_resource_id')
+                ->unique()
+                ->count();
+        }
+
+
+        // Transforming the data before returning it
+        $data = $demands->map(function ($demand, $index) {
             $fit = $repeat = $unfit = $visa = $mob = 0;
 
             foreach ($demand->nominations as $n) {
@@ -67,14 +78,17 @@ class ProjectReportController extends Controller
                 }
 
                 foreach ($hr?->jobHistory ?? [] as $job) {
-                    if ($job->mob_date) {
+                    if ($demand->project->company_id === $job->company_id && $demand->project_id === $job->project_id 
+                        && $demand->id === $job->demand_id && $demand->craft_id === $job->craft_id && $job->mob_date && !($job->demobe_date)) {
                         $mob++;
                         break;
                     }
                 }
             }
 
+            // Include the serial number (`sr`) and map it into the return structure
             return [
+                'sr' => $index + 1, // This adds the serial number
                 'project' => $demand->project->project_name ?? 'N/A',
                 'craft' => $demand->craft->name ?? 'N/A',
                 'requirements' => $demand->manpower,
@@ -87,10 +101,11 @@ class ProjectReportController extends Controller
             ];
         });
 
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->make(true);
+
+        // Returning the response in the desired format
+        return response()->json(['data' => $data]);
     }
+
 
 
     public function getProjects(Request $request)

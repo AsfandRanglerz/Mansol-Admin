@@ -69,6 +69,7 @@
                                     <thead>
                                         <tr>
                                             <th>Sr.</th>
+                                            <th>Id No.</th>
                                             <th>Name</th>
                                             
                                         </tr>
@@ -77,6 +78,7 @@
                                         @foreach ($nominates as $nominate)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $nominate->humanResource->registration }}</td>
                                                 <td>{{ $nominate->humanResource->name }}</td>
                                             </tr>
                                         @endforeach

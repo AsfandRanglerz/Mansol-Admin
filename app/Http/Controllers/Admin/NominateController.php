@@ -17,11 +17,13 @@ class NominateController extends Controller
 
         $project = Project::findOrFail($project_id);
         $company = Company::where('id', $project->company_id)->first();
-        // $nominates = HumanResource::where('craft_id', $craft_id)->where('status', '=', 3)->get();
-
-        $nominates = Nominate::where('craft_id', $craft_id)->where('project_id', $project_id)->where('demand_id', $demand_id)->with('humanResource')->get();
-        // dd($nominates);
-
+        $nominates = Nominate::where('craft_id', $craft_id)
+        ->where('project_id', $project_id)
+        ->where('demand_id', $demand_id)
+        ->with('humanResource')
+        ->select('human_resource_id')
+        ->distinct()
+        ->get();
         return view('admin.nominate.index', compact('craft_id', 'demand_id', 'humanRecources', 'nominates', 'project_id', 'project', 'company'));
     }
 

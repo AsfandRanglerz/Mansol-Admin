@@ -62,7 +62,7 @@
                                             <button type="button" id="clear-filter-btn"
                                                 class="btn btn-secondary mr-2 mb-0">Clear</button>
                                             <button type="button" id="export-excel-btn" class="btn btn-success mb-0">Generate
-                                                to Excel</button>
+                                                Excel Report</button>
                                         </div>
                                     </div>
 
@@ -115,7 +115,7 @@
                                             <th>Sr.</th>
                                             <th>Project</th>
                                             <th>Craft</th>
-                                            <th>Demands</th>
+                                            <th>Demand</th>
                                             <th>Assigned</th>
                                             <th>Medical Fit</th>
                                             <th>Medical Repeat</th>
@@ -147,7 +147,7 @@
             // Initialize DataTable once globally
             let table = $('#table_id_events').DataTable({
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 searching: true,
                 paging: true,
                 scrollX: true,
@@ -155,7 +155,7 @@
                 dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excelHtml5',
-                    title: 'MANSOLSOFT - PROJECT REPORT',
+                    title: 'MANSOLSOFT - PROJECTS REPORT',
                     text: 'Generate Excel Report',
                     className: 'd-none', // hide built-in button
                     exportOptions: {
@@ -167,7 +167,7 @@
                     data: function(d) {
                         d.company_id = $('#company_id').val();
                         d.project_id = $('#project_id').val();
-                    },
+                    }, 
                     dataSrc: function(json) {
                         if (!$('#company_id').val() && !$('#project_id').val()) {
                             return [];
@@ -179,49 +179,18 @@
                         alert("AJAX load failed. Check console or Laravel logs.");
                     }
                 },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'project',
-                        name: 'project'
-                    },
-                    {
-                        data: 'craft',
-                        name: 'craft'
-                    },
-                    {
-                        data: 'requirements',
-                        name: 'requirements'
-                    },
-                    {
-                        data: 'selected',
-                        name: 'selected'
-                    },
-                    {
-                        data: 'fit',
-                        name: 'fit'
-                    },
-                    {
-                        data: 'repeat',
-                        name: 'repeat'
-                    },
-                    {
-                        data: 'unfit',
-                        name: 'unfit'
-                    },
-                    {
-                        data: 'visa_received',
-                        name: 'visa_received'
-                    },
-                    {
-                        data: 'mobilized',
-                        name: 'mobilized'
-                    }
-                ]
+               columns: [
+                { data: 'sr', name: 'sr', orderable: false, searchable: false },
+                { data: 'project', name: 'project' },
+                { data: 'craft', name: 'craft' },
+                { data: 'requirements', name: 'requirements' },
+                { data: 'selected', name: 'selected' },
+                { data: 'fit', name: 'fit' },
+                { data: 'repeat', name: 'repeat' },
+                { data: 'unfit', name: 'unfit' },
+                { data: 'visa_received', name: 'visa_received' },
+                { data: 'mobilized', name: 'mobilized' }
+            ]
             });
 
             // Export to Excel button click

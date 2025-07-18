@@ -721,7 +721,7 @@ class HumanResourceController extends Controller
         // return $HumanResource;
 
         if (!empty($request->input('company_id'))) {
-            $HR = HumanResource::where('email', $request->email)->first();
+            $HR = HumanResource::where('registration', $registration)->first();
             $craft = Demand::find($request->demand_id);
 
             $HR->craft_id = $craft->craft_id;
@@ -967,11 +967,11 @@ class HumanResourceController extends Controller
             $data = Nominate::updateOrCreate(
                 [
                     'human_resource_id' => $HumanResource->id,
+                    'project_id' => $request->project_id,
                 ],
                 [
                     'craft_id' => $craft->craft_id,
                     'demand_id' => $request->demand_id,
-                    'project_id' => $request->project_id,
                 ]
             );
 

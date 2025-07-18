@@ -142,7 +142,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
         Route::get('/human-resource/create',  'create')->name('humanresource.create')->middleware(['check.permission:Human Resources,create']);
         Route::post('/human-resource/store',  'store')->name('humanresource.store')->middleware(['check.permission:Human Resources,create']);
         Route::get('/human-resource-edit/{id}',  'edit')->name('humanresource.edit')->middleware(['check.permission:Human Resources,edit']);
-        Route::post('/human-resource-update/{id}',  'update')->name('humanresource.update')->middleware(['check.permission:Human Resources,update']);
+        Route::post('/human-resource-update/{id}',  'update')->name('humanresource.update')->middleware(['check.permission:Human Resources,edit']);
         Route::delete('/human-resource-destroy/{id}',  'destroy')->name('humanresource.destroy')->middleware(['check.permission:Human Resources,delete']);
         Route::post('/update-history',  'mobDemob')->name('jobHistory.update');
         Route::post('/jobHistory-update',  'updateHistory')->name('history.update');

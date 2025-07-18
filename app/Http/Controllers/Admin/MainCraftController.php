@@ -12,7 +12,7 @@ class MainCraftController extends Controller
 {
     public function index()
     {
-        $mainCrafts = MainCraft::orderBy('status', 'desc')->latest()->get();
+        $mainCrafts = MainCraft::orderBy('status', 'desc')->whereNotNull('name')->latest()->get();
         return view('admin.maincraft.index', compact('mainCrafts'));
     }
 

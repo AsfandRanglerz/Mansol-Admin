@@ -15,7 +15,7 @@ class SubCraftController extends Controller
     {
         $mainCraft = MainCraft::find($id);
 
-        $subCrafts = SubCraft::where('craft_id', $id)->orderBy('status', 'desc')->get();
+        $subCrafts = SubCraft::where('craft_id', $id)->whereNotNull('name')->orderBy('status', 'desc')->get();
         // return $subCraft;
         return view('admin.subcraft.index', compact('mainCraft', 'subCrafts'));
     }

@@ -262,23 +262,31 @@ class HumanResourceImportJob implements ShouldQueue
 
 
                 if (!empty($company->id)) {
-                    Nominate::create([
-                        'craft_id' => $craft->id,
-                        'human_resource_id' => $hr->id,
-                        'demand_id' => $demand->id,
-                        'project_id' => $project->id,
-                    ]);
+                   Nominate::updateOrCreate(
+                            [
+                                'human_resource_id' => $hr->id,
+                                'project_id' => $project->id,
+                            ],
+                            [
+                                'demand_id' => $demand->id,
+                                'craft_id' => $craft->id,
+                            ] // Add any fields to update if needed
+                        );
 
-                    JobHistory::create([
+                   JobHistory::updateOrCreate(
+                    [
                         'human_resource_id' => $hr->id,
                         'company_id' => $company->id,
                         'project_id' => $project->id,
                         'demand_id' => $demand->id,
                         'craft_id' => $craft->id,
                         'sub_craft_id' => $subCraft->id,
+                    ],
+                    [
                         'application_date' => $row['application_date'] ?? null,
                         'city_of_interview' => $row['city_of_interview'] ?? null,
-                    ]);
+                    ]
+                );
                 }
 
                 // Queue the welcome email

@@ -71,7 +71,7 @@
                 dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excelHtml5',
-                    title: 'Flight Reports',
+                    title: 'MANSOLSOFT - FLIGHT REPORT',
                     text: 'Export to Excel',
                     className: 'd-none',
                 }],
@@ -81,7 +81,7 @@
                     data: function(d) {
                         d.flight_date = $('#flight_date').val();
                     }
-                },
+                },  
                 columns: [{
                         data: 'sr'
                     },
