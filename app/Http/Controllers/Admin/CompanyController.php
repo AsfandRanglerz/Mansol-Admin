@@ -50,7 +50,7 @@ class CompanyController extends Controller
             'phone' => $request->phone,
             'password' => bcrypt($password),
             'is_active' => $request->status,
-            'image' => $image,
+            '5d' => $image,
         ]);
 
         $message['email'] = $request->email;

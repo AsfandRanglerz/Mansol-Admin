@@ -5,6 +5,17 @@
         .btn-export-excel {
             width: max-content;
         }
+        .btn-export-pdf {
+            width: max-content;
+             background-color: #d5363c !important;
+    color: white !important;
+    border: none;
+        }
+        .spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
     </style>
     <div class="main-content" style="min-height: 562px;">
         <section class="section">
@@ -61,8 +72,6 @@
                                             <button type="submit" class="btn btn-primary mr-2 mb-0">Apply Filters</button>
                                             <button type="button" id="clear-filter-btn"
                                                 class="btn btn-secondary mr-2 mb-0">Clear</button>
-                                            <button type="button" id="export-excel-btn" class="btn btn-success mb-0">Generate
-                                                Excel Report</button>
                                         </div>
                                     </div>
 
@@ -144,6 +153,24 @@
 
     <script>
         $(document).ready(function() {
+             function toDataURL(url, callback) {
+           var xhr = new XMLHttpRequest();
+           xhr.onload = function () {
+               var reader = new FileReader();
+               reader.onloadend = function () {
+                   callback(reader.result);
+               }
+               reader.readAsDataURL(xhr.response);
+           };
+           xhr.open('GET', url);
+           xhr.responseType = 'blob';
+           xhr.send();
+           }
+           const logoBase64 = "data:image/png;base64,{{ base64_encode(file_get_contents(public_path('admin/assets/images/mansol-01.png'))) }}";
+
+           toDataURL("{{ asset('public/admin/assets/images/mansol-01.png') }}", function (logoBase64) {
+               initDataTable(logoBase64);
+           });
             // Initialize DataTable once globally
             let table = $('#table_id_events').DataTable({
                 processing: true,
@@ -157,11 +184,93 @@
                     extend: 'excelHtml5',
                     title: 'MANSOLSOFT - PROJECTS REPORT',
                     text: 'Generate Excel Report',
-                    className: 'd-none', // hide built-in button
+                    className: 'btn-export-excel', // hide built-in button
                     exportOptions: {
                         columns: ':not(.noExport)'
                     }
-                }],
+                },
+                {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: ':not(.noExport)' // Exclude columns with this class
+                        },
+                        pageSize: 'A4', // Portrait by default
+                        className: 'btn-export-pdf',
+                        title: 'MANSOLSOFT - PROJECTS REPORT',
+                        text: 'Generate PDF Report',
+
+                        // Export all rows (not just visible)
+                        action: function (e, dt, button, config) {
+                                var self = this;
+                                var oldStart = dt.settings()[0]._iDisplayStart;
+
+                                // Loader UI: Show spinner and disable button
+                                const $btn = $('.btn-export-pdf');
+                                $btn.prop('disabled', true).html(`
+                                    <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                                    Generating...
+                                `);
+
+                                dt.one('preXhr', function (e, s, data) {
+                                    data.start = 0;
+                                    data.length = -1;
+
+                                    dt.one('preDraw', function (e, settings) {
+                                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+
+                                        dt.one('preXhr', function (e, s, data) {
+                                            settings._iDisplayStart = oldStart;
+                                            data.start = oldStart;
+                                        });
+
+                                        // Delay reset for button state after generation
+                                        setTimeout(function () {
+                                            dt.ajax.reload();
+                                            $btn.prop('disabled', false).html('Generate PDF Report');
+                                        }, 1000);
+
+                                        return false;
+                                    });
+                                });
+
+                                dt.ajax.reload();
+                            },
+                        customize: function (doc) {
+                            // Add logo + title (left-aligned)
+                            // 1. Add Logo at Top
+                                    doc.content.splice(0, 0, {
+                                        image: logoBase64,
+                                        width: 150,
+                                        alignment: 'center',
+                                        margin: [0, 0, 0, 10]
+                                    });
+
+
+                            // Make table fit width nicely
+                            doc.styles.tableHeader.fontSize = 9;
+                            doc.styles.tableHeader.alignment = 'center';
+                            doc.defaultStyle.fontSize = 8;
+                            doc.pageMargins = [20, 40, 20, 30];
+
+                            // Stretch table to full width
+                            const table = doc.content.find(el => el.table);
+                            if (table) {
+                                table.layout = {
+                                    hLineWidth: () => 0.5,
+                                    vLineWidth: () => 0.5,
+                                    hLineColor: () => '#aaa',
+                                    vLineColor: () => '#aaa',
+                                    paddingLeft: () => 4,
+                                    paddingRight: () => 4,
+                                    paddingTop: () => 2,
+                                    paddingBottom: () => 2
+                                };
+                                table.widths = '*'.repeat(table.table.body[0].length).split('').map(() => '*');
+                            }
+                        }
+                }
+
+                ],
                 ajax: {
                     url: "{{ route('project-reports.ajax') }}",
                     data: function(d) {

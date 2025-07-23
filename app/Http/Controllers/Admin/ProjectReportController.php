@@ -131,20 +131,30 @@ class ProjectReportController extends Controller
         }
 
         $query = HrStep::with(['humanResource:id,name,passport,craft_id', 'humanResource.crafts'])
-            ->where('step_number', 6)
+            // ->where('step_number', 6)
             ->where('flight_date', $request->flight_date);
 
         $hrSteps = $query->get();
 
 
         $data = $hrSteps->map(function ($row, $index) {
+            $step6 = $row->humanResource->hrSteps->firstWhere('step_number', 6);
+            $step4 = $row->humanResource->hrSteps->firstWhere('step_number', 4);
+            $passportPhotoPath = $step4 ? $step4->file_name : null;
+            if ($passportPhotoPath && file_exists($passportPhotoPath)) {
+                $passportPhotoBase64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($passportPhotoPath));
+            } else {
+                $passportPhotoBase64 = null;
+            }
             return [
                 'sr' => $index + 1,
                 'name' => $row->humanResource->name ?? 'N/A',
                 'approved_for_craft' => $row->humanResource->crafts->name ?? 'N/A',
                 'passport' => $row->humanResource->passport ?? 'N/A',
-                'flight_route' => $row->flight_route ?? 'N/A',
-                'flight_date' => $row->flight_date ?? 'N/A', 
+                'flight_route' => $step6->flight_route ?? 'N/A',
+                'flight_date' => $step6->flight_date ?? 'N/A', 
+                'passport_photo' => $passportPhotoPath, 
+                'passport_photo_base64' => $passportPhotoBase64, 
             ];
         });
 

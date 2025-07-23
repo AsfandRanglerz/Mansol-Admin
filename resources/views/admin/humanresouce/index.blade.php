@@ -400,20 +400,33 @@
                                         $canDelete = Auth::guard('admin')->check() || 
                                         (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Human Resources', 'delete'));
                                         @endphp
-                                        @if ($canCreate)
-                                        <a class="btn btn-primary text-white" href="{{ route('humanresource.create') }}">
-                                            Add Human Resource
-                                        </a>
-                                        @endif
-                                       <form id="importForm" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
-                                                @csrf
-                                                <input type="file" name="file" id="importFile" required class="form-control">
-                                                <button type="submit" id="importBtn" class="btn btn-success ml-3">
-                                                    <span class="default-text">Import</span>
-                                                    <span class="loading-text d-none"> 
-                                                    <span class="spinner-border spinner-border-sm"></span></span>
-                                                </button>
-                                            </form>
+                                        <div class="d-flex gap-2 flex-wrap mb-3">
+                                            @if ($canCreate)
+                                            <a class="btn btn-primary text-white m-1" href="{{ route('humanresource.create') }}">
+                                                Add Human Resource
+                                            </a>
+                                            @endif
+                                            <button id="excel-export" class="btn btn-success btn-md m-1">
+                                                Generate Excel Report
+                                            </button>
+                                            <button id="pdf-export" class="btn btn-danger btn-md m-1">
+                                                <span class="spinner-border spinner-border-sm me-1 d-none" role="status" id="pdfLoader" aria-hidden="true"></span>
+                                                <span id="pdfButtonText">Generate PDF Report</span>
+                                            </button>
+
+                                            <div class="ml-4">
+                                                <form id="importForm" enctype="multipart/form-data" class="d-flex align-items-center      gap-2">
+                                                         @csrf
+                                                         <input type="file" name="file" id="importFile" required class="form-control">
+                                                         <button type="submit" id="importBtn" class="btn btn-success ml-3">
+                                                             <span class="default-text">Import</span>
+                                                             <span class="loading-text d-none"> 
+                                                             <span class="spinner-border spinner-border-sm"></span></span>
+                                                         </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
 
                                             {{-- <!-- Success/Error Message -->
                                             <div id="importMsg" class="mt-2"></div> --}}
@@ -523,21 +536,39 @@
                 }
             });
         });
+        
+        function toDataURL(url, callback) {
+           var xhr = new XMLHttpRequest();
+           xhr.onload = function () {
+               var reader = new FileReader();
+               reader.onloadend = function () {
+                   callback(reader.result);
+               }
+               reader.readAsDataURL(xhr.response);
+           };
+           xhr.open('GET', url);
+           xhr.responseType = 'blob';
+           xhr.send();
+           }
+           const logoBase64 = "data:image/png;base64,{{ base64_encode(file_get_contents(public_path('admin/assets/images/mansol-01.png'))) }}";
 
+           toDataURL("{{ asset('public/admin/assets/images/mansol-01.png') }}", function (logoBase64) {
+               initDataTable(logoBase64);
+           });
         var table = $('#table_id_events').DataTable({
             processing: true,
             serverSide: true,
             deferRender: true,
             pageLength: 10,
             lengthMenu: [[10, 25, 50, 100, 250, 500, 1000, -1], [10, 25, 50, 100, 250, 500, 1000, "All"]],
-            dom: 'Bfrtip',
+            dom: 'lfrtip',
             buttons: [
                 {
                     extend: 'excelHtml5',
                     exportOptions: { columns: ':not(.noExport)' },
                     title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
                     className: 'btn-export-excel',
-                    text: 'Generate Excel Report', 
+                    // text: 'Generate Excel Report', 
                     action: function(e, dt, button, config) {
                         var self = this;
                         var oldStart = dt.settings()[0]._iDisplayStart;
@@ -555,6 +586,107 @@
                             });
                         });
                         dt.ajax.reload();
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: { columns: ':not(.noExport)' },
+                    orientation: 'landscape',
+                    pageSize: {
+                        width: 3500,
+                        height: 1400
+                    },
+                    // text: 'Generate PDF Report',
+                    title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
+                    className: 'btn-export-pdf',
+                    action: function (e, dt, button, config) {
+    var self = this;
+    var oldStart = dt.settings()[0]._iDisplayStart;
+
+    // Show loader and disable button
+    $('#pdfLoader').removeClass('d-none');
+    $('#pdf-export').attr('disabled', true);
+    $('#pdfButtonText').text('Generating...');
+
+    dt.one('preXhr', function (e, s, data) {
+        data.start = 0;
+        data.length = -1;
+
+        dt.one('preDraw', function (e, settings) {
+            $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+
+            dt.one('preXhr', function (e, s, data) {
+                settings._iDisplayStart = oldStart;
+                data.start = oldStart;
+            });
+
+            // Restore after PDF generated
+            setTimeout(function () {
+                $('#pdfLoader').addClass('d-none');
+                $('#pdf-export').attr('disabled', false);
+                $('#pdfButtonText').text('Generate PDF Report');
+                dt.ajax.reload();
+            }, 1000); // You can increase timeout if needed
+
+            return false;
+        });
+    });
+
+    dt.ajax.reload();
+},
+                    customize: function (doc) {
+                        // 1. Add Logo at the Top
+                        doc.content.unshift({
+                            margin: [0, 0, 0, 12],
+                            alignment: 'center',
+                            image: logoBase64,
+                            width: 200
+                        });
+
+                        // 2. Safely locate the table in doc.content
+                        let tableContent = doc.content.find(c => c.table);
+
+                        if (!tableContent || !tableContent.table || !tableContent.table.body) {
+                            console.error("PDF Export: Table not found in document content.");
+                            return;
+                        }
+
+                        const body = tableContent.table.body;
+
+                        // 3. Add "Passport Photo" header cell at index 2
+                        body[0].splice(2, 0, { text: 'Passport Photo', style: 'tableHeader', alignment: 'center' });
+
+                        // 4. Inject Passport Photos into rows at same index (2)
+                        for (let i = 1; i < body.length; i++) {
+                            const rowData = table.row(i - 1).data(); // i - 1 because first row is header
+
+                            if (rowData.passport_photo_base64) {
+                                body[i].splice(2, 0, {
+                                    image: rowData.passport_photo_base64,
+                                    width: 40,
+                                    height: 35,
+                                    alignment: 'center'
+                                });
+                            } else {
+                                body[i].splice(2, 0, '');
+                            }
+                        }
+                         // 6. Apply border + padding
+                            tableContent.layout = {
+                                hLineWidth: () => 0.5,
+                                vLineWidth: () => 0.5,
+                                hLineColor: () => '#aaa',
+                                vLineColor: () => '#aaa',
+                                paddingLeft: () => 4,
+                                paddingRight: () => 4,
+                                paddingTop: () => 2,
+                                paddingBottom: () => 2
+                            };
+                        // 5. Formatting
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.tableHeader.fontSize = 9;
+                        doc.pageMargins = [10, 10, 10, 20];
+                        doc.styles.tableHeader.alignment = 'center';
                     }
                 }
             ],
@@ -687,6 +819,13 @@
                 var total = settings.json ? settings.json.recordsFiltered : api.data().count();
                 $('#total-count-badge').text('Total Count: ' + total);
             }
+        });
+        $('#excel-export').on('click', function () {
+            table.button('.btn-export-excel').trigger();
+        });
+
+        $('#pdf-export').on('click', function () {
+            table.button('.btn-export-pdf').trigger();
         });
 
         // Filter form submit

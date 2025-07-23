@@ -440,9 +440,17 @@ class HumanResourceController extends Controller
             if ($step6 && $step6->visa_expiry_date !== null) {
                 $visa_status = $step6->visa_expiry_date >= now() ? 'Valid' : 'Expired';
             }
+            $passportPhotoPath = $step4 ? $step4->file_name : null;
+
+            if ($passportPhotoPath && file_exists($passportPhotoPath)) {
+                $passportPhotoBase64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($passportPhotoPath));
+            } else {
+                $passportPhotoBase64 = null;
+            }
             $result[] = [
                 'registration' => $row->registration ?? '',
-                'passport_photo' => $step4 ? $step4->file_name : '',
+                'passport_photo' => $passportPhotoPath,
+                'passport_photo_base64' => $passportPhotoBase64,
                 'visa_type' => $step6 ? $step6->visa_type : '',
                 'visa_status' => $visa_status,
                 'visa_issue_date' => $step6 ? $step6->visa_issue_date : '',

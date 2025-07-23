@@ -168,7 +168,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="name">Name *</label>
                                                 <input type="text" class="form-control" id="name" name="name"
-                                                    value="{{ old('name') }}" placeholder="name">
+                                                    value="{{ old('name') }}" placeholder="name" required>
                                                 @error('name')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -178,7 +178,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="son_of">S/O *</label>
                                                 <input type="text" class="form-control" id="son_of" name="son_of"
-                                                    value="{{ old('son_of') }}" placeholder="Father Name">
+                                                    value="{{ old('son_of') }}" placeholder="Father Name" required>
                                                 @error('son_of')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -256,7 +256,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="cnic">CNIC *</label>
                                                 <input type="number" class="form-control" id="cnic" name="cnic"
-                                                    value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X">
+                                                    value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X" required>
                                                 @error('cnic')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -332,7 +332,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="religion">Religion *</label>
-                                                <select name="religion" class="form-control">
+                                                <select name="religion" class="form-control" required>
                                                     <option value="" disabled
                                                         {{ old('religion', $record->religion ?? '') == '' ? 'selected' : '' }}>
                                                         Select Religion
@@ -353,7 +353,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="martial_status">Marital Status *</label>
-                                                <select name="martial_status" class="form-control">
+                                                <select name="martial_status" class="form-control" required>
                                                     <option value="" disabled
                                                         {{ old('martial_status', $record->martial_status ?? '') == '' ? 'selected' : '' }}>
                                                         Select Marital
@@ -457,7 +457,7 @@
                                             <div class="form-group">
                                                 <label class="text-danger" for="acdemic_qualification">Academic
                                                     Qualification *</label>
-                                                <select name="acdemic_qualification" class="form-control">
+                                                <select name="acdemic_qualification" class="form-control" required>
                                                     <option value="" disabled
                                                         {{ old('acdemic_qualification', $record->acdemic_qualification ?? '') == '' ? 'selected' : '' }}>
                                                         Select Qualification</option>
@@ -490,7 +490,7 @@
                                                     Qualification *</label>
 
                                                 <select name="technical_qualification" id="qualification"
-                                                    class="form-control">
+                                                    class="form-control" required>
                                                     <option value="" disabled
                                                         {{ old('technical_qualification') ? '' : 'selected' }}>Select
                                                         Qualification</option>
@@ -763,7 +763,7 @@
                                                 <label class="text-danger" for="experience">Years of Experience (Gulf)
                                                     *</label>
                                                 <input type="number" name="experience_gulf" class="form-control"
-                                                    min="0" placeholder="Enter Years of Experience">
+                                                    min="0" placeholder="Enter Years of Experience" required>
                                                 @error('experience_gulf')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -818,7 +818,7 @@
                                                     <label class="text-danger" for="present_address_city">Present Address
                                                         City *</label>
                                                     <select name="present_address_city" id="present_address_city"
-                                                        class="form-control">
+                                                        class="form-control" required>
                                                         <option value="" disabled
                                                             {{ old('present_address_city', $HumanResource->present_address_city ?? '') == '' ? 'selected' : '' }}>
                                                             Select City
@@ -925,7 +925,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="citizenship">Citizenship *</label>
-                                                <select name="citizenship" class="form-control">
+                                                <select name="citizenship" class="form-control" required>
                                                     <option value="" disabled
                                                         {{ old('citizenship', $HumanResource->citizenship ?? '') == '' ? 'selected' : '' }}>
                                                         Select Citizenship</option>
@@ -968,7 +968,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="gender">Gender *</label>
-                                                <select name="gender" class="form-control">
+                                                <select name="gender" class="form-control" required>
                                                     <option value="" disabled
                                                         {{ old('gender', $HumanResource->gender ?? '') == '' ? 'selected' : '' }}>
                                                         Select Gender</option>
