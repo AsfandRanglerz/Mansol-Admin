@@ -391,7 +391,7 @@
                                 </div>
 
                             </div>
-                        </div>
+                        </div> 
                     <div class="row mt-4">
                         {{-- Passport-size Photograph --}}
                         <div class="col-md-6">

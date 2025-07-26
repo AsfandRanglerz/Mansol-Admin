@@ -600,40 +600,40 @@
                     title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
                     className: 'btn-export-pdf',
                     action: function (e, dt, button, config) {
-    var self = this;
-    var oldStart = dt.settings()[0]._iDisplayStart;
+                        var self = this;
+                        var oldStart = dt.settings()[0]._iDisplayStart;
 
-    // Show loader and disable button
-    $('#pdfLoader').removeClass('d-none');
-    $('#pdf-export').attr('disabled', true);
-    $('#pdfButtonText').text('Generating...');
+                        // Show loader and disable button
+                        $('#pdfLoader').removeClass('d-none');
+                        $('#pdf-export').attr('disabled', true);
+                        $('#pdfButtonText').text('Generating...');
 
-    dt.one('preXhr', function (e, s, data) {
-        data.start = 0;
-        data.length = -1;
+                        dt.one('preXhr', function (e, s, data) {
+                            data.start = 0;
+                            data.length = -1;
 
-        dt.one('preDraw', function (e, settings) {
-            $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+                            dt.one('preDraw', function (e, settings) {
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
 
-            dt.one('preXhr', function (e, s, data) {
-                settings._iDisplayStart = oldStart;
-                data.start = oldStart;
-            });
+                                dt.one('preXhr', function (e, s, data) {
+                                    settings._iDisplayStart = oldStart;
+                                    data.start = oldStart;
+                                });
 
-            // Restore after PDF generated
-            setTimeout(function () {
-                $('#pdfLoader').addClass('d-none');
-                $('#pdf-export').attr('disabled', false);
-                $('#pdfButtonText').text('Generate PDF Report');
-                dt.ajax.reload();
-            }, 1000); // You can increase timeout if needed
+                                // Restore after PDF generated
+                                setTimeout(function () {
+                                    $('#pdfLoader').addClass('d-none');
+                                    $('#pdf-export').attr('disabled', false);
+                                    $('#pdfButtonText').text('Generate PDF Report');
+                                    dt.ajax.reload();
+                                }, 1000); // You can increase timeout if needed
 
-            return false;
-        });
-    });
+                                return false;
+                            });
+                        });
 
-    dt.ajax.reload();
-},
+                        dt.ajax.reload();
+                    },
                     customize: function (doc) {
                         // 1. Add Logo at the Top
                         doc.content.unshift({

@@ -424,7 +424,8 @@ class HumanResourceController extends Controller
         // Format data for DataTables (plain data, no HTML)
         $result = [];
         foreach ($data as $row) {
-            $step4 = $row->hrSteps->firstWhere('step_number', 4);
+            // $step4 = $row->hrSteps->firstWhere('step_number', 4);
+            $step4 = $row->hrSteps->where('step_number', 4)->where('file_type','photo')->first();
             $step6 = $row->hrSteps->firstWhere('step_number', 6);
             $cnic_front = $row->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')
                 ->where('file_name', '!=', null)->first();

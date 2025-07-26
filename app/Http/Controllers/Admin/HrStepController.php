@@ -130,68 +130,68 @@ class HrStepController extends Controller
 
             // Handle Passport-size Photo
             if ($request->hasFile('photo')) {
-    $file = $request->file('photo');
-    $photoFileName = time() . '_photo.' . $file->getClientOriginalExtension();
-    $file->move('public/admin/assets/humanResource', $photoFileName);
-    HrStep::updateOrCreate(
-        [
-            'human_resource_id' => $humanResource->id,
-            'step_number' => 4,
-            'file_type' => 'photo',
-        ],
-        [
-            'file_name' => 'public/admin/assets/humanResource/' . $photoFileName
-        ]
-    );
-}
+                $file = $request->file('photo');
+                $photoFileName = time() . '_photo.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $photoFileName);
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 4,
+                        'file_type' => 'photo',
+                    ],
+                    [
+                        'file_name' => 'public/admin/assets/humanResource/' . $photoFileName
+                    ]
+                );
+            }
 
-if ($request->hasFile('police_verification')) {
-    $file = $request->file('police_verification');
-    $policeFileName = time() . '_police.' . $file->getClientOriginalExtension();
-    $file->move('public/admin/assets/humanResource', $policeFileName);
-    HrStep::updateOrCreate(
-        [
-            'human_resource_id' => $humanResource->id,
-            'step_number' => 4,
-            'file_type' => 'police verification',
-        ],
-        [
-            'file_name' => 'public/admin/assets/humanResource/' . $policeFileName
-        ]
-    );
-}
+            if ($request->hasFile('police_verification')) {
+                $file = $request->file('police_verification');
+                $policeFileName = time() . '_police.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $policeFileName);
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 4,
+                        'file_type' => 'police verification',
+                    ],
+                    [
+                        'file_name' => 'public/admin/assets/humanResource/' . $policeFileName
+                    ]
+                );
+            }
 
-if ($request->hasFile('account_detail')) {
-    $file = $request->file('account_detail');
-    $accountFileName = time() . '_account.' . $file->getClientOriginalExtension();
-    $file->move('public/admin/assets/humanResource', $accountFileName);
-    HrStep::updateOrCreate(
-        [
-            'human_resource_id' => $humanResource->id,
-            'step_number' => 4,
-            'file_type' => 'account detail',
-        ],
-        [
-            'file_name' => 'public/admin/assets/humanResource/' . $accountFileName
-        ]
-    );
-}
+            if ($request->hasFile('account_detail')) {
+                $file = $request->file('account_detail');
+                $accountFileName = time() . '_account.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $accountFileName);
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 4,
+                        'file_type' => 'account detail',
+                    ],
+                    [
+                        'file_name' => 'public/admin/assets/humanResource/' . $accountFileName
+                    ]
+                );
+            }
 
-if ($request->hasFile('update_appraisal')) {
-    $file = $request->file('update_appraisal');
-    $appraisalFileName = time() . '_appraisal.' . $file->getClientOriginalExtension();
-    $file->move('public/admin/assets/humanResource', $appraisalFileName);
-    HrStep::updateOrCreate(
-        [
-            'human_resource_id' => $humanResource->id,
-            'step_number' => 4,
-            'file_type' => 'update appraisal',
-        ],
-        [
-            'file_name' => 'public/admin/assets/humanResource/' . $appraisalFileName
-        ]
-    );
-}
+            if ($request->hasFile('update_appraisal')) {
+                $file = $request->file('update_appraisal');
+                $appraisalFileName = time() . '_appraisal.' . $file->getClientOriginalExtension();
+                $file->move('public/admin/assets/humanResource', $appraisalFileName);
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 4,
+                        'file_type' => 'update appraisal',
+                    ],
+                    [
+                        'file_name' => 'public/admin/assets/humanResource/' . $appraisalFileName
+                    ]
+                );
+            }
 
             // Handle NOK CNIC Images
             if ($request->hasFile('nok_cnic_front')) {
