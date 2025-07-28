@@ -38,7 +38,6 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
             }
             $cleanRows[] = $cleanRow;
         }
-
         if (!empty($cleanRows)) {
             Log::info('Dispatching batch of rows', ['count' => count($cleanRows)]);
             HumanResourceImportJob::dispatch($cleanRows);

@@ -525,7 +525,7 @@
             var form = $(this).closest("form");
             swal({
                 title: "Are you sure you want to delete this record?",
-                text: "If you delete this, it will be gone forever.",
+                text: "If you delete this, it will be gone forever — along with all its related data and history.",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,

@@ -314,7 +314,7 @@ class HrStepController extends Controller
         // in db its step no 7 but in front end its step no 3
         if ($step == 3 && $request->step_three_file) {
             HrStep::updateOrCreate(
-                [
+                [ 
                     'human_resource_id' => $humanResource->id,
                     'step_number' => 7,
                     'file_type' => 'step 7 pdf',

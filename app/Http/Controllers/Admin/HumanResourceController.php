@@ -927,6 +927,8 @@ class HumanResourceController extends Controller
     public function destroy($id)
     {
         try {
+            Nominate::where('human_resource_id', $id)->delete();
+            JobHistory::where('human_resource_id', $id)->delete();
             HumanResource::destroy($id);
             return redirect()->route('humanresource.index')->with(['message' => 'Human Resource Deleted Successfully']);
         } catch (QueryException $e) {

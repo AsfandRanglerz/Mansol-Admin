@@ -253,15 +253,17 @@
 
 
                                         <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="cnic">CNIC *</label>
-                                                <input type="number" class="form-control" id="cnic" name="cnic"
-                                                    value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X" required>
-                                                @error('cnic')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
+    <div class="form-group">
+        <label class="text-danger" for="cnic">CNIC *</label>
+        <input type="text" class="form-control" id="cnic" name="cnic"
+            value="{{ old('cnic') }}" placeholder="XXXXX-XXXXXXX-X" maxlength="13" required
+            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 13)">
+        @error('cnic')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="text-danger" for="cnic_expiry_date">CNIC Expiry Date</label>

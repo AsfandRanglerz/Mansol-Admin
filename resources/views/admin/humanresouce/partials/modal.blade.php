@@ -235,7 +235,21 @@
                             </div>
 
                             <p class="m-0 step-text {{ $i == 1 ? 'active' : '' }}">
-                                Step {{ $i }}
+                                @if ($i == 1)
+                                    Essential Images
+                                @elseif ($i == 2)
+                                    Visa-Medical
+                                @elseif ($i == 3)
+                                    ABL
+                                @elseif ($i == 4)
+                                    NBP 
+                                @elseif ($i == 5)
+                                    NBP Challan 
+                                @elseif ($i == 6)
+                                    State Life
+                                @elseif ($i == 7)
+                                    FSA
+                                @endif
                             </p>
 
                             <span class="fa-solid fa-circle-check position-absolute top-0 tick-mark d-none"></span>
@@ -391,7 +405,7 @@
                                 </div>
 
                             </div>
-                        </div> 
+                        </div>
                     <div class="row mt-4">
                         {{-- Passport-size Photograph --}}
                         <div class="col-md-6">
@@ -1205,7 +1219,7 @@
                     console.log('PDF URL:', response.pdf_url);
 
                     // Set the PDF URL in the input field
-                    formSection.find('.stepSevenFile').val(response.url).trigger('change');
+                    formSection.find('.stepThreeFile').val(response.url).trigger('change');
 
                     // Update the iframe to display the generated PDF
                     formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +

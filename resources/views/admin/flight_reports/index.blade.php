@@ -26,12 +26,48 @@
 
                             <div class="card-body table-striped table-bordered table-responsive">
                                 <form method="GET" id="filter-form" class="row g-3 mt-3">
+                                    
+                                    {{-- Company --}}
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="" for="company_id">Company</label>
+                                            <select name="company_id" id="company_id" class="form-control" required>
+                                                <option value="" disabled selected>Select Company</option>
+                                                @foreach ($companies as $company)
+                                                    <option value="{{ $company->id }}"
+                                                        {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                                        {{ $company->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {{-- Project --}}
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="" for="project_id">Project</label>
+                                            <select name="project_id" id="project_id" class="form-control" required>
+                                                <option value="" selected disabled>Select Project</option>
+                                                @foreach ($projects as $project)
+                                                    @if (request('company_id') && $project->company_id == request('company_id'))
+                                                        <option value="{{ $project->id }}"
+                                                            {{ request('project_id') == $project->id ? 'selected' : '' }}>
+                                                            {{ $project->project_name }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                            @error('project_id')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
                                     {{-- Flight Date --}}
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="flight_date">Flight Date</label>
                                             <input type="date" name="flight_date" id="flight_date" class="form-control"
-                                                value="{{ request('flight_date') }}">
+                                                value="{{ request('flight_date') }}" required>
                                         </div>
                                     </div>
 
@@ -226,6 +262,8 @@
                     dataSrc: 'data',
                     data: function(d) {
                         d.flight_date = $('#flight_date').val();
+                        d.company_id = $('#company_id').val();
+                        d.project_id = $('#project_id').val();
                     }
                 },  
                 columns: [{
@@ -264,15 +302,32 @@
                 toastr.success('Filter Applied Successfully');
                 table.ajax.reload();
             });
-
+            $('#company_id').on('change', function() {
+                let companyId = $(this).val();
+                $('#project_id').html('<option value="" selected disabled>Select Project</option>');
+                if (companyId) {
+                    $.get("{{ route('projects-get') }}", {
+                        company_id: companyId
+                    }, function(data) {
+                        data.forEach(project => {
+                            $('#project_id').append(
+                                `<option value="${project.id}">${project.project_name}</option>`
+                            );
+                        });
+                    });
+                }
+            });
             $('#clear-filter-btn').on('click', function() {
+                $('#project_id').val('');
+                $('#company_id').val('');
                 $('#flight_date').val('');
                 toastr.success('Filter Cleared Successfully');
                 table.clear().draw();
                 table.ajax.reload();
             });
-        });
 
+        });
+  
         function exportWithDate() {
             let date = $('#flight_date').val();
             let url = "{{ route('flight-reports.export') }}";

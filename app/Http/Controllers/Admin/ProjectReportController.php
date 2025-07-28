@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Demand;
 use App\Models\Project;
+use App\Models\Nominate;
 use App\Models\Hr;
 use App\Models\HrStep;
 use DataTables;
@@ -121,7 +122,9 @@ class ProjectReportController extends Controller
     // flight reports 
     public function flightReportIndex(Request $request)
     {
-        return view('admin.flight_reports.index');
+        $companies = Company::where('is_active', '=', '1')->orderBy('name')->get();
+        $projects = Project::where('is_active', '=', '1')->get();
+        return view('admin.flight_reports.index',compact('companies', 'projects'));
     }
 
     public function getFlights(Request $request)
@@ -129,9 +132,11 @@ class ProjectReportController extends Controller
         if (!$request->filled('flight_date')) {
             return response()->json(['data' => []]);
         }
-
+        // $projectIds = Project::where('company_id', $request->company_id)->pluck('id');
+        $hrIds = Nominate::where('project_id',$request->project_id)->pluck('human_resource_id');   
         $query = HrStep::with(['humanResource:id,name,passport,craft_id', 'humanResource.crafts'])
             // ->where('step_number', 6)
+            ->whereIn('human_resource_id', $hrIds)
             ->where('flight_date', $request->flight_date);
 
         $hrSteps = $query->get();
@@ -158,7 +163,7 @@ class ProjectReportController extends Controller
             ];
         });
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data,'hrIds', $hrIds]);
     }
 
 
