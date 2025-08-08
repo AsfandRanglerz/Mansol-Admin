@@ -15,6 +15,15 @@ use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue, WithValidation,WithCalculatedFormulas 
 {
     /**
+     * Defines how many rows each queued job will process.
+     *
+     * @return int
+     */
+    public function chunkSize(): int
+    {
+        return 500;   // e.g., 1,000 rows per job
+    }
+    /**
      * This method is called for each chunk of rows (size defined in chunkSize()).
      *
      * @param  Collection  $rows
@@ -44,15 +53,6 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
         }
     }
 
-    /**
-     * Defines how many rows each queued job will process.
-     *
-     * @return int
-     */
-    public function chunkSize(): int
-    {
-        return 500;   // e.g., 1,000 rows per job
-    }
 
     /**
      * Validation rules for each row.

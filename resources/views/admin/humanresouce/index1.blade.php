@@ -17,6 +17,10 @@
     color: white !important;
     border: none;
 }
+.btn-export-excel {
+    width: max-content;
+}
+
 </style>
     <div class="modal fade" id="createSubadminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -27,11 +31,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                            <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <input type="file" name="file" required>
-                                <button type="submit" class="btn btn-success">Import</button>
-                            </form>
+                    <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="file" name="file" required>
+                                            <button type="submit" class="btn btn-success">Import</button>
+                                        </form>
                 </div>
                 <div class="modal-body">
                     <form id="createSubadminForm" enctype="multipart/form-data">
@@ -99,7 +103,7 @@
                             <div class="card-header">
                                 <div class="col-12">
                                     <h4>Human Resources</h4>
-                                    <h6 class="badge bg-primary text-white">Total Count: {{ $count }}</h6>
+                                    <h6 class="badge bg-primary text-white" id="total-count-badge">Total Count: {{ $count }}</h6>
                                     <h6 class="text-muted text-danger" style="font-style: italic;">
                                             Note: The default password for all human resources is <strong>12345678</strong>. This password is automatically generated when a new human resource created.
                                     </h6>
@@ -107,7 +111,7 @@
                             </div>
                                 <div class="card-body table-striped table-bordered table-responsive">
                                      {{-- Filter Form --}}
-                                        <form action="" method="GET" class="row g-3 mt-3">
+                                        <form action="" method="POST" class="row g-3 mt-3" id="filter-form">
                                             {{-- Company --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
@@ -161,6 +165,33 @@
                                             </div>
                                             </div>
 
+                                            {{-- Crafts --}}
+                                           <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="craft" class="form-label">Craft</label>
+                                                    <select name="craft" id="craft" class="form-control">
+                                                    <option value="">Select Craft</option>
+                                                        @foreach ($crafts as $data)
+                                                            <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Reference --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="refference" class="form-label">Refference</label>
+                                                    <select name="refference" id="refference" class="form-control">
+                                                        <option value="" disabled selected>Select Refference</option>
+                                                        @foreach($references as $item)
+                                                                <option value="{{ $item }}">
+                                                                    {{ $item }}
+                                                                </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
                                             {{-- Medically Fit --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
@@ -173,8 +204,21 @@
                                                     </select>
                                                 </div>
                                             </div>
-
-                                            {{-- CNCC Expiry Date --}}
+                                            {{-- Application Date From --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="date_from" class="form-label">Application Date From</label>
+                                                    <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from') }}">
+                                                </div>
+                                            </div>
+                                            {{-- Application Date To --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="date_to" class="form-label">Application Date To</label>
+                                                    <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to') }}">
+                                                </div>
+                                            </div>
+                                            {{-- CNIC Expiry Status --}}
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="cnic_expiry" class="form-label">CNIC Expiry Status</label>
@@ -210,21 +254,145 @@
                                             </div>
                                             </div>
 
+                                            {{-- Visa Expiry Date --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="visa_type">Visa Type</label>
+                                                    <select name="visa_type" class="form-control" id="visa_type">
+                                                        <option value="" disabled selected>Select Visa Type</option>
+                                                        <option value="Work Permit">Work Permit</option>
+                                                        <option value="Visit Visa">Visit Visa</option>
+                                                        <option value="B-1">B-1</option>
+                                                        <option value="DEB">DEB</option>
+                                                        <option value="Single Entry">Single Entry</option>
+                                                        <option value="EV">EV</option>
+                                                        <option value="Work Visa">Work Visa</option>
+                                                        <option value="WORK VISIT VISA">WORK VISIT VISA</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Flight Date --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="flight_date" class="form-label">Flight Date</label>
+                                                    <input type="date" name="flight_date" id="flight_date" class="form-control" value="{{ request('flight_date') }}">
+                                                </div>
+                                            </div>
+
+                                            {{-- Mobilized FIlter --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="mobilized">Mobilized</label>
+                                                    <select name="mobilized" class="form-control" id="mobilized">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        <option value="Mobilized">Mobilized</option>
+                                                        <option value="Not Yet Mobilized">Not Yet Mobilized</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- CNIC Taken Filter --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="cnic_taken">CNIC</label>
+                                                    <select name="cnic_taken" class="form-control" id="cnic_taken">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        <option value="Taken">Taken</option>
+                                                        <option value="Not Taken">Not Taken</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+                                            {{-- Passport Taken Filter --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="passport_taken">Passport</label>
+                                                    <select name="passport_taken" class="form-control" id="passport_taken">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        <option value="Taken">Taken</option>
+                                                        <option value="Not Taken">Not Taken</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Blood Group --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="blood_group">Blood Group</label>
+                                                        <select name="blood_group" class="form-control" id="blood_group">
+                                                            <option value="" disabled selected>Select Blood Group</option>
+                                                    @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $blood)
+                                                        <option value="{{ strtolower($blood) }}">
+                                                            {{ $blood }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                    
+                                                </div>
+                                            </div>
+
+
+                                            {{-- Religion --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="religion">Religion</label>
+                                                    <select name="religion" class="form-control" id="religion">
+                                                    <option value="" disabled selected>
+                                                        Select Religion
+                                                    </option>
+                                                    @foreach (['Muslim', 'Hindu', 'Christian', 'Buddhist', 'Jewish', 'Sikh'] as $religion)
+                                                        <option value="{{ strtolower($religion) }}">
+                                                            {{ $religion }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Approval --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="approvals">Approvals</label>
+                                                    <select name="approvals" id="approvals" class="form-control">
+                                                    <option value="" disabled selected>
+                                                        Select Company</option>
+                                                    @foreach (['ARAMCO', 'SABIC', 'PDO', 'ADNOC', 'Shell', 'Dolphin', 'Q Con', 'Qatar Gas', 'Oryx', 'Oxchem'] as $company)
+                                                        <option value="{{ strtolower($company) }}">
+                                                            {{ $company }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Interview Location --}}
+                                            <div class="col-md-3">
+                                                <div class="form-group"> 
+                                                <label for="interview_location">Interview Location</label>
+                                                    <select name="interview_location" class="form-control" id="interview_location">
+                                                        <option value="" disabled selected>Select Option</option>
+                                                        @foreach ($cities as $city)
+                                                        <option value="{{ strtolower($city->name) }}">
+                                                            {{ $city->name }}
+                                                        </option>
+                                                    @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             {{-- Filter Button --}}
-                                            <div class="col-md-3 d-flex align-items-center">
-                                                <div class="row w-100">
-                                                    <div class="col-6 pr-1">
-                                                        <button type="submit" class="btn btn-primary" style="width:max-content">Apply Filter</button>
-                                                    </div>
-                                                    <div class="col-6 pl-1">
-                                                        <a href="{{ route('humanresource.index') }}" class="btn btn-secondary w-100">Clear Filter</a>
-                                                    </div>
+                                            <div class="col-md-12 d-flex justify-content-end align-items-end mb-3">
+                                                <div class="btn-group">
+                                                    <button type="submit" class="btn btn-primary mr-2">Apply Filters</button>
+                                                    <button type="button" id="clear-filter-btn" class="btn btn-secondary">Clear</button>
                                                 </div>
                                             </div>
                                         </form>
 
                                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-1">
-                                         @php
+                                        @php
                                         $canCreate = Auth::guard('admin')->check() || 
                                         (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Human Resources', 'create'));
                                         $canEdit = Auth::guard('admin')->check() || 
@@ -232,16 +400,46 @@
                                         $canDelete = Auth::guard('admin')->check() || 
                                         (Auth::guard('subadmin')->check() && \App\Models\SubAdmin::hasSpecificPermission(Auth::guard('subadmin')->id(), 'Human Resources', 'delete'));
                                         @endphp
-                                        @if ($canCreate)
-                                        <a class="btn btn-primary text-white" href="{{ route('humanresource.create') }}">
-                                            Add Human Resource
-                                        </a>
-                                        @endif
-                                        <form action="{{ url('admin/human-resource/import') }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
-                                            @csrf
-                                            <input type="file" name="file" required class="form-control">
-                                            <button type="submit" class="btn btn-success ml-3">Import</button>
-                                        </form>
+                                        <div class="d-flex gap-2 flex-wrap mb-3">
+                                            @if ($canCreate)
+                                            <a class="btn btn-primary text-white m-1" href="{{ route('humanresource.create') }}">
+                                                Add Human Resource
+                                            </a>
+                                            @endif
+                                            <button id="excel-export" class="btn btn-success btn-md m-1">
+                                                Generate Excel Report
+                                            </button>
+                                            <button id="pdf-export" class="btn btn-danger btn-md m-1">
+                                                <span class="spinner-border spinner-border-sm me-1 d-none" role="status" id="pdfLoader" aria-hidden="true"></span>
+                                                <span id="pdfButtonText">Generate PDF Report</span>
+                                            </button>
+
+                                            <div class="ml-4">
+                                                <form id="importForm" enctype="multipart/form-data" class="d-flex align-items-center      gap-2">
+                                                         @csrf
+                                                         <input type="file" name="file" id="importFile" required class="form-control">
+                                                         <button type="submit" id="importBtn" class="btn btn-success ml-3">
+                                                             <span class="default-text">Import</span>
+                                                             <span class="loading-text d-none"> 
+                                                             <span class="spinner-border spinner-border-sm"></span></span>
+                                                         </button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+
+                                            {{-- <!-- Success/Error Message -->
+                                            <div id="importMsg" class="mt-2"></div> --}}
+
+                                    </div>
+                                    {{-- Export/Print Buttons --}}
+                                  
+                                    <div id="progressContainer" class="d-none mt-3 mb-3">
+                                        <label>Import Progress</label>
+                                        <div class="progress">
+                                            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated"
+                                                role="progressbar" style="width: 0%">0%</div>
+                                        </div>
                                     </div>
 
                                 <table class="table responsive" id="table_id_events">
@@ -259,6 +457,7 @@
                                             <th>Sub-Craft</th>
                                             <th>Approvals #</th>
                                             <th class="noExport">Approvals Document</th>
+                                            <th>City Of Interview</th>
                                             <th>S/O</th>
                                             <th>Mother Name</th>
                                             <th>Date Of Birth</th>
@@ -281,139 +480,32 @@
                                             <th>Present Address Mobile</th>
                                             <th>Permanent Address</th>
                                             <th>Present Address City</th>
-                                            <th>Permanent Address</th>
                                             <th>Permanent Address Phone</th>
                                             <th>Permanent Address Mobile</th>
                                             <th>Gender</th>
+                                            <th>Blood Group</th>
+                                            <th>Religion</th>
                                             <th>Permanent Address City</th>
                                             <th>Permanent Address Province</th>
                                             <th>Citizenship</th>
                                             <th>Refference</th>
                                             <th>Performance-Appraisal Awarded %</th>
                                             <th>Min Acceptable Salary</th>
+                                            <th>Visa Type</th>
+                                            <th>Visa Status</th>
+                                            <th>Visa Issue Date</th>
+                                            <th>Visa Expiry Date</th>
+                                            <th>Flight Date</th>
+                                            <th>Flight Route</th>
+                                            <th>CNIC Taken Status</th>
+                                            <th>Passport Taken Status</th>
                                             <th>Comment</th>
                                             <th>Status</th>
                                             <th scope="col" class="noExport">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($HumanResources as $HumanResource)
-                                        <tr>
-                                            <td class="noExport">{{ $loop->iteration }}</td>
-                                            <td>{{ $HumanResource->registration ?? 'null' }}</td>
-                                              @php
-                                                    $step4 = $HumanResource->hrSteps->firstWhere('step_number', 4);
-                                                @endphp
-
-                                                <td class="noExport">
-                                                    <img src="{{ $step4 ? asset($step4->file_name) : asset('public/admin/assets/images/avator.png') }}" 
-                                                        alt="Step 4 Image" width="50" height="50">
-                                                </td>
-                                            <td class="noExport">
-                                                <button 
-    class="btn btn-primary text-white d-flex align-items-center open-modal-btn" 
-    data-id="{{ $HumanResource->id }}"
-    data-toggle="modal" 
-    data-target="#dynamicHRModal"
->
-    <span class="fa-solid fa-plus mr-2"></span>
-    <p class="m-0 text-white">Attachments</p>
-</button>
-
-                                            </td>
-                                            <td>{{ $HumanResource->name ?? 'null' }}</td>
-                                            <td>
-                                            @if(!empty($HumanResource->email))
-                                                <a href="mailto:{{ $HumanResource->email }}">{{ $HumanResource->email }}</a>
-                                            @else
-                                                null
-                                            @endif
-                                        </td>
-
-                                            <td>{{ $HumanResource->cnic ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->application_date ?? 'null' }}</td>
-                                            <td>
-                                                {{ $HumanResource->Crafts->name ?? 'null' }}
-                                            </td>
-                                            <td>
-                                                {{ $HumanResource->SubCrafts->name ?? 'null' }}
-                                            </td>
-                                            <td>{{ $HumanResource->approvals ?? 'null' }}</td>
-                                            <td class="noExport">
-                                                @if ($HumanResource->medical_doc)
-                                                    <a href="{{ asset($HumanResource->medical_doc) }}" download>Download File</a>
-                                                @endif
-                                            </td>
-                                            <td>{{ $HumanResource->son_of ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->mother_name ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->date_of_birth ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->cnic_expiry_date ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->doi ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->doe ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->passport ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->next_of_kin ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->relation ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->kin_cnic ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->shoe_size ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->cover_size ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->acdemic_qualification ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->technical_qualification ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->experience_local ?? 0 }} Years</td>
-                                            <td>{{ $HumanResource->experience_gulf ?? 0 }} Years</td>
-                                            <td>{{ $HumanResource->district_of_domicile ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->present_address ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->present_address_phone ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->present_address_mobile ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->permanent_address ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->present_address_city ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->permanent_address ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->permanent_address_phone ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->permanent_address_mobile ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->gender ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->permanent_address_city ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->permanent_address_province ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->citizenship ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->refference ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->performance_appraisal ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->min_salary ?? 'null' }}</td>
-                                            <td>{{ $HumanResource->comment ?? 'null' }}</td>
-
-                                            <td>
-                                                @if ($HumanResource->status == 1)
-                                                    <div class="badge badge-success badge-shadow">Pending</div>
-                                                @elseif ($HumanResource->status == 2)
-                                                    <div class="badge badge-success badge-shadow">Approved</div>
-                                                @elseif ($HumanResource->status == 0)
-                                                    <div class="badge badge-danger badge-shadow">Rejected</div>
-                                                @elseif ($HumanResource->status == 3)
-                                                    <div class="badge badge-info badge-shadow">Assigned</div>
-                                                @endif
-                                            </td>
-                                            <td class="noExport">
-                                                <div class="d-flex gap-4">
-                                                    @if ($canEdit)
-                                                        <a href="{{ route('humanresource.edit', $HumanResource->id) }}"
-                                                            class="btn btn-primary">Edit</a>
-                                                    @endif
-                                                    @if ($canDelete)
-                                                        <form action="{{ route('humanresource.destroy', $HumanResource->id) }}"
-                                                            method="POST" style="display:inline-block; margin-left: 10px">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-danger btn-flat show_confirm"
-                                                                data-toggle="tooltip">Delete</button>
-                                                        </form>
-                                                    @endif
-                                                    @if(!($canEdit || $canDelete))
-                                                            <div class="alert alert-danger text-center py-2" role="alert">
-                                                                <strong>Access Denied</strong>
-                                                            </div>
-                                                     @endif
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
+                                        {{-- DataTables will fill this --}}
                                     </tbody>
                                 </table>
                             </div>
@@ -432,16 +524,15 @@
 
 @section('js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-    <script type="text/javascript">
-     $(document).ready(function () {
-       $(document).on('click', '.show_confirm', function(event){
-            event.preventDefault(); // prevent default button action first
-            var form = $(this).closest("form");
-            var name = $(this).data("name");
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(document).on('click', '.show_confirm', function(event){
+            event.preventDefault();
+            var form = $(this).closest("form");
             swal({
                 title: "Are you sure you want to delete this record?",
-                text: "If you delete this, it will be gone forever.",
+                text: "If you delete this, it will be gone forever — along with all its related data and history.",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
@@ -452,103 +543,529 @@
                 }
             });
         });
+        
+        function toDataURL(url, callback) {
+           var xhr = new XMLHttpRequest();
+           xhr.onload = function () {
+               var reader = new FileReader();
+               reader.onloadend = function () {
+                   callback(reader.result);
+               }
+               reader.readAsDataURL(xhr.response);
+           };
+           xhr.open('GET', url);
+           xhr.responseType = 'blob';
+           xhr.send();
+           }
+           const logoBase64 = "data:image/png;base64,{{ base64_encode(file_get_contents(public_path('admin/assets/images/mansol-01.png'))) }}";
+
+           toDataURL("{{ asset('public/admin/assets/images/mansol-01.png') }}", function (logoBase64) {
+               initDataTable(logoBase64);
+           });
+        var table = $('#table_id_events').DataTable({
+            processing: true,
+            serverSide: true,
+            deferRender: true,
+            pageLength: 10,
+            lengthMenu: [[10, 25, 50, 100, 250, 500, 1000, -1], [10, 25, 50, 100, 250, 500, 1000, "All"]],
+            dom: 'lfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: { columns: ':not(.noExport)' },
+                    title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
+                    className: 'btn-export-excel',
+                    // text: 'Generate Excel Report', 
+                    action: function(e, dt, button, config) {
+                        var self = this;
+                        var oldStart = dt.settings()[0]._iDisplayStart;
+                        dt.one('preXhr', function(e, s, data) {
+                            data.start = 0;
+                            data.length = -1;
+                            dt.one('preDraw', function(e, settings) {
+                                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+                                dt.one('preXhr', function(e, s, data) {
+                                    settings._iDisplayStart = oldStart;
+                                    data.start = oldStart;
+                                });
+                                setTimeout(dt.ajax.reload, 0);
+                                return false;
+                            });
+                        });
+                        dt.ajax.reload();
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: { columns: ':not(.noExport)' },
+                    orientation: 'landscape',
+                    pageSize: {
+                        width: 3500,
+                        height: 1400
+                    },
+                    // text: 'Generate PDF Report',
+                    title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
+                    className: 'btn-export-pdf',
+                    action: function (e, dt, button, config) {
+                        var self = this;
+                        var oldStart = dt.settings()[0]._iDisplayStart;
+
+                        // Show loader and disable button
+                        $('#pdfLoader').removeClass('d-none');
+                        $('#pdf-export').attr('disabled', true);
+                        $('#pdfButtonText').text('Generating...');
+
+                        dt.one('preXhr', function (e, s, data) {
+                            data.start = 0;
+                            data.length = -1;
+
+                            dt.one('preDraw', function (e, settings) {
+                                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+
+                                dt.one('preXhr', function (e, s, data) {
+                                    settings._iDisplayStart = oldStart;
+                                    data.start = oldStart;
+                                });
+
+                                // Restore after PDF generated
+                                setTimeout(function () {
+                                    $('#pdfLoader').addClass('d-none');
+                                    $('#pdf-export').attr('disabled', false);
+                                    $('#pdfButtonText').text('Generate PDF Report');
+                                    dt.ajax.reload();
+                                }, 1000); // You can increase timeout if needed
+
+                                return false;
+                            });
+                        });
+
+                        dt.ajax.reload();
+                    },
+                    customize: function (doc) {
+                        // 1. Add Logo at the Top
+                        doc.content.unshift({
+                            margin: [0, 0, 0, 12],
+                            alignment: 'center',
+                            image: logoBase64,
+                            width: 200
+                        });
+
+                        // 2. Safely locate the table in doc.content
+                        let tableContent = doc.content.find(c => c.table);
+
+                        if (!tableContent || !tableContent.table || !tableContent.table.body) {
+                            console.error("PDF Export: Table not found in document content.");
+                            return;
+                        }
+
+                        const body = tableContent.table.body;
+
+                        // 3. Add "Passport Photo" header cell at index 2
+                        body[0].splice(2, 0, { text: 'Passport Photo', style: 'tableHeader', alignment: 'center' });
+
+                        // 4. Inject Passport Photos into rows at same index (2)
+                        for (let i = 1; i < body.length; i++) {
+                            const rowData = table.row(i - 1).data(); // i - 1 because first row is header
+
+                            if (rowData.passport_photo_base64) {
+                                body[i].splice(2, 0, {
+                                    image: rowData.passport_photo_base64,
+                                    width: 40,
+                                    height: 35,
+                                    alignment: 'center'
+                                });
+                            } else {
+                                body[i].splice(2, 0, '');
+                            }
+                        }
+                         // 6. Apply border + padding
+                            tableContent.layout = {
+                                hLineWidth: () => 0.5,
+                                vLineWidth: () => 0.5,
+                                hLineColor: () => '#aaa',
+                                vLineColor: () => '#aaa',
+                                paddingLeft: () => 4,
+                                paddingRight: () => 4,
+                                paddingTop: () => 2,
+                                paddingBottom: () => 2
+                            };
+                        // 5. Formatting
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.tableHeader.fontSize = 9;
+                        doc.pageMargins = [10, 10, 10, 20];
+                        doc.styles.tableHeader.alignment = 'center';
+                    }
+                }
+            ],
+            ajax: {
+                url: "{{ route('humanresource.ajax') }}",
+                type: "POST",
+                data: function (d) {
+                    d._token = "{{ csrf_token() }}";
+                    d.company_id = $('#company_id').val();
+                    d.project_id = $('#project_id').val();
+                    d.demand_id = $('#demand_id').val();
+                    d.craft_id = $('#craft').val();
+                    d.medically_fit = $('#medically_fit').val();
+                    d.cnic_expiry = $('#cnic_expiry').val();
+                    d.passport_expiry = $('#passport_expiry').val();
+                    d.visa_expiry = $('#visa_expiry').val();
+                    d.date_from = $('#date_from').val();
+                    d.date_to = $('#date_to').val();
+                    d.visa_type = $('#visa_type').val();
+                    d.refference = $('#refference').val();
+                    d.flight_date = $('#flight_date').val();
+                    d.mobilized = $('#mobilized').val();
+                    d.cnic_taken = $('#cnic_taken').val();
+                    d.passport_taken = $('#passport_taken').val();
+                    d.blood_group = $('#blood_group').val();
+                    d.religion = $('#religion').val();
+                    d.approvals = $('#approvals').val();
+                    d.interview_location = $('#interview_location').val();
+                }
+            },
+            columns: [
+                { render: function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
+                { data: "registration" },
+                { data: "passport_photo", render: function (data) {
+                    if (!data) return '<img src="{{ asset('public/admin/assets/images/avator.png') }}" width="50" height="50">';
+                    return '<img src="{{ asset('') }}' + data + '" width="50" height="50">';
+                }},
+                { 
+                data: "id",
+                render: function (data) {
+                    return `
+                    <button class="btn btn-primary text-white d-flex align-items-center open-modal-btn"
+                            data-id="${data}"
+                            data-toggle="modal"
+                            data-target="#dynamicHRModal">
+                        <span class="fa-solid fa-plus mr-2"></span>
+                        <span class="m-0">Attachments</span>
+                    </button>`;
+                }
+                },
+                { data: "name" },
+                { data: "email", render: function (data) {
+                    return data ? '<a href="mailto:' + data + '">' + data + '</a>' : '';
+                }},
+                { data: "cnic" },
+                { data: "application_date" },
+                { data: "craft" },
+                { data: "sub_craft" },
+                { data: "approvals" },
+                { data: "approvals_document", render: function (data) {
+                    return data ? '<a href="{{ asset('') }}' + data + '" download>Download File</a>' : '';
+                }},
+                { data: "interview_location" },
+                { data: "son_of" },
+                { data: "mother_name" },
+                { data: "date_of_birth" },
+                { data: "cnic_expiry_date" },
+                { data: "doi" },
+                { data: "doe" },
+                { data: "passport" },
+                { data: "next_of_kin" },
+                { data: "relation" },
+                { data: "kin_cnic" },
+                { data: "shoe_size" },
+                { data: "cover_size" },
+                { data: "acdemic_qualification" },
+                { data: "technical_qualification" },
+                { data: "experience_local", render: function (data) { return (data || 0) + ' Years'; }},
+                { data: "experience_gulf", render: function (data) { return (data || 0) + ' Years'; }},
+                { data: "district_of_domicile" },
+                { data: "present_address" },
+                { data: "present_address_phone" },
+                { data: "present_address_mobile" },
+                { data: "permanent_address" },
+                { data: "present_address_city" },
+                { data: "permanent_address_phone" },
+                { data: "permanent_address_mobile" },
+                { data: "gender" },
+                { data: "blood_group" },
+                { data: "religion" },
+                { data: "permanent_address_city" },
+                { data: "permanent_address_province" },
+                { data: "citizenship" },
+                { data: "refference" },
+                { data: "performance_appraisal" },
+                { data: "min_salary" },
+                { data: "visa_type" },
+                { data: "visa_status" },
+                { data: "visa_issue_date" },
+                { data: "visa_expiry_date" },
+                { data: "flight_date" },
+                { data: "flight_route" },
+                { data: "cnic_taken_status" },
+                { data: "passport_taken_status" },
+                { data: "comment" },
+                { data: "status", render: function (data) {
+                    if (data == 1) return '<span class="badge badge-success">Pending</span>';
+                    if (data == 2) return '<span class="badge badge-success">Approved</span>';
+                    if (data == 0) return '<span class="badge badge-danger">Rejected</span>';
+                    if (data == 3) return '<span class="badge badge-info">Assigned</span>';
+                    return '';
+                }},
+                { data: "id", render: function (data, type, row) {
+                    var buttons = '<div class="d-flex gap-4">';
+                    @if ($canEdit)
+                        buttons += '<a href="{{ url('admin/human-resource-edit') }}/' + data + '" class="btn btn-primary">Edit</a>';
+                    @endif 
+                    @if ($canDelete)
+                        buttons += '<form action="{{ url('admin/human-resource-destroy') }}/' + data + '" method="POST" style="display:inline-block; margin-left: 10px">@csrf @method("DELETE")<button type="submit" class="btn btn-danger btn-flat show_confirm" data-toggle="tooltip">Delete</button></form>';
+                    @endif
+                    @if (!($canEdit || $canDelete))
+                        buttons += '<div class="alert alert-danger text-center py-2" role="alert"><strong>Access Denied</strong></div>';
+                    @endif
+                    buttons += '</div>';
+                    return buttons;
+                }}
+            ],
+            drawCallback: function(settings) {
+                var api = this.api();
+                var total = settings.json ? settings.json.recordsFiltered : api.data().count();
+                $('#total-count-badge').text('Total Count: ' + total);
+            }
+        });
+        $('#excel-export').on('click', function () {
+            table.button('.btn-export-excel').trigger();
+        });
+
+        $('#pdf-export').on('click', function () {
+            table.button('.btn-export-pdf').trigger();
+        });
+
+        // Filter form submit
+        $('#filter-form').on('submit', function(e) {
+            e.preventDefault();
+            const filters = [
+                '#company_id',
+                '#project_id',
+                '#demand_id',
+                '#medically_fit',
+                '#cnic_expiry',
+                '#passport_expiry',
+                '#visa_expiry',
+                '#date_from',
+                '#date_to',
+                '#visa_type',
+                '#refference',
+                '#flight_date',
+                '#mobilized',
+                '#cnic_taken',
+                '#passport_taken',
+                '#blood_group',
+                '#religion',
+                '#approvals',
+                '#interview_location',
+                '#craft',
+            ];
+            const hasAnyFilter = filters.some(sel => {
+                const val = $(sel).val();
+                return val !== null && val !== '' && val !== undefined;
+            });
+            if (!hasAnyFilter) {
+                toastr.error('Please select at least one filter first');
+                return;                            
+            }
+            toastr.success('Filters Applied Successfully');
+            table.ajax.reload();
+        });
+
+        // Clear filter button
+        $('#clear-filter-btn').on('click', function() {
+            $('#company_id').val('');
+            $('#project_id').val('');
+            $('#demand_id').val('');
+            $('#craft').val('');
+            $('#medically_fit').val('');
+            $('#cnic_expiry').val('');
+            $('#passport_expiry').val('');
+            $('#visa_expiry').val('');
+            $('#date_from').val('');
+            $('#date_to').val('');
+            $('#visa_type').val('');
+            $('#refference').val('');
+            $('#flight_date').val('');
+            $('#mobilized').val('');
+            $('#cnic_taken').val('');
+            $('#passport_taken').val('');
+            $('#blood_group').val('');
+            $('#religion').val('');
+            $('#approvals').val('');
+            $('#interview_location').val('');
+            toastr.success('Filters Cleared Successfully');
+            table.ajax.reload();
+        });
+
+        
     });
-    </script>
-    <script>
-        $(document).ready(function() {
-            var table = $('#table_id_events').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        exportOptions: {
-                            columns: ':not(.noExport)' // Exclude columns with 'noExport' class
+</script>
+<script>
+    $(document).ready(function() {
+        $('#company_id').on('change', function() {
+            var companyId = $(this).val();
+
+            if (companyId) {
+                $('#project-group').removeClass('d-none');
+                $('#demand-group').removeClass('d-none');
+            } else {
+                $('#project-group').addClass('d-none');
+                $('#demand-group').addClass('d-none');
+                $('#craft').closest('.col-md-4').removeClass('d-none');
+                $('#sub_craft').closest('.col-md-4').removeClass('d-none');
+            }
+
+            // Reset dependent fields
+            $('#project_id').empty().append(
+                '<option value="" selected disabled>Select Project</option>');
+            $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+            $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+            // $('#sub_craft').empty().append(
+            //     '<option value="" selected disabled>Select Sub-Craft</option>');
+
+            if (companyId) {
+                $.ajax({
+                    url: "{{ route('get-projects') }}",
+                    type: "GET",
+                    data: {
+                        company_id: companyId
+                    },
+                    success: function(data) {
+                        $.each(data, function(key, value) {
+                            $('#project_id').append('<option value="' + value.id +
+                                '">' + value.project_name + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+
+        // When project is selected
+        $('#project_id').on('change', function() {
+            var projectId = $(this).val();
+
+            $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+            $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+            $('#sub_craft').empty().append(
+                '<option value="" selected disabled>Select Sub-Craft</option>');
+
+            if (projectId) {
+                $.ajax({
+                    url: "{{ route('get-demand') }}",
+                    type: "GET",
+                    data: {
+                        project_id: projectId
+                    },
+                    success: function(data) {
+                        $.each(data, function(key, value) {
+                            $('#demand_id').append('<option value="' + value.id +
+                                '">Man Power - ' + value.full_name + '</option>'
+                            );
+                        });
+                    }
+                });
+            }
+        });
+
+        // When demand is selected
+            $('#demand_id').on('change', function() {
+                var demandId = $(this).val();
+
+                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+
+                if (demandId) {
+                    $.ajax({
+                        url: "{{ route('get-crafts-by-demand') }}",
+                        type: "GET",
+                        data: {
+                            demand_id: demandId
+                        },
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $.each(data, function(key, value) {
+                                    $('#craft').append('<option value="' + value.id +
+                                        '">' + value.name + '</option>');
+                                });
+                                // Automatically select the first craft
+                                $('#craft').val(data[0].id).trigger('change');
+                            }
+                        }
+                    });
+                }
+            });
+
+         $('#importForm').on('submit', function (e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            // Disable button and show loader
+            $('#importBtn').prop('disabled', true);
+            $('#importBtn .default-text').addClass('d-none');
+            $('#importBtn .loading-text').removeClass('d-none');
+
+        $.ajax({
+            url: "{{ url('admin/human-resource/import') }}",
+            method: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function (res) {
+                toastr.success('Excel file imported successfully. The data is now being processed.');
+                $('#progressContainer').removeClass('d-none');
+                checkProgress(res.batchId);
+            },
+            error: function (xhr) {
+                let message = 'Something went wrong.';
+                if (xhr.responseJSON?.message) {
+                    message = xhr.responseJSON.message;
+                }
+                toastr.error(message);
+            },
+            complete: function () {
+                // Reset button
+                $('#importBtn').prop('disabled', false);
+                $('#importBtn .default-text').removeClass('d-none');
+                $('#importBtn .loading-text').addClass('d-none');
+                $('#importForm')[0].reset();
+            }
+        });
+        function checkProgress(batchId) {
+            const interval = setInterval(function () {
+                $.ajax({
+                    url: `{{ url('/admin/import/progress') }}/${batchId}/`,
+                    method: 'GET',
+                    success: function (data) {
+                        const progress = Math.floor(data.progress);
+                        $('#progressBar')
+                            .css('width', progress + '%')
+                            .text(progress + '%');
+
+                        if (data.finished || data.cancelled || progress >= 100) {
+                            clearInterval(interval);
+                            toastr.success('Import completed!');
+                             // Hide progress bar after short delay
+                            setTimeout(() => {
+                                $('#progressContainer').addClass('d-none');
+                                window.location.reload();
+                            }, 1500);
                         }
                     },
-                   {
-                extend: 'print',
-                exportOptions: {
-                    columns: ':not(.noExport)'
-                },
-                className: 'custom-red-btn',
-                text: 'PDF' // Renamed button label
-                }
-                ],
-                scrollX: true,
-                responsive: true
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#table_id_events').DataTable();
-             $('#company_id').on('change', function() {
-                var companyId = $(this).val();
+                    error: function () {
+                        clearInterval(interval);
+                        toastr.error('Failed to get progress.');
+                    }
+                });
 
-                if (companyId) {
-                    $('#project-group').removeClass('d-none');
-                    $('#demand-group').removeClass('d-none');
-                } else {
-                    $('#project-group').addClass('d-none');
-                    $('#demand-group').addClass('d-none');
-                    $('#craft').closest('.col-md-4').removeClass('d-none');
-                    $('#sub_craft').closest('.col-md-4').removeClass('d-none');
-                }
+                }, 3000); // every 3 seconds
+        }
 
-                // Reset dependent fields
-                $('#project_id').empty().append(
-                    '<option value="" selected disabled>Select Project</option>');
-                $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
-                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
-                $('#sub_craft').empty().append(
-                    '<option value="" selected disabled>Select Sub-Craft</option>');
-
-                if (companyId) {
-                    $.ajax({
-                        url: "{{ route('get-projects') }}",
-                        type: "GET",
-                        data: {
-                            company_id: companyId
-                        },
-                        success: function(data) {
-                            $.each(data, function(key, value) {
-                                $('#project_id').append('<option value="' + value.id +
-                                    '">' + value.project_name + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
-
-            // When project is selected
-            $('#project_id').on('change', function() {
-                var projectId = $(this).val();
-
-                $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
-                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
-                $('#sub_craft').empty().append(
-                    '<option value="" selected disabled>Select Sub-Craft</option>');
-
-                if (projectId) {
-                    $.ajax({
-                        url: "{{ route('get-demand') }}",
-                        type: "GET",
-                        data: {
-                            project_id: projectId
-                        },
-                        success: function(data) {
-                            $.each(data, function(key, value) {
-                                $('#demand_id').append('<option value="' + value.id +
-                                    '">Man Power - ' + value.full_name + '</option>'
-                                );
-                            });
-                        }
-                    });
-                }
-            });
-        })
-    </script>
-    <script>
+    });
+    })
     $(document).on('click', '.open-modal-btn', function () {
         var hrId = $(this).data('id');
             $('#dynamic-modal-content').html('<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>');
@@ -571,7 +1088,7 @@
                 }
             });
         });
-</script>
 
-    <script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
+</script>
+<script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
 @endsection

@@ -988,44 +988,62 @@
                 }
             });
 
-         $('#importForm').on('submit', function (e) {
-        e.preventDefault();
+        $('#importForm').on('submit', function (e) {
+            e.preventDefault();
 
-        let formData = new FormData(this);
+            let formData = new FormData(this);
 
-        // Disable button and show loader
-        $('#importBtn').prop('disabled', true);
-        $('#importBtn .default-text').addClass('d-none');
-        $('#importBtn .loading-text').removeClass('d-none');
+            // Disable button and show loader
+            $('#importBtn').prop('disabled', true);
+            $('#importBtn .default-text').addClass('d-none');
+            $('#importBtn .loading-text').removeClass('d-none');
 
-        $.ajax({
-            url: "{{ url('admin/human-resource/import') }}",
-            method: "POST",
-            data: formData,
-            contentType: false,
-            processData: false,
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function (res) {
-                toastr.success('Excel file imported successfully. The data is now being processed.');
-            },
-            error: function (xhr) {
-                let message = 'Something went wrong.';
-                if (xhr.responseJSON?.message) {
-                    message = xhr.responseJSON.message;
+            $.ajax({
+                url: "{{ url('admin/human-resource/import') }}",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function (res) {
+                    // Remove any previous alert
+                    $('#importSuccessAlert').remove();
+                    // Insert alert just before the table tag
+                    $('#table_id_events').before(`
+                        <div class="alert alert-success alert-dismissible fade show mt-3 shadow-sm border-0 px-4 py-3 d-flex align-items-center" role="alert" id="importSuccessAlert" style="font-size:1.05rem;">
+                            <div>
+                                <strong>Upload Successful!</strong><br>
+                                <span>- Your file has been uploaded and is now being processed in the background.<br>
+                                - This may take a few moments depending on the file size.<br>
+                                <span class="">- Even if you log out, the process will continue in the background.<br>
+                                - Once it’s finished, the records will automatically appear in this section.</span>
+                                </span>
+                            </div>
+                            <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close" style="font-size:1.5rem;">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    `);
+                    toastr.success('Excel file imported successfully. The data is now being processed.');
+                },
+                error: function (xhr) {
+                    let message = 'Something went wrong.';
+                    if (xhr.responseJSON?.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    toastr.error(message);
+                },
+                complete: function () {
+                    // Reset button
+                    $('#importBtn').prop('disabled', false);
+                    $('#importBtn .default-text').removeClass('d-none');
+                    $('#importBtn .loading-text').addClass('d-none');
+                    $('#importForm')[0].reset();
                 }
-                toastr.error(message);
-            },
-            complete: function () {
-                // Reset button
-                $('#importBtn').prop('disabled', false);
-                $('#importBtn .default-text').removeClass('d-none');
-                $('#importBtn .loading-text').addClass('d-none');
-                $('#importForm')[0].reset();
-            }
+            });
         });
-    });
     })
     $(document).on('click', '.open-modal-btn', function () {
         var hrId = $(this).data('id');

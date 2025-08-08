@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Imports\HumanResourceImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class BulkFeatureController extends Controller
 {
@@ -42,9 +43,32 @@ class BulkFeatureController extends Controller
             Log::info('Starting Excel import.');
             $start = now();
             Log::info("Import started at: $start");
+                $expectedHeaders = [
+                    'NAME',
+                    'SON_OF',
+                    'CNIC',
+                    'RELIGION',
+                    'EXPERIENCE_GULF',
+                    'MARTIAL_STATUS',
+                    'ACDEMIC_QUALIFICATION',
+                    'TECHNICAL_QUALIFICATION',
+                    'GENDER',
+                    'CITIZENSHIP',
+                ];
 
-            Excel::import(new HumanResourceImport, $request->file('file'));
-
+                $spreadsheet = IOFactory::load($request->file('file')->getPathname());
+                $worksheet = $spreadsheet->getActiveSheet();
+                $headerRow = $worksheet->rangeToArray('A1:' . $worksheet->getHighestColumn() . '1')[0];
+                $missingHeaders = array_diff($expectedHeaders, $headerRow);
+                if (!empty($missingHeaders)) {
+                    $errorMsg = 'Missing Required Columns: ' . implode(', ', $missingHeaders);
+                    Log::error($errorMsg);
+                    if ($request->ajax()) {
+                        return response()->json(['message' => $errorMsg], 422);
+                    }
+                    return back()->with('error', $errorMsg);
+                }
+            Excel::queueImport(new HumanResourceImport, $request->file('file'));
             $end = now();
             Log::info("Import completed at: $end");
 
@@ -63,5 +87,5 @@ class BulkFeatureController extends Controller
             return back()->with('error', 'Import failed: ' . $e->getMessage());
         }
     }
-
+ 
 }
