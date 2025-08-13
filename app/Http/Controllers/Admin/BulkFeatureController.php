@@ -50,19 +50,33 @@ class BulkFeatureController extends Controller
                     'RELIGION',
                     'EXPERIENCE_GULF',
                     'MARTIAL_STATUS',
-                    'ACDEMIC_QUALIFICATION',
+                    'ACADEMIC_QUALIFICATION',
                     'TECHNICAL_QUALIFICATION',
                     'GENDER',
                     'CITIZENSHIP',
                 ];
-
+ 
                 $spreadsheet = IOFactory::load($request->file('file')->getPathname());
                 $worksheet = $spreadsheet->getActiveSheet();
-                $headerRow = $worksheet->rangeToArray('A1:' . $worksheet->getHighestColumn() . '1')[0];
+
+                // Get the calculated values, not formulas
+                $headerRow = [];
+                foreach ($worksheet->getColumnIterator() as $column) {
+                    $cell = $worksheet->getCell($column->getColumnIndex() . '1');
+                    $value = $cell->getCalculatedValue(); // ✅ This ensures formulas are evaluated
+                    $headerRow[] = strtoupper(trim((string)$value)); // ✅ Normalize
+                }
+
+                // Normalize expected headers too
+                $expectedHeaders = array_map('strtoupper', $expectedHeaders);
+
+                // Compare
                 $missingHeaders = array_diff($expectedHeaders, $headerRow);
+
                 if (!empty($missingHeaders)) {
                     $errorMsg = 'Missing Required Columns: ' . implode(', ', $missingHeaders);
                     Log::error($errorMsg);
+
                     if ($request->ajax()) {
                         return response()->json(['message' => $errorMsg], 422);
                     }

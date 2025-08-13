@@ -32,18 +32,24 @@ class HumanResourceImportJob implements ShouldQueue
                     Log::error('HumanResourceImportJob row skipped: Row is not an array', ['row' => $row]);
                     continue;
                 }
+
+                // If all keys are numeric, treat as a data row or header row
                 if (array_keys($row) === range(0, count($row) - 1)) {
+                    // If header not set, treat this row as header
                     if ($this->header === null) {
+                        // Check if this row looks like a header (contains 'company_name' etc)
                         $lowerRow = array_map('strtolower', $row);
                         if (in_array('company_name', $lowerRow)) {
                             $this->header = $lowerRow;
-                            continue;
+                            continue; // skip header row
                         } else {
+                            // No header found, treat this row as header anyway (optional header)
                             $this->header = $lowerRow;
                             Log::warning('Header row not detected by name, using first numeric row as header.', ['row' => $row]);
-                            continue;
+                            continue; // skip this row, treat as header
                         }
                     } else {
+                        // Map numeric row to associative using header
                         $row = array_combine($this->header, $row);
                         if ($row === false) {
                             Log::warning('Skipping row: header/data count mismatch', ['row' => $row]);
@@ -51,26 +57,54 @@ class HumanResourceImportJob implements ShouldQueue
                         }
                     }
                 }
+
                 $row = array_change_key_case($row, CASE_LOWER);
+
+                // // Skip if required key missing
+                // if (!isset($row['company_name'])) {
+                //     Log::warning('Skipping row: missing company_name', ['row' => $row]);
+                //     continue;
+                // }
+
                 Log::info('Processing row keys:', array_keys($row));
+
+                // if (empty($row['email']) || !filter_var($row['email'], FILTER_VALIDATE_EMAIL)) {
+                //     Log::warning('Skipping row due to invalid or missing email.', $row);
+                //     continue;
+                // }
+
+                // if (HumanResource::where('email', $row['email'])->exists()) {
+                //     // Skip duplicates
+                //     Log::info('Skipping duplicate email: ' . $row['email']);
+                //     continue;
+                // }
+
+                // Create or get related models
+                // if (empty($row['company_name'])) {
+                //     Log::warning('Skipping row due to missing company_name.', $row);
+                //     continue;
+                // }
                 $company = null;
                 if (!empty($row['company_name'])) {
                     $company = Company::where('name', $row['company_name'])->first();
                 }
-                if (empty($row['cnic'])) {
-                    Log::warning('Row skipped due to missing CNIC', ['row' => $row]);
-                    return; // skip this row and move to next
-                }
-
+                // Make company optional: do not skip if not found
+                // if (!$company && !empty($row['company_name'])) {
+                //     Log::warning('Skipping row because company does not exist: ' . $row['company_name'], $row);
+                //     continue;
+                // }
+                
                 $craft = MainCraft::firstOrCreate(['name' => $row['craft_name']]);
                 $subCraft = SubCraft::firstOrCreate([
                     'name' => $row['sub_craft_name'] ?? null,
                     'craft_id' => $craft->id,
                 ]);
                 if($company){
+                    // Compute registration/project_code logic safely
                     $lastReg = Project::pluck('project_code')->filter()->map(fn($v) => intval($v))->toArray();
                     $maxValue = !empty($lastReg) ? max($lastReg) : 2000;
                     $registration = $maxValue >= 2000 ? $maxValue + 1 : 2001;
+    
                     $project = Project::firstOrCreate(
                         [
                             'project_name' => $row['project_name'],
@@ -85,7 +119,10 @@ class HumanResourceImportJob implements ShouldQueue
                         'craft_id' => $craft->id,
                     ]);
                 }
+
+                // $password = random_int(10000000, 99999999);
                 $password = 12345678; // Default password for new human resources
+                // Compute registration number for HumanResource
                 $lastReg = HumanResource::pluck('registration')->toArray();
                 $filteredValues = array_filter($lastReg, function ($value) {
                     return !is_null($value); // Remove null values
@@ -93,6 +130,7 @@ class HumanResourceImportJob implements ShouldQueue
                 $integerValues = array_map('intval', $filteredValues);
                 $maxValue = !empty($integerValues) ? max($integerValues) : 1000;
                 $registration = $maxValue >= 1000 ? $maxValue + 1 : 1001;
+
                 // Convert date fields to Y-m-d format
                 $applicationDate = null;
                 if (!empty($row['application_date'])) {
@@ -107,6 +145,7 @@ class HumanResourceImportJob implements ShouldQueue
                         $applicationDate = $dt ? $dt->format('Y-m-d') : null;
                     }
                 }
+
                 $dateOfBirth = null;
                 if (!empty($row['date_of_birth'])) {
                     if (is_numeric($row['date_of_birth'])) {
@@ -120,6 +159,7 @@ class HumanResourceImportJob implements ShouldQueue
                         $dateOfBirth = $dt ? $dt->format('Y-m-d') : null;
                     }
                 }
+
                 $cnicExpiryDate = null;
                 if (!empty($row['cnic_expiry_date'])) {
                     if (is_numeric($row['cnic_expiry_date'])) {
@@ -133,6 +173,8 @@ class HumanResourceImportJob implements ShouldQueue
                         $cnicExpiryDate = $dt ? $dt->format('Y-m-d') : null;
                     }
                 }
+
+                
                 $doi = null;
                 if (!empty($row['doi'])) {
                     if (is_numeric($row['doi'])) {
@@ -146,6 +188,9 @@ class HumanResourceImportJob implements ShouldQueue
                         $doi = $dt ? $dt->format('Y-m-d') : null;
                     }
                 }
+
+
+                
                 $doe = null;
                 if (!empty($row['doe'])) {
                     if (is_numeric($row['doe'])) {
@@ -159,6 +204,7 @@ class HumanResourceImportJob implements ShouldQueue
                         $doe = $dt ? $dt->format('Y-m-d') : null;
                     }
                 }
+
                 $hr = HumanResource::updateOrCreate(
                     ['cnic' => $this->sanitizeCnic($row['cnic'] ?? null)], // Find by sanitized CNIC
                     [
@@ -189,7 +235,7 @@ class HumanResourceImportJob implements ShouldQueue
                         'kin_cnic' => $row['kin_cnic'] ?? null,
                         'shoe_size' => strtolower($row['shoe_size'] ?? null),
                         'cover_size' => $row['cover_size'] ?? null,
-                        'acdemic_qualification' => strtolower($row['acdemic_qualification'] ?? null),
+                        'acdemic_qualification' => strtolower($row['academic_qualification'] ?? null),
                         'technical_qualification' => $row['technical_qualification'] ?? null,
                         'district_of_domicile' => $row['district_of_domicile'] ?? null,
                         'present_address' => $row['present_address'] ?? null,
@@ -213,6 +259,8 @@ class HumanResourceImportJob implements ShouldQueue
                         'sub_craft_id' => $subCraft->id,
                     ]
                 );
+
+
                 if (!empty($company->id)) {
                    Nominate::updateOrCreate(
                             [
@@ -224,6 +272,7 @@ class HumanResourceImportJob implements ShouldQueue
                                 'craft_id' => $craft->id,
                             ] // Add any fields to update if needed
                         );
+
                    JobHistory::updateOrCreate(
                     [
                         'human_resource_id' => $hr->id,
@@ -239,8 +288,13 @@ class HumanResourceImportJob implements ShouldQueue
                     ]
                 );
                 }
+
+                // Queue the welcome email
+                // SendHumanResourceWelcomeEmailJob::dispatch($row['email'], $password);
+
             } catch (\Throwable $e) {
                 Log::error('HumanResourceImportJob row failed: ' . $e->getMessage(), ['row' => $row]);
+                // Continue to next row
             }
         }
     }

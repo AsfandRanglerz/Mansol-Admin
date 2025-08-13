@@ -170,7 +170,7 @@ class HumanResouceController extends Controller
 
        // Intending Emigrant
 
-       $pdf->SetFont('Helvetica', 'B', 8);
+       $pdf->SetFont('Helvetica', 'B', 7);
        $pdf->SetXY(50, 72);  
        $pdf->Write(10, $hr->name);  // Name
    
@@ -189,9 +189,13 @@ class HumanResouceController extends Controller
            $pdf->Cell(3.7, 10, $char, 0, 0, 'C'); // Adjust the width (5) as needed
        } // ID Card Number
 
-       $pdf->SetFont('Helvetica', '', 8);
+       
+       $pdf->SetFont('Helvetica', '', 6);
        $pdf->SetXY(50, 84);
-       $pdf->Write(10, $hr->present_address); // Address
+       $addressFieldWidth = 120; // adjust as per field width in PDF
+       $addressFieldHeight = 8;  // max height for the field
+       // Use valign 'B' to align text to the bottom of the field, or 'M' for middle
+       $pdf->MultiCell($addressFieldWidth, $addressFieldHeight, $hr->present_address, 0, 'L', false, 1, 50, 84, true, 0, false, true, $addressFieldHeight, 'B');
 
        $pdf->SetFont('Helvetica', '', 8);
        $pdf->SetXY(50, 90);
@@ -648,26 +652,28 @@ class HumanResouceController extends Controller
         $hr = HumanResource::find($data['human_resource_id']);
         $pdf = new \setasign\Fpdi\Tcpdf\Fpdi();
         $pdf->AddPage();
-    
+                                                     
         // Set the source PDF file for Form 9
         $path = public_path('admin/assets/Challan-92-Blank.pdf'); 
         $pdf->setSourceFile($path);
-    
+        
         // Import first page
         $tplId = $pdf->importPage(1);
         $pdf->useTemplate($tplId, 10, 10, 200);
-    
+         
         // Set font and text color
         $pdf->SetFont('Helvetica', '', 6);
         $pdf->SetTextColor(0, 0, 0);
-    
+        
         // ======== First Section ========
         // Clear any previous text at this position by overlaying a white rectangle
         $pdf->SetFillColor(255, 255, 255); // White color
         $pdf->Rect(89.2, 41.9, 23.5, 9.8, 'F'); // Overlay white rectangle to "erase" previous content
-
+        
         $pdf->SetXY(89.5, 42.8);
-        $pdf->MultiCell(45, 10, $hr->name, 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 5); // Bold, size 12
+        $pdf->MultiCell(22.5, 4, $hr->name, 0, 'L');
+
 
         $pdf->SetFont('Helvetica', 'B', 6);
         $pdf->SetXY(57.2, 51.6);
@@ -686,6 +692,7 @@ class HumanResouceController extends Controller
         $pdf->Rect(89.2, 116.5, 23.5, 9.8, 'F'); // Overlay white rectangle 
         
         $pdf->SetXY(89.5, 117); // Adjust coordinates to center the text nicely
+         $pdf->SetFont('helvetica', 'B', 5);
         $pdf->MultiCell(22.5, 4, $hr->name, 0, 'L');
 
         $pdf->SetFont('Helvetica', 'B', 6);
@@ -704,6 +711,7 @@ class HumanResouceController extends Controller
         $pdf->Rect(89.2, 191.5, 23.4, 9.8, 'F'); // Overlay white rectangle 
 
         $pdf->SetXY(89.5, 192); // Position slightly inside the box
+         $pdf->SetFont('helvetica', 'B', 5);
         $pdf->MultiCell(22.5, 4, $hr->name, 0, 'L');
 
         $pdf->SetFont('Helvetica', 'B', 6);
