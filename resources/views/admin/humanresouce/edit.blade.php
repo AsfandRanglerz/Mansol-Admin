@@ -270,14 +270,14 @@
 
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="doi">Data Of Issue/Passport</label>
+                                                <label class="text-danger" for="doi">Date Of Issue/Passport</label>
                                                 <input type="date" class="form-control" id="doi" name="doi"
                                                     value="{{ old('doi', $HumanResource->doi) }}">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="text-danger" for="doe">Data Of Expiry/Passport</label>
+                                                <label class="text-danger" for="doe">Date Of Expiry/Passport</label>
                                                 <input type="date" class="form-control" id="doe" name="doe"
                                                     value="{{ old('doe', $HumanResource->doe) }}">
                                             </div>

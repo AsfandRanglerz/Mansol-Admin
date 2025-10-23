@@ -182,83 +182,78 @@
                         dt.ajax.reload();
                     },
 
-                   customize: function (doc) {
-    // Logo top par add karna
-    doc.content.splice(0, 0, {
-        image: logoBase64,
-        width: 150,
-        alignment: 'center',
-        margin: [0, 0, 0, 10]
-    });
+                    customize: function (doc) {
+                        // 1. Add Logo at Top
+                        doc.content.splice(0, 0, {
+                            image: logoBase64,
+                            width: 150,
+                            alignment: 'center',
+                            margin: [0, 0, 0, 10]
+                        });
 
-    // Table find karo
-    let tableContent = doc.content.find(c => c.table);
-    if (!tableContent || !tableContent.table || !tableContent.table.body) {
-        console.error("Table not found in PDF content.");
-        return;
-    }
+                        // 2. Find Table in PDF Content
+                        let tableContent = doc.content.find(c => c.table);
+                        if (!tableContent || !tableContent.table || !tableContent.table.body) {
+                            console.error("Table not found in PDF content.");
+                            return;
+                        }
 
-    let body = tableContent.table.body;
+                        let body = tableContent.table.body;
 
-    // Header ko center align karo
-    for (let j = 0; j < body[0].length; j++) {
-        if (typeof body[0][j] === 'string') {
-            body[0][j] = { text: body[0][j], alignment: 'center', style: 'tableHeader' };
-        } else {
-            body[0][j].alignment = 'center';
-            body[0][j].style = 'tableHeader';
-        }
-    }
+                        // 3. Add Passport Photo Header at index 2
+                        body[0].splice(2, 0, {
+                            text: 'Passport Photo',
+                            style: 'tableHeader',
+                            alignment: 'center'
+                        });
 
-    // Loop through rows (skip header = index 0)
-    for (let i = 1; i < body.length; i++) {
-        const rowData = table.row(i - 1).data();
+                        // 4. Insert Passport Photo and center all cells
+                        for (let i = 1; i < body.length; i++) {
+                            const rowData = table.row(i - 1).data();
 
-        // ✅ Passport Photo column = index 4
-        if (rowData && rowData.passport_photo_base64) {
-            body[i][4] = {
-                image: rowData.passport_photo_base64,
-                width: 40,
-                height: 35,
-                alignment: 'center'
-            };
-        } else {
-            body[i][4] = { text: '', alignment: 'center' };
-        }
+                            if (rowData && rowData.passport_photo_base64) {
+                                body[i].splice(2, 0, {
+                                    image: rowData.passport_photo_base64,
+                                    width: 40,
+                                    height: 35,
+                                    alignment: 'center'
+                                });
+                            } else {
+                                body[i].splice(2, 0, { text: '', alignment: 'center' });
+                            }
 
-        // Baki sab cells ko center align
-        for (let j = 0; j < body[i].length; j++) {
-            if (typeof body[i][j] === 'string') {
-                body[i][j] = { text: body[i][j], alignment: 'center' };
-            } else if (body[i][j].text) {
-                body[i][j].alignment = 'center';
-            }
-        }
-    }
+                            // Center all text values in this row
+                            for (let j = 0; j < body[i].length; j++) {
+                                if (typeof body[i][j] === 'object') {
+                                    if (!body[i][j].alignment) {
+                                        body[i][j].alignment = 'center';
+                                    }
+                                } else {
+                                    body[i][j] = { text: body[i][j], alignment: 'center' };
+                                }
+                            }
+                        }
 
-    // Table widths
-    const columnCount = body[0].length;
-    tableContent.table.widths = Array(columnCount).fill('*');
+                        // 5. Set table widths
+                        const columnCount = body[0].length;
+                        tableContent.table.widths = Array(columnCount).fill('*');
+                        tableContent.layout = {
+                            hLineWidth: () => 0.5,
+                            vLineWidth: () => 0.5,
+                            hLineColor: () => '#aaa',
+                            vLineColor: () => '#aaa',
+                            paddingLeft: () => 4,
+                            paddingRight: () => 4,
+                            paddingTop: () => 2,
+                            paddingBottom: () => 2
+                        };
 
-    // Borders & padding
-    tableContent.layout = {
-        hLineWidth: () => 0.5,
-        vLineWidth: () => 0.5,
-        hLineColor: () => '#aaa',
-        vLineColor: () => '#aaa',
-        paddingLeft: () => 4,
-        paddingRight: () => 4,
-        paddingTop: () => 2,
-        paddingBottom: () => 2
-    };
-
-    // Styling
-    doc.defaultStyle.fontSize = 8;
-    doc.styles.tableHeader.fontSize = 9;
-    doc.styles.tableHeader.alignment = 'center';
-    doc.pageMargins = [10, 10, 10, 20];
-}
-
+                        // 6. Styling
+                        doc.defaultStyle.fontSize = 8;
+                        doc.styles.tableHeader.fontSize = 9;
+                        doc.styles.tableHeader.alignment = 'center';
+                        doc.pageMargins = [10, 10, 10, 20];
+                    }
                 }
 
                 ],

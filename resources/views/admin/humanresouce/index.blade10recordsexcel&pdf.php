@@ -406,10 +406,10 @@
                                                 Add Human Resource
                                             </a>
                                             @endif
-                                            <button id="exportExcel" class="btn btn-success btn-md m-1">
+                                            <button id="excel-export" class="btn btn-success btn-md m-1">
                                                 Generate Excel Report
                                             </button>
-                                            <button id="exportPDF" class="btn btn-danger btn-md m-1">
+                                            <button id="pdf-export" class="btn btn-danger btn-md m-1">
                                                 <span class="spinner-border spinner-border-sm me-1 d-none" role="status" id="pdfLoader" aria-hidden="true"></span>
                                                 <span id="pdfButtonText">Generate PDF Report</span>
                                             </button>
@@ -517,108 +517,7 @@
 
 @section('js')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#exportExcel').on('click', function () {
-            let btn = $(this);
-            let originalText = btn.html();
 
-            // Show loader inside button
-            btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Exporting...');
-
-            $.ajax({
-                url: "{{ route('humanresource.exportExcel') }}",
-                type: 'POST',
-                data: {
-                    company_id: $('#company_id').val(),
-                    project_id: $('#project_id').val(),
-                    demand_id: $('#demand_id').val(),
-                    craft_id: $('#craft').val(),
-                    medically_fit: $('#medically_fit').val(),
-                    cnic_expiry: $('#cnic_expiry').val(),
-                    passport_expiry: $('#passport_expiry').val(),
-                    visa_expiry: $('#visa_expiry').val(),
-                    date_from: $('#date_from').val(),
-                    date_to: $('#date_to').val(),
-                    visa_type: $('#visa_type').val(),
-                    refference: $('#refference').val(),
-                    flight_date: $('#flight_date').val(),
-                    mobilized: $('#mobilized').val(),
-                    cnic_taken: $('#cnic_taken').val(),
-                    passport_taken: $('#passport_taken').val(),
-                    blood_group: $('#blood_group').val(),
-                    religion: $('#religion').val(),
-                    approvals: $('#approvals').val(),
-                    interview_location: $('#interview_location').val(),
-                    _token: "{{ csrf_token() }}"
-                },
-                xhrFields: { responseType: 'blob' },
-                success: function (data) {
-                    let link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(data);
-                    link.download = "human_resources.xlsx";
-                    link.click();
-                },
-                error: function () {
-                    alert('Something went wrong while exporting Excel.');
-                },
-                complete: function () {
-                    // Reset button back to normal
-                    btn.prop('disabled', false).html(originalText);
-                }
-            });
-        });
-        $('#exportPDF').on('click', function () {
-            let btn = $(this);
-            let originalText = btn.html();
-
-            // Show loader inside button
-            btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Exporting...');
-
-            $.ajax({
-                url: "{{ route('humanresource.exportPDF') }}",
-                type: 'POST',
-                data: {
-                    company_id: $('#company_id').val(),
-                    project_id: $('#project_id').val(),
-                    demand_id: $('#demand_id').val(),
-                    craft_id: $('#craft').val(),
-                    medically_fit: $('#medically_fit').val(),
-                    cnic_expiry: $('#cnic_expiry').val(),
-                    passport_expiry: $('#passport_expiry').val(),
-                    visa_expiry: $('#visa_expiry').val(),
-                    date_from: $('#date_from').val(),
-                    date_to: $('#date_to').val(),
-                    visa_type: $('#visa_type').val(),
-                    refference: $('#refference').val(),
-                    flight_date: $('#flight_date').val(),
-                    mobilized: $('#mobilized').val(),
-                    cnic_taken: $('#cnic_taken').val(),
-                    passport_taken: $('#passport_taken').val(),
-                    blood_group: $('#blood_group').val(),
-                    religion: $('#religion').val(),
-                    approvals: $('#approvals').val(),
-                    interview_location: $('#interview_location').val(),
-                    _token: "{{ csrf_token() }}"
-                },
-                xhrFields: { responseType: 'blob' },
-                success: function (data) {
-                    let link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(data);
-                    link.download = "human_resources.pdf";
-                    link.click();
-                },
-                error: function () {
-                    alert('Something went wrong while exporting PDF.');
-                },
-                complete: function () {
-                    // Reset button back to normal
-                    btn.prop('disabled', false).html(originalText);
-                }
-            });
-        });
-    });
-</script>
 <script type="text/javascript">
     $(document).ready(function () {
         $(document).on('click', '.show_confirm', function(event){
@@ -662,6 +561,154 @@
             deferRender: true,
             pageLength: 10,
             lengthMenu: [[10, 25, 50, 100, 250, 500, 1000, -1], [10, 25, 50, 100, 250, 500, 1000, "All"]],
+            dom: 'lfrtip',
+            buttons: [
+    {
+        extend: 'excelHtml5',
+        exportOptions: {
+            columns: ':not(.noExport)',
+            modifier: {
+                page: 'all' // we’ll adjust dynamically in action
+            }
+        },
+        title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
+        className: 'btn-export-excel',
+        action: function(e, dt, button, config) {
+            var self = this;
+
+            // Detect if any search/filter is applied
+            var globalSearch = dt.search();
+            var columnSearchApplied = dt.columns().eq(0).filter(function(idx) {
+                return dt.column(idx).search() !== '';
+            }).length > 0;
+
+            var exportAll = (!globalSearch && !columnSearchApplied); // true if no filters
+
+            if (exportAll) {
+                var oldStart = dt.settings()[0]._iDisplayStart;
+                dt.one('preXhr', function(e, s, data) {
+                    data.start = 0;
+                    data.length = -1;
+                    dt.one('preDraw', function(e, settings) {
+                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+                        dt.one('preXhr', function(e, s, data) {
+                            settings._iDisplayStart = oldStart;
+                            data.start = oldStart;
+                        });
+                        setTimeout(dt.ajax.reload, 0);
+                        return false;
+                    });
+                });
+                dt.ajax.reload();
+            } else {
+                // Export only filtered/paged data
+                $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+            }
+        }
+    },
+    {
+        extend: 'pdfHtml5',
+        exportOptions: {
+            columns: ':not(.noExport)',
+            modifier: {
+                page: 'all' // will adjust dynamically
+            }
+        },
+        orientation: 'landscape',
+        pageSize: { width: 3500, height: 1400 },
+        title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
+        className: 'btn-export-pdf',
+        action: function(e, dt, button, config) {
+            var self = this;
+
+            var globalSearch = dt.search();
+            var columnSearchApplied = dt.columns().eq(0).filter(function(idx) {
+                return dt.column(idx).search() !== '';
+            }).length > 0;
+
+            var exportAll = (!globalSearch && !columnSearchApplied); // true if no filters
+
+            if (exportAll) {
+                var oldStart = dt.settings()[0]._iDisplayStart;
+
+                $('#pdfLoader').removeClass('d-none');
+                $('#pdf-export').attr('disabled', true);
+                $('#pdfButtonText').text('Generating...');
+
+                dt.one('preXhr', function(e, s, data) {
+                    data.start = 0;
+                    data.length = -1;
+
+                    dt.one('preDraw', function(e, settings) {
+                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+
+                        dt.one('preXhr', function(e, s, data) {
+                            settings._iDisplayStart = oldStart;
+                            data.start = oldStart;
+                        });
+
+                        setTimeout(function() {
+                            $('#pdfLoader').addClass('d-none');
+                            $('#pdf-export').attr('disabled', false);
+                            $('#pdfButtonText').text('Generate PDF Report');
+                            dt.ajax.reload();
+                        }, 1000);
+
+                        return false;
+                    });
+                });
+
+                dt.ajax.reload();
+            } else {
+                $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+            }
+        },
+        customize: function(doc) {
+            doc.content.unshift({
+                margin: [0, 0, 0, 12],
+                alignment: 'center',
+                image: logoBase64,
+                width: 200
+            });
+
+            let tableContent = doc.content.find(c => c.table);
+            if (!tableContent || !tableContent.table || !tableContent.table.body) return;
+            const body = tableContent.table.body;
+
+            body[0].splice(2, 0, { text: 'Passport Photo', style: 'tableHeader', alignment: 'center' });
+
+            for (let i = 1; i < body.length; i++) {
+                const rowData = table.row(i - 1).data();
+                if (rowData.passport_photo_base64) {
+                    body[i].splice(2, 0, {
+                        image: rowData.passport_photo_base64,
+                        width: 40,
+                        height: 35,
+                        alignment: 'center'
+                    });
+                } else {
+                    body[i].splice(2, 0, '');
+                }
+            }
+
+            tableContent.layout = {
+                hLineWidth: () => 0.5,
+                vLineWidth: () => 0.5,
+                hLineColor: () => '#aaa',
+                vLineColor: () => '#aaa',
+                paddingLeft: () => 4,
+                paddingRight: () => 4,
+                paddingTop: () => 2,
+                paddingBottom: () => 2
+            };
+
+            doc.defaultStyle.fontSize = 8;
+            doc.styles.tableHeader.fontSize = 9;
+            doc.pageMargins = [10, 10, 10, 20];
+            doc.styles.tableHeader.alignment = 'center';
+        }
+    }
+],
             ajax: {
                 url: "{{ route('humanresource.ajax') }}",
                 type: "POST",
@@ -1043,3 +1090,498 @@
 </script>
 <script src="https://kit.fontawesome.com/78f80335ec.js" crossorigin="anonymous"></script>
 @endsection
+
+
+
+
+
+ public function ajax(Request $request)
+    {
+        try {
+                if ($request->export_all) {
+                    // Get all data with relations
+                    $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps', 'nominates.project', 'jobHistory'])->latest();
+
+                    $data = $query->get();
+
+                    $result = [];
+                    foreach ($data as $row) {
+                        $step4 = $row->hrSteps->where('step_number', 4)->where('file_type', 'photo')->first();
+                        $step6 = $row->hrSteps->firstWhere('step_number', 6);
+                        $cnic_front = $row->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')
+                            ->where('file_name', '!=', null)->first();
+                        $cnic_back = $row->hrSteps->where('step_number', 3)->where('file_type', 'cnic back')
+                            ->where('file_name', '!=', null)->first();
+                        $passport_front = $row->hrSteps->where('step_number', 2)->where('file_type', 'passport front')
+                            ->where('file_name', '!=', null)->first();
+                        $passport_back = $row->hrSteps->where('step_number', 2)->where('file_type', 'passport back')
+                            ->where('file_name', '!=', null)->first();
+                        $passport_third_image = $row->hrSteps->where('step_number', 2)->where('file_type', 'passport third image')
+                            ->where('file_name', '!=', null)->first();
+                        $visa_status = 'N/A';
+                        if ($step6 && $step6->visa_expiry_date !== null) {
+                            $visa_status = $step6->visa_expiry_date >= now() ? 'Valid' : 'Expired';
+                        }
+                        $passportPhotoPath = $step4 ? $step4->file_name : null;
+
+                        if ($passportPhotoPath && file_exists($passportPhotoPath)) {
+                            $passportPhotoBase64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($passportPhotoPath));
+                        } else {
+                            $passportPhotoBase64 = null;
+                        }
+
+                        $result[] = [
+                            'registration' => $row->registration ?? '',
+                            'passport_photo' => $passportPhotoPath,
+                            'passport_photo_base64' => $passportPhotoBase64,
+                            'visa_type' => $step6 ? $step6->visa_type : '',
+                            'visa_status' => $visa_status,
+                            'visa_issue_date' => $step6 ? $step6->visa_issue_date : '',
+                            'visa_expiry_date' => $step6 ? $step6->visa_expiry_date : '',
+                            'flight_date' => $step6 ? $step6->flight_date : '',
+                            'flight_route' => $step6 ? $step6->flight_route : '',
+                            'cnic_taken_status' => ($cnic_front || $cnic_back) ? 'Taken' : 'Not Taken',
+                            'passport_taken_status' => ($passport_front || $passport_back || $passport_third_image) ? 'Taken' : 'Not Taken',
+                            'id' => $row->id,
+                            'name' => $row->name ?? '',
+                            'email' => $row->email ?? '',
+                            'cnic' => $row->cnic ?? '',
+                            'application_date' => $row->application_date ?? '',
+                            'craft' => $row->Crafts->name ?? '',
+                            'sub_craft' => $row->SubCrafts->name ?? '',
+                            'approvals' => $row->approvals ?? '',
+                            'approvals_document' => $row->medical_doc ?? '',
+                            'son_of' => $row->son_of ?? '',
+                            'mother_name' => $row->mother_name ?? '',
+                            'date_of_birth' => $row->date_of_birth ?? '',
+                            'cnic_expiry_date' => $row->cnic_expiry_date ?? '',
+                            'doi' => $row->doi ?? '',
+                            'doe' => $row->doe ?? '',
+                            'passport' => $row->passport ?? '',
+                            'next_of_kin' => $row->next_of_kin ?? '',
+                            'relation' => $row->relation ?? '',
+                            'kin_cnic' => $row->kin_cnic ?? '',
+                            'shoe_size' => $row->shoe_size ?? '',
+                            'cover_size' => $row->cover_size ?? '',
+                            'acdemic_qualification' => $row->acdemic_qualification ?? '',
+                            'technical_qualification' => $row->technical_qualification ?? '',
+                            'experience_local' => $row->experience_local ?? '',
+                            'experience_gulf' => $row->experience_gulf ?? '',
+                            'district_of_domicile' => $row->district_of_domicile ?? '',
+                            'present_address' => $row->present_address ?? '',
+                            'present_address_phone' => $row->present_address_phone ?? '',
+                            'present_address_mobile' => $row->present_address_mobile ?? '',
+                            'permanent_address' => $row->permanent_address ?? '',
+                            'present_address_city' => $row->present_address_city ?? '',
+                            'permanent_address_phone' => $row->permanent_address_phone ?? '',
+                            'permanent_address_mobile' => $row->permanent_address_mobile ?? '',
+                            'gender' => $row->gender ?? '',
+                            'blood_group' => $row->blood_group ?? '',
+                            'religion' => $row->religion ?? '',
+                            'permanent_address_city' => $row->permanent_address_city ?? '',
+                            'permanent_address_province' => $row->permanent_address_province ?? '',
+                            'citizenship' => $row->citizenship ?? '',
+                            'refference' => $row->refference ?? '',
+                            'interview_location' => $row->city_of_interview ?? '',
+                            'performance_appraisal' => $row->performance_appraisal ?? '',
+                            'min_salary' => $row->min_salary ?? '',
+                            'comment' => $row->comment ?? '',
+                            'status' => $row->status ?? '',
+                        ];
+                    }
+
+                    return response()->json([
+                        'draw' => intval($request->input('draw')),
+                        'recordsTotal' => $data->count(),
+                        'recordsFiltered' => $data->count(),
+                        'data' => $result,
+                    ]);
+                }
+                else{
+
+                    $columns = [
+                        'registration',
+                        'passport_photo',
+                        'id',
+                        'name',
+                        'email',
+                        'cnic',
+                        'application_date',
+                        'craft',
+                        'sub_craft',
+                        'approvals',
+                        'approvals_document',
+                        'son_of',
+                        'mother_name',
+                        'date_of_birth',
+                        'cnic_expiry_date',
+                        'doi',
+                        'doe',
+                        'passport',
+                        'next_of_kin',
+                        'relation',
+                        'kin_cnic',
+                        'shoe_size',
+                        'cover_size',
+                        'acdemic_qualification',
+                        'technical_qualification',
+                        'experience_local',
+                        'experience_gulf',
+                        'district_of_domicile',
+                        'present_address',
+                        'present_address_phone',
+                        'present_address_mobile',
+                        'permanent_address',
+                        'present_address_city',
+                        'permanent_address_phone',
+                        'permanent_address_mobile',
+                        'gender',
+                        'permanent_address_city',
+                        'permanent_address_province',
+                        'citizenship',
+                        'refference',
+                        'performance_appraisal',
+                        'min_salary',
+                        'comment',
+                        'status',
+                        'id',
+                        'visa_type',
+                        'visa_status',
+                        'visa_expiry_date',
+                        'visa_issue_date',
+                        'flight_route',
+                        'flight_date',
+                        'passport_taken_status',
+                        'cnic_taken_status',
+                        'blood_group',
+                        'religion',
+                        'interview_location'
+                    ];
+
+                    // Always get the total count (without filters)
+                    $totalData = HumanResource::count();
+
+                    $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps'])->latest();
+
+                    // Filtering
+                    if (
+                        $request->filled('company_id') ||
+                        $request->filled('project_id') ||
+                        $request->filled('demand_id') ||
+                        $request->filled('craft_id')
+                    ) {
+                        $query->whereHas('nominates', function ($q) use ($request) {
+                            if ($request->filled('project_id')) {
+                                $q->where('project_id', $request->project_id);
+                            }
+                            if ($request->filled('demand_id')) {
+                                $q->where('demand_id', $request->demand_id);
+                            }
+                            if ($request->filled('company_id') && $request->filled('project_id') && $request->filled('demand_id')) {
+                                if ($request->filled('craft_id')) {
+                                    $q->where('craft_id', $request->craft_id);
+                                }
+                            }
+                            if ($request->filled('company_id')) {
+                                $q->whereHas('project', function ($subQ) use ($request) {
+                                    $subQ->where('company_id', $request->company_id);
+                                });
+                            }
+                        });
+                    }
+
+                    if (
+                        $request->filled('medically_fit') ||
+                        $request->filled('visa_expiry') ||
+                        $request->filled('visa_type') ||
+                        $request->filled('flight_date') ||
+                        $request->filled('cnic_taken') ||
+                        $request->filled('passport_taken')
+                    ) {
+                        $query->whereHas('hrSteps', function ($q) use ($request) {
+                            if ($request->filled('medically_fit')) {
+                                $q->where('step_number', 6)->where('medically_fit', $request->medically_fit);
+                            }
+                            if ($request->filled('visa_type')) {
+                                $q->where('step_number', 6)->where('visa_type', $request->visa_type);
+                            }
+                            if ($request->filled('flight_date')) {
+                                $date = Carbon::parse($request->flight_date)->format('Y-m-d');
+                                $q->where('step_number', 6)->whereDate('flight_date', $date);
+                                // return $date;
+                            }
+                            if ($request->filled('visa_expiry')) {
+                                $value = $request->input('passport_expiry');
+                                if ($value == 'Valid') {
+                                    $q->where('step_number', 6)->whereDate('visa_expiry_date', '>=', now());
+                                } elseif ($value == 'Expired') {
+                                    $q->where('step_number', 6)->whereDate('visa_expiry_date', '<', now());
+                                }
+                            }
+                            if ($request->filled('cnic_taken')) {
+                                $value = $request->input('cnic_taken');
+                                if ($value == 'Taken') {
+                                    $q->where('step_number', 3)->where('file_type', 'cnic front')
+                                        ->where('file_name', '!=', null);
+                                    // $q->where('step_number', 3)->where('file_type','cnic back')
+                                    // ->where('file_name', '!=', null);
+                                } elseif ($value == 'Not Taken') {
+                                    $q->where('step_number', 3)->where('file_type', 'cnic front')
+                                        ->whereNull('file_name');
+                                    // $q->where('step_number', 3)->where('file_type','cnic back')
+                                    // ->whereNull('file_name');
+                                }
+                            }
+                            if ($request->filled('passport_taken')) {
+                                $value = $request->input('passport_taken');
+                                if ($value == 'Taken') {
+                                    $q->where('step_number', 2)->where('file_type', 'passport front')
+                                        ->where('file_name', '!=', null);
+                                    // $q->where('step_number', 2)->where('file_type','passport back')
+                                    // ->where('file_name', '!=', null);
+                                    // $q->where('step_number', 2)->where('file_type','passport third image')
+                                    // ->where('file_name', '!=', null);
+                                } elseif ($value == 'Not Taken') {
+                                    $q->where('step_number', 2)->where('file_type', 'passport front')
+                                        ->whereNull('file_name');
+                                    // $q->where('step_number', 2)->where('file_type','passport back')
+                                    // ->whereNull('file_name');
+                                    //  $q->where('step_number', 2)->where('file_type','passport third image')
+                                    // ->whereNull('file_name');
+                                }
+                            }
+                        });
+                    }
+
+                    if ($request->filled('refference')) {
+                        $value = $request->input('refference');
+                        $query->where('refference', $value);
+                    }
+                    if ($request->filled('craft_id')) {
+                        $value = $request->input('craft_id');
+                        $query->where('craft_id', $value);
+                    }
+                    if ($request->filled('interview_location')) {
+                        $value = $request->input('interview_location');
+                        $query->where('city_of_interview', $value);
+                    }
+                    if ($request->filled('mobilized')) {
+                        $value = $request->input('mobilized');
+                        if ($value == 'Mobilized') {
+                            $query->whereHas('jobHistory', function ($q) {
+                                $q->where('mob_date', '!=', null)
+                                    ->where('mob_date', '!=', '');
+                            });
+                        } elseif ($value == 'Not Yet Mobilized') {
+                            $query->whereHas('jobHistory', function ($q) {
+                                $q->whereNull('mob_date');
+                            });
+                        }
+                    }
+                    if ($request->filled('cnic_expiry')) {
+                        $value = $request->input('cnic_expiry');
+                        if ($value == 'Valid') {
+                            $query->whereDate('cnic_expiry_date', '>=', now());
+                        } elseif ($value == 'Expired') {
+                            $query->whereDate('cnic_expiry_date', '<', now());
+                        }
+                    }
+                    if ($request->filled('blood_group')) {
+                        $value = $request->input('blood_group');
+                        $query->where('blood_group', $value);
+                    }
+
+                    if ($request->filled('religion')) {
+                        $value = $request->input('religion');
+                        $query->where('religion', $value);
+                    }
+                    if ($request->filled('approvals')) {
+                        $value = $request->input('approvals');
+                        $query->where('approvals', $value);
+                    }
+
+                    if ($request->filled('passport_expiry')) {
+                        $value = $request->input('passport_expiry');
+                        if ($value == 'Valid') {
+                            $query->whereDate('doe', '>=', now());
+                        } elseif ($value == 'Expired') {
+                            $query->whereDate('doe', '<', now());
+                        }
+                    }
+                    // Extract raw inputs once
+                    $dateFromRaw = $request->input('date_from');
+                    $dateToRaw   = $request->input('date_to');
+                    if ($dateFromRaw && $dateToRaw) {
+                        $query->whereBetween('application_date', [
+                            Carbon::parse($dateFromRaw)->startOfDay(),
+                            Carbon::parse($dateToRaw)->endOfDay()
+                        ]);
+                    } elseif ($dateFromRaw) {
+                        $query->whereDate(
+                            'application_date',
+                            '>=',
+                            Carbon::parse($dateFromRaw)->format('Y-m-d')
+                        );
+                    } elseif ($dateToRaw) {
+                        $query->whereDate(
+                            'application_date',
+                            '<=',
+                            Carbon::parse($dateToRaw)->format('Y-m-d')
+                        );
+                    }
+                    // Searching
+                    $search = $request->input('search.value');
+                    if ($search) {
+                        $query->where(function ($q) use ($search) {
+                            $q->where('name',                     'like', "%{$search}%")
+                                ->orWhere('registration',           'like', "%{$search}%")
+                                ->orWhere('email',                  'like', "%{$search}%")
+                                ->orWhere('cnic',                   'like', "%{$search}%")
+                                ->orWhere('application_date',       'like', "%{$search}%")
+                                ->orWhere('approvals',              'like', "%{$search}%")
+                                ->orWhere('passport',               'like', "%{$search}%")
+                                ->orWhere('gender',                 'like', "%{$search}%")
+                                ->orWhere('permanent_address_city', 'like', "%{$search}%")
+                                ->orWhere('permanent_address_province', 'like', "%{$search}%")
+                                ->orWhere('citizenship',            'like', "%{$search}%")
+                                ->orWhere('refference',             'like', "%{$search}%")
+                                ->orWhere('performance_appraisal',  'like', "%{$search}%")
+                                ->orWhere('min_salary',             'like', "%{$search}%")
+                                ->orWhereHas('Crafts', function ($q2) use ($search) {
+                                    $q2->where('name', 'like', "%{$search}%");
+                                });
+                        });
+                    }
+
+                    // Get filtered count before pagination
+                    $filteredQuery = clone $query;
+                    $totalFiltered = $filteredQuery->count();
+
+                    // Ordering
+                    $orderColIndex = $request->input('order.0.column', 0);
+                    $orderCol = $columns[$orderColIndex] ?? 'id';
+                    $orderDir = $request->input('order.0.dir', 'asc');
+                    if (in_array($orderCol, ['name', 'registration', 'email', 'cnic'])) {
+                        $query->orderBy($orderCol, $orderDir);
+                    } else {
+                        $query->latest();
+                    }
+
+                    // Pagination
+                    $start = $request->input('start', 0);
+                    $length = $request->input('length', 10);
+                    if ($length != -1) {
+                        $query->skip($start)->take($length);
+                    }
+
+                    $data = $query->get();
+
+                    // Format data for DataTables (plain data, no HTML)
+                    $result = [];
+                    foreach ($data as $row) {
+                        // $step4 = $row->hrSteps->firstWhere('step_number', 4);
+                        $step4 = $row->hrSteps->where('step_number', 4)->where('file_type','photo')->first();
+                        $step6 = $row->hrSteps->firstWhere('step_number', 6);
+                        $cnic_front = $row->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')
+                            ->where('file_name', '!=', null)->first();
+                        $cnic_back = $row->hrSteps->where('step_number', 3)->where('file_type', 'cnic back')
+                            ->where('file_name', '!=', null)->first();
+                        $passport_front = $row->hrSteps->where('step_number', 2)->where('file_type', 'passport front')
+                            ->where('file_name', '!=', null)->first();
+                        $passport_back = $row->hrSteps->where('step_number', 2)->where('file_type', 'passport back')
+                            ->where('file_name', '!=', null)->first();
+                        $passport_third_image = $row->hrSteps->where('step_number', 2)->where('file_type', 'passport third image')
+                            ->where('file_name', '!=', null)->first();
+                        $visa_status = 'N/A';
+                        if ($step6 && $step6->visa_expiry_date !== null) {
+                            $visa_status = $step6->visa_expiry_date >= now() ? 'Valid' : 'Expired';
+                        }
+                        $passportPhotoPath = $step4 ? $step4->file_name : null;
+
+                        if ($passportPhotoPath && file_exists($passportPhotoPath)) {
+                            $passportPhotoBase64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($passportPhotoPath));
+                        } else {
+                            $passportPhotoBase64 = null;
+                        }
+                        $result[] = [
+                            'registration' => $row->registration ?? '',
+                            'passport_photo' => $passportPhotoPath,
+                            'passport_photo_base64' => $passportPhotoBase64,
+                            'visa_type' => $step6 ? $step6->visa_type : '',
+                            'visa_status' => $visa_status,
+                            'visa_issue_date' => $step6 ? $step6->visa_issue_date : '',
+                            'visa_expiry_date' => $step6 ? $step6->visa_expiry_date : '',
+                            'flight_date' => $step6 ? $step6->flight_date : '',
+                            'flight_route' => $step6 ? $step6->flight_route : '',
+                            'cnic_taken_status' => ($cnic_front || $cnic_back) ? 'Taken' : 'Not Taken',
+                            'passport_taken_status' => ($passport_front || $passport_back || $passport_third_image) ? 'Taken' : 'Not Taken',
+                            'id' => $row->id,
+                            'name' => $row->name ?? '',
+                            'email' => $row->email ?? '',
+                            'cnic' => $row->cnic ?? '',
+                            'application_date' => $row->application_date ?? '',
+                            'craft' => $row->Crafts->name ?? '',
+                            'sub_craft' => $row->SubCrafts->name ?? '',
+                            'approvals' => $row->approvals ?? '',
+                            'approvals_document' => $row->medical_doc ?? '',
+                            'son_of' => $row->son_of ?? '',
+                            'mother_name' => $row->mother_name ?? '',
+                            'date_of_birth' => $row->date_of_birth ?? '',
+                            'cnic_expiry_date' => $row->cnic_expiry_date ?? '',
+                            'doi' => $row->doi ?? '',
+                            'doe' => $row->doe ?? '',
+                            'passport' => $row->passport ?? '',
+                            'next_of_kin' => $row->next_of_kin ?? '',
+                            'relation' => $row->relation ?? '',
+                            'kin_cnic' => $row->kin_cnic ?? '',
+                            'shoe_size' => $row->shoe_size ?? '',
+                            'cover_size' => $row->cover_size ?? '',
+                            'acdemic_qualification' => $row->acdemic_qualification ?? '',
+                            'technical_qualification' => $row->technical_qualification ?? '',
+                            'experience_local' => $row->experience_local ?? '',
+                            'experience_gulf' => $row->experience_gulf ?? '',
+                            'district_of_domicile' => $row->district_of_domicile ?? '',
+                            'present_address' => $row->present_address ?? '',
+                            'present_address_phone' => $row->present_address_phone ?? '',
+                            'present_address_mobile' => $row->present_address_mobile ?? '',
+                            'permanent_address' => $row->permanent_address ?? '',
+                            'present_address_city' => $row->present_address_city ?? '',
+                            'permanent_address_phone' => $row->permanent_address_phone ?? '',
+                            'permanent_address_mobile' => $row->permanent_address_mobile ?? '',
+                            'gender' => $row->gender ?? '',
+                            'blood_group' => $row->blood_group ?? '',
+                            'religion' => $row->religion ?? '',
+                            'permanent_address_city' => $row->permanent_address_city ?? '',
+                            'permanent_address_province' => $row->permanent_address_province ?? '',
+                            'citizenship' => $row->citizenship ?? '',
+                            'refference' => $row->refference ?? '',
+                            'interview_location' => $row->city_of_interview ?? '',
+                            'performance_appraisal' => $row->performance_appraisal ?? '',
+                            'min_salary' => $row->min_salary ?? '',
+                            'comment' => $row->comment ?? '',
+                            'status' => $row->status ?? '',
+                        ];
+                    }
+                    $project = null;
+                    if ($request->input('project_id')) {
+                        $project = Project::find($request->input('project_id'));
+                    }
+                    return response()->json([
+                        'draw' => intval($request->input('draw')),
+                        'recordsTotal' => $totalData,
+                        'recordsFiltered' => $totalFiltered,
+                        'data' => $result,
+                        'project ' => $project,
+                    ]);
+            }
+        }
+            catch (\Exception $e) {
+        // Return the error in JSON
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile()
+        ], 500);
+    }
+    }

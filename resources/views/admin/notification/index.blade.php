@@ -309,7 +309,7 @@
                                                             <td>
                                                               @if($item->seen == 0)
                                                                     <a href="{{ route('notifications.read', $item->id) }}" class="btn btn-primary text-white">
-                                                                        read</a>
+                                                                        Read</a>
                                                                 @else
                                                                     <span class="badge bg-success text-white">Seen</span>
                                                                 @endif

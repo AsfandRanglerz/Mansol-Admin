@@ -568,6 +568,7 @@
                 }
             });
         });
+
         $('#exportPDF').on('click', function () {
             let btn = $(this);
             let originalText = btn.html();
@@ -617,6 +618,7 @@
                 }
             });
         });
+
     });
 </script>
 <script type="text/javascript">
@@ -637,7 +639,6 @@
                 }
             });
         });
-        
         function toDataURL(url, callback) {
            var xhr = new XMLHttpRequest();
            xhr.onload = function () {
@@ -657,11 +658,140 @@
                initDataTable(logoBase64);
            });
         var table = $('#table_id_events').DataTable({
-            processing: true,
-            serverSide: true,
-            deferRender: true,
-            pageLength: 10,
-            lengthMenu: [[10, 25, 50, 100, 250, 500, 1000, -1], [10, 25, 50, 100, 250, 500, 1000, "All"]],
+            // processing: true,
+            // serverSide: true,
+            // deferRender: true,
+            // pageLength: 10,
+            // lengthMenu: [[10, 25, 50, 100, 250, 500, 1000, -1], [10, 25, 50, 100, 250, 500, 1000, "All"]],
+            // dom: 'lfrtip',
+            // buttons: [
+            //     {
+            //         extend: 'excelHtml5',
+            //         exportOptions: { columns: ':not(.noExport)' },
+            //         title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
+            //         className: 'btn-export-excel',
+            //         // text: 'Generate Excel Report', 
+            //         action: function(e, dt, button, config) {
+            //             var self = this;
+            //             var oldStart = dt.settings()[0]._iDisplayStart;
+            //             dt.one('preXhr', function(e, s, data) {
+            //                 data.start = 0;
+            //                 data.length = -1;
+            //                 dt.one('preDraw', function(e, settings) {
+            //                     $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+            //                     dt.one('preXhr', function(e, s, data) {
+            //                         settings._iDisplayStart = oldStart;
+            //                         data.start = oldStart;
+            //                     });
+            //                     setTimeout(dt.ajax.reload, 0);
+            //                     return false;
+            //                 });
+            //             });
+            //             dt.ajax.reload();
+            //         }
+            //     },
+            //     {
+            //         extend: 'pdfHtml5',
+            //         exportOptions: { columns: ':not(.noExport)' },
+            //         orientation: 'landscape',
+            //         pageSize: {
+            //             width: 3500,
+            //             height: 1400
+            //         },
+            //         // text: 'Generate PDF Report',
+            //         title: 'MANSOLSOFT - HUMAN RESOURCES REPORT',
+            //         className: 'btn-export-pdf',
+            //         action: function (e, dt, button, config) {
+            //             var self = this;
+            //             var oldStart = dt.settings()[0]._iDisplayStart;
+
+            //             // Show loader and disable button
+            //             $('#pdfLoader').removeClass('d-none');
+            //             $('#pdf-export').attr('disabled', true);
+            //             $('#pdfButtonText').text('Generating...');
+
+            //             dt.one('preXhr', function (e, s, data) {
+            //                 data.start = 0;
+            //                 data.length = -1;
+
+            //                 dt.one('preDraw', function (e, settings) {
+            //                     $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+
+            //                     dt.one('preXhr', function (e, s, data) {
+            //                         settings._iDisplayStart = oldStart;
+            //                         data.start = oldStart;
+            //                     });
+
+            //                     // Restore after PDF generated
+            //                     setTimeout(function () {
+            //                         $('#pdfLoader').addClass('d-none');
+            //                         $('#pdf-export').attr('disabled', false);
+            //                         $('#pdfButtonText').text('Generate PDF Report');
+            //                         dt.ajax.reload();
+            //                     }, 1000); // You can increase timeout if needed
+
+            //                     return false;
+            //                 });
+            //             });
+
+            //             dt.ajax.reload();
+            //         },
+            //         customize: function (doc) {
+            //             // 1. Add Logo at the Top
+            //             doc.content.unshift({
+            //                 margin: [0, 0, 0, 12],
+            //                 alignment: 'center',
+            //                 image: logoBase64,
+            //                 width: 200
+            //             });
+
+            //             // 2. Safely locate the table in doc.content
+            //             let tableContent = doc.content.find(c => c.table);
+
+            //             if (!tableContent || !tableContent.table || !tableContent.table.body) {
+            //                 console.error("PDF Export: Table not found in document content.");
+            //                 return;
+            //             }
+
+            //             const body = tableContent.table.body;
+
+            //             // 3. Add "Passport Photo" header cell at index 2
+            //             body[0].splice(2, 0, { text: 'Passport Photo', style: 'tableHeader', alignment: 'center' });
+
+            //             // 4. Inject Passport Photos into rows at same index (2)
+            //             for (let i = 1; i < body.length; i++) {
+            //                 const rowData = table.row(i - 1).data(); // i - 1 because first row is header
+
+            //                 if (rowData.passport_photo_base64) {
+            //                     body[i].splice(2, 0, {
+            //                         image: rowData.passport_photo_base64,
+            //                         width: 40,
+            //                         height: 35,
+            //                         alignment: 'center'
+            //                     });
+            //                 } else {
+            //                     body[i].splice(2, 0, '');
+            //                 }
+            //             }
+            //              // 6. Apply border + padding
+            //                 tableContent.layout = {
+            //                     hLineWidth: () => 0.5,
+            //                     vLineWidth: () => 0.5,
+            //                     hLineColor: () => '#aaa',
+            //                     vLineColor: () => '#aaa',
+            //                     paddingLeft: () => 4,
+            //                     paddingRight: () => 4,
+            //                     paddingTop: () => 2,
+            //                     paddingBottom: () => 2
+            //                 };
+            //             // 5. Formatting
+            //             doc.defaultStyle.fontSize = 8;
+            //             doc.styles.tableHeader.fontSize = 9;
+            //             doc.pageMargins = [10, 10, 10, 20];
+            //             doc.styles.tableHeader.alignment = 'center';
+            //         }
+            //     }
+            // ],
             ajax: {
                 url: "{{ route('humanresource.ajax') }}",
                 type: "POST",
@@ -799,7 +929,6 @@
         $('#pdf-export').on('click', function () {
             table.button('.btn-export-pdf').trigger();
         });
-
         // Filter form submit
         $('#filter-form').on('submit', function(e) {
             e.preventDefault();
@@ -862,8 +991,7 @@
             toastr.success('Filters Cleared Successfully');
             table.ajax.reload();
         });
-
-        
+      
     });
 </script>
 <script>
