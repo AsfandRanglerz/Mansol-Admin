@@ -3,27 +3,58 @@
 namespace App\Exports;
 
 use App\Models\HumanResource;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithDrawings;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 use Carbon\Carbon;
 
-class HumanResourceExport implements FromView
+class HumanResourceExport implements FromCollection, WithHeadings, WithDrawings, WithEvents
 {
     protected $filters;
+    protected $data; // store collection for drawings
 
     public function __construct($filters)
     {
         $this->filters = $filters;
     }
 
-    public function view(): View
+    public function registerEvents(): array
     {
-        // Convert filters array to collection for easy access
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                // Column B width for images
+                $event->sheet->getDelegate()->getColumnDimension('B')->setWidth(15);
+
+                // Adjust row heights for all data rows
+                $highestRow = $event->sheet->getHighestRow();
+                for ($i = 2; $i <= $highestRow; $i++) {
+                    $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(65);
+                }
+
+                // Optional: make headings bold
+                $event->sheet->getStyle('A1:Z1')->getFont()->setBold(true);
+            },
+        ];
+    }
+
+    public function collection()
+    {
         $request = collect($this->filters);
 
-        $query = HumanResource::with(['Crafts', 'SubCrafts', 'hrSteps', 'jobHistory', 'nominates.project'])->latest();
+        $query = HumanResource::with([
+            'Crafts',
+            'SubCrafts',
+            'hrSteps' => function($q) {
+                $q->where('step_number', 4)->where('file_type', 'photo');
+            },
+            'jobHistory',
+            'nominates.project'
+        ])->latest();
 
-        // ==========================
+   // ==========================
         // COMPANY / PROJECT / DEMAND / CRAFT FILTERS
         // ==========================
         if (
@@ -174,8 +205,162 @@ class HumanResourceExport implements FromView
             $query->whereDate('application_date', '<=', Carbon::parse($dateTo)->format('Y-m-d'));
         }
 
+
         $data = $query->get();
 
-        return view('admin.humanresouce.export', compact('data'));
+        // Map collection and store photo path for WithDrawings
+        $this->data = $data->map(function($hr) {
+            $photoStep = $hr->hrSteps->first();
+            $photo_path = $photoStep ? public_path($photoStep->file_name) : null;
+            $clean = str_replace('public/public/', 'public/', $photo_path);
+            $hr->photo_path = $clean;
+            return [
+                $hr->id ?? '',
+                $hr->photo_path, // temporary, drawings will use this
+                $hr->name ?? '',
+                $hr->email ?? '',
+                $hr->cnic ?? '',
+                $hr->application_date ?? '',
+                $hr->craft ?? '',
+                $hr->sub_craft ?? '',
+                $hr->approvals_no ?? '',
+                $hr->city_of_interview ?? '',
+                $hr->so ?? '',
+                $hr->mother_name ?? '',
+                $hr->dob ?? '',
+                $hr->cnic_expiry_date ?? '',
+                $hr->passport_issue_date ?? '',
+                $hr->passport_expiry_date ?? '',
+                $hr->passport_no ?? '',
+                $hr->next_of_kin ?? '',
+                $hr->relation ?? '',
+                $hr->kin_cnic ?? '',
+                $hr->shoe_size ?? '',
+                $hr->cover_size ?? '',
+                $hr->academic_qualification ?? '',
+                $hr->technical_qualification ?? '',
+                $hr->experience_local ?? '',
+                $hr->experience_gulf ?? '',
+                $hr->district_domicile ?? '',
+                $hr->present_address ?? '',
+                $hr->present_address_phone ?? '',
+                $hr->present_address_mobile ?? '',
+                $hr->permanent_address ?? '',
+                $hr->present_address_city ?? '',
+                $hr->permanent_address_phone ?? '',
+                $hr->permanent_address_mobile ?? '',
+                $hr->gender ?? '',
+                $hr->blood_group ?? '',
+                $hr->religion ?? '',
+                $hr->permanent_address_city ?? '',
+                $hr->permanent_address_province ?? '',
+                $hr->citizenship ?? '',
+                $hr->reference ?? '',
+                $hr->performance_awarded ?? '',
+                $hr->min_salary ?? '',
+                $hr->visa_type ?? '',
+                $hr->visa_status ?? '',
+                $hr->visa_issue_date ?? '',
+                $hr->visa_expiry_date ?? '',
+                $hr->flight_date ?? '',
+                $hr->flight_route ?? '',
+                $hr->cnic_taken_status ?? '',
+                $hr->passport_taken_status ?? '',
+                $hr->comment ?? '',
+                $hr->status ?? '',
+            ];
+        });
+
+        return $this->data;
     }
+
+    public function headings(): array
+    {
+        return [
+            'Id No.',
+            'Passport Image',
+            'Name',
+            'Email',
+            'CNIC',
+            'Application Date',
+            'Application for Post Craft',
+            'Sub-Craft',
+            'Approvals #',
+            'City Of Interview',
+            'S/O',
+            'Mother Name',
+            'Date Of Birth',
+            'CNIC Expiry Date',
+            'Date Of Issue (Passport)',
+            'Date Of Expiry (Passport)',
+            'Passport #',
+            'Next Of Kin',
+            'Relation',
+            'Kin CNIC',
+            'Shoe Size',
+            'Cover Size',
+            'Academic Qualification',
+            'Technical Qualification',
+            'Experience (Local)',
+            'Experience (Gulf)',
+            'District Of Domicile',
+            'Present Address',
+            'Present Address Phone',
+            'Present Address Mobile',
+            'Permanent Address',
+            'Present Address City',
+            'Permanent Address Phone',
+            'Permanent Address Mobile',
+            'Gender',
+            'Blood Group',
+            'Religion',
+            'Permanent Address City',
+            'Permanent Address Province',
+            'Citizenship',
+            'Reference',
+            'Performance-Appraisal Awarded %',
+            'Min Acceptable Salary',
+            'Visa Type',
+            'Visa Status',
+            'Visa Issue Date',
+            'Visa Expiry Date',
+            'Flight Date',
+            'Flight Route',
+            'CNIC Taken Status',
+            'Passport Taken Status',
+            'Comment',
+            'Status',
+        ];
+    }
+
+    public function drawings()
+{
+    $drawings = [];
+    $rowIndex = 2; // Start from row 2 (row 1 is heading)
+
+    foreach ($this->data as $row) {
+        $photoPath = $row[1]; // Passport Image column
+        if ($photoPath && file_exists($photoPath)) {
+            $photoPath1 = str_replace('public/public/', 'public/', $photoPath);
+            $drawing = new Drawing();
+            $drawing->setName('Passport Photo');
+            $drawing->setDescription('Passport Photo');
+            $drawing->setPath($photoPath1);
+
+            // Set dimensions (adjust as needed)
+            $drawing->setHeight(80);  // Increase height for visibility
+            $drawing->setWidth(60);
+
+            // Place in column B + correct row
+            $drawing->setCoordinates('B' . $rowIndex);
+
+            // Optional: Set image offset (centering)
+            $drawing->setOffsetX(10);
+            $drawing->setOffsetY(5);
+
+            $drawings[] = $drawing;
+        }
+        $rowIndex++;
+    }
+    return $drawings;}
 }

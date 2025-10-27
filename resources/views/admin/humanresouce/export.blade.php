@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th>Id No.</th>
+            <th>Passport Image</th>
             <th>Name</th>
             <th>Email</th>
             <th>CNIC</th>
@@ -59,6 +60,13 @@
         @foreach($data as $i => $row)
             <tr>
                 <td>{{ $row->id ?? '' }}</td>
+                <td>
+                    @if($row->photo_base64)
+                        <img src="{{ $row->photo_base64 }}" width="50" height="50">
+                    @else
+                        N/A
+                    @endif
+                </td>
                 <td>{{ $row->name ?? '' }}</td>
                 <td>{{ $row->email ?? '' }}</td>
                 <td>{{ $row->cnic ?? '' }}</td>

@@ -1237,29 +1237,38 @@ class HumanResourceController extends Controller
             $pdf->save($filePath);
             $tempFiles[] = $filePath;
         }
+        try{
 
-        // ✅ Merge all chunk PDFs into one
-        $finalPath = storage_path('app/Human_Resource_Report.pdf');
-        $pdfMerger = new \setasign\Fpdi\Fpdi();
+            // ✅ Merge all chunk PDFs into one
+            $finalPath = storage_path('app/Human_Resource_Report.pdf');
+            $pdfMerger = new \setasign\Fpdi\Fpdi();
 
-        foreach ($tempFiles as $file) {
-            $pageCount = $pdfMerger->setSourceFile($file);
-            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                $tpl = $pdfMerger->importPage($pageNo);
-                $size = $pdfMerger->getTemplateSize($tpl);
-                $pdfMerger->AddPage($size['orientation'], [$size['width'], $size['height']]);
-                $pdfMerger->useTemplate($tpl);
+            foreach ($tempFiles as $file) {
+                $pageCount = $pdfMerger->setSourceFile($file);
+                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                    $tpl = $pdfMerger->importPage($pageNo);
+                    $size = $pdfMerger->getTemplateSize($tpl);
+                    $pdfMerger->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                    $pdfMerger->useTemplate($tpl);
+                }
             }
+
+            $pdfMerger->Output($finalPath, 'F');
+
+            // Clean up temp chunk files
+            foreach ($tempFiles as $file) {
+                @unlink($file);
+            }
+
+            return response()->download($finalPath)->deleteFileAfterSend(true);
         }
-
-        $pdfMerger->Output($finalPath, 'F');
-
-        // Clean up temp chunk files
-        foreach ($tempFiles as $file) {
-            @unlink($file);
+        catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
         }
-
-        return response()->download($finalPath)->deleteFileAfterSend(true);
     }
         
     public function create()

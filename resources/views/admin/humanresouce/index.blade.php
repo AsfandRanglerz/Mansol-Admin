@@ -608,9 +608,17 @@
                     link.download = "human_resources.pdf";
                     link.click();
                 },
-                error: function () {
-                    alert('Something went wrong while exporting PDF.');
-                },
+              error: function (xhr) {
+        let errorMessage = 'Something went wrong while exporting PDF.';
+
+        if (xhr.responseJSON && xhr.responseJSON.error) {
+            errorMessage = xhr.responseJSON.error + "\nFile: " + xhr.responseJSON.file + "\nLine: " + xhr.responseJSON.line;
+        } else if (xhr.responseText) {
+            errorMessage = xhr.responseText;
+        }
+
+        alert(errorMessage);
+    },
                 complete: function () {
                     // Reset button back to normal
                     btn.prop('disabled', false).html(originalText);
