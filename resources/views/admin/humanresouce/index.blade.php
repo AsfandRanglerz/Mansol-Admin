@@ -409,10 +409,10 @@
                                             <button id="exportExcel" class="btn btn-success btn-md m-1">
                                                 Generate Excel Report
                                             </button>
-                                            <button id="exportPDF" class="btn btn-danger btn-md m-1">
+                                            {{-- <button id="exportPDF" class="btn btn-danger btn-md m-1">
                                                 <span class="spinner-border spinner-border-sm me-1 d-none" role="status" id="pdfLoader" aria-hidden="true"></span>
                                                 <span id="pdfButtonText">Generate PDF Report</span>
-                                            </button>
+                                            </button> --}}
 
                                             <div class="ml-4">
                                                 <form id="importForm" enctype="multipart/form-data" class="d-flex align-items-center      gap-2">
