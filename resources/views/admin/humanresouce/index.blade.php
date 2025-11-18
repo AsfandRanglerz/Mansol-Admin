@@ -440,13 +440,14 @@
                                         <tr>
                                             <th class="noExport">Sr.</th>
                                             <th>Id No.</th>
+                                            <th>Name</th>
+                                            <th>Appication for Post Craft</th>
+                                            <th>Passport #</th>
+                                            <th>CNIC</th>
                                             <th class="noExport">Passport Photo</th>
                                             <th class="noExport">Documents</th>
-                                            <th>Name</th>
                                             <th>Email</th>
-                                            <th>CNIC</th>
                                             <th>Application Date</th>
-                                            <th>Appication for Post Craft</th>
                                             <th>Sub-Craft</th>
                                             <th>Approvals #</th>
                                             <th class="noExport">Approvals Document</th>
@@ -457,7 +458,6 @@
                                             <th>CNIC Expiry Date</th>
                                             <th>Data Of Issue/Passport</th>
                                             <th>Data Of Expiry/Passport</th>
-                                            <th>Passport #</th>
                                             <th>Next Of Kin</th>
                                             <th>Relation</th>
                                             <th>Kin CNIC</th>
@@ -700,6 +700,10 @@
             columns: [
                 { render: function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
                 { data: "registration" },
+                { data: "name" },
+                { data: "craft" },
+                { data: "passport" },
+                { data: "cnic" },
                 { data: "passport_photo", render: function (data) {
                     if (!data) return '<img src="{{ asset('public/admin/assets/images/avator.png') }}" width="50" height="50">';
                     return '<img src="{{ asset('') }}' + data + '" width="50" height="50">';
@@ -708,22 +712,24 @@
                 data: "id",
                 render: function (data) {
                     return `
-                    <button class="btn btn-primary text-white d-flex align-items-center open-modal-btn"
-                            data-id="${data}"
-                            data-toggle="modal"
-                            data-target="#dynamicHRModal">
-                        <span class="fa-solid fa-plus mr-2"></span>
-                        <span class="m-0">Attachments</span>
-                    </button>`;
+                   <div class="text-center">
+                    <button 
+                        class="btn btn-primary text-white justify-content-center align-items-center open-modal-btn px-3 py-2"
+                        data-id="${data}"
+                        data-toggle="modal"
+                        data-target="#dynamicHRModal"
+                        style="font-size: 18px; border-radius: 8px;"
+                    >
+                        <i class="fa fa-file"></i>
+                    </button>
+                </div>
+                `;
                 }
                 },
-                { data: "name" },
                 { data: "email", render: function (data) {
                     return data ? '<a href="mailto:' + data + '">' + data + '</a>' : '';
                 }},
-                { data: "cnic" },
                 { data: "application_date" },
-                { data: "craft" },
                 { data: "sub_craft" },
                 { data: "approvals" },
                 { data: "approvals_document", render: function (data) {
@@ -736,7 +742,6 @@
                 { data: "cnic_expiry_date" },
                 { data: "doi" },
                 { data: "doe" },
-                { data: "passport" },
                 { data: "next_of_kin" },
                 { data: "relation" },
                 { data: "kin_cnic" },

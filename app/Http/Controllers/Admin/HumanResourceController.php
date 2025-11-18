@@ -1271,7 +1271,7 @@ class HumanResourceController extends Controller
         }
     }
         
-    public function create()
+    public function create(Request $request)
     {
         $crafts = MainCraft::where('status', '=', 1)->latest()->get();
         // dd($crafts);
@@ -1291,7 +1291,9 @@ class HumanResourceController extends Controller
         $registration = $maxValue ? $maxValue + 1 : 1001;
         
         // dd($maxValue);
-
+        $company_id = $request->company_id;
+        $project_id = $request->project_id;
+        $demand_id  = $request->demand_id;
         $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
         // dd($companies);
 
@@ -1303,7 +1305,7 @@ class HumanResourceController extends Controller
         // dd($cities);
         $curencies = Country::orderBy('title')->get();
         // dd($curencies);
-        return view('admin.humanresouce.create', compact('provinces', 'districts', 'cities', 'crafts', 'registration', 'companies', 'curencies'));
+        return view('admin.humanresouce.create', compact('provinces', 'districts', 'cities', 'crafts', 'registration', 'companies', 'curencies', 'company_id', 'project_id', 'demand_id'));
     }
 
     public function store(Request $request)
