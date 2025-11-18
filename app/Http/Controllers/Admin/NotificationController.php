@@ -132,11 +132,12 @@ class NotificationController extends Controller
         }
 
         if ($type === 'human_resource') {
-            $hrs = HumanResource::select('id', 'name')->get();
+            $hrs = HumanResource::select('id', 'name', 'cnic')->get();
             foreach ($hrs as $hr) {
                 $results[] = [
                     'id' => $hr->id,
                     'name' => $hr->name,
+                    'cnic' => $hr->cnic,
                     'type' => 'human_resource',
                 ];
             }
@@ -144,7 +145,6 @@ class NotificationController extends Controller
 
         return response()->json($results);
     }
-
 
 
     public function destroy($id)
