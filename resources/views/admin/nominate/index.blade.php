@@ -71,7 +71,10 @@
                                             <th>Sr.</th>
                                             <th>Id No.</th>
                                             <th>Name</th>
-                                            
+                                            <th>Passport</th>
+                                            <th>CNIC</th>
+                                            <th>Craft</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -80,6 +83,10 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $nominate->humanResource->registration }}</td>
                                                 <td>{{ $nominate->humanResource->name }}</td>
+                                                <td>{{ $nominate->humanResource->passport }}</td>
+                                                <td>{{ $nominate->humanResource->cnic }}</td>
+                                                <td>{{ $nominate->humanResource->Crafts->name }}</td>
+                                                <td><a href="{{ url('admin/human-resource-edit/'. $nominate->humanResource->id) }}" class="btn btn-primary">Edit</a></td>
                                             </tr>
                                         @endforeach
                                     </tbody>

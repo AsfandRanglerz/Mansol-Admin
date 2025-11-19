@@ -705,6 +705,7 @@
                 { data: "passport" },
                 { data: "cnic" },
                 { data: "passport_photo", render: function (data) {
+                     let defaultImg = "{{ asset('admin/assets/images/avator.png') }}";
                     if (!data) return '<img src="{{ asset('public/admin/assets/images/avator.png') }}" width="50" height="50">';
                     return '<img src="{{ asset('') }}' + data + '" width="50" height="50">';
                 }},

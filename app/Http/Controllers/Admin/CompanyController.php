@@ -27,6 +27,9 @@ class CompanyController extends Controller
             'phone' => 'nullable|string',
             'is_active' => 'nullable|in:0,1',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+        ],
+        [
+            'image.max' => 'The image size must not exceed 2MB.'
         ]);
 
         if ($request->hasFile('image')) {
@@ -50,7 +53,7 @@ class CompanyController extends Controller
             'phone' => $request->phone,
             'password' => bcrypt($password),
             'is_active' => $request->status,
-            '5d' => $image,
+            'image' => $image,
         ]);
 
         $message['email'] = $request->email;
@@ -69,7 +72,11 @@ class CompanyController extends Controller
             'phone' => 'nullable|string',
             'is_active' => 'nullable|in:0,1',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-        ]);
+        ],
+        [
+            'image.max' => 'The image size must not exceed 2MB.'
+        ]
+    );
 
         $Company = Company::findOrFail($id);
 

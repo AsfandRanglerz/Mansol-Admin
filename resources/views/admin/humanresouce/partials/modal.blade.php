@@ -267,7 +267,9 @@
                         enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
-
+                        <h6 class="text-muted text-danger" style="font-style: italic;">
+                            Note: The image size must not exceed <strong>2MB</strong>.
+                        </h6>
                         {{-- Latest Resume --}}
                         <h5>Latest Resume</h5>
                         <div class="form-group">
@@ -297,7 +299,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_1" accept="image/*"
-                                    onchange="previewImage(this, 'passportFrontPreview-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'passportFrontPreview-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="passportFrontPreview-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $passportFront ? '' : 'd-none' }}"
@@ -320,7 +322,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_2" accept="image/*"
-                                    onchange="previewImage(this, 'passportBackPreview-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'passportBackPreview-{{ $HumanResource->id }}')" />
                                 <div class="position-relative"><img id="passportBackPreview-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
                                         src="{{ $passportBack ? asset($passportBack) : '' }}"
@@ -343,7 +345,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="passport_image_3" accept="image/*"
-                                    onchange="previewImage(this, 'passportPreviewThree-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'passportPreviewThree-{{ $HumanResource->id }}')" />
                                 <div class="position-relative"><img id="passportPreviewThree-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $passportImageThree ? '' : 'd-none' }}"
                                         src="{{ $passportImageThree ? asset($passportImageThree) : '' }}"
@@ -370,7 +372,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="cnic_front" accept="image/*"
-                                    onchange="previewImage(this, 'cnicFrontPreview-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'cnicFrontPreview-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="cnicFrontPreview-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $cnicFront ? '' : 'd-none' }}"
@@ -393,7 +395,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="cnic_back" accept="image/*"
-                                    onchange="previewImage(this, 'cnicBackPreview-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'cnicBackPreview-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="cnicBackPreview-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $cnicBack ? '' : 'd-none' }}"
@@ -421,7 +423,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="photo" accept="image/*"
-                                    onchange="previewImage(this, 'photoPreview-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'photoPreview-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="photoPreview-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $photo ? '' : 'd-none' }}"
@@ -451,7 +453,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="police_verification" accept="image/*"
-                                    onchange="previewImage(this, 'policeCertificate-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'policeCertificate-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="policeCertificate-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $policePhoto ? '' : 'd-none' }}"
@@ -481,7 +483,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="account_detail" accept="image/*"
-                                    onchange="previewImage(this, 'accountDetail-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'accountDetail-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="accountDetail-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $accountPhoto ? '' : 'd-none' }}"
@@ -511,7 +513,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="update_appraisal" accept="image/*"
-                                    onchange="previewImage(this, 'updatedAppraisal-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'updatedAppraisal-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="updatedAppraisal-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $appraisalPhoto ? '' : 'd-none' }}"
@@ -543,7 +545,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="nok_cnic_front" accept="image/*"
-                                    onchange="previewImage(this, 'nokCnicFrontPreview-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'nokCnicFrontPreview-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <img id="nokCnicFrontPreview-{{ $HumanResource->id }}"
                                         class="img-fluid mt-2 border rounded {{ $nokCnicFront ? '' : 'd-none' }}"
@@ -566,7 +568,7 @@
                                     )->file_name;
                                 @endphp
                                 <input type="file" class="form-control" name="nok_cnic_back" accept="image/*"
-                                    onchange="previewImage(this, 'nokCnicBackPreview-{{ $HumanResource->id }}')" />
+                                    onchange="validateImageSize(this, 2, 'nokCnicBackPreview-{{ $HumanResource->id }}')" />
                                 <div class="position-relative">
                                     <button class="btn btn-primary position-absolute download-btn">
                                         <span class="fa-solid fa-download"></span>
@@ -1628,6 +1630,31 @@ function previewPDF(input, previewId) {
 </script>
 
 <script>
+    
+    function validateImageSize(input, maxMB, previewId) {
+    const file = input.files[0];
+    const maxBytes = maxMB * 1024 * 1024; // Convert MB → Bytes
+
+    if (file) {
+        if (file.size > maxBytes) {
+            alert(`Image size should not exceed ${maxMB} MB.`);
+            input.value = ""; // Clear file input
+
+            // Hide preview if already visible
+            const previewElement = document.getElementById(previewId);
+            if (previewElement) {
+                previewElement.classList.add("d-none");
+                previewElement.src = "";
+            }
+
+            return false;
+        }
+
+        // If valid, show preview
+        previewImage(input, previewId);
+    }
+}
+
     function previewImage(input, previewId) {
         const file = input.files[0];
         if (file && file.type.startsWith("image/")) {
@@ -1672,6 +1699,8 @@ function previewPDF(input, previewId) {
             alert("Please upload a valid PDF file.");
         }
     }
+
+
 </script>
 
 
