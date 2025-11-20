@@ -787,7 +787,7 @@
                         @endphp
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="ticket_number">Ticket Number</label>
+                                <label for="ticket_number">PNP Number</label>
                                 <input type="text" class="form-control" name="ticket_number" value="{{ $ticket_number }}" />
                             </div>
                             <div class="col-md-6">
@@ -813,7 +813,7 @@
                                     value="{{ $flight_eta ? date('H:i', strtotime($flight_eta)) : '' }}" />
                             </div>
                             <div class="col-md-6 mt-3">
-                                <label for="upload_ticket">Upload Ticket</label>
+                                <label for="upload_ticket">Upload PNP</label>
                                 <input type="file" class="form-control" name="upload_ticket" accept=".pdf,image/*"
                                     onchange="previewUploadedFile(this, 'ticketPreview-{{ $HumanResource->id }}')" />
                                 <div class="mt-2">
