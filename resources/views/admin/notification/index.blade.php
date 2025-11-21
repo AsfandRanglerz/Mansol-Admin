@@ -208,6 +208,9 @@
                                                     <th>Sr.</th>
                                                     <th>User Type</th>
                                                     <th>Name</th>
+                                                    <th>Registration</th>
+                                                    <th>CNIC</th>
+                                                    <th>Passport</th>
                                                     <th>Message</th>
                                                     <th scope="col">Actions</th>
                                                 </tr>
@@ -225,19 +228,62 @@
                                                                 Human Resource
                                                             @endif
                                                         </td>
-                                                       <td
+                                                        <!-- NAME COLUMN -->
+                                                        <td>
                                                             @php
                                                                 $targets = $notification->targets;
                                                                 $displayTargets = $targets->take(2);
                                                                 $remainingCount = $targets->count() - $displayTargets->count();
-                                                                $allTargetNames = $targets->pluck('targetable.name')->filter()->implode(', ');
                                                             @endphp
-                                                            title="{{ $allTargetNames }}"
-                                                        >
+
                                                             <ul class="list-unstyled mb-0">
                                                                 @foreach ($displayTargets as $target)
                                                                     <li>{{ $target->targetable->name ?? 'N/A' }}</li>
                                                                 @endforeach
+
+                                                                @if ($remainingCount > 0)
+                                                                    <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
+                                                                @endif
+                                                            </ul>
+                                                        </td>
+
+                                                        <!--REG NO COLUMN -->
+                                                        <td>
+                                                            <ul class="list-unstyled mb-0">
+                                                                @foreach ($displayTargets as $target)
+                                                                    <li>
+                                                                        {{ $target->targetable->registration ?? '-' }}
+                                                                    </li>
+                                                                @endforeach
+
+                                                                @if ($remainingCount > 0)
+                                                                    <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
+                                                                @endif
+                                                            </ul>
+                                                        </td>
+
+                                                        <!-- CNIC COLUMN -->
+                                                        <td>
+                                                            <ul class="list-unstyled mb-0">
+                                                                @foreach ($displayTargets as $target)
+                                                                    <li>{{ $target->targetable->cnic ?? '-' }}</li>
+                                                                @endforeach
+
+                                                                @if ($remainingCount > 0)
+                                                                    <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
+                                                                @endif
+                                                            </ul>
+                                                        </td>
+
+                                                        <!-- PASSPORT -->
+                                                        <td>
+                                                            <ul class="list-unstyled mb-0">
+                                                                @foreach ($displayTargets as $target)
+                                                                    <li>
+                                                                       {{ $target->targetable->passport ?? '-' }}<br>
+                                                                    </li>
+                                                                @endforeach
+
                                                                 @if ($remainingCount > 0)
                                                                     <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
                                                                 @endif
@@ -407,7 +453,9 @@
                         $targetSelect.append(
                             $('<option>', {
                                 value: item.id,
-                                text: item.name,
+                                text: item.type === 'human_resource'
+                                    ? `${item.name} - ${item.cnic}`
+                                    : item.name,
                                 'data-type': item.type
                             })
                         );
@@ -451,31 +499,31 @@
                     location.reload();
                 },
                 error: function(xhr) {
-    let response = xhr.responseJSON;
-    if (response && response.errors) {
-        // Clear previous errors
-        $('.is-invalid').removeClass('is-invalid');
-        $('.invalid-feedback').text('').hide();
+            let response = xhr.responseJSON;
+            if (response && response.errors) {
+                // Clear previous errors
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').text('').hide();
 
-        for (const [key, messages] of Object.entries(response.errors)) {
-            // Handle 'target_ids' => field with name="target_ids[]"
-            let selector = key === 'target_ids'
-                ? '[name="target_ids[]"]'
-                : `[name="${key}"]`;
+                for (const [key, messages] of Object.entries(response.errors)) {
+                    // Handle 'target_ids' => field with name="target_ids[]"
+                    let selector = key === 'target_ids'
+                        ? '[name="target_ids[]"]'
+                        : `[name="${key}"]`;
 
-            const $field = $(selector);
+                    const $field = $(selector);
 
-            if ($field.length) {
-                $field.addClass('is-invalid');
-                $field.siblings('.invalid-feedback').text(messages[0]).show();
+                    if ($field.length) {
+                        $field.addClass('is-invalid');
+                        $field.siblings('.invalid-feedback').text(messages[0]).show();
+                    }
+                }
+            } else {
+                alert('Failed to send notification.');
             }
-        }
-    } else {
-        alert('Failed to send notification.');
-    }
 
-    console.log(xhr.responseText);
-},
+            console.log(xhr.responseText);
+        },
 
                 complete: function() {
                     $('.btn-primary').attr('disabled', false).text('Create');

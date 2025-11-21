@@ -17,6 +17,15 @@
                     <span><i class="fas fa-user"></i> My Profile</span>
                 </a>
             </li>
+
+            {{-- Attachments --}}
+            <li class="dropdown {{ request()->is('human-resource/specific-attachments*') ? 'active' : '' }}">
+                <a href="{{ route('specific.attachments') }}" class="nav-link">
+                    <span><i data-feather="bar-chart-2"></i>Attachments</span>
+                </a>
+            </li>
+
+
             {{-- Notifications --}}
             <li class="dropdown {{ request()->is('human-resource/notification*') ? 'active' : '' }}">
                 <a href="{{ route('notificationHumanResouce.index') }}" class="nav-link">

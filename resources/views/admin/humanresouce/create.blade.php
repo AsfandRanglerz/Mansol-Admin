@@ -54,39 +54,39 @@
                                         </div>
 
 
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="company_id">Company</label>
-                                                <select name="company_id" id="company_id" class="form-control">
-                                                    <option value="">Select Company</option>
-                                                    @foreach ($companies as $company)
-                                                        <option value="{{ $company->id }}">{{ $company->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                       <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="text-danger" for="company_id">Company</label>
+                                                    <select name="company_id" id="company_id" class="form-control">
+                                                        <option value="">Select Company</option>
+                                                        @foreach ($companies as $company)
+                                                            <option value="{{ $company->id }}"
+                                                                {{ isset($company_id) && $company_id == $company->id ? 'selected' : '' }}>
+                                                                {{ $company->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4 d-none" id="project-group">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="project_id">Project</label>
-                                                <select name="project_id" id="project_id" class="form-control">
-                                                    <option value="" selected disabled>Select Project</option>
-                                                </select>
-                                                @error('project_id')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+
+                                            <div class="col-md-4 {{ isset($project_id) ? '' : 'd-none' }}" id="project-group">
+                                                <div class="form-group">
+                                                    <label class="text-danger" for="project_id">Project</label>
+                                                    <select name="project_id" id="project_id" class="form-control">
+                                                        <option value="" disabled>Select Project</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4 d-none" id="demand-group">
-                                            <div class="form-group">
-                                                <label class="text-danger" for="demand_id">Demand</label>
-                                                <select name="demand_id" id="demand_id" class="form-control">
-                                                    <option value="" selected disabled>Select Demand</option>
-                                                </select>
-                                                @error('demand_id')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+
+                                            <div class="col-md-4 {{ isset($demand_id) ? '' : 'd-none' }}" id="demand-group">
+                                                <div class="form-group">
+                                                    <label class="text-danger" for="demand_id">Demand</label>
+                                                    <select name="demand_id" id="demand_id" class="form-control">
+                                                        <option value="" disabled>Select Demand</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
+
 
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -1316,85 +1316,129 @@
                 }
             });
 
-            // When demand is selected
-            $('#demand_id').on('change', function() {
-                var demandId = $(this).val();
+           // When demand is selected
+$('#demand_id').on('change', function() {
+    var demandId = $(this).val();
 
-                $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
-                $('#sub_craft').empty().append(
-                    '<option value="" selected disabled>Select Sub-Craft</option>');
+    $('#craft').empty().append('<option value="" selected disabled>Select Craft</option>');
+    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
 
-                if (demandId) {
-                    $.ajax({
-                        url: "{{ route('get-crafts-by-demand') }}",
-                        type: "GET",
-                        data: {
-                            demand_id: demandId
-                        },
-                        success: function(data) {
-                            if (data.length > 0) {
-                                $.each(data, function(key, value) {
-                                    $('#craft').append('<option value="' + value.id +
-                                        '">' + value.name + '</option>');
-                                });
-                                // Automatically select the first craft
-                                $('#craft').val(data[0].id).trigger('change');
-                            }
-                        }
+    if (demandId) {
+        $.ajax({
+            url: "{{ route('get-crafts-by-demand') }}",
+            type: "GET",
+            data: { demand_id: demandId },
+            success: function(data) {
+                if (data.length > 0) {
+                    $.each(data, function(key, value) {
+                        $('#craft').append('<option value="' + value.id + '">' + value.name + '</option>');
                     });
-                }
-            });
 
-            // When craft is selected
-            const selectedCraftId = "{{ old('craft_id', $HumanResource->craft_id ?? '') }}";
-            const selectedSubCraftId = "{{ old('sub_craft_id', $HumanResource->sub_craft_id ?? '') }}";
+                    // If in auto-fill/edit mode, select the correct craft
+                    const selectedCraftId = "{{ old('craft_id', $HumanResource->craft_id ?? '') }}";
+                    const selectedSubCraftId = "{{ old('sub_craft_id', $HumanResource->sub_craft_id ?? '') }}";
 
-            // If a craft is already selected (in edit mode), trigger AJAX to load sub-crafts
-            if (selectedCraftId) {
-                $('#craft').val(selectedCraftId).trigger('change');
+                    if (selectedCraftId) {
+                        $('#craft').val(selectedCraftId);
 
-                $.ajax({
-                    url: "{{ route('get-sub-crafts') }}",
-                    type: "GET",
-                    data: {
-                        craft_id: selectedCraftId
-                    },
-                    success: function(data) {
-                        $('#sub_craft').empty().append(
-                            '<option value="" disabled>Select Sub-Craft</option>');
-                        $.each(data, function(key, value) {
-                            const isSelected = selectedSubCraftId == value.id ? 'selected' : '';
-                            $('#sub_craft').append('<option value="' + value.id + '" ' +
-                                isSelected + '>' + value.name + '</option>');
+                        // Load sub-crafts for the selected craft
+                        $.ajax({
+                            url: "{{ route('get-sub-crafts') }}",
+                            type: "GET",
+                            data: { craft_id: selectedCraftId },
+                            success: function(subData) {
+                                $('#sub_craft').empty().append('<option value="" disabled>Select Sub-Craft</option>');
+                                $.each(subData, function(key, value) {
+                                    const isSelected = selectedSubCraftId == value.id ? 'selected' : '';
+                                    $('#sub_craft').append('<option value="' + value.id + '" ' + isSelected + '>' + value.name + '</option>');
+                                });
+                            }
                         });
+                    } else {
+                        // If manual selection, select the first craft and trigger sub-crafts
+                        $('#craft').val(data[0].id).trigger('change');
                     }
+                }
+            }
+        });
+    }
+});
+
+// When craft is changed manually
+$('#craft').on('change', function() {
+    var craftId = $(this).val();
+    $('#sub_craft').empty().append('<option value="" selected disabled>Select Sub-Craft</option>');
+
+    if (craftId) {
+        $.ajax({
+            url: "{{ route('get-sub-crafts') }}",
+            type: "GET",
+            data: { craft_id: craftId },
+            success: function(data) {
+                $.each(data, function(key, value) {
+                    $('#sub_craft').append('<option value="' + value.id + '">' + value.name + '</option>');
                 });
             }
+        });
+    }
+});
 
-            // When craft is changed manually
-            $('#craft').on('change', function() {
-                var craftId = $(this).val();
+    let autoCompany  = "{{ $company_id ?? '' }}";
+    let autoProject  = "{{ $project_id ?? '' }}";
+    let autoDemand   = "{{ $demand_id ?? '' }}";
 
-                $('#sub_craft').empty().append(
-                    '<option value="" selected disabled>Select Sub-Craft</option>');
+    function loadDemands(projectId, callback) {
+        $('#demand_id').empty().append('<option value="" selected disabled>Select Demand</option>');
+        $.ajax({
+            url: "{{ route('get-demand') }}",
+            type: "GET",
+            data: { project_id: projectId },
+            success: function(data) {
+                $.each(data, function(key, value) {
+                    $('#demand_id').append('<option value="' + value.id + '">Man Power - ' + value.full_name + '</option>');
+                });
+                if (callback) callback();
+            }
+        });
+    }
 
-                if (craftId) {
-                    $.ajax({
-                        url: "{{ route('get-sub-crafts') }}",
-                        type: "GET",
-                        data: {
-                            craft_id: craftId
-                        },
-                        success: function(data) {
-                            $.each(data, function(key, value) {
-                                $('#sub_craft').append('<option value="' + value.id +
-                                    '">' + value.name + '</option>');
-                            });
-                        }
-                    });
+    function loadProjects(companyId, callback) {
+        $('#project_id').empty().append('<option value="" selected disabled>Select Project</option>');
+        $.ajax({
+            url: "{{ route('get-projects') }}",
+            type: "GET",
+            data: { company_id: companyId },
+            success: function(data) {
+                $.each(data, function(key, value) {
+                    $('#project_id').append('<option value="' + value.id + '">' + value.project_name + '</option>');
+                });
+                if (callback) callback();
+            }
+        });
+    }
+    let autoFill = true;
+    // Auto-select
+    if (autoCompany) {
+    $('#company_id').val(autoCompany).trigger('change');
+
+    $('#project-group, #demand-group').removeClass('d-none');
+
+    loadProjects(autoCompany, function() {
+        if (autoProject) {
+            // Set value WITHOUT triggering change
+            $('#project_id').val(autoProject); 
+
+            loadDemands(autoProject, function() {
+                if (autoDemand) {
+                    $('#demand_id').val(autoDemand).trigger('change'); // set value without triggering
+                    autoFill = false; // finished auto-fill
                 }
             });
+        }
         });
+        }
+        });
+        
     </script>
 
 @endsection

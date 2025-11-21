@@ -20,7 +20,8 @@ class NominateController extends Controller
         $nominates = Nominate::where('craft_id', $craft_id)
         ->where('project_id', $project_id)
         ->where('demand_id', $demand_id)
-        ->with('humanResource')
+        ->with(['humanResource',
+            'humanResource.Crafts',])
         ->select('human_resource_id')
         ->distinct()
         ->get();

@@ -116,7 +116,10 @@
 
                                     <!-- <input type="file" class="form-control" id="image" name="image"> -->
                                     <input type="file" class="form-control" id="image" name="image" accept=".jpg, .jpeg, .png">
-
+                                    <small text-muted>(Image should be of size 2MB)</small>
+                                    @error('image')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                     <div class="invalid-feedback"></div>
 
                                 </div>
@@ -268,6 +271,10 @@
                                         <label for="image">Profile Image</label>
 
                                         <input type="file" class="form-control" id="image" name="image">
+                                        <small text-muted>(Image should be of size 2MB)</small>
+                                        @error('image')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
 
                                         <div class="invalid-feedback"></div>
 

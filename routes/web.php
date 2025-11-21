@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\RolesController;
 
+use App\Http\Controllers\Admin\HrStepController;
 use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\AboutusController;
 use App\Http\Controllers\Admin\CompanyController;
@@ -19,18 +20,18 @@ use App\Http\Controllers\Admin\SubAdminController;
 use App\Http\Controllers\Admin\SubCraftController;
 use App\Http\Controllers\Admin\MainCraftController;
 use App\Http\Controllers\Admin\MianCraftController;
+use App\Http\Controllers\Admin\BulkFeatureController;
 use App\Http\Controllers\Admin\NominationsController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\HumanResourceController;
-use App\Http\Controllers\Admin\BulkFeatureController;
 use App\Http\Controllers\Admin\TermConditionController;
 use App\Http\Controllers\HumanResouce\HRProfileController;
 use App\Http\Controllers\Admin\ApprovedApplicantsController;
-use App\Http\Controllers\Admin\HrStepController;
-use App\Http\Controllers\Admin\ProjectReportController as AdminProjectReportController;
+use App\Http\Controllers\HumanResouce\HRAttachmentController;
 use App\Http\Controllers\HumanResouce\HumanResouceController;
 use App\Http\Controllers\HumanResouce\HRNotificationController;
 use App\Http\Controllers\HumanResouce\HumanResouceAuthController;
+use App\Http\Controllers\Admin\ProjectReportController as AdminProjectReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -251,6 +252,11 @@ Route::prefix('human-resource')->middleware('humanresource')->group(function () 
     Route::controller(HRNotificationController::class)->group(function () {
         Route::get('/notification',  'index')->name('notificationHumanResouce.index');
     });
+    // ############ attachments #################
+    Route::controller(HRAttachmentController::class)->group(function () {
+        Route::get('/specific-attachments',  'index')->name('specific.attachments');
+    });
+
 });
 
 Route::get('/hr/modal-content', [HumanResourceController::class, 'getModalContent'])->name('hr.modal.content');

@@ -1271,7 +1271,7 @@ class HumanResourceController extends Controller
         }
     }
         
-    public function create()
+    public function create(Request $request)
     {
         $crafts = MainCraft::where('status', '=', 1)->latest()->get();
         // dd($crafts);
@@ -1279,12 +1279,21 @@ class HumanResourceController extends Controller
         $filteredValues = array_filter($lastReg, function ($value) {
             return !is_null($value); // Remove null values
         });
-        $integerValues = array_map('intval', $filteredValues);
-        $maxValue = !empty($integerValues) ? max($integerValues) : 1000;
+        // $integerValues = array_map('intval', $filteredValues);
+        // $maxValue = !empty($integerValues) ? max($integerValues) : 1000;
 
-        $registration = $maxValue >= 1000 ? $maxValue + 1 : 1001;
+        // $registration = $maxValue >= 1000 ? $maxValue + 1 : 1001;
+        $maxValue = HumanResource::whereNotNull('registration')
+        ->whereRaw('registration REGEXP "^[0-9]+$"')
+        ->max('registration');
+
+        // Next number (start at 1001 if NONE)
+        $registration = $maxValue ? $maxValue + 1 : 1001;
+        
         // dd($maxValue);
-
+        $company_id = $request->company_id;
+        $project_id = $request->project_id;
+        $demand_id  = $request->demand_id;
         $companies = Company::where('is_active', '=', '1')->orderBy('name', 'asc')->get();
         // dd($companies);
 
@@ -1296,7 +1305,7 @@ class HumanResourceController extends Controller
         // dd($cities);
         $curencies = Country::orderBy('title')->get();
         // dd($curencies);
-        return view('admin.humanresouce.create', compact('provinces', 'districts', 'cities', 'crafts', 'registration', 'companies', 'curencies'));
+        return view('admin.humanresouce.create', compact('provinces', 'districts', 'cities', 'crafts', 'registration', 'companies', 'curencies', 'company_id', 'project_id', 'demand_id'));
     }
 
     public function store(Request $request)
