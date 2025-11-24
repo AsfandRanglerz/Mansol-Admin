@@ -278,12 +278,22 @@
                                 $cv = optional(
                                     $HumanResource->hrSteps->where('step_number', 1)->where('file_type', 'cv')->first(),
                                 )->file_name;
+                                $cvUrl = $cv ? asset($cv) : '';
                             @endphp
                             <input type="file" class="form-control" name="cv" accept=".pdf"
-                                onchange="previewPDF(this, 'cvPreview-{{ $HumanResource->id }}')" />
+                                onchange="previewPDF(this, 'cvPreview-{{ $HumanResource->id }}', 'cvReportButton-{{ $HumanResource->id }}')" />
                             <iframe id="cvPreview-{{ $HumanResource->id }}" class="border-0 mt-2 {{ $cv ? '' : 'd-none' }}"
                                 src="{{ $cv ? asset($cv) : '' }}" width="100%" height="300px"></iframe>
-                        </div>
+                                <div class="mt-2">
+                                <a id="cvReportButton-{{ $HumanResource->id }}"
+                                href="{{ $cvUrl }}"
+                                target="_blank"
+                                class="btn btn-info {{ $cv ? '' : 'd-none' }}">
+                                View Uploaded Report
+                                </a>
+                            </div>
+
+                            </div>
 
                         {{-- Passport Images --}}
                         <h5>Valid Passport</h5>
@@ -836,7 +846,7 @@
                             $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
                             $amountInDigits = $step->amount_digits ?? '15000';
                             $amountInWords = $step->amount_words ?? 'Fifteen Thousand Rupees Only';
-                            $fileExists = $step->file_name ? asset($step->file_name) : null;
+                            $fileExists = $step->file_name ? asset($step->file_name) : null; //
                         @endphp
                         <div class="row mb-3">
                             <div class="col-md-5 pr-0">
@@ -1457,16 +1467,32 @@
 </script>
 
 <script>
-function previewPDF(input, previewId) {
+let uploadedPDF = {};
+function previewPDF(input, previewId, buttonId) {
     const file = input.files[0];
     if (file && file.type === "application/pdf") {
         const reader = new FileReader();
         reader.onload = function (e) {
-            const frame = document.getElementById(previewId);
+            const pdfData = e.target.result;
+
+            // Store by HumanResource ID (not buttonId)
+            const hrId = buttonId.split("-")[1];
+            uploadedPDF[hrId] = pdfData
+
+            // const frame = document.getElementById(previewId);
+            // const button = document.getElementById(buttonId);
+
+            
+           const frame = document.getElementById(previewId);
             if (frame) {
-                frame.src = e.target.result;
-                frame.classList.remove('d-none'); // Make sure it becomes visible
-                frame.style.height = "300px";
+                frame.src = pdfData;
+                frame.classList.remove("d-none");
+            }
+
+              const button = document.getElementById(buttonId);
+            if (button) {
+                button.href = pdfData; // Open in new tab
+                button.classList.remove("d-none");
             }
         };
         reader.readAsDataURL(file);
@@ -1475,6 +1501,23 @@ function previewPDF(input, previewId) {
     }
 }
 
+function openPDF(id) {
+    // get stored pdf
+    const pdf = uploadedPDF[id];
+
+    // If user uploaded a new one, open that
+    if (pdf) {
+        window.open(pdf, "_blank");
+        return;
+    }
+
+    // Else open original DB file
+    let oldPdfUrl = document.getElementById("cvButton-" + id).getAttribute("data-old");
+
+    if (oldPdfUrl) {
+        window.open(oldPdfUrl, "_blank");
+    }
+}
 
     function previewFile(input) {
         const file = input.files[0];
