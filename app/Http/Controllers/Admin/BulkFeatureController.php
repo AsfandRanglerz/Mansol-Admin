@@ -82,6 +82,43 @@ class BulkFeatureController extends Controller
                     }
                     return back()->with('error', $errorMsg);
                 }
+               $cnicColumnIndex = array_search('CNIC', $headerRow);
+
+            if ($cnicColumnIndex === false) {
+                throw new \Exception("CNIC column not found.");
+            }
+
+            // Convert index → Excel letter (0 = A, 1 = B, 2 = C ...)
+            $cnicColumnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($cnicColumnIndex + 1);
+
+            $cnicList = [];
+
+            foreach ($worksheet->getRowIterator(2) as $row) {
+                $rowIndex = $row->getRowIndex();
+                $cell = $worksheet->getCell($cnicColumnLetter . $rowIndex);
+
+                $cnic = trim((string)$cell->getCalculatedValue());
+
+                if ($cnic !== '') {
+                    $cnicList[] = $cnic;
+                }
+            }
+
+
+        $duplicates = array_unique(array_diff_assoc($cnicList, array_unique($cnicList)));
+
+        if (!empty($duplicates)) {
+
+            $message = "Duplicate CNIC found ";
+
+            Log::error($message);
+
+            if ($request->ajax()) {
+                return response()->json(['message' => $message], 422);
+            }
+
+            return back()->with('error', $message);
+        }
             Excel::queueImport(new HumanResourceImport, $request->file('file'));
             $end = now();
             Log::info("Import completed at: $end");
