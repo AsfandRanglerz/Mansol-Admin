@@ -278,12 +278,22 @@
                                 $cv = optional(
                                     $HumanResource->hrSteps->where('step_number', 1)->where('file_type', 'cv')->first(),
                                 )->file_name;
+                                $cvUrl = $cv ? asset($cv) : '';
                             @endphp
                             <input type="file" class="form-control" name="cv" accept=".pdf"
-                                onchange="previewPDF(this, 'cvPreview-{{ $HumanResource->id }}')" />
+                                onchange="previewPDF(this, 'cvPreview-{{ $HumanResource->id }}', 'cvReportButton-{{ $HumanResource->id }}')" />
                             <iframe id="cvPreview-{{ $HumanResource->id }}" class="border-0 mt-2 {{ $cv ? '' : 'd-none' }}"
                                 src="{{ $cv ? asset($cv) : '' }}" width="100%" height="300px"></iframe>
-                        </div>
+                                <div class="mt-2">
+                                <a id="cvReportButton-{{ $HumanResource->id }}"
+                                href="{{ $cvUrl }}"
+                                target="_blank"
+                                class="btn btn-info {{ $cv ? '' : 'd-none' }}">
+                                View
+                                </a>
+                            </div>
+
+                            </div>
 
                         {{-- Passport Images --}}
                         <h5>Valid Passport</h5>
@@ -686,7 +696,7 @@
                                 <div class="mt-2">
                                     <a id="medicalReportPreview-{{ $HumanResource->id }}" href="{{ $medical_report }}" target="_blank"
                                         class="btn btn-info {{ $medical_report ? '' : 'd-none' }}">
-                                        View Uploaded Report
+                                        View
                                     </a>
                                 </div>
                             </div>
@@ -836,7 +846,8 @@
                             $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
                             $amountInDigits = $step->amount_digits ?? '15000';
                             $amountInWords = $step->amount_words ?? 'Fifteen Thousand Rupees Only';
-                            $fileExists = $step->file_name ? asset($step->file_name) : null;
+                            $fileExists = $step->file_name ? asset($step->file_name) : null; 
+                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
                         @endphp
                         <div class="row mb-3">
                             <div class="col-md-5 pr-0">
@@ -854,7 +865,13 @@
                                 </div>
                                 <button id="" class="btn btn-primary generatePdfBtn"
                                     style="margin-bottom: 2px">Generate PDF</button>
-                            </div>
+                                    
+                                    <a style="margin-bottom: 2px; margin-left: 8px;" class="btn btn-info pdfReportButton 
+                                       {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
+                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
+                                       View
+                                    </a>
+                                </div>
                         </div>
                         <input type="text" id="stepThreeFile" class="stepThreeFile d-none" name="step_three_file"
                             value="{{ $fileExists ? $fileExists : '' }}">
@@ -873,6 +890,7 @@
                             $opfValue = $step->amount_digits ?? '4000';
                             $stateLifeValue = $step->amount_digits1 ?? '2500';
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
+                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
                         @endphp
                         <div>
                             <div class="row mb-3">
@@ -881,16 +899,21 @@
                                     <input type="text" class="form-control" id="opf" name="opf"
                                         value="{{ $opfValue }}" />
                                 </div>
-                                <div class="col-md-5 pr-0">
+                                <div class="col-md-4 pl-2 align-items-end">
                                     <label for="stateLife">State Life Insurance Premium</label>
                                     <input type="text" class="form-control" id="stateLife"
                                         value="{{ $stateLifeValue }}" name="state_life_insurance" />
                                 </div>
                                 <input type="hidden" class="human_resource_id" name="human_resource_id"
                                     value="{{ $HumanResource->id }}" />
-                                <div class="col-md-2 d-flex align-items-end">
+                                <div class="col-md-3 d-flex align-items-end">
                                     <button type="button" id="generatePdfBtn4" class="btn btn-primary"
                                         style="margin-bottom: 2px">Generate PDF</button>
+                                    <a style="margin-bottom: 2px; margin-left: 8px;" class="btn btn-info pdfReportButton 
+                                       {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
+                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
+                                       View
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -909,12 +932,18 @@
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 9)->first());
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
+                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
                         @endphp
                         <div>
                             <input type="hidden" class="human_resource_id" name="human_resource_id"
                                 value="{{ $HumanResource->id }}" />
                             <button id="generatePdfBtn5" class="btn btn-primary" style="margin-bottom: 2px">Generate
                                 PDF</button>
+                            <a style="margin-bottom: 2px; margin-left: 8px;" class="btn btn-info pdfReportButton 
+                                       {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
+                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
+                                       View
+                                    </a>
                         </div>
                         <input type="text" id="stepFiveFile" class="stepFiveFile d-none" name="step_five_file"
                             value="{{ $fileExists ? $fileExists : '' }}">
@@ -931,10 +960,16 @@
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 10)->first());
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
+                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
                         @endphp
                         <input type="hidden" class="human_resource_id" name="human_resource_id"
                             value="{{ $HumanResource->id }}" />
                         <button id="generatePdfBtn6" class="btn btn-primary">Generate PDF</button>
+                        <a style="margin-left: 8px;" class="btn btn-info pdfReportButton 
+                                       {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
+                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
+                                       View
+                                    </a>
                         <br /><br />
                         <input type="text" id="stepSixFile" class="stepSixFile d-none" name="step_six_file"
                             value="{{ $fileExists ? $fileExists : '' }}">
@@ -951,10 +986,16 @@
                         @php
                             $step = optional($HumanResource->hrSteps->where('step_number', 11)->first());
                             $fileExists = $step->file_name ? asset($step->file_name) : null;
+                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
                         @endphp
                         <input type="hidden" class="human_resource_id" name="human_resource_id"
                             value="{{ $HumanResource->id }}" />
                         <button id="generatePdfBtn7" class="btn btn-primary">Generate PDF</button>
+                        <a style="margin-left: 8px;" class="btn btn-info pdfReportButton 
+                                       {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
+                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
+                                       View
+                                    </a>
                         <br /><br />
                         <input type="text" id="stepSevenFile" class="stepSevenFile d-none" name="step_seven_file"
                             value="{{ $fileExists ? $fileExists : '' }}">
@@ -1223,10 +1264,16 @@
                     // Set the PDF URL in the input field
                     formSection.find('.stepThreeFile').val(response.url).trigger('change');
 
-                    // Update the iframe to display the generated PDF
-                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
-                        new Date().getTime());
-                    formSection.find('.pdfFrame').attr("height", "600px");
+                    // Update iframe preview
+                    formSection.find('.pdfFrame')
+                        .attr("src", response.pdf_url + "?t=" + new Date().getTime())
+                        .attr("height", "600px")
+                        .removeClass("d-none");
+
+                    // 🔥 Show the “View Uploaded Report” button
+                    let viewBtn = formSection.find('.pdfReportButton');
+                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
+                    viewBtn.removeClass("d-none");           // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1273,10 +1320,16 @@
                     // Set the PDF URL in the input field
                     formSection.find('.stepFourFile').val(response.url).trigger('change');
 
-                    // Update the iframe to display the generated PDF
-                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
-                        new Date().getTime());
-                    formSection.find('.pdfFrame').attr("height", "600px");
+                    // Update iframe preview
+                    formSection.find('.pdfFrame')
+                        .attr("src", response.pdf_url + "?t=" + new Date().getTime())
+                        .attr("height", "600px")
+                        .removeClass("d-none");
+
+                    // 🔥 Show the “View Uploaded Report” button
+                    let viewBtn = formSection.find('.pdfReportButton');
+                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
+                    viewBtn.removeClass("d-none");           // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1310,10 +1363,16 @@
                     // Set the PDF URL in the input field
                     formSection.find('.stepFiveFile').val(response.url).trigger('change');
 
-                    // Update the iframe to display the generated PDF
-                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
-                        new Date().getTime());
-                    formSection.find('.pdfFrame').attr("height", "600px");
+                    // Update iframe preview
+                    formSection.find('.pdfFrame')
+                        .attr("src", response.pdf_url + "?t=" + new Date().getTime())
+                        .attr("height", "600px")
+                        .removeClass("d-none");
+
+                    // 🔥 Show the “View Uploaded Report” button
+                    let viewBtn = formSection.find('.pdfReportButton');
+                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
+                    viewBtn.removeClass("d-none");           // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1341,12 +1400,20 @@
                 }),
                 success: function(response) {
                     console.log('PDF URL:', response.pdf_url);
+
                     // Set the PDF URL in the input field
                     formSection.find('.stepSixFile').val(response.url).trigger('change');
-                    // Update the iframe to display the generated PDF
-                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
-                        new Date().getTime());
-                    formSection.find('.pdfFrame').attr("height", "600px");
+
+                    // Update iframe preview
+                    formSection.find('.pdfFrame')
+                        .attr("src", response.pdf_url + "?t=" + new Date().getTime())
+                        .attr("height", "600px")
+                        .removeClass("d-none");
+
+                    // 🔥 Show the “View Uploaded Report” button
+                    let viewBtn = formSection.find('.pdfReportButton');
+                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
+                    viewBtn.removeClass("d-none");           // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1372,14 +1439,22 @@
                 data: JSON.stringify({
                     human_resource_id: hr_id,
                 }),
-                success: function(response) {
+               success: function(response) {
                     console.log('PDF URL:', response.pdf_url);
+
                     // Set the PDF URL in the input field
                     formSection.find('.stepSevenFile').val(response.url).trigger('change');
-                    // Update the iframe to display the generated PDF
-                    formSection.find('.pdfFrame').attr("src", response.pdf_url + "?t=" +
-                        new Date().getTime());
-                    formSection.find('.pdfFrame').attr("height", "600px");
+
+                    // Update iframe preview
+                    formSection.find('.pdfFrame')
+                        .attr("src", response.pdf_url + "?t=" + new Date().getTime())
+                        .attr("height", "600px")
+                        .removeClass("d-none");
+
+                    // 🔥 Show the “View Uploaded Report” button
+                    let viewBtn = formSection.find('.pdfReportButton');
+                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
+                    viewBtn.removeClass("d-none");           // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1457,16 +1532,32 @@
 </script>
 
 <script>
-function previewPDF(input, previewId) {
+let uploadedPDF = {};
+function previewPDF(input, previewId, buttonId) {
     const file = input.files[0];
     if (file && file.type === "application/pdf") {
         const reader = new FileReader();
         reader.onload = function (e) {
-            const frame = document.getElementById(previewId);
+            const pdfData = e.target.result;
+
+            // Store by HumanResource ID (not buttonId)
+            const hrId = buttonId.split("-")[1];
+            uploadedPDF[hrId] = pdfData
+
+            // const frame = document.getElementById(previewId);
+            // const button = document.getElementById(buttonId);
+
+            
+           const frame = document.getElementById(previewId);
             if (frame) {
-                frame.src = e.target.result;
-                frame.classList.remove('d-none'); // Make sure it becomes visible
-                frame.style.height = "300px";
+                frame.src = pdfData;
+                frame.classList.remove("d-none");
+            }
+
+              const button = document.getElementById(buttonId);
+            if (button) {
+                button.href = pdfData; // Open in new tab
+                button.classList.remove("d-none");
             }
         };
         reader.readAsDataURL(file);
@@ -1475,6 +1566,23 @@ function previewPDF(input, previewId) {
     }
 }
 
+function openPDF(id) {
+    // get stored pdf
+    const pdf = uploadedPDF[id];
+
+    // If user uploaded a new one, open that
+    if (pdf) {
+        window.open(pdf, "_blank");
+        return;
+    }
+
+    // Else open original DB file
+    let oldPdfUrl = document.getElementById("cvButton-" + id).getAttribute("data-old");
+
+    if (oldPdfUrl) {
+        window.open(oldPdfUrl, "_blank");
+    }
+}
 
     function previewFile(input) {
         const file = input.files[0];
