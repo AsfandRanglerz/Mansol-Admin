@@ -208,7 +208,6 @@
                                                     <th>Sr.</th>
                                                     <th>User Type</th>
                                                     <th>Name</th>
-                                                    
                                                     <th>Message</th>
                                                     <th scope="col">Actions</th>
                                                 </tr>
@@ -226,26 +225,24 @@
                                                                 Human Resource
                                                             @endif
                                                         </td>
-                                                        <!-- NAME COLUMN -->
-                                                        <td>
+                                                       <td
                                                             @php
                                                                 $targets = $notification->targets;
                                                                 $displayTargets = $targets->take(2);
                                                                 $remainingCount = $targets->count() - $displayTargets->count();
+                                                                $allTargetNames = $targets->pluck('targetable.name')->filter()->implode(', ');
                                                             @endphp
-
+                                                            title="{{ $allTargetNames }}"
+                                                        >
                                                             <ul class="list-unstyled mb-0">
                                                                 @foreach ($displayTargets as $target)
                                                                     <li>{{ $target->targetable->name ?? 'N/A' }}</li>
                                                                 @endforeach
-
                                                                 @if ($remainingCount > 0)
                                                                     <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
                                                                 @endif
                                                             </ul>
                                                         </td>
-
-                                                       
 
                                                         <td>
                                                             @php
@@ -291,11 +288,8 @@
                                             <thead>
                                                 <tr>
                                                     <th>Sr.</th>
-                                                    <th>Id no.</th>
                                                     <th>Name</th>
                                                     <th>Email</th>
-                                                    <th>CNIC</th>
-                                                    <th>Passport</th>
                                                     <th>Document Type</th>
                                                     <th>Expiry Date</th>
                                                     <th>Action</th>
@@ -306,53 +300,10 @@
                                                     @foreach ($item->targets as $target)
                                                         <tr>
                                                             <td>{{ $index + 1 }}</td>
-                                                            <!--REG NO COLUMN -->
-                                                        <td>
-                                                            <ul class="list-unstyled mb-0">
-                                                                {{-- @foreach ($displayTargets as $target) --}}
-                                                                    <li>
-                                                                        {{ $target->targetable->registration ?? '-' }}
-                                                                    </li>
-                                                                {{-- @endforeach --}}
-
-                                                                {{-- @if ($remainingCount > 0)
-                                                                    <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
-                                                                @endif --}}
-                                                            </ul>
-                                                        </td>
                                                             <td>{{ $target->targetable->name ?? 'N/A' }}</td>
                                                             <td>
                                                                  <a href="mailto:{{ $target->targetable->email }}">{{ $target->targetable->email }}</a>
                                                             </td>
-                                                             
-
-                                                        <!-- CNIC COLUMN -->
-                                                        <td>
-                                                            <ul class="list-unstyled mb-0">
-                                                                {{-- @foreach ($displayTargets as $target) --}}
-                                                                    <li>{{ $target->targetable->cnic ?? '-' }}</li>
-                                                                {{-- @endforeach --}}
-
-                                                                {{-- @if ($remainingCount > 0)
-                                                                    <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
-                                                                @endif --}}
-                                                            </ul>
-                                                        </td>
-
-                                                        <!-- PASSPORT -->
-                                                        <td>
-                                                            <ul class="list-unstyled mb-0">
-                                                                {{-- @foreach ($displayTargets as $target) --}}
-                                                                    <li>
-                                                                       {{ $target->targetable->passport ?? '-' }}<br>
-                                                                    </li>
-                                                                {{-- @endforeach --}}
-
-                                                                {{-- @if ($remainingCount > 0)
-                                                                    <li><span class="text-muted">+{{ $remainingCount }} more</span></li>
-                                                                @endif --}}
-                                                            </ul>
-                                                        </td>
                                                             <td>{{ $item->document_type }}</td>
                                                             <td>{{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}</td>
                                                             <td>
@@ -456,9 +407,7 @@
                         $targetSelect.append(
                             $('<option>', {
                                 value: item.id,
-                                text: item.type === 'human_resource'
-                                    ? `${item.name} - ${item.cnic}`
-                                    : item.name,
+                                text: item.name,
                                 'data-type': item.type
                             })
                         );
@@ -502,31 +451,31 @@
                     location.reload();
                 },
                 error: function(xhr) {
-            let response = xhr.responseJSON;
-            if (response && response.errors) {
-                // Clear previous errors
-                $('.is-invalid').removeClass('is-invalid');
-                $('.invalid-feedback').text('').hide();
+    let response = xhr.responseJSON;
+    if (response && response.errors) {
+        // Clear previous errors
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').text('').hide();
 
-                for (const [key, messages] of Object.entries(response.errors)) {
-                    // Handle 'target_ids' => field with name="target_ids[]"
-                    let selector = key === 'target_ids'
-                        ? '[name="target_ids[]"]'
-                        : `[name="${key}"]`;
+        for (const [key, messages] of Object.entries(response.errors)) {
+            // Handle 'target_ids' => field with name="target_ids[]"
+            let selector = key === 'target_ids'
+                ? '[name="target_ids[]"]'
+                : `[name="${key}"]`;
 
-                    const $field = $(selector);
+            const $field = $(selector);
 
-                    if ($field.length) {
-                        $field.addClass('is-invalid');
-                        $field.siblings('.invalid-feedback').text(messages[0]).show();
-                    }
-                }
-            } else {
-                alert('Failed to send notification.');
+            if ($field.length) {
+                $field.addClass('is-invalid');
+                $field.siblings('.invalid-feedback').text(messages[0]).show();
             }
+        }
+    } else {
+        alert('Failed to send notification.');
+    }
 
-            console.log(xhr.responseText);
-        },
+    console.log(xhr.responseText);
+},
 
                 complete: function() {
                     $('.btn-primary').attr('disabled', false).text('Create');

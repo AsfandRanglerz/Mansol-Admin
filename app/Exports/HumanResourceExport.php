@@ -48,7 +48,7 @@ class HumanResourceExport implements FromCollection, WithHeadings, WithDrawings,
             'Crafts',
             'SubCrafts',
             'hrSteps' => function($q) {
-                $q->where('step_number', 4)->where('file_type', 'photo');
+                $q->whereIn('step_number', [2,3,4,6]);
             },
             'jobHistory',
             'nominates.project'
@@ -210,38 +210,53 @@ class HumanResourceExport implements FromCollection, WithHeadings, WithDrawings,
 
         // Map collection and store photo path for WithDrawings
         $this->data = $data->map(function($hr) {
-            $photoStep = $hr->hrSteps->first();
+            $photoStep = $hr->hrSteps->where('step_number', 4)->where('file_type','photo')->first();
             $photo_path = $photoStep ? public_path($photoStep->file_name) : null;
             $clean = str_replace('public/public/', 'public/', $photo_path);
             $hr->photo_path = $clean;
+            $step6 = $hr->hrSteps->firstWhere('step_number', 6);
+            $cnic_front = $hr->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')
+                ->where('file_name', '!=', null)->first();
+            $cnic_back = $hr->hrSteps->where('step_number', 3)->where('file_type', 'cnic back')
+                ->where('file_name', '!=', null)->first();
+            $passport_front = $hr->hrSteps->where('step_number', 2)->where('file_type', 'passport front')
+                ->where('file_name', '!=', null)->first();
+            $passport_back = $hr->hrSteps->where('step_number', 2)->where('file_type', 'passport back')
+                ->where('file_name', '!=', null)->first();
+            $passport_third_image = $hr->hrSteps->where('step_number', 2)->where('file_type', 'passport third image')
+                ->where('file_name', '!=', null)->first();
+            $visa_status = 'N/A';
+            if ($step6 && $step6->visa_expiry_date !== null) {
+                $visa_status = $step6->visa_expiry_date >= now() ? 'Valid' : 'Expired';
+            }
             return [
-                $hr->id ?? '',
+                $hr->registration ?? '',
                 $hr->photo_path, // temporary, drawings will use this
                 $hr->name ?? '',
                 $hr->email ?? '',
                 $hr->cnic ?? '',
                 $hr->application_date ?? '',
-                $hr->craft ?? '',
-                $hr->sub_craft ?? '',
-                $hr->approvals_no ?? '',
+                $hr->Crafts->name ?? '', 
+                $hr->SubCrafts->name ?? '',
+                $hr->approvals ?? '',
                 $hr->city_of_interview ?? '',
-                $hr->so ?? '',
+                $hr->son_of ?? '',
                 $hr->mother_name ?? '',
                 $hr->dob ?? '',
                 $hr->cnic_expiry_date ?? '',
-                $hr->passport_issue_date ?? '',
-                $hr->passport_expiry_date ?? '',
-                $hr->passport_no ?? '',
+                $hr->doi ?? '',
+                $hr->doe ?? '',
+                $hr->passport ?? '',
                 $hr->next_of_kin ?? '',
                 $hr->relation ?? '',
                 $hr->kin_cnic ?? '',
                 $hr->shoe_size ?? '',
                 $hr->cover_size ?? '',
-                $hr->academic_qualification ?? '',
+                $hr->acdemic_qualification ?? '',
                 $hr->technical_qualification ?? '',
                 $hr->experience_local ?? '',
                 $hr->experience_gulf ?? '',
-                $hr->district_domicile ?? '',
+                $hr->district_of_domicile ?? '',
                 $hr->present_address ?? '',
                 $hr->present_address_phone ?? '',
                 $hr->present_address_mobile ?? '',
@@ -255,19 +270,19 @@ class HumanResourceExport implements FromCollection, WithHeadings, WithDrawings,
                 $hr->permanent_address_city ?? '',
                 $hr->permanent_address_province ?? '',
                 $hr->citizenship ?? '',
-                $hr->reference ?? '',
-                $hr->performance_awarded ?? '',
+                $hr->refference ?? '',
+                $hr->performance_appraisal ?? '',
                 $hr->min_salary ?? '',
-                $hr->visa_type ?? '',
-                $hr->visa_status ?? '',
-                $hr->visa_issue_date ?? '',
-                $hr->visa_expiry_date ?? '',
-                $hr->flight_date ?? '',
-                $hr->flight_route ?? '',
-                $hr->cnic_taken_status ?? '',
-                $hr->passport_taken_status ?? '',
+                $step6 ? $step6->visa_type : '',
+                $visa_status ?? '',
+                $step6 ? $step6->visa_issue_date : '',
+                $step6 ? $step6->visa_expiry_date : '',
+                $step6 ? $step6->flight_date : '',
+                $step6 ? $step6->flight_route : '',
+                ($cnic_front || $cnic_back) ? 'Taken' : 'Not Taken',
+                ($passport_front || $passport_back || $passport_third_image) ? 'Taken' : 'Not Taken',
                 $hr->comment ?? '',
-                $hr->status ?? '',
+                $hr->status == 1 ? 'Pending' : ($hr->status == 2 ? 'Approved' : ($hr->status == 3 ? 'Assigned' :  'Rejected')),
             ];
         });
 
