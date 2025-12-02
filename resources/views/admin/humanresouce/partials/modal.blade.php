@@ -225,787 +225,904 @@
 {{-- Create Human Resource Model --}}
 
 
-                <div class="steps mb-5">
-                    @for ($i = 1; $i <= 7; $i++)
-                        {{-- Adjusted to reflect the new total steps --}}
-                        <div style="cursor: pointer;"
-                            class="d-flex flex-column align-items-center position-relative step-container">
-                            <div class="step {{ $i == 1 ? 'active' : '' }}" data-step="{{ $i }}">
-                                {{ $i }}
-                            </div>
+<div class="steps mb-5">
+    @for ($i = 1; $i <= 7; $i++)
+        {{-- Adjusted to reflect the new total steps --}}
+        <div style="cursor: pointer;" class="d-flex flex-column align-items-center position-relative step-container">
+            <div class="step {{ $i == 1 ? 'active' : '' }}" data-step="{{ $i }}">
+                {{ $i }}
+            </div>
 
-                            <p class="m-0 step-text {{ $i == 1 ? 'active' : '' }}">
-                                @if ($i == 1)
-                                    Essential Images
-                                @elseif ($i == 2)
-                                    Visa-Medical
-                                @elseif ($i == 3)
-                                    ABL
-                                @elseif ($i == 4)
-                                    NBP 
-                                @elseif ($i == 5)
-                                    NBP Challan 
-                                @elseif ($i == 6)
-                                    State Life
-                                @elseif ($i == 7)
-                                    FSA
-                                @endif
-                            </p>
+            <p class="m-0 step-text {{ $i == 1 ? 'active' : '' }}">
+                @if ($i == 1)
+                    Essential Images
+                @elseif ($i == 2)
+                    Visa-Medical
+                @elseif ($i == 3)
+                    ABL
+                @elseif ($i == 4)
+                    NBP
+                @elseif ($i == 5)
+                    NBP Challan
+                @elseif ($i == 6)
+                    State Life
+                @elseif ($i == 7)
+                    FSA
+                @endif
+            </p>
 
-                            <span class="fa-solid fa-circle-check position-absolute top-0 tick-mark d-none"></span>
-                        </div>
+            <span class="fa-solid fa-circle-check position-absolute top-0 tick-mark d-none"></span>
+        </div>
 
-                        @if ($i < 7)
-                            <div class="line"></div>
-                        @endif
-                    @endfor
+        @if ($i < 7)
+            <div class="line"></div>
+        @endif
+    @endfor
+</div>
+
+{{-- Step 1: Combined Form --}}
+<div class="form-section active" data-step="1">
+    <form id="form-step-1" action="{{ route('submit.step', ['step' => 1]) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
+        <h6 class="text-muted text-danger" style="font-style: italic;">
+            Note: The image size must not exceed <strong>2MB</strong>.
+        </h6>
+        {{-- Latest Resume --}}
+        <h5>Latest Resume</h5>
+        <div class="form-group">
+            <label>Upload CV (PDF only)</label>
+            @php
+                $cv = optional($HumanResource->hrSteps->where('step_number', 1)->where('file_type', 'cv')->first())
+                    ->file_name;
+                $cvUrl = $cv ? asset($cv) : '';
+            @endphp
+            <input type="file" class="form-control" name="cv" accept=".pdf"
+                onchange="previewPDF(this, 'cvPreview-{{ $HumanResource->id }}', 'cvReportButton-{{ $HumanResource->id }}')" />
+            <iframe id="cvPreview-{{ $HumanResource->id }}" class="border-0 mt-2 {{ $cv ? '' : 'd-none' }}"
+                src="{{ $cv ? asset($cv) : '' }}" width="100%" height="300px"></iframe>
+            <div class="mt-2">
+                <a id="cvReportButton-{{ $HumanResource->id }}" href="{{ $cvUrl }}" target="_blank"
+                    class="btn btn-info {{ $cv ? '' : 'd-none' }}">
+                    View
+                </a>
+            </div>
+
+        </div>
+
+        {{-- Passport Images --}}
+        <h5>Valid Passport</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <label>Passport Image 1</label>
+                @php
+                    $passportFront = optional(
+                        $HumanResource->hrSteps->where('step_number', 2)->where('file_type', 'passport front')->first(),
+                    )->file_name;
+                @endphp
+                <input type="file" class="form-control" name="passport_image_1" accept="image/*"
+                    onchange="validateImageSize(this, 2, 'passportFrontPreview-{{ $HumanResource->id }}')" />
+                <div class="position-relative">
+                    <img id="passportFrontPreview-{{ $HumanResource->id }}"
+                        class="img-fluid mt-2 border rounded {{ $passportFront ? '' : 'd-none' }}"
+                        src="{{ $passportFront ? asset($passportFront) : '' }}"
+                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                    <button class="btn btn-primary position-absolute download-btn">
+                        <span class="fa-solid fa-download"></span>
+                    </button>
                 </div>
 
-                {{-- Step 1: Combined Form --}}
-                <div class="form-section active" data-step="1">
-                    <form id="form-step-1" action="{{ route('submit.step', ['step' => 1]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
-                        <h6 class="text-muted text-danger" style="font-style: italic;">
-                            Note: The image size must not exceed <strong>2MB</strong>.
-                        </h6>
-                        {{-- Latest Resume --}}
-                        <h5>Latest Resume</h5>
-                        <div class="form-group">
-                            <label>Upload CV (PDF only)</label>
-                            @php
-                                $cv = optional(
-                                    $HumanResource->hrSteps->where('step_number', 1)->where('file_type', 'cv')->first(),
-                                )->file_name;
-                                $cvUrl = $cv ? asset($cv) : '';
-                            @endphp
-                            <input type="file" class="form-control" name="cv" accept=".pdf"
-                                onchange="previewPDF(this, 'cvPreview-{{ $HumanResource->id }}', 'cvReportButton-{{ $HumanResource->id }}')" />
-                            <iframe id="cvPreview-{{ $HumanResource->id }}" class="border-0 mt-2 {{ $cv ? '' : 'd-none' }}"
-                                src="{{ $cv ? asset($cv) : '' }}" width="100%" height="300px"></iframe>
-                                <div class="mt-2">
-                                <a id="cvReportButton-{{ $HumanResource->id }}"
-                                href="{{ $cvUrl }}"
-                                target="_blank"
-                                class="btn btn-info {{ $cv ? '' : 'd-none' }}">
-                                View
-                                </a>
-                            </div>
+            </div>
+            <div class="col-md-4">
+                <label>Passport Image 2</label>
+                @php
+                    $passportBack = optional(
+                        $HumanResource->hrSteps->where('step_number', 2)->where('file_type', 'passport back')->first(),
+                    )->file_name;
+                @endphp
+                <input type="file" class="form-control" name="passport_image_2" accept="image/*"
+                    onchange="validateImageSize(this, 2, 'passportBackPreview-{{ $HumanResource->id }}')" />
+                <div class="position-relative"><img id="passportBackPreview-{{ $HumanResource->id }}"
+                        class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
+                        src="{{ $passportBack ? asset($passportBack) : '' }}"
+                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
+                        class="btn btn-primary position-absolute download-btn">
+                        <span class="fa-solid fa-download"></span>
+                    </button>
+                </div>
 
-                            </div>
+            </div>
 
-                        {{-- Passport Images --}}
-                        <h5>Valid Passport</h5>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>Passport Image 1</label>
-                                @php
-                                    $passportFront = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 2)
-                                            ->where('file_type', 'passport front')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="passport_image_1" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'passportFrontPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="passportFrontPreview-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $passportFront ? '' : 'd-none' }}"
-                                        src="{{ $passportFront ? asset($passportFront) : '' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
+            <div class="col-md-4">
+                <label>Passport Image 3</label>
+                @php
+                    $passportImageThree = optional(
+                        $HumanResource->hrSteps
+                            ->where('step_number', 2)
+                            ->where('file_type', 'passport third image')
+                            ->first(),
+                    )->file_name;
+                @endphp
+                <input type="file" class="form-control" name="passport_image_3" accept="image/*"
+                    onchange="validateImageSize(this, 2, 'passportPreviewThree-{{ $HumanResource->id }}')" />
+                <div class="position-relative"><img id="passportPreviewThree-{{ $HumanResource->id }}"
+                        class="img-fluid mt-2 border rounded {{ $passportImageThree ? '' : 'd-none' }}"
+                        src="{{ $passportImageThree ? asset($passportImageThree) : '' }}"
+                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
+                        class="btn btn-primary position-absolute download-btn">
+                        <span class="fa-solid fa-download"></span>
+                    </button>
+                </div>
 
-                            </div>
-                            <div class="col-md-4">
-                                <label>Passport Image 2</label>
-                                @php
-                                    $passportBack = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 2)
-                                            ->where('file_type', 'passport back')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="passport_image_2" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'passportBackPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative"><img id="passportBackPreview-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $passportBack ? '' : 'd-none' }}"
-                                        src="{{ $passportBack ? asset($passportBack) : '' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
-                                        class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
+            </div>
+            {{-- In Hand Checkbox --}}
+            @php
+                $received_physically_passport =
+                    optional(
+                        $HumanResource->hrSteps->where('step_number', 2)->where('file_type', 'passport front')->first(),
+                    )->received_physically ?? 'no';
+            @endphp
 
-                            </div>
+            <div class="col-md-12 mt-3">
+                <div class="form-check">
+                    <input type="hidden" name="received_physically_passport" value="no">
+                    <input type="checkbox" class="form-check-input" id="received_physically_passport"
+                        name="received_physically_passport" value="yes"
+                        {{ strtolower($received_physically_passport) === 'yes' ? 'checked' : '' }}>
+                    <label class="form-check-label font-weight-bold " for="received_physically_passport">
+                        In Hand
+                    </label>
+                </div>
+            </div>
+        </div>
+        {{-- CNIC --}}
+        <h5 class="mt-4">CNIC</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <label>CNIC Front</label>
+                @php
+                    $cnicFront = optional(
+                        $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')->first(),
+                    )->file_name;
 
-                            <div class="col-md-4">
-                                <label>Passport Image 3</label>
-                                @php
-                                    $passportImageThree = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 2)
-                                            ->where('file_type', 'passport third image')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="passport_image_3" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'passportPreviewThree-{{ $HumanResource->id }}')" />
-                                <div class="position-relative"><img id="passportPreviewThree-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $passportImageThree ? '' : 'd-none' }}"
-                                        src="{{ $passportImageThree ? asset($passportImageThree) : '' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" /><button
-                                        class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
+                    $received_physically_cnic_front =
+                        optional(
+                            $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')->first(),
+                        )->received_physically ?? 'no';
+                @endphp
+                <input type="file" class="form-control" name="cnic_front" accept="image/*"
+                    onchange="validateImageSize(this, 2, 'cnicFrontPreview-{{ $HumanResource->id }}')" />
+                <div class="position-relative">
+                    <img id="cnicFrontPreview-{{ $HumanResource->id }}"
+                        class="img-fluid mt-2 border rounded {{ $cnicFront ? '' : 'd-none' }}"
+                        src="{{ $cnicFront ? asset($cnicFront) : '' }}"
+                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                    @if ($cnicFront)
+                        <a href="{{ asset($cnicFront) }}" download
+                            class="btn btn-primary position-absolute download-btn">
+                            <span class="fa-solid fa-download"></span>
+                        </a>
+                    @endif
+                </div>
 
-                            </div>
-                        </div>
+                {{-- In Hand for CNIC Front --}}
+                <div class="col-md-12 mt-2">
+                    <div class="form-check">
+                        <input type="hidden" name="received_physically_cnic_front" value="no">
+                        <input type="checkbox" class="form-check-input" id="received_physically_cnic_front"
+                            name="received_physically_cnic_front" value="yes"
+                            {{ strtolower($received_physically_cnic_front) === 'yes' ? 'checked' : '' }}>
+                        <label class="form-check-label font-weight-bold " for="received_physically_cnic_front">
+                            In Hand
+                        </label>
+                    </div>
+                </div>
+            </div>
 
-                        {{-- CNIC --}}
-                        <h5 class="mt-4">CNIC</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>CNIC Front</label>
-                                @php
-                                    $cnicFront = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 3)
-                                            ->where('file_type', 'cnic front')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="cnic_front" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'cnicFrontPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="cnicFrontPreview-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $cnicFront ? '' : 'd-none' }}"
-                                        src="{{ $cnicFront ? asset($cnicFront) : '' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
+            <div class="col-md-6">
+                <label>CNIC Back</label>
+                @php
+                    $cnicBack = optional(
+                        $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic back')->first(),
+                    )->file_name;
 
-                            </div>
-                            <div class="col-md-6">
-                                <label>CNIC Back</label>
-                                @php
-                                    $cnicBack = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 3)
-                                            ->where('file_type', 'cnic back')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="cnic_back" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'cnicBackPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="cnicBackPreview-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $cnicBack ? '' : 'd-none' }}"
-                                        src="{{ $cnicBack ? asset($cnicBack) : '' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
+                    $received_physically_cnic_back =
+                        optional(
+                            $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic back')->first(),
+                        )->received_physically ?? 'no';
+                @endphp
+                <input type="file" class="form-control" name="cnic_back" accept="image/*"
+                    onchange="validateImageSize(this, 2, 'cnicBackPreview-{{ $HumanResource->id }}')" />
+                <div class="position-relative">
+                    <img id="cnicBackPreview-{{ $HumanResource->id }}"
+                        class="img-fluid mt-2 border rounded {{ $cnicBack ? '' : 'd-none' }}"
+                        src="{{ $cnicBack ? asset($cnicBack) : '' }}"
+                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                    @if ($cnicBack)
+                        <a href="{{ asset($cnicBack) }}" download
+                            class="btn btn-primary position-absolute download-btn">
+                            <span class="fa-solid fa-download"></span>
+                        </a>
+                    @endif
+                </div>
 
-                            </div>
-                        </div>
-                    <div class="row mt-4">
-                        {{-- Passport-size Photograph --}}
-                        <div class="col-md-6">
-                            <h5 class="mt-4">Passport-size Photograph</h5>
-                            <div class="form-group">
-                                <label>Upload Photo</label>
-                                @php
-                                    $photo = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 4)
-                                            ->where('file_type', 'photo')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="photo" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'photoPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="photoPreview-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $photo ? '' : 'd-none' }}"
-                                        src="{{ $photo ? asset($photo) : '' }}"
-                                        style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
-                                    {{-- @if ($photo) --}}
-                                        <button class="btn btn-primary position-absolute download-btn">
-                                            <span class="fa-solid fa-download"></span>
-                                        </button>
-                                    {{-- @endif --}}
-                                </div>
+                {{-- In Hand for CNIC Back --}}
+                <div class="col-md-12 mt-2">
+                    <div class="form-check">
+                        <input type="hidden" name="received_physically_cnic_back" value="no">
+                        <input type="checkbox" class="form-check-input" id="received_physically_cnic_back"
+                            name="received_physically_cnic_back" value="yes"
+                            {{ strtolower($received_physically_cnic_back) === 'yes' ? 'checked' : '' }}>
+                        <label class="form-check-label font-weight-bold " for="received_physically_cnic_back">
+                            In Hand
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                            </div>
-                        </div>
-
-                          {{-- Police Verification Certificate --}}
-                        <div class="col-md-6">
-                            <h5 class="mt-4">Police Verification Certificate</h5>
-                            <div class="form-group">
-                                <label>Upload Photo</label>
-                                @php
-                                    $policePhoto = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 4)
-                                            ->where('file_type', 'police verification')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="police_verification" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'policeCertificate-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="policeCertificate-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $policePhoto ? '' : 'd-none' }}"
-                                        src="{{ $policePhoto ? asset($policePhoto) : '' }}"
-                                        style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
-                                    {{-- @if ($photo) --}}
-                                        <button class="btn btn-primary position-absolute download-btn">
-                                            <span class="fa-solid fa-download"></span>
-                                        </button>
-                                    {{-- @endif --}}
-                                </div>
-
-                            </div>
-                        </div>
-
-                          {{-- Account Detail --}}
-                        <div class="col-md-6">
-                            <h5 class="mt-4">Account Detail</h5>
-                            <div class="form-group">
-                                <label>Upload Photo</label>
-                                @php
-                                    $accountPhoto = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 4)
-                                            ->where('file_type', 'account detail')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="account_detail" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'accountDetail-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="accountDetail-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $accountPhoto ? '' : 'd-none' }}"
-                                        src="{{ $accountPhoto ? asset($accountPhoto) : '' }}"
-                                        style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
-                                    {{-- @if ($photo) --}}
-                                        <button class="btn btn-primary position-absolute download-btn">
-                                            <span class="fa-solid fa-download"></span>
-                                        </button>
-                                    {{-- @endif --}}
-                                </div>
-
-                            </div>
-                        </div>
-
-                          {{-- Updated Appraisal Image --}}
-                        <div class="col-md-6">
-                            <h5 class="mt-4">Updated Appraisal Image</h5>
-                            <div class="form-group">
-                                <label>Upload Photo</label>
-                                @php
-                                    $appraisalPhoto = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 4)
-                                            ->where('file_type', 'update appraisal')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="update_appraisal" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'updatedAppraisal-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="updatedAppraisal-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $appraisalPhoto ? '' : 'd-none' }}"
-                                        src="{{ $appraisalPhoto ? asset($appraisalPhoto) : '' }}"
-                                        style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
-                                    {{-- @if ($photo) --}}
-                                        <button class="btn btn-primary position-absolute download-btn">
-                                            <span class="fa-solid fa-download"></span>
-                                        </button>
-                                    {{-- @endif --}}
-                                </div>
-
-                            </div>
-                        </div>
+        {{-- Step 4: Additional Images --}}
+        <h5 class="mt-4">Additional Images</h5>
+        <div class="row mt-4">
+            {{-- Passport-size Photograph --}}
+            <div class="col-md-6">
+                <h5 class="mt-4">Passport-size Photograph</h5>
+                <div class="form-group">
+                    <label>Upload Photo</label>
+                    @php
+                        $photo = optional(
+                            $HumanResource->hrSteps->where('step_number', 4)->where('file_type', 'photo')->first(),
+                        )->file_name;
+                    @endphp
+                    <input type="file" class="form-control" name="photo" accept="image/*"
+                        onchange="validateImageSize(this, 2, 'photoPreview-{{ $HumanResource->id }}')" />
+                    <div class="position-relative">
+                        <img id="photoPreview-{{ $HumanResource->id }}"
+                            class="img-fluid mt-2 border rounded {{ $photo ? '' : 'd-none' }}"
+                            src="{{ $photo ? asset($photo) : '' }}"
+                            style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                        {{-- @if ($photo) --}}
+                        <button class="btn btn-primary position-absolute download-btn">
+                            <span class="fa-solid fa-download"></span>
+                        </button>
+                        {{-- @endif --}}
                     </div>
 
-
-                        {{-- NOK CNIC --}}
-                        <h5 class="mt-4">Next of Kin (NOK) CNIC</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>NOK CNIC Front</label>
-                                @php
-                                    $nokCnicFront = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 5)
-                                            ->where('file_type', 'nok cnic front')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="nok_cnic_front" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'nokCnicFrontPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <img id="nokCnicFrontPreview-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $nokCnicFront ? '' : 'd-none' }}"
-                                        src="{{ $nokCnicFront ? asset($nokCnicFront) : '' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                </div>
-
-                            </div>
-                            <div class="col-md-6">
-                                <label>NOK CNIC Back</label>
-                                @php
-                                    $nokCnicBack = optional(
-                                        $HumanResource->hrSteps
-                                            ->where('step_number', 5)
-                                            ->where('file_type', 'nok cnic back')
-                                            ->first(),
-                                    )->file_name;
-                                @endphp
-                                <input type="file" class="form-control" name="nok_cnic_back" accept="image/*"
-                                    onchange="validateImageSize(this, 2, 'nokCnicBackPreview-{{ $HumanResource->id }}')" />
-                                <div class="position-relative">
-                                    <button class="btn btn-primary position-absolute download-btn">
-                                        <span class="fa-solid fa-download"></span>
-                                    </button>
-                                    <img id="nokCnicBackPreview-{{ $HumanResource->id }}"
-                                        class="img-fluid mt-2 border rounded {{ $nokCnicBack ? '' : 'd-none' }}"
-                                        src="{{ $nokCnicBack ? asset($nokCnicBack) : '' }}"
-                                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
                 </div>
- 
-                {{-- Step 2: Medical Report (Previously Step 6) + Visa Form (Previously Step 8) + Air Booking (Previously Step 9) --}}
-                <div class="form-section" data-step="2">
-                    <form id="form-step-2" action="{{ route('submit.step', ['step' => 2]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
+            </div>
 
-                        {{-- Medical Report --}}
-                        <h5>Medical Report</h5>
-                        @php
-                            $step = optional($HumanResource->hrSteps->where('step_number', 6)->first());
-                            // {{$step}}
-                            $medical_report = $step->file_name ? asset($step->file_name) : null;
-                            $process_status = $step->process_status ?? '';
-                            $medically_fit = $step->medically_fit ?? '';
-                            $report_date = $step->report_date ?? '';
-                            $valid_until = $step->valid_until ?? '';
-                            $lab = $step->lab ?? '';
-                            $any_comments = $step->any_comments ?? '';
-                            $original_report_received = $step->original_report_received ?? false;
-                        @endphp
-                        <div class="row">
-                            {{-- Medical Report Number --}}
-                            {{-- Process Status --}}
-                            <div class="col-md-6">
-                                <label>Process Status</label>
-                                <select name="process_status" class="form-control" required>
-                                    <option value="" disabled {{ !$process_status ? 'selected' : '' }}>Select an
-                                        Option</option>
-                                    <option value="Yet to appear"
-                                        {{ $process_status == 'Yet to appear' ? 'selected' : '' }}>Yet to appear
-                                    </option>
-                                    <option value="Appeared" {{ $process_status == 'Appeared' ? 'selected' : '' }}>
-                                        Appeared</option>
-                                    <option value="Waiting" {{ $process_status == 'Waiting' ? 'selected' : '' }}>
-                                        Waiting</option>
-                                    <option value="Result Available"
-                                        {{ $process_status == 'Result Available' ? 'selected' : '' }}>Result Available
-                                    </option>
-                                </select>
-                            </div>
-                            {{-- Medically Fit --}}
-                            <div class="col-md-6">
-                                <label>Medically Fit</label>
-                                <select name="medically_fit" class="form-control" required>
-                                    <option value="" disabled {{ !$medically_fit ? 'selected' : '' }}>Select an
-                                        Option</option>
-                                    <option value="Repeat" {{ $medically_fit == 'Repeat' ? 'selected' : '' }}>Repeat
-                                    </option>
-                                    <option value="Fit" {{ $medically_fit == 'Fit' ? 'selected' : '' }}>Fit
-                                    </option>
-                                    <option value="Unfit" {{ $medically_fit == 'Unfit' ? 'selected' : '' }}>Unfit
-                                    </option>
-                                </select>
-                            </div>
-                            {{-- Report Date --}}
-                            <div class="col-md-6 mt-3">
-                                <label>Report Date</label>
-                                <input type="date" class="form-control" name="report_date"
-                                    value="{{ $report_date }}" />
-                            </div>
-                            {{-- Valid Until --}}
-                            <div class="col-md-6 mt-3">
-                                <label>Valid Until</label>
-                                <input type="date" class="form-control" name="valid_until"
-                                    value="{{ $valid_until }}" />
-                            </div>
-                            {{-- Lab --}}
-                            <div class="col-md-6 mt-3">
-                                <label>Lab</label>
-                                <select name="lab" class="form-control" required>
-                                        {{-- default placeholder --}}
-                                        <option value="" disabled {{ empty($lab) ? 'selected' : '' }}>Select an Option</option>
-
-                                        {{-- dynamic options --}}
-                                        @foreach($labs as $item)
-                                            @php
-                                                // agar $item object hai to uska name lo, warna string hi hai
-                                                $value = is_object($item) ? $item->lab_name : $item;
-                                            @endphp
-
-                                            <option value="{{ $value }}" {{ ($lab ?? '') === $value ? 'selected' : '' }}>
-                                                {{ $value }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-
-                            </div>
-                            {{-- Comments --}}
-                            <div class="col-md-6 mt-3">
-                                <label>Any Comments on Medical Report</label>
-                                <input type="text" class="form-control" name="any_comments"
-                                    value="{{ $any_comments }}" />
-                            </div>
-                            {{-- Upload Medical Report --}}
-                            <div class="col-md-6 mt-3">
-                                <label>Upload Medical Report</label>
-                                <input type="file" class="form-control" name="medical_report"
-                                    accept=".pdf,image/*"
-                                    onchange="previewUploadedFile(this, 'medicalReportPreview-{{ $HumanResource->id }}')" />
-                                <div class="mt-2">
-                                    <a id="medicalReportPreview-{{ $HumanResource->id }}" href="{{ $medical_report }}" target="_blank"
-                                        class="btn btn-info {{ $medical_report ? '' : 'd-none' }}">
-                                        View
-                                    </a>
-                                </div>
-                            </div>
-                            {{-- Original Report Received --}}
-                            <div class="col-md-6 mt-4">
-                                <label for="recieved" class="mt-4">Original Report Received?</label> &nbsp; &nbsp;
-                                <input type="checkbox" id="recieved" name="original_report_received" class="mt-4"
-                                    {{ $original_report_received == 'yes' ? 'checked' : '' }} />
-                            </div>
-                        </div>
-
-                       
-                        {{-- Visa Form --}}
-                        <h5 class="mt-5">Visa Form</h5>
-                        @php
-                            $visaStep = optional($HumanResource->hrSteps->where('step_number', 6)->first());
-                            $visa_type = $visaStep->visa_type ?? '';
-                            $visa_issue_date = $visaStep->visa_issue_date ?? '';
-                            $visa_expiry_date = $visaStep->visa_expiry_date ?? '';
-                            $visa_receive_date = $visaStep->visa_receive_date ?? '';
-                            $visa_status = $visaStep->visa_status ?? '';
-                            $visa_issue_number = $visaStep->visa_issue_number ?? '';
-                            $visa_endorsement_date = $visaStep->visa_endorsement_date ?? '';
-                            $endorsement_checked = $visaStep->endorsement_checked ?? false;
-                            $scanned_visa = $visaStep->scanned_visa ? asset($visaStep->scanned_visa) : null;
-                        @endphp
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="visa_type">Visa Type</label>
-                                <select name="visa_type" class="form-control" required>
-                                    <option value="" disabled {{ !$visa_type ? 'selected' : '' }}>Select an Option</option>
-                                    <option value="Work Permit" {{ $visa_type == 'Work Permit' ? 'selected' : '' }}>Work Permit</option>
-                                    <option value="Visit Visa" {{ $visa_type == 'Visit Visa' ? 'selected' : '' }}>Visit Visa</option>
-                                    <option value="B-1" {{ $visa_type == 'B-1' ? 'selected' : '' }}>B-1</option>
-                                    <option value="DEB" {{ $visa_type == 'DEB' ? 'selected' : '' }}>DEB</option>
-                                    <option value="Single Entry" {{ $visa_type == 'Single Entry' ? 'selected' : '' }}>Single Entry</option>
-                                      <option value="EV" {{ $visa_type == 'EV' ? 'selected' : '' }}>EV</option>
-                                    <option value="Work Visa" {{ $visa_type == 'Work Visa' ? 'selected' : '' }}>Work Visa</option>
-                                    <option value="WORK VISIT VISA" {{ $visa_type == 'WORK VISIT VISA' ? 'selected' : '' }}>WORK VISIT VISA</option>
-                                    {{-- ...other options... --}}
-                                </select>
-                            </div>
-                             <div class="col-md-6">
-                                <label for="issue_date">Number</label>
-                                <input type="number" class="form-control" name="visa_issue_number" value="{{ $visa_issue_number }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="issue_date">Issue Date</label>
-                                <input type="date" class="form-control" name="visa_issue_date" value="{{ $visa_issue_date }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="expiry_date">Expiry Date</label>
-                                <input type="date" class="form-control" name="visa_expiry_date" value="{{ $visa_expiry_date }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="receive_date">Visa Receive Date</label>
-                                <input type="date" class="form-control" name="visa_receive_date" value="{{ $visa_receive_date }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="visa_status">Visa Status</label>
-                                <input type="text" class="form-control" name="visa_status" value="{{ $visa_status }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="scanned_visa">Scanned Visa</label>
-                                <input type="file" class="form-control" name="scanned_visa" accept=".pdf,image/*"
-                                onchange="previewUploadedFile(this, 'visaPreview-{{ $HumanResource->id }}')" />
-                                <div class="mt-2">
-                                    <a id="visaPreview-{{ $HumanResource->id }}" href="{{ $scanned_visa }}" target="_blank"
-                                        class="btn btn-info {{ $scanned_visa ? '' : 'd-none' }}">
-                                        View Uploaded Visa
-                                    </a>
-                                </div>
-                            </div>
-                                {{-- Endorsement --}}
-                               <div class="col-md-6 mt-4">
-                                {{-- <input type="text" value="{{$endorsement_checked}}"> --}}
-                                   <label for="Endorsement" class="mt-4">Endorsement?</label> &nbsp; &nbsp;
-                                   <input type="checkbox" id="Endorsement" name="endorsement_checked" class="mt-4"
-                                       {{ $endorsement_checked == 'yes' ? 'checked' : '' }} />
-                               </div>
-                                <div class="col-md-6 mt-3">
-                                    <label for="endorsement_date">Endorsement Date</label>
-                                    <input type="date" class="form-control" name="visa_endorsement_date" value="{{ $visa_endorsement_date }}" />
-                                </div>
-                        </div>
-
-                        {{-- Air Booking --}}
-                        <h5 class="mt-5">Air Booking</h5>
-                        @php
-                            $airBookingStep = optional($HumanResource->hrSteps->where('step_number', 6)->first());
-                            $ticket_number = $airBookingStep->ticket_number ?? '';
-                            $flight_number = $airBookingStep->flight_number ?? '';
-                            $flight_route = $airBookingStep->flight_route ?? '';
-                            $flight_date = $airBookingStep->flight_date ?? '';
-                            $flight_etd = $airBookingStep->flight_etd ?? '';
-                            $flight_eta = $airBookingStep->flight_eta ?? '';
-                            $upload_ticket = $airBookingStep->upload_ticket ? asset($airBookingStep->upload_ticket) : null;
-                        @endphp
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="ticket_number">PNP Number</label>
-                                <input type="text" class="form-control" name="ticket_number" value="{{ $ticket_number }}" />
-                            </div>
-                            <div class="col-md-6">
-                                <label for="flight_number">Flight Number</label>
-                                <input type="text" class="form-control" name="flight_number" value="{{ $flight_number }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="flight_route">Flight Route</label>
-                                <input type="text" class="form-control" name="flight_route" value="{{ $flight_route }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="flight_date">Flight Date</label>
-                                <input type="date" class="form-control" name="flight_date" value="{{ $flight_date }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="etd">Expected Time of Departure (ETD)</label>
-                                <input type="time" class="form-control" name="flight_etd"
-                                    value="{{ $flight_etd ? date('H:i', strtotime($flight_etd)) : '' }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="eta">Expected Time of Arrival (ETA)</label>
-                                <input type="time" class="form-control" name="flight_eta"
-                                    value="{{ $flight_eta ? date('H:i', strtotime($flight_eta)) : '' }}" />
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <label for="upload_ticket">Upload PNP</label>
-                                <input type="file" class="form-control" name="upload_ticket" accept=".pdf,image/*"
-                                    onchange="previewUploadedFile(this, 'ticketPreview-{{ $HumanResource->id }}')" />
-                                <div class="mt-2">
-                                    <a id="ticketPreview-{{ $HumanResource->id }}" href="{{ $upload_ticket }}" target="_blank"
-                                        class="btn btn-info {{ $upload_ticket ? '' : 'd-none' }}">
-                                        View Uploaded Ticket
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+            {{-- Police Verification Certificate --}}
+            <div class="col-md-6">
+                <h5 class="mt-4">Police Verification Certificate</h5>
+                <div class="form-group">
+                    <label>Upload Photo</label>
+                    @php
+                        $policePhoto = optional(
+                            $HumanResource->hrSteps
+                                ->where('step_number', 4)
+                                ->where('file_type', 'police verification')
+                                ->first(),
+                        )->file_name;
+                        $received_physically_police_verification =
+                            optional(
+                                $HumanResource->hrSteps
+                                    ->where('step_number', 4)
+                                    ->where('file_type', 'police verification')
+                                    ->first(),
+                            )->received_physically ?? 'no';
+                    @endphp
+                    <input type="file" class="form-control" name="police_verification" accept="image/*"
+                        onchange="validateImageSize(this, 2, 'policeCertificate-{{ $HumanResource->id }}')" />
+                    <div class="position-relative">
+                        <img id="policeCertificate-{{ $HumanResource->id }}"
+                            class="img-fluid mt-2 border rounded {{ $policePhoto ? '' : 'd-none' }}"
+                            src="{{ $policePhoto ? asset($policePhoto) : '' }}"
+                            style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                        <button class="btn btn-primary position-absolute download-btn">
+                            <span class="fa-solid fa-download"></span>
+                        </button>
+                    </div>
                 </div>
 
-                {{-- Step 3: Amount Details (Previously Step 7) --}}
-                <div class="form-section" data-step="3">
-                    <form id="form-step-3" action="{{ route('submit.step', ['step' => 3]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
+                {{-- In Hand Checkbox --}}
+                <div class="col-md-12 mt-3">
+                    <div class="form-check">
+                        <input type="hidden" name="received_physically_police_verification" value="no">
+                        <input type="checkbox" class="form-check-input" id="received_physically_police_verification"
+                            name="received_physically_police_verification" value="yes"
+                            {{ strtolower($received_physically_police_verification) === 'yes' ? 'checked' : '' }}>
+                        <label class="form-check-label font-weight-bold "
+                            for="received_physically_police_verification">
+                            In Hand
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Account Detail --}}
+            <div class="col-md-6">
+                <h5 class="mt-4">Account Detail</h5>
+                <div class="form-group">
+                    <label>Upload Photo</label>
+                    @php
+                        $accountPhoto = optional(
+                            $HumanResource->hrSteps
+                                ->where('step_number', 4)
+                                ->where('file_type', 'account detail')
+                                ->first(),
+                        )->file_name;
+                    @endphp
+                    <input type="file" class="form-control" name="account_detail" accept="image/*"
+                        onchange="validateImageSize(this, 2, 'accountDetail-{{ $HumanResource->id }}')" />
+                    <div class="position-relative">
+                        <img id="accountDetail-{{ $HumanResource->id }}"
+                            class="img-fluid mt-2 border rounded {{ $accountPhoto ? '' : 'd-none' }}"
+                            src="{{ $accountPhoto ? asset($accountPhoto) : '' }}"
+                            style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                        {{-- @if ($photo) --}}
+                        <button class="btn btn-primary position-absolute download-btn">
+                            <span class="fa-solid fa-download"></span>
+                        </button>
+                        {{-- @endif --}}
+                    </div>
+
+                </div>
+            </div>
+
+            {{-- Updated Appraisal Image --}}
+            <div class="col-md-6">
+                <h5 class="mt-4">Updated Appraisal Image</h5>
+                <div class="form-group">
+                    <label>Upload Photo</label>
+                    @php
+                        $appraisalPhoto = optional(
+                            $HumanResource->hrSteps
+                                ->where('step_number', 4)
+                                ->where('file_type', 'update appraisal')
+                                ->first(),
+                        )->file_name;
+                    @endphp
+                    <input type="file" class="form-control" name="update_appraisal" accept="image/*"
+                        onchange="validateImageSize(this, 2, 'updatedAppraisal-{{ $HumanResource->id }}')" />
+                    <div class="position-relative">
+                        <img id="updatedAppraisal-{{ $HumanResource->id }}"
+                            class="img-fluid mt-2 border rounded {{ $appraisalPhoto ? '' : 'd-none' }}"
+                            src="{{ $appraisalPhoto ? asset($appraisalPhoto) : '' }}"
+                            style="width: 3.5cm; height: 4.5cm; object-fit: contain;" />
+                        {{-- @if ($photo) --}}
+                        <button class="btn btn-primary position-absolute download-btn">
+                            <span class="fa-solid fa-download"></span>
+                        </button>
+                        {{-- @endif --}}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        {{-- NOK CNIC --}}
+        <h5 class="mt-4">Next of Kin (NOK) CNIC</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <label>NOK CNIC Front</label>
+                @php
+                    $nokCnicFront = optional(
+                        $HumanResource->hrSteps->where('step_number', 5)->where('file_type', 'nok cnic front')->first(),
+                    )->file_name;
+                @endphp
+                <input type="file" class="form-control" name="nok_cnic_front" accept="image/*"
+                    onchange="validateImageSize(this, 2, 'nokCnicFrontPreview-{{ $HumanResource->id }}')" />
+                <div class="position-relative">
+                    <img id="nokCnicFrontPreview-{{ $HumanResource->id }}"
+                        class="img-fluid mt-2 border rounded {{ $nokCnicFront ? '' : 'd-none' }}"
+                        src="{{ $nokCnicFront ? asset($nokCnicFront) : '' }}"
+                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                    <button class="btn btn-primary position-absolute download-btn">
+                        <span class="fa-solid fa-download"></span>
+                    </button>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <label>NOK CNIC Back</label>
+                @php
+                    $nokCnicBack = optional(
+                        $HumanResource->hrSteps->where('step_number', 5)->where('file_type', 'nok cnic back')->first(),
+                    )->file_name;
+                @endphp
+                <input type="file" class="form-control" name="nok_cnic_back" accept="image/*"
+                    onchange="validateImageSize(this, 2, 'nokCnicBackPreview-{{ $HumanResource->id }}')" />
+                <div class="position-relative">
+                    <button class="btn btn-primary position-absolute download-btn">
+                        <span class="fa-solid fa-download"></span>
+                    </button>
+                    <img id="nokCnicBackPreview-{{ $HumanResource->id }}"
+                        class="img-fluid mt-2 border rounded {{ $nokCnicBack ? '' : 'd-none' }}"
+                        src="{{ $nokCnicBack ? asset($nokCnicBack) : '' }}"
+                        style="width: 100%; height: 5.5cm; object-fit: contain;" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{{-- Step 2: Medical Report (Previously Step 6) + Visa Form (Previously Step 8) + Air Booking (Previously Step 9) --}}
+<div class="form-section" data-step="2">
+    <form id="form-step-2" action="{{ route('submit.step', ['step' => 2]) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        <input type="hidden" name="human_resource_id" value="{{ $HumanResource->id }}" />
+
+        {{-- Medical Report --}}
+        <h5>Medical Report</h5>
+        @php
+            $step = $HumanResource->hrSteps->where('step_number', 6)->where('file_type', 'medical_report')->first();
+
+            $medical_report = $step?->file_name ? asset($step->file_name) : null;
+            $process_status = $step->process_status ?? '';
+            $medically_fit = $step->medically_fit ?? '';
+            $report_date = $step->report_date ?? '';
+            $valid_until = $step->valid_until ?? '';
+            $lab = $step->lab ?? '';
+            $any_comments = $step->any_comments ?? '';
+            $original_report_received = $step->original_report_recieved ?? 'no';
+            $received_physically_medical_report = $step->received_physically ?? 'no';
+        @endphp
+
+        <div class="row">
+            {{-- Process Status --}}
+            <div class="col-md-6">
+                <label>Process Status</label>
+                <select name="process_status" class="form-control" required>
+                    <option value="" disabled {{ !$process_status ? 'selected' : '' }}>Select an Option</option>
+                    <option value="Yet to appear" {{ $process_status == 'Yet to appear' ? 'selected' : '' }}>Yet to
+                        appear</option>
+                    <option value="Appeared" {{ $process_status == 'Appeared' ? 'selected' : '' }}>Appeared</option>
+                    <option value="Waiting" {{ $process_status == 'Waiting' ? 'selected' : '' }}>Waiting</option>
+                    <option value="Result Available" {{ $process_status == 'Result Available' ? 'selected' : '' }}>
+                        Result Available</option>
+                </select>
+            </div>
+
+            {{-- Medically Fit --}}
+            <div class="col-md-6">
+                <label>Medically Fit</label>
+                <select name="medically_fit" class="form-control" required>
+                    <option value="" disabled {{ !$medically_fit ? 'selected' : '' }}>Select an Option</option>
+                    <option value="Repeat" {{ $medically_fit == 'Repeat' ? 'selected' : '' }}>Repeat</option>
+                    <option value="Fit" {{ $medically_fit == 'Fit' ? 'selected' : '' }}>Fit</option>
+                    <option value="Unfit" {{ $medically_fit == 'Unfit' ? 'selected' : '' }}>Unfit</option>
+                </select>
+            </div>
+
+            {{-- Report Date --}}
+            <div class="col-md-6 mt-3">
+                <label>Report Date</label>
+                <input type="date" class="form-control" name="report_date" value="{{ $report_date }}" />
+            </div>
+
+            {{-- Valid Until --}}
+            <div class="col-md-6 mt-3">
+                <label>Valid Until</label>
+                <input type="date" class="form-control" name="valid_until" value="{{ $valid_until }}" />
+            </div>
+
+            {{-- Lab --}}
+            <div class="col-md-6 mt-3">
+                <label>Lab</label>
+                <select name="lab" class="form-control" required>
+                    <option value="" disabled {{ empty($lab) ? 'selected' : '' }}>Select an Option</option>
+                    @foreach ($labs as $item)
                         @php
-                            $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
-                            $amountInDigits = $step->amount_digits ?? '15000';
-                            $amountInWords = $step->amount_words ?? 'Fifteen Thousand Rupees Only';
-                            $fileExists = $step->file_name ? asset($step->file_name) : null; 
-                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
+                            $value = is_object($item) ? $item->lab_name : $item;
                         @endphp
-                        <div class="row mb-3">
-                            <div class="col-md-5 pr-0">
-                                <label for="amountInDigits">Amount in digits</label>
-                                <input type="hidden" name="human_resource_id" class="human_resource_id"
-                                    value="{{ $HumanResource->id }}" />
-                                <input type="text" class="form-control amountInDigits" id="amountInDigits"
-                                    value="{{ $amountInDigits }}" name="amount_digits" />
-                            </div>
-                            <div class="col-md-6 pl-2 d-flex align-items-end">
-                                <div style="flex: 1" class="mr-2">
-                                    <label for="amountInWords">Amount in words</label>
-                                    <input type="text" class="form-control amountInWords" id="amountInWords"
-                                        value="{{ $amountInWords }}" readonly name="amount_words" />
-                                </div>
-                                <button id="" class="btn btn-primary generatePdfBtn"
-                                    style="margin-bottom: 2px">Generate PDF</button>
-                                    
-                                    <a style="margin-bottom: 2px; margin-left: 8px;" class="btn btn-info pdfReportButton 
+                        <option value="{{ $value }}" {{ ($lab ?? '') === $value ? 'selected' : '' }}>
+                            {{ $value }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Comments --}}
+            <div class="col-md-6 mt-3">
+                <label>Any Comments on Medical Report</label>
+                <input type="text" class="form-control" name="any_comments" value="{{ $any_comments }}" />
+            </div>
+
+            {{-- Upload Medical Report --}}
+            <div class="col-md-6 mt-3">
+                <label>Upload Medical Report</label>
+                <input type="file" class="form-control" name="medical_report" accept=".pdf,image/*"
+                    onchange="previewUploadedFile(this, 'medicalReportPreview-{{ $HumanResource->id }}')" />
+                <div class="mt-2">
+                    <a id="medicalReportPreview-{{ $HumanResource->id }}" href="{{ $medical_report }}"
+                        target="_blank" class="btn btn-info {{ $medical_report ? '' : 'd-none' }}">
+                        View Uploaded Report
+                    </a>
+                </div>
+            </div>
+
+            {{-- Original Report Received --}}
+            <div class="col-md-6 mt-4">
+                <label for="medical" class="mt-4">Original Report Received?</label> &nbsp; &nbsp;
+                <input type="checkbox" id="medical" name="original_report_received" class="mt-4"
+                    {{ $original_report_received == 'yes' ? 'checked' : '' }} />
+            </div>
+
+            {{-- In Hand Checkbox --}}
+            <div class="col-md-12 mt-3">
+                <div class="form-check">
+                    <input type="hidden" name="received_physically_medical_report" value="no">
+                    <input type="checkbox" class="form-check-input"
+                        id="received_physically_medical_report_{{ $HumanResource->id }}"
+                        name="received_physically_medical_report" value="yes"
+                        {{ strtolower($received_physically_medical_report) === 'yes' ? 'checked' : '' }}>
+                    <label class="form-check-label font-weight-bold "
+                        for="received_physically_medical_report_{{ $HumanResource->id }}">
+                        In Hand
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        {{-- Visa Form --}}
+        <h5 class="mt-5">Visa Form</h5>
+        @php
+            $visaStep = $HumanResource->hrSteps->where('step_number', 6)->where('file_type', 'visa')->first();
+            $visa_type = $visaStep->visa_type ?? '';
+            $visa_issue_date = $visaStep->visa_issue_date ?? '';
+            $visa_expiry_date = $visaStep->visa_expiry_date ?? '';
+            $visa_receive_date = $visaStep->visa_receive_date ?? '';
+            $visa_status = $visaStep->visa_status ?? '';
+            $visa_issue_number = $visaStep->visa_issue_number ?? '';
+            $visa_endorsement_date = $visaStep->visa_endorsement_date ?? '';
+            $endorsement_checked = $visaStep->endorsement_checked ?? false;
+            $scanned_visa = $visaStep && $visaStep->scanned_visa ? asset($visaStep->scanned_visa) : null;
+            $received_physically_visa = $visaStep->received_physically ?? 'no';
+        @endphp
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <label for="visa_type">Visa Type</label>
+                <select name="visa_type" class="form-control" required>
+                    <option value="" disabled {{ !$visa_type ? 'selected' : '' }}>Select an Option</option>
+                    <option value="Work Permit" {{ $visa_type == 'Work Permit' ? 'selected' : '' }}>Work Permit
+                    </option>
+                    <option value="Visit Visa" {{ $visa_type == 'Visit Visa' ? 'selected' : '' }}>Visit Visa</option>
+                    <option value="B-1" {{ $visa_type == 'B-1' ? 'selected' : '' }}>B-1</option>
+                    <option value="DEB" {{ $visa_type == 'DEB' ? 'selected' : '' }}>DEB</option>
+                    <option value="Single Entry" {{ $visa_type == 'Single Entry' ? 'selected' : '' }}>Single Entry
+                    </option>
+                    <option value="EV" {{ $visa_type == 'EV' ? 'selected' : '' }}>EV</option>
+                    <option value="Work Visa" {{ $visa_type == 'Work Visa' ? 'selected' : '' }}>Work Visa</option>
+                    <option value="WORK VISIT VISA" {{ $visa_type == 'WORK VISIT VISA' ? 'selected' : '' }}>WORK VISIT
+                        VISA</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label for="issue_date">Number</label>
+                <input type="number" class="form-control" name="visa_issue_number"
+                    value="{{ $visa_issue_number }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="issue_date">Issue Date</label>
+                <input type="date" class="form-control" name="visa_issue_date"
+                    value="{{ $visa_issue_date }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="expiry_date">Expiry Date</label>
+                <input type="date" class="form-control" name="visa_expiry_date"
+                    value="{{ $visa_expiry_date }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="receive_date">Visa Receive Date</label>
+                <input type="date" class="form-control" name="visa_receive_date"
+                    value="{{ $visa_receive_date }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="visa_status">Visa Status</label>
+                <input type="text" class="form-control" name="visa_status" value="{{ $visa_status }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="scanned_visa">Scanned Visa</label>
+                <input type="file" class="form-control" name="scanned_visa" accept=".pdf,image/*"
+                    onchange="previewUploadedFile(this, 'visaPreview-{{ $HumanResource->id }}')" />
+                <div class="mt-2">
+                    <a id="visaPreview-{{ $HumanResource->id }}" href="{{ $scanned_visa }}" target="_blank"
+                        class="btn btn-info {{ $scanned_visa ? '' : 'd-none' }}">
+                        View Uploaded Visa
+                    </a>
+                </div>
+            </div>
+
+            {{-- Endorsement --}}
+            <div class="col-md-6 mt-4">
+                <label for="Endorsement" class="mt-4">Endorsement?</label> &nbsp; &nbsp;
+                <input type="checkbox" id="Endorsement" name="endorsement_checked" class="mt-4"
+                    {{ $endorsement_checked == 'yes' ? 'checked' : '' }} />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="endorsement_date">Endorsement Date</label>
+                <input type="date" class="form-control" name="visa_endorsement_date"
+                    value="{{ $visa_endorsement_date }}" />
+            </div>
+
+            {{-- In Hand Checkbox --}}
+            <div class="col-md-12 mt-3">
+                <div class="form-check">
+                    <input type="hidden" name="received_physically_visa" value="no">
+                    <input type="checkbox" class="form-check-input" id="received_physically_visa"
+                        name="received_physically_visa" value="yes"
+                        {{ strtolower($received_physically_visa) === 'yes' ? 'checked' : '' }}>
+                    <label class="form-check-label font-weight-bold " for="received_physically_visa">
+                        In Hand
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        {{-- Air Booking --}}
+        <h5 class="mt-5">Air Booking</h5>
+        @php
+            $airBookingStep = optional(
+                $HumanResource->hrSteps->where('step_number', 7)->where('file_type', 'air_booking')->first(),
+            );
+
+            $ticket_number = $airBookingStep->ticket_number ?? '';
+            $flight_number = $airBookingStep->flight_number ?? '';
+            $flight_route = $airBookingStep->flight_route ?? '';
+            $flight_date = $airBookingStep->flight_date ?? '';
+            $flight_etd = $airBookingStep->flight_etd ?? '';
+            $flight_eta = $airBookingStep->flight_eta ?? '';
+            $upload_ticket = $airBookingStep->upload_ticket ? asset($airBookingStep->upload_ticket) : null;
+            $received_physically_air_booking = $airBookingStep->received_physically ?? 'no';
+        @endphp
+
+        <div class="row">
+            <div class="col-md-6">
+                <label for="ticket_number">PNP Number</label>
+                <input type="text" class="form-control" name="ticket_number" value="{{ $ticket_number }}" />
+            </div>
+
+            <div class="col-md-6">
+                <label for="flight_number">Flight Number</label>
+                <input type="text" class="form-control" name="flight_number" value="{{ $flight_number }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="flight_route">Flight Route</label>
+                <input type="text" class="form-control" name="flight_route" value="{{ $flight_route }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="flight_date">Flight Date</label>
+                <input type="date" class="form-control" name="flight_date" value="{{ $flight_date }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="etd">Expected Time of Departure (ETD)</label>
+                <input type="time" class="form-control" name="flight_etd"
+                    value="{{ $flight_etd ? date('H:i', strtotime($flight_etd)) : '' }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="eta">Expected Time of Arrival (ETA)</label>
+                <input type="time" class="form-control" name="flight_eta"
+                    value="{{ $flight_eta ? date('H:i', strtotime($flight_eta)) : '' }}" />
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <label for="upload_ticket">Upload PNP</label>
+                <input type="file" class="form-control" name="upload_ticket" accept=".pdf,image/*"
+                    onchange="previewUploadedFile(this, 'ticketPreview-{{ $HumanResource->id }}')" />
+                <div class="mt-2">
+                    <a id="ticketPreview-{{ $HumanResource->id }}" href="{{ $upload_ticket }}" target="_blank"
+                        class="btn btn-info {{ $upload_ticket ? '' : 'd-none' }}">
+                        View Uploaded Ticket
+                    </a>
+                </div>
+            </div>
+
+            {{-- In Hand Checkbox --}}
+            <div class="col-md-12 mt-3">
+                <div class="form-check">
+                    <input type="hidden" name="received_physically_air_booking" value="no">
+                    <input type="checkbox" class="form-check-input" id="received_physically_air_booking"
+                        name="received_physically_air_booking" value="yes"
+                        {{ strtolower($received_physically_air_booking) === 'yes' ? 'checked' : '' }}>
+                    <label class="form-check-label font-weight-bold " for="received_physically_air_booking">
+                        In Hand
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{{-- Step 3: Amount Details (Previously Step 7) --}}
+<div class="form-section" data-step="3">
+    <form id="form-step-3" action="{{ route('submit.step', ['step' => 3]) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        @php
+            $step = optional($HumanResource->hrSteps->where('step_number', 7)->first());
+            $amountInDigits = $step->amount_digits ?? '15000';
+            $amountInWords = $step->amount_words ?? 'Fifteen Thousand Rupees Only';
+            $fileExists = $step->file_name ? asset($step->file_name) : null;
+            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
+        @endphp
+        <div class="row mb-3">
+            <div class="col-md-5 pr-0">
+                <label for="amountInDigits">Amount in digits</label>
+                <input type="hidden" name="human_resource_id" class="human_resource_id"
+                    value="{{ $HumanResource->id }}" />
+                <input type="text" class="form-control amountInDigits" id="amountInDigits"
+                    value="{{ $amountInDigits }}" name="amount_digits" />
+            </div>
+            <div class="col-md-6 pl-2 d-flex align-items-end">
+                <div style="flex: 1" class="mr-2">
+                    <label for="amountInWords">Amount in words</label>
+                    <input type="text" class="form-control amountInWords" id="amountInWords"
+                        value="{{ $amountInWords }}" readonly name="amount_words" />
+                </div>
+                <button id="" class="btn btn-primary generatePdfBtn" style="margin-bottom: 2px">Generate
+                    PDF</button>
+
+                <a style="margin-bottom: 2px; margin-left: 8px;"
+                    class="btn btn-info pdfReportButton 
                                        {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
-                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
-                                       View
-                                    </a>
-                                </div>
-                        </div>
-                        <input type="text" id="stepThreeFile" class="stepThreeFile d-none" name="step_three_file"
-                            value="{{ $fileExists ? $fileExists : '' }}">
-                        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
-                            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
-                    </form>
-                </div>
+                    href="{{ $pdfUrl ?? '' }}" target="_blank">
+                    View
+                </a>
+            </div>
+        </div>
+        <input type="text" id="stepThreeFile" class="stepThreeFile d-none" name="step_three_file"
+            value="{{ $fileExists ? $fileExists : '' }}">
+        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
+            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+    </form>
+</div>
 
-                {{-- Step 4: NBP Form (Previously Step 8) --}}
-                <div class="form-section" data-step="4">
-                    <form id="form-step-4" action="{{ route('submit.step', ['step' => 4]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @php
-                            $step = optional($HumanResource->hrSteps->where('step_number', 8)->first());
-                            $opfValue = $step->amount_digits ?? '4000';
-                            $stateLifeValue = $step->amount_digits1 ?? '2500';
-                            $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
-                        @endphp
-                        <div>
-                            <div class="row mb-3">
-                                <div class="col-md-5 pr-0">
-                                    <label for="opf">OPF Welfare Fund</label>
-                                    <input type="text" class="form-control" id="opf" name="opf"
-                                        value="{{ $opfValue }}" />
-                                </div>
-                                <div class="col-md-4 pl-2 align-items-end">
-                                    <label for="stateLife">State Life Insurance Premium</label>
-                                    <input type="text" class="form-control" id="stateLife"
-                                        value="{{ $stateLifeValue }}" name="state_life_insurance" />
-                                </div>
-                                <input type="hidden" class="human_resource_id" name="human_resource_id"
-                                    value="{{ $HumanResource->id }}" />
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button type="button" id="generatePdfBtn4" class="btn btn-primary"
-                                        style="margin-bottom: 2px">Generate PDF</button>
-                                    <a style="margin-bottom: 2px; margin-left: 8px;" class="btn btn-info pdfReportButton 
+{{-- Step 4: NBP Form (Previously Step 8) --}}
+<div class="form-section" data-step="4">
+    <form id="form-step-4" action="{{ route('submit.step', ['step' => 4]) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        @php
+            $step = optional($HumanResource->hrSteps->where('step_number', 8)->first());
+            $opfValue = $step->amount_digits ?? '4000';
+            $stateLifeValue = $step->amount_digits1 ?? '2500';
+            $fileExists = $step->file_name ? asset($step->file_name) : null;
+            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
+        @endphp
+        <div>
+            <div class="row mb-3">
+                <div class="col-md-5 pr-0">
+                    <label for="opf">OPF Welfare Fund</label>
+                    <input type="text" class="form-control" id="opf" name="opf"
+                        value="{{ $opfValue }}" />
+                </div>
+                <div class="col-md-4 pl-2 align-items-end">
+                    <label for="stateLife">State Life Insurance Premium</label>
+                    <input type="text" class="form-control" id="stateLife" value="{{ $stateLifeValue }}"
+                        name="state_life_insurance" />
+                </div>
+                <input type="hidden" class="human_resource_id" name="human_resource_id"
+                    value="{{ $HumanResource->id }}" />
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" id="generatePdfBtn4" class="btn btn-primary"
+                        style="margin-bottom: 2px">Generate PDF</button>
+                    <a style="margin-bottom: 2px; margin-left: 8px;"
+                        class="btn btn-info pdfReportButton 
                                        {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
-                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
-                                       View
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="text" id="stepFourFile" class="stepFourFile d-none" name="step_four_file"
-                            value="{{ $fileExists ? $fileExists : '' }}">
-                        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
-                            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
-                    </form>
+                        href="{{ $pdfUrl ?? '' }}" target="_blank">
+                        View
+                    </a>
                 </div>
+            </div>
+        </div>
+        <input type="text" id="stepFourFile" class="stepFourFile d-none" name="step_four_file"
+            value="{{ $fileExists ? $fileExists : '' }}">
+        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
+            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+    </form>
+</div>
 
-                {{-- Step 5: Challan Form (Previously Step 9) --}}
-                <div class="form-section" data-step="5">
-                    <form id="form-step-5" action="{{ route('submit.step', ['step' => 5]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @php
-                            $step = optional($HumanResource->hrSteps->where('step_number', 9)->first());
-                            $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
-                        @endphp
-                        <div>
-                            <input type="hidden" class="human_resource_id" name="human_resource_id"
-                                value="{{ $HumanResource->id }}" />
-                            <button id="generatePdfBtn5" class="btn btn-primary" style="margin-bottom: 2px">Generate
-                                PDF</button>
-                            <a style="margin-bottom: 2px; margin-left: 8px;" class="btn btn-info pdfReportButton 
+{{-- Step 5: Challan Form (Previously Step 9) --}}
+<div class="form-section" data-step="5">
+    <form id="form-step-5" action="{{ route('submit.step', ['step' => 5]) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        @php
+            $step = optional($HumanResource->hrSteps->where('step_number', 9)->first());
+            $fileExists = $step->file_name ? asset($step->file_name) : null;
+            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
+        @endphp
+        <div>
+            <input type="hidden" class="human_resource_id" name="human_resource_id"
+                value="{{ $HumanResource->id }}" />
+            <button id="generatePdfBtn5" class="btn btn-primary" style="margin-bottom: 2px">Generate
+                PDF</button>
+            <a style="margin-bottom: 2px; margin-left: 8px;"
+                class="btn btn-info pdfReportButton 
                                        {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
-                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
-                                       View
-                                    </a>
-                        </div>
-                        <input type="text" id="stepFiveFile" class="stepFiveFile d-none" name="step_five_file"
-                            value="{{ $fileExists ? $fileExists : '' }}">
-                        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
-                            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
-                    </form>
-                </div>
+                href="{{ $pdfUrl ?? '' }}" target="_blank">
+                View
+            </a>
+        </div>
+        <input type="text" id="stepFiveFile" class="stepFiveFile d-none" name="step_five_file"
+            value="{{ $fileExists ? $fileExists : '' }}">
+        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
+            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+    </form>
+</div>
 
-                {{-- Step 6: Life Insurance Form (Previously Step 10) --}}
-                <div class="form-section" data-step="6">
-                    <form id="form-step-6" action="{{ route('submit.step', ['step' => 6]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @php
-                            $step = optional($HumanResource->hrSteps->where('step_number', 10)->first());
-                            $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
-                        @endphp
-                        <input type="hidden" class="human_resource_id" name="human_resource_id"
-                            value="{{ $HumanResource->id }}" />
-                        <button id="generatePdfBtn6" class="btn btn-primary">Generate PDF</button>
-                        <a style="margin-left: 8px;" class="btn btn-info pdfReportButton 
+{{-- Step 6: Life Insurance Form (Previously Step 10) --}}
+<div class="form-section" data-step="6">
+    <form id="form-step-6" action="{{ route('submit.step', ['step' => 6]) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        @php
+            $step = optional($HumanResource->hrSteps->where('step_number', 10)->first());
+            $fileExists = $step->file_name ? asset($step->file_name) : null;
+            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
+        @endphp
+        <input type="hidden" class="human_resource_id" name="human_resource_id"
+            value="{{ $HumanResource->id }}" />
+        <button id="generatePdfBtn6" class="btn btn-primary">Generate PDF</button>
+        <a style="margin-left: 8px;"
+            class="btn btn-info pdfReportButton 
                                        {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
-                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
-                                       View
-                                    </a>
-                        <br /><br />
-                        <input type="text" id="stepSixFile" class="stepSixFile d-none" name="step_six_file"
-                            value="{{ $fileExists ? $fileExists : '' }}">
-                        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
-                            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
-                    </form>
-                </div>
+            href="{{ $pdfUrl ?? '' }}" target="_blank">
+            View
+        </a>
+        <br /><br />
+        <input type="text" id="stepSixFile" class="stepSixFile d-none" name="step_six_file"
+            value="{{ $fileExists ? $fileExists : '' }}">
+        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
+            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+    </form>
+</div>
 
-                {{-- Step 7: FSA Form (Previously Step 11) --}}
-                <div class="form-section" data-step="7">
-                    <form id="form-step-7" action="{{ route('submit.step', ['step' => 7]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @php
-                            $step = optional($HumanResource->hrSteps->where('step_number', 11)->first());
-                            $fileExists = $step->file_name ? asset($step->file_name) : null;
-                            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
-                        @endphp
-                        <input type="hidden" class="human_resource_id" name="human_resource_id"
-                            value="{{ $HumanResource->id }}" />
-                        <button id="generatePdfBtn7" class="btn btn-primary">Generate PDF</button>
-                        <a style="margin-left: 8px;" class="btn btn-info pdfReportButton 
+{{-- Step 7: FSA Form (Previously Step 11) --}}
+<div class="form-section" data-step="7">
+    <form id="form-step-7" action="{{ route('submit.step', ['step' => 7]) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        @php
+            $step = optional($HumanResource->hrSteps->where('step_number', 11)->first());
+            $fileExists = $step->file_name ? asset($step->file_name) : null;
+            $pdfUrl = $step->file_name ? asset($step->file_name) : null;
+        @endphp
+        <input type="hidden" class="human_resource_id" name="human_resource_id"
+            value="{{ $HumanResource->id }}" />
+        <button id="generatePdfBtn7" class="btn btn-primary">Generate PDF</button>
+        <a style="margin-left: 8px;"
+            class="btn btn-info pdfReportButton 
                                        {{ isset($pdfUrl) && $pdfUrl ? '' : 'd-none' }}"
-                                       href="{{ $pdfUrl ?? '' }}" target="_blank">
-                                       View
-                                    </a>
-                        <br /><br />
-                        <input type="text" id="stepSevenFile" class="stepSevenFile d-none" name="step_seven_file"
-                            value="{{ $fileExists ? $fileExists : '' }}">
-                        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
-                            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
-                    </form>
-                </div>
+            href="{{ $pdfUrl ?? '' }}" target="_blank">
+            View
+        </a>
+        <br /><br />
+        <input type="text" id="stepSevenFile" class="stepSevenFile d-none" name="step_seven_file"
+            value="{{ $fileExists ? $fileExists : '' }}">
+        <iframe class="pdfFrame" src="{{ $fileExists ? $fileExists : '' }}" width="100%"
+            height="{{ $fileExists ? '600px' : '0px' }}"></iframe>
+    </form>
+</div>
 
-                {{-- Step 8: Final Step (Previously Step 10) --}}
-                {{-- <div class="form-section" data-step="8">
+{{-- Step 8: Final Step (Previously Step 10) --}}
+{{-- <div class="form-section" data-step="8">
                     <form id="form-step-8" action="{{ route('submit.step', ['step' => 8]) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
@@ -1024,18 +1141,18 @@
                     </form>
                 </div> --}}
 
-                <div class="buttons d-flex justify-content-end">
-                    <button id="prev" class="btn btn-success d-none">
-                        Previous
-                    </button>
+<div class="buttons d-flex justify-content-end">
+    <button id="prev" class="btn btn-success d-none">
+        Previous
+    </button>
 
-                    <button id="nextStep" class="btn btn-success">Next</button>
-                    <button id="next" class="btn btn-primary">Save & Next</button>
+    <button id="nextStep" class="btn btn-success">Next</button>
+    <button id="next" class="btn btn-primary">Save & Next</button>
 
-                    <button id="submit" class="btn btn-primary d-none">
-                        Submit
-                    </button>
-                </div>
+    <button id="submit" class="btn btn-primary d-none">
+        Submit
+    </button>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -1272,8 +1389,8 @@
 
                     // 🔥 Show the “View Uploaded Report” button
                     let viewBtn = formSection.find('.pdfReportButton');
-                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
-                    viewBtn.removeClass("d-none");           // Make button visible
+                    viewBtn.attr("href", response.pdf_url); // Set new PDF link
+                    viewBtn.removeClass("d-none"); // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1328,8 +1445,8 @@
 
                     // 🔥 Show the “View Uploaded Report” button
                     let viewBtn = formSection.find('.pdfReportButton');
-                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
-                    viewBtn.removeClass("d-none");           // Make button visible
+                    viewBtn.attr("href", response.pdf_url); // Set new PDF link
+                    viewBtn.removeClass("d-none"); // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1371,8 +1488,8 @@
 
                     // 🔥 Show the “View Uploaded Report” button
                     let viewBtn = formSection.find('.pdfReportButton');
-                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
-                    viewBtn.removeClass("d-none");           // Make button visible
+                    viewBtn.attr("href", response.pdf_url); // Set new PDF link
+                    viewBtn.removeClass("d-none"); // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1412,8 +1529,8 @@
 
                     // 🔥 Show the “View Uploaded Report” button
                     let viewBtn = formSection.find('.pdfReportButton');
-                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
-                    viewBtn.removeClass("d-none");           // Make button visible
+                    viewBtn.attr("href", response.pdf_url); // Set new PDF link
+                    viewBtn.removeClass("d-none"); // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1439,7 +1556,7 @@
                 data: JSON.stringify({
                     human_resource_id: hr_id,
                 }),
-               success: function(response) {
+                success: function(response) {
                     console.log('PDF URL:', response.pdf_url);
 
                     // Set the PDF URL in the input field
@@ -1453,8 +1570,8 @@
 
                     // 🔥 Show the “View Uploaded Report” button
                     let viewBtn = formSection.find('.pdfReportButton');
-                    viewBtn.attr("href", response.pdf_url);  // Set new PDF link
-                    viewBtn.removeClass("d-none");           // Make button visible
+                    viewBtn.attr("href", response.pdf_url); // Set new PDF link
+                    viewBtn.removeClass("d-none"); // Make button visible
                 },
                 error: function(xhr, status, error) {
                     console.error("Error generating PDF:", error);
@@ -1532,57 +1649,58 @@
 </script>
 
 <script>
-let uploadedPDF = {};
-function previewPDF(input, previewId, buttonId) {
-    const file = input.files[0];
-    if (file && file.type === "application/pdf") {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const pdfData = e.target.result;
+    let uploadedPDF = {};
 
-            // Store by HumanResource ID (not buttonId)
-            const hrId = buttonId.split("-")[1];
-            uploadedPDF[hrId] = pdfData
+    function previewPDF(input, previewId, buttonId) {
+        const file = input.files[0];
+        if (file && file.type === "application/pdf") {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const pdfData = e.target.result;
 
-            // const frame = document.getElementById(previewId);
-            // const button = document.getElementById(buttonId);
+                // Store by HumanResource ID (not buttonId)
+                const hrId = buttonId.split("-")[1];
+                uploadedPDF[hrId] = pdfData
 
-            
-           const frame = document.getElementById(previewId);
-            if (frame) {
-                frame.src = pdfData;
-                frame.classList.remove("d-none");
-            }
+                // const frame = document.getElementById(previewId);
+                // const button = document.getElementById(buttonId);
 
-              const button = document.getElementById(buttonId);
-            if (button) {
-                button.href = pdfData; // Open in new tab
-                button.classList.remove("d-none");
-            }
-        };
-        reader.readAsDataURL(file);
-    } else {
-        alert("Please upload a valid PDF file.");
-    }
-}
 
-function openPDF(id) {
-    // get stored pdf
-    const pdf = uploadedPDF[id];
+                const frame = document.getElementById(previewId);
+                if (frame) {
+                    frame.src = pdfData;
+                    frame.classList.remove("d-none");
+                }
 
-    // If user uploaded a new one, open that
-    if (pdf) {
-        window.open(pdf, "_blank");
-        return;
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    button.href = pdfData; // Open in new tab
+                    button.classList.remove("d-none");
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert("Please upload a valid PDF file.");
+        }
     }
 
-    // Else open original DB file
-    let oldPdfUrl = document.getElementById("cvButton-" + id).getAttribute("data-old");
+    function openPDF(id) {
+        // get stored pdf
+        const pdf = uploadedPDF[id];
 
-    if (oldPdfUrl) {
-        window.open(oldPdfUrl, "_blank");
+        // If user uploaded a new one, open that
+        if (pdf) {
+            window.open(pdf, "_blank");
+            return;
+        }
+
+        // Else open original DB file
+        let oldPdfUrl = document.getElementById("cvButton-" + id).getAttribute("data-old");
+
+        if (oldPdfUrl) {
+            window.open(oldPdfUrl, "_blank");
+        }
     }
-}
 
     function previewFile(input) {
         const file = input.files[0];
@@ -1738,30 +1856,29 @@ function openPDF(id) {
 </script>
 
 <script>
-    
     function validateImageSize(input, maxMB, previewId) {
-    const file = input.files[0];
-    const maxBytes = maxMB * 1024 * 1024; // Convert MB → Bytes
+        const file = input.files[0];
+        const maxBytes = maxMB * 1024 * 1024; // Convert MB → Bytes
 
-    if (file) {
-        if (file.size > maxBytes) {
-            alert(`Image size should not exceed ${maxMB} MB.`);
-            input.value = ""; // Clear file input
+        if (file) {
+            if (file.size > maxBytes) {
+                alert(`Image size should not exceed ${maxMB} MB.`);
+                input.value = ""; // Clear file input
 
-            // Hide preview if already visible
-            const previewElement = document.getElementById(previewId);
-            if (previewElement) {
-                previewElement.classList.add("d-none");
-                previewElement.src = "";
+                // Hide preview if already visible
+                const previewElement = document.getElementById(previewId);
+                if (previewElement) {
+                    previewElement.classList.add("d-none");
+                    previewElement.src = "";
+                }
+
+                return false;
             }
 
-            return false;
+            // If valid, show preview
+            previewImage(input, previewId);
         }
-
-        // If valid, show preview
-        previewImage(input, previewId);
     }
-}
 
     function previewImage(input, previewId) {
         const file = input.files[0];
@@ -1807,8 +1924,4 @@ function openPDF(id) {
             alert("Please upload a valid PDF file.");
         }
     }
-
-
 </script>
-
-

@@ -145,8 +145,9 @@ class HumanResourceController extends Controller
     //     }
 
 
-    public function ajax(Request $request)
+  public function ajax(Request $request)
     {
+		
         $columns = [
             'registration',
             'passport_photo',
@@ -203,7 +204,13 @@ class HumanResourceController extends Controller
             'cnic_taken_status',
             'blood_group',
             'religion',
-            'interview_location'
+            'interview_location',
+			'passport_in_hand',
+			'police_taken',
+			'cnic_verfication_in_hand',
+			'medical_report_in_hand',
+			'visa_form_in_hand',
+			'air_booking_in_hand'
         ];
 
         // Always get the total count (without filters)
@@ -244,7 +251,13 @@ class HumanResourceController extends Controller
             $request->filled('visa_type') ||
             $request->filled('flight_date') ||
             $request->filled('cnic_taken') ||
-            $request->filled('passport_taken')
+            $request->filled('passport_taken') ||
+			$request->filled('passport_in_hand') ||
+			$request->filled('police_verfication_in_hand') ||
+			$request->filled('cnic_verfication_in_hand') ||
+			$request->filled('medical_report_in_hand') ||
+			$request->filled('visa_form_in_hand') ||
+			$request->filled('air_booking_in_hand')
         ) {
             $query->whereHas('hrSteps', function ($q) use ($request) {
                 if ($request->filled('medically_fit')) {
@@ -298,6 +311,32 @@ class HumanResourceController extends Controller
                         // ->whereNull('file_name');
                     }
                 }
+
+				 if ($request->filled('passport_in_hand')) {
+                    $q->where('step_number', 2)->where('file_type', 'passport front')->where('received_physically', $request->passport_in_hand);
+                }
+
+				if ($request->filled('police_verfication_in_hand')) {
+                    $q->where('step_number', 4)->where('file_type', 'police verification')->where('received_physically', $request->police_verfication_in_hand);
+                }
+
+				if ($request->filled('cnic_verfication_in_hand')) {
+					$q->where('step_number', 3)->where('file_type', 'cnic front')->where('received_physically', $request->cnic_verfication_in_hand);
+				}
+
+				if ($request->filled('medical_report_in_hand')) {	
+					$q->where('step_number', 6)->where('file_type', 'medical_report')->where('received_physically', $request->medical_report_in_hand);
+				}
+
+				if ($request->filled('visa_form_in_hand')) {	
+					$q->where('step_number', 6)->where('file_type', 'visa')->where('received_physically', $request->visa_form_in_hand);
+				}
+
+				if ($request->filled('air_booking_in_hand')) {
+					$q->where('step_number', 7)->where('file_type', 'air_booking')->where('received_physically', $request->air_booking_in_hand);
+				}
+				
+				
             });
         }
 

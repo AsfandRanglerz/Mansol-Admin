@@ -382,6 +382,83 @@
                                                 </div>
                                             </div>
 
+                                            {{-- ========== NEW RECEIVED PHYSICALLY FILTERS ========== --}}
+								 {{-- CNIC Taken Filter --}}
+                                <div class="col-md-3">
+                                    <div class="form-group"> 
+                                        <label for="passport_in_hand">Passport In Hand</label>
+                                        <select name="passport_in_hand" class="form-control" id="passport_in_hand">
+                                            <option value="" disabled selected>Select Option</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {{--Police Verification Filter --}}
+                                <div class="col-md-3">
+                                    <div class="form-group"> 
+                                        <label for="police_verfication_in_hand">Police Verfication In Hand</label>
+                                        <select name="police_verfication_in_hand" class="form-control" id="police_verfication_in_hand">
+                                            <option value="" disabled selected>Select Option</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {{-- CNIC Verification --}}
+                                <div class="col-md-3">
+                                    <div class="form-group"> 
+                                         <label for="cnic_verfication_in_hand">CNIC In Hand</label>
+                                        <select name="cnic_verfication_in_hand" class="form-control" id="cnic_verfication_in_hand">
+                                            <option value="" disabled selected>Select Option</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                {{-- Medical Repoort  --}}
+                                <div class="col-md-3">
+                                    <div class="form-group"> 
+                                        <label for="medical_report_in_hand">Medical Report In Hand</label>
+                                        <select name="medical_report_in_hand" class="form-control" id="medical_report_in_hand">
+                                            <option value="" disabled selected>Select Option</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+								 {{--Visa Form --}}
+                                <div class="col-md-3">
+                                    <div class="form-group"> 
+                                        <label for="visa_form_in_hand">Visa Form In Hand</label>
+                                        <select name="visa_form_in_hand" class="form-control" id="visa_form_in_hand">
+                                            <option value="" disabled selected>Select Option</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+								 {{-- Air Booking Location --}}
+                                <div class="col-md-3">
+                                    <div class="form-group"> 
+                                        <label for="air_booking_in_hand">Air Booking In Hand</label>
+                                       <select name="air_booking_in_hand" class="form-control" id="air_booking_in_hand">
+                                            <option value="" disabled selected>Select Option</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                        
+                                    </div>
+                                </div>      
+                                {{-- ========== END NEW RECEIVED PHYSICALLY FILTERS ========== --}}
+
                                             {{-- Filter Button --}}
                                             <div class="col-md-12 d-flex justify-content-end align-items-end mb-3">
                                                 <div class="btn-group">
@@ -673,7 +750,7 @@
             ajax: {
                 url: "{{ route('humanresource.ajax') }}",
                 type: "POST",
-                data: function (d) {
+             data: function (d) {
                     d._token = "{{ csrf_token() }}";
                     d.company_id = $('#company_id').val();
                     d.project_id = $('#project_id').val();
@@ -695,7 +772,13 @@
                     d.religion = $('#religion').val();
                     d.approvals = $('#approvals').val();
                     d.interview_location = $('#interview_location').val();
-                }
+                    d.passport_in_hand = $('#passport_in_hand').val();
+					d.police_verfication_in_hand = $('#police_verfication_in_hand').val();
+					d.cnic_verfication_in_hand = $('#cnic_verfication_in_hand').val();
+					d.visa_form_in_hand = $('#visa_form_in_hand').val();
+					d.medical_report_in_hand = $('#medical_report_in_hand').val();
+					d.air_booking_in_hand = $('#air_booking_in_hand').val();
+                }   
             },
             columns: [
                 { render: function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
@@ -838,6 +921,13 @@
                 '#approvals',
                 '#interview_location',
                 '#craft',
+                // New Received Physically Filters
+                '#passport_in_hand',
+				'#police_verfication_in_hand',
+				'#cnic_verfication_in_hand',
+				'#medical_report_in_hand',
+				'#visa_form_in_hand',
+				'#air_booking_in_hand',
             ];
             const hasAnyFilter = filters.some(sel => {
                 const val = $(sel).val();
@@ -873,6 +963,13 @@
             $('#religion').val('');
             $('#approvals').val('');
             $('#interview_location').val('');
+            // New Received Physically Filters clear
+           $('#passport_in_hand').val('');
+			$('#police_verfication_in_hand').val('');
+			$('#cnic_verfication_in_hand').val('');
+			$('#medical_report_in_hand').val('');
+			$('#visa_form_in_hand').val('');
+			$('#air_booking_in_hand').val('');
             toastr.success('Filters Cleared Successfully');
             table.ajax.reload();
         });

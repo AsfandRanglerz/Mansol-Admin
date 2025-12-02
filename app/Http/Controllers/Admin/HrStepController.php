@@ -37,6 +37,8 @@ class HrStepController extends Controller
             }
 
             // Handle Passport Images
+          $passportReceived = $request->input('received_physically_passport', 'no');
+            
             if ($request->hasFile('passport_image_1')) {
                 $file = $request->file('passport_image_1');
                 $filename = uniqid('passport_front_') . '.' . $file->getClientOriginalExtension();
@@ -50,7 +52,19 @@ class HrStepController extends Controller
                         'file_type' => 'passport front',
                     ],
                     [
-                        'file_name' => $data['file_name']
+                        'file_name' => $data['file_name'],
+                        'received_physically' => $passportReceived
+                    ]
+                );
+            } else {
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 2,
+                        'file_type' => 'passport front',
+                    ],
+                    [
+                        'received_physically' => $passportReceived
                     ]
                 );
             }
@@ -68,7 +82,19 @@ class HrStepController extends Controller
                         'file_type' => 'passport back',
                     ],
                     [
-                        'file_name' => $data['file_name']
+                        'file_name' => $data['file_name'],
+                        'received_physically' => $passportReceived
+                    ]
+                );
+            } else {
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 2,
+                        'file_type' => 'passport back',
+                    ],
+                    [
+                        'received_physically' => $passportReceived
                     ]
                 );
             }
@@ -86,12 +112,26 @@ class HrStepController extends Controller
                         'file_type' => 'passport third image',
                     ],
                     [
-                        'file_name' => $data['file_name']
+                        'file_name' => $data['file_name'],
+                        'received_physically' => $passportReceived
                     ]
                 );
-            }
-
+            } else {
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 2,
+                        'file_type' => 'passport third image',
+                    ],
+                    [
+                        'received_physically' => $passportReceived
+                    ]
+                );
+            }   
             // Handle CNIC Images
+           // Handle CNIC Images
+            $cnicReceivedFront = $request->input('received_physically_cnic_front', 'no');
+            
             if ($request->hasFile('cnic_front')) {
                 $file = $request->file('cnic_front');
                 $filename = uniqid('cnic_front_') . '.' . $file->getClientOriginalExtension();
@@ -105,11 +145,25 @@ class HrStepController extends Controller
                         'file_type' => 'cnic front',
                     ],
                     [
-                        'file_name' => $data['file_name']
+                        'file_name' => $data['file_name'],
+                        'received_physically' => $cnicReceivedFront
+                    ]
+                );
+            } else {
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 3,
+                        'file_type' => 'cnic front',
+                    ],
+                    [
+                        'received_physically' => $cnicReceivedFront
                     ]
                 );
             }
 
+            $cnicReceivedBack = $request->input('received_physically_cnic_back', 'no');
+            
             if ($request->hasFile('cnic_back')) {
                 $file = $request->file('cnic_back');
                 $filename = uniqid('cnic_back_') . '.' . $file->getClientOriginalExtension();
@@ -123,11 +177,22 @@ class HrStepController extends Controller
                         'file_type' => 'cnic back',
                     ],
                     [
-                        'file_name' => $data['file_name']
+                        'file_name' => $data['file_name'],
+                        'received_physically' => $cnicReceivedBack
                     ]
                 );
-            }
-
+            } else {
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 3,
+                        'file_type' => 'cnic back',
+                    ],
+                    [
+                        'received_physically' => $cnicReceivedBack
+                    ]
+                );
+            }   
             // Handle Passport-size Photo
             if ($request->hasFile('photo')) {
                 $file = $request->file('photo');
@@ -145,6 +210,7 @@ class HrStepController extends Controller
                 );
             }
 
+            // Handle Police Verification
             if ($request->hasFile('police_verification')) {
                 $file = $request->file('police_verification');
                 $policeFileName = time() . '_police.' . $file->getClientOriginalExtension();
@@ -156,10 +222,22 @@ class HrStepController extends Controller
                         'file_type' => 'police verification',
                     ],
                     [
-                        'file_name' => 'public/admin/assets/humanResource/' . $policeFileName
+                        'file_name' => 'public/admin/assets/humanResource/' . $policeFileName,
+                        'received_physically' => $request->input('received_physically_police_verification', 'no')
                     ]
                 );
-            }
+            } else {
+                HrStep::updateOrCreate(
+                    [
+                        'human_resource_id' => $humanResource->id,
+                        'step_number' => 4,
+                        'file_type' => 'police verification',
+                    ],
+                    [
+                        'received_physically' => $request->input('received_physically_police_verification', 'no')
+                    ]
+                );
+            }   
 
             if ($request->hasFile('account_detail')) {
                 $file = $request->file('account_detail');
@@ -230,85 +308,113 @@ class HrStepController extends Controller
                 );
             }
         }
-       if ($step == 2) {
-            try {
-                $data = [];
-                $dataToUpdate = [
-                    'process_status' => $request->process_status,
-                    'medically_fit' => $request->medically_fit,
-                    'report_date' => $request->report_date,
-                    'valid_until' => $request->valid_until,
-                    'lab' => $request->lab,
-                    'any_comments' => $request->any_comments,
-                    'original_report_recieved' => $request->has('original_report_recieved') ? 'yes' : 'no',
-                    'visa_type' => $request->visa_type,
-                    'visa_issue_date' => $request->visa_issue_date,
-                    'visa_expiry_date' => $request->visa_expiry_date,
-                    'visa_receive_date' => $request->visa_receive_date,
-                    'visa_issue_number' => $request->visa_issue_number,
-                    'visa_endorsement_date' => $request->visa_endorsement_date,
-                    'visa_status' => $request->visa_status,
-                    'endorsement_checked' => $request->has('endorsement_checked') ? 'yes' : 'no',
-                    'ticket_number' => $request->ticket_number,
-                    'flight_number' => $request->flight_number,
-                    'flight_route' => $request->flight_route,
-                    'flight_date' => $request->flight_date,
-                    'flight_etd' => $request->flight_etd,
-                    'flight_eta' => $request->flight_eta,
-                    ];
+   if ($step == 2) {
+    try {
+        $humanResourceId = $humanResource->id;
 
-                    // Only include file_name if file is uploaded
-                    if ($request->hasFile('medical_report')) {
-                    $file = $request->file('medical_report');
-                    $filename = time() . '.' . $file->getClientOriginalExtension();
-                    $file->move(public_path('admin/assets/humanResource'), $filename);
-                    $dataToUpdate['file_name'] = 'public/admin/assets/humanResource/' . $filename;
-                    }
+        // ===== MEDICAL REPORT ===== (file_type: 'medical_report')
+        $medicalData = [
+            'process_status' => $request->process_status,
+            'medically_fit' => $request->medically_fit,
+            'report_date' => $request->report_date,
+            'valid_until' => $request->valid_until,
+            'lab' => $request->lab,
+            'any_comments' => $request->any_comments,
+            'original_report_recieved' =>$request->has('original_report_received') ? 'yes' : 'no',
+            'received_physically' => $request->input('received_physically_medical_report', 'no')
+        ];
 
-                    // Only include scanned_visa if file is uploaded
-                    if ($request->hasFile('scanned_visa')) {
-                    $file = $request->file('scanned_visa');
-                    $filename = time() . '_visa.' . $file->getClientOriginalExtension();
-                    $file->move(public_path('admin/assets/humanResource'), $filename);
-                    $dataToUpdate['scanned_visa'] = 'public/admin/assets/humanResource/' . $filename;
-                    }
-
-                    // Only include upload_ticket if file is uploaded
-                    if ($request->hasFile('upload_ticket')) {
-                    $file = $request->file('upload_ticket');
-                    $filename = time() . '_ticket.' . $file->getClientOriginalExtension();
-                    $file->move(public_path('admin/assets/humanResource'), $filename);
-                    $dataToUpdate['upload_ticket'] = 'public/admin/assets/humanResource/' . $filename;
-                    }
-
-                    // Save or update
-                    try {
-                    $test = HrStep::updateOrCreate(
-                    [
-                    'human_resource_id' => $humanResource->id,
-                    'step_number' => 6,
-                    'file_type' => 'medical_report',
-                    ],
-                    $dataToUpdate
-                    );
-
-                    return response()->json([
-                    'success' => true,
-                    'data' => $test
-                    ]);
-                    } catch (\Exception $e) {
-                    \Log::error("HR Step update failed: " . $e->getMessage());
-                    return response()->json([
-                    'error' => true,
-                    'message' => $e->getMessage()
-                    ], 500);
-                    }
-
-            } catch (\Exception $e) {
-                \Log::error('HR Step update failed: ' . $e->getMessage());
-                return back()->with('error', 'An error occurred while processing the HR step. Please try again.');
-            }
+        // Medical report file upload
+        if ($request->hasFile('medical_report')) {
+            $file = $request->file('medical_report');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('admin/assets/humanResource'), $filename);
+            $medicalData['file_name'] = 'public/admin/assets/humanResource/' . $filename;
         }
+
+        // Save Medical Report
+        HrStep::updateOrCreate(
+            [
+                'human_resource_id' => $humanResourceId,
+                'step_number' => 6,
+                'file_type' => 'medical_report',
+            ],
+            $medicalData
+        );
+
+        // ===== VISA FORM ===== (file_type: 'visa')
+        $visaData = [
+            'visa_type' => $request->visa_type,
+            'visa_issue_date' => $request->visa_issue_date,
+            'visa_expiry_date' => $request->visa_expiry_date,
+            'visa_receive_date' => $request->visa_receive_date,
+            'visa_issue_number' => $request->visa_issue_number,
+            'visa_endorsement_date' => $request->visa_endorsement_date,
+            'visa_status' => $request->visa_status,
+            'endorsement_checked' => $request->has('endorsement_checked') ? 'yes' : 'no',
+            'received_physically' => $request->input('received_physically_visa', 'no')
+        ];
+
+        // Scanned visa file upload
+        if ($request->hasFile('scanned_visa')) {
+            $file = $request->file('scanned_visa');
+            $filename = time() . '_visa.' . $file->getClientOriginalExtension();
+            $file->move(public_path('admin/assets/humanResource'), $filename);
+            $visaData['scanned_visa'] = 'public/admin/assets/humanResource/' . $filename;
+        }
+
+        // Save Visa Form
+        HrStep::updateOrCreate(
+            [
+                'human_resource_id' => $humanResourceId,
+                'step_number' => 6,
+                'file_type' => 'visa',
+            ],
+            $visaData
+        );
+
+        // ===== AIR BOOKING ===== (file_type: 'air_booking')
+        $airBookingData = [
+            'ticket_number' => $request->ticket_number,
+            'flight_number' => $request->flight_number,
+            'flight_route' => $request->flight_route,
+            'flight_date' => $request->flight_date,
+            'flight_etd' => $request->flight_etd,
+            'flight_eta' => $request->flight_eta,
+            'received_physically' => $request->input('received_physically_air_booking', 'no')
+        ];
+
+        // Upload ticket file
+        if ($request->hasFile('upload_ticket')) {
+            $file = $request->file('upload_ticket');
+            $filename = time() . '_ticket.' . $file->getClientOriginalExtension();
+            $file->move(public_path('admin/assets/humanResource'), $filename);
+            $airBookingData['upload_ticket'] = 'public/admin/assets/humanResource/' . $filename;
+        }
+
+        // Save Air Booking
+        HrStep::updateOrCreate(
+            [
+                'human_resource_id' => $humanResourceId,
+                'step_number' => 7, // Note: Air Booking ka step_number 7 hai frontend ke according
+                'file_type' => 'air_booking',
+            ],
+            $airBookingData
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Step 2 data saved successfully.'
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('HR Step update failed: ' . $e->getMessage());
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
 
 
         // in db its step no 7 but in front end its step no 3
