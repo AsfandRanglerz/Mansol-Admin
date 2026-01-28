@@ -313,27 +313,27 @@ class HumanResourceController extends Controller
                 }
 
 				 if ($request->filled('passport_in_hand')) {
-                    $q->where('step_number', 2)->where('file_type', 'passport front')->where('received_physically', $request->passport_in_hand);
+                    $q->where('step_number', 2)->where('file_type', 'passport in hand')->where('received_physically', $request->passport_in_hand);
                 }
 
 				if ($request->filled('police_verfication_in_hand')) {
-                    $q->where('step_number', 4)->where('file_type', 'police verification')->where('received_physically', $request->police_verfication_in_hand);
+                    $q->where('step_number', 4)->where('file_type', 'police verification in hand')->where('received_physically', $request->police_verfication_in_hand);
                 }
 
 				if ($request->filled('cnic_verfication_in_hand')) {
-					$q->where('step_number', 3)->where('file_type', 'cnic front')->where('received_physically', $request->cnic_verfication_in_hand);
+					$q->where('step_number', 3)->where('file_type', 'cnic in hand')->where('received_physically', $request->cnic_verfication_in_hand);
 				}
 
 				if ($request->filled('medical_report_in_hand')) {	
-					$q->where('step_number', 6)->where('file_type', 'medical_report')->where('received_physically', $request->medical_report_in_hand);
+					$q->where('step_number', 6)->where('file_type', 'medical_report')->where('medical_received_physically', $request->medical_report_in_hand);
 				}
 
 				if ($request->filled('visa_form_in_hand')) {	
-					$q->where('step_number', 6)->where('file_type', 'visa')->where('received_physically', $request->visa_form_in_hand);
+					$q->where('step_number', 6)->where('file_type', 'medical_report')->where('visa_received_physically', $request->visa_form_in_hand);
 				}
 
 				if ($request->filled('air_booking_in_hand')) {
-					$q->where('step_number', 7)->where('file_type', 'air_booking')->where('received_physically', $request->air_booking_in_hand);
+					$q->where('step_number', 6)->where('file_type', 'medical_report')->where('flight_received_physically', $request->air_booking_in_hand);
 				}
 				
 				
@@ -1675,8 +1675,8 @@ class HumanResourceController extends Controller
             //     'sub_craft_id' => $request->sub_craft_id,
             //     'start_date' => $request->application_date,
             // ]);
-
-            return redirect()->route('humanresource.index')->with('message', 'Human Resource Updated Successfully');
+            return redirect()->back()->with('message', 'Human Resource Updated Successfully');
+            // return redirect()->route('humanresource.index')->with('message', 'Human Resource Updated Successfully');
         } catch (\Exception $e) {
             \Log::error('Error updating Human Resource: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
@@ -1710,7 +1710,17 @@ class HumanResourceController extends Controller
         $history->save();
         return redirect()->back()->with(['message' => 'Human Resource has been Mob/Demob Successfully']);
     }
-
+    public function jobHistoryupdate(Request $request)
+    {
+        // return $request;
+        $history = JobHistory::findOrFail($request->id);
+        $history->sub_craft_id = $request->sub_craft_id;
+        $history->demand_id = $request->demand_id;
+        $history->craft_id = $request->craft_id;
+        $history->save();
+        return redirect()->back()->with(['message' => 'Data Updated Successfully']);
+    }
+   
     public function getMobData(Request $request)
     {
         $history = JobHistory::find($request->id);

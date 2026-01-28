@@ -1117,7 +1117,7 @@
                         message = xhr.responseJSON.message;
                     }
                     toastr.error(message);
-                },
+                }, 
                 complete: function () {
                     // Reset button
                     $('#importBtn').prop('disabled', false);

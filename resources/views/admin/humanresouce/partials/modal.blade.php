@@ -360,7 +360,7 @@
             @php
                 $received_physically_passport =
                     optional(
-                        $HumanResource->hrSteps->where('step_number', 2)->where('file_type', 'passport front')->first(),
+                        $HumanResource->hrSteps->where('step_number', 2)->where('file_type', 'passport in hand')->first(),
                     )->received_physically ?? 'no';
             @endphp
 
@@ -388,7 +388,7 @@
 
                     $received_physically_cnic_front =
                         optional(
-                            $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')->first(),
+                            $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic in hand')->first(),
                         )->received_physically ?? 'no';
                 @endphp
                 <input type="file" class="form-control" name="cnic_front" accept="image/*"
@@ -448,7 +448,7 @@
                 </div>
 
                 {{-- In Hand for CNIC Back --}}
-                <div class="col-md-12 mt-2">
+                {{-- <div class="col-md-12 mt-2">
                     <div class="form-check">
                         <input type="hidden" name="received_physically_cnic_back" value="no">
                         <input type="checkbox" class="form-check-input" id="received_physically_cnic_back"
@@ -458,7 +458,7 @@
                             In Hand
                         </label>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 
@@ -508,7 +508,7 @@
                             optional(
                                 $HumanResource->hrSteps
                                     ->where('step_number', 4)
-                                    ->where('file_type', 'police verification')
+                                    ->where('file_type', 'police verification in hand')
                                     ->first(),
                             )->received_physically ?? 'no';
                     @endphp
@@ -527,17 +527,19 @@
 
                 {{-- In Hand Checkbox --}}
                 <div class="col-md-12 mt-3">
-                    <div class="form-check">
-                        <input type="hidden" name="received_physically_police_verification" value="no">
-                        <input type="checkbox" class="form-check-input" id="received_physically_police_verification"
-                            name="received_physically_police_verification" value="yes"
-                            {{ strtolower($received_physically_police_verification) === 'yes' ? 'checked' : '' }}>
-                        <label class="form-check-label font-weight-bold "
-                            for="received_physically_police_verification">
-                            In Hand
-                        </label>
+                        <div class="form-check">
+                            {{-- Hidden field ensures unchecked value is sent --}}
+                            <input type="hidden" name="received_physically_police_verification" value="no">
+
+                            <input type="checkbox" class="form-check-input" id="received_physically_police_verification"
+                                name="received_physically_police_verification" value="yes"
+                                {{ (strtolower($received_physically_police_verification ?? 'no') === 'yes') ? 'checked' : '' }}>
+                            <label class="form-check-label font-weight-bold" for="received_physically_police_verification">
+                                In Hand
+                            </label>
+                        </div>
                     </div>
-                </div>
+
             </div>
 
             {{-- Account Detail --}}
@@ -668,7 +670,7 @@
             $lab = $step->lab ?? '';
             $any_comments = $step->any_comments ?? '';
             $original_report_received = $step->original_report_recieved ?? 'no';
-            $received_physically_medical_report = $step->received_physically ?? 'no';
+            $received_physically_medical_report = $step->medical_received_physically ?? 'no';
         @endphp
 
         <div class="row">
@@ -780,7 +782,7 @@
             $visa_endorsement_date = $visaStep->visa_endorsement_date ?? '';
             $endorsement_checked = $visaStep->endorsement_checked ?? false;
             $scanned_visa = $visaStep && $visaStep->scanned_visa ? asset($visaStep->scanned_visa) : null;
-            $received_physically_visa = $visaStep->received_physically ?? 'no';
+            $received_physically_visa = $visaStep->visa_received_physically ?? 'no';
         @endphp
 
 
@@ -876,7 +878,7 @@
         @php
             $airBookingStep = optional(
                 $HumanResource->hrSteps->where('step_number', 7)->where('file_type', 'air_booking')->first(),
-            );
+            ); 
 
             $ticket_number = $airBookingStep->ticket_number ?? '';
             $flight_number = $airBookingStep->flight_number ?? '';
@@ -885,7 +887,7 @@
             $flight_etd = $airBookingStep->flight_etd ?? '';
             $flight_eta = $airBookingStep->flight_eta ?? '';
             $upload_ticket = $airBookingStep->upload_ticket ? asset($airBookingStep->upload_ticket) : null;
-            $received_physically_air_booking = $airBookingStep->received_physically ?? 'no';
+            $received_physically_air_booking = $airBookingStep->flight_received_physically ?? 'no';
         @endphp
 
         <div class="row">
@@ -1011,7 +1013,7 @@
                     <label for="opf">OPF Welfare Fund</label>
                     <input type="text" class="form-control" id="opf" name="opf"
                         value="{{ $opfValue }}" />
-                </div>
+                </div> 
                 <div class="col-md-4 pl-2 align-items-end">
                     <label for="stateLife">State Life Insurance Premium</label>
                     <input type="text" class="form-control" id="stateLife" value="{{ $stateLifeValue }}"

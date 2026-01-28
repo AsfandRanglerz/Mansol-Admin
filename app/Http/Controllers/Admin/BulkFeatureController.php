@@ -53,7 +53,7 @@ class BulkFeatureController extends Controller
                     'ACADEMIC_QUALIFICATION',
                     'TECHNICAL_QUALIFICATION',
                     'GENDER',
-                    'CITIZENSHIP',
+                    'CITIZENSHIP', 
                 ];
  
                 $spreadsheet = IOFactory::load($request->file('file')->getPathname());

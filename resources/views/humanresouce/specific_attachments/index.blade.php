@@ -76,6 +76,25 @@
                                         <p class="text-muted">Not Uploaded</p>
                                     @endif
                                 </div>
+                                {{-- In Hand Checkbox --}}
+                                @php
+                                    $received_physically_passport =
+                                        optional(
+                                            $HumanResource->hrSteps->where('step_number', 2)->where('file_type', 'passport in hand')->first(),
+                                        )->received_physically ?? 'no';
+                                @endphp
+
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-check">
+                                        <input type="hidden" name="received_physically_passport" value="no">
+                                        <input type="checkbox" class="form-check-input" id="received_physically_passport"
+                                            name="received_physically_passport" value="yes"
+                                            {{ strtolower($received_physically_passport) === 'yes' ? 'checked' : '' }} disabled>
+                                        <label class="form-check-label font-weight-bold " for="received_physically_passport">
+                                            In Hand
+                                        </label>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -90,6 +109,10 @@
                                         $cnicFront = optional(
                                             $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic front')->first()
                                         )->file_name;
+                                         $received_physically_cnic_front =
+                                        optional(
+                                            $HumanResource->hrSteps->where('step_number', 3)->where('file_type', 'cnic in hand')->first(),
+                                        )->received_physically ?? 'no';
                                     @endphp
                                     <label>CNIC Front</label>
                                     @if($cnicFront)
@@ -101,8 +124,21 @@
                                     @else
                                         <p class="text-muted">Not Uploaded</p>
                                     @endif
+                                    
+                                        {{-- In Hand for CNIC Front --}}
+                                        <div class="col-md-12 mt-2">
+                                            <div class="form-check">
+                                                <input type="hidden" name="received_physically_cnic_front" value="no">
+                                                <input type="checkbox" class="form-check-input" id="received_physically_cnic_front"
+                                                    name="received_physically_cnic_front" value="yes"
+                                                    {{ strtolower($received_physically_cnic_front) === 'yes' ? 'checked' : '' }} disabled>
+                                                <label class="form-check-label font-weight-bold " for="received_physically_cnic_front">
+                                                    In Hand
+                                                </label>
+                                            </div>
+                                        </div>
                                 </div>
-
+                                        
                                 {{-- CNIC Back --}}
                                 <div class="col-md-6 mb-4">
                                     @php
@@ -132,6 +168,13 @@
                                     $policePhoto = optional(
                                         $HumanResource->hrSteps->where('step_number', 4)->where('file_type', 'police verification')->first()
                                     )->file_name;
+                                     $received_physically_police_verification =
+                                    optional(
+                                        $HumanResource->hrSteps
+                                            ->where('step_number', 4)
+                                            ->where('file_type', 'police verification in hand')
+                                            ->first(),
+                                    )->received_physically ?? 'no';
                                 @endphp
                                 @if($policePhoto)
                                     <img src="{{ asset($policePhoto) }}" class="img-fluid mt-2 border rounded"
@@ -142,6 +185,21 @@
                                 @else
                                     <p class="text-muted">Not Uploaded</p>
                                 @endif
+
+                                             {{-- In Hand Checkbox --}}
+                                        <div class="col-md-12 mt-3">
+                                                <div class="form-check">
+                                                    {{-- Hidden field ensures unchecked value is sent --}}
+                                                    <input type="hidden" name="received_physically_police_verification" value="no">
+
+                                                    <input type="checkbox" class="form-check-input" id="received_physically_police_verification"
+                                                        name="received_physically_police_verification" value="yes"
+                                                        {{ (strtolower($received_physically_police_verification ?? 'no') === 'yes') ? 'checked' : '' }} disabled>
+                                                    <label class="form-check-label font-weight-bold" for="received_physically_police_verification">
+                                                        In Hand
+                                                    </label>
+                                                </div>
+                                            </div>
                             </div>
 
                         </div>
@@ -161,7 +219,8 @@
             $lab = $step->lab ?? '';
             $any_comments = $step->any_comments ?? '';
             $original_report_received = $step->original_report_recieved ?? 'no';
-            $received_physically_medical_report = $step->received_physically ?? 'no';
+            $received_physically_medical_report = $step->medical_received_physically ?? 'no';
+
         @endphp
 
         <div class="row">
@@ -224,25 +283,26 @@
             </div>
 
             {{-- In Hand Checkbox --}}
-            {{-- <div class="col-md-12 mt-3">
+            {{-- In Hand Checkbox --}}
+            <div class="col-md-12 mt-3">
                 <div class="form-check">
                     <input type="hidden" name="received_physically_medical_report" value="no">
                     <input type="checkbox" class="form-check-input"
                         id="received_physically_medical_report_{{ $HumanResource->id }}"
                         name="received_physically_medical_report" value="yes"
-                        {{ strtolower($received_physically_medical_report) === 'yes' ? 'checked' : '' }}>
+                        {{ strtolower($received_physically_medical_report) === 'yes' ? 'checked' : '' }} disabled>
                     <label class="form-check-label font-weight-bold "
                         for="received_physically_medical_report_{{ $HumanResource->id }}">
                         In Hand
                     </label>
                 </div>
-            </div> --}}
+            </div>
         </div>
 
-        {{-- Visa Form --}}
+        {{-- Visa Form --}} 
         <h5 class="mt-5">Visa Form</h5>
         @php
-            $visaStep = $HumanResource->hrSteps->where('step_number', 6)->where('file_type', 'visa')->first();
+            $visaStep = $HumanResource->hrSteps->where('step_number', 6)->where('file_type', 'medical_report')->first();
             $visa_type = $visaStep->visa_type ?? '';
             $visa_issue_date = $visaStep->visa_issue_date ?? '';
             $visa_expiry_date = $visaStep->visa_expiry_date ?? '';
@@ -252,7 +312,7 @@
             $visa_endorsement_date = $visaStep->visa_endorsement_date ?? '';
             $endorsement_checked = $visaStep->endorsement_checked ?? false;
             $scanned_visa = $visaStep && $visaStep->scanned_visa ? asset($visaStep->scanned_visa) : null;
-            $received_physically_visa = $visaStep->received_physically ?? 'no';
+            $received_physically_visa = $visaStep->visa_received_physically ?? 'no';
         @endphp
 
 
@@ -317,26 +377,25 @@
                 <input type="date" class="form-control" name="visa_endorsement_date"
                     value="{{ $visa_endorsement_date }}" readonly/>
             </div>
-
-            {{-- In Hand Checkbox --}}
-            {{-- <div class="col-md-12 mt-3">
+                 {{-- In Hand Checkbox --}}
+            <div class="col-md-12 mt-3">
                 <div class="form-check">
                     <input type="hidden" name="received_physically_visa" value="no">
                     <input type="checkbox" class="form-check-input" id="received_physically_visa"
                         name="received_physically_visa" value="yes"
-                        {{ strtolower($received_physically_visa) === 'yes' ? 'checked' : '' }}>
+                        {{ strtolower($received_physically_visa) === 'yes' ? 'checked' : '' }} disabled>
                     <label class="form-check-label font-weight-bold " for="received_physically_visa">
                         In Hand
                     </label>
                 </div>
-            </div> --}}
+            </div>
         </div>
 
         {{-- Air Booking --}}
         <h5 class="mt-5">Air Booking</h5>
         @php
             $airBookingStep = optional(
-                $HumanResource->hrSteps->where('step_number', 7)->where('file_type', 'air_booking')->first(),
+                $HumanResource->hrSteps->where('step_number', 6)->where('file_type', 'medical_report')->first(),
             );
 
             $ticket_number = $airBookingStep->ticket_number ?? '';
@@ -346,12 +405,12 @@
             $flight_etd = $airBookingStep->flight_etd ?? '';
             $flight_eta = $airBookingStep->flight_eta ?? '';
             $upload_ticket = $airBookingStep->upload_ticket ? asset($airBookingStep->upload_ticket) : null;
-            $received_physically_air_booking = $airBookingStep->received_physically ?? 'no';
+            $received_physically_air_booking = $airBookingStep->flight_received_physically ?? 'no';
         @endphp
 
         <div class="row">
             <div class="col-md-6">
-                <label for="ticket_number">PNP Number</label>
+                <label for="ticket_number">PNR Number</label>
                 <input type="text" class="form-control" name="ticket_number" value="{{ $ticket_number }}" readonly/>
             </div>
 
@@ -383,7 +442,7 @@
             </div>
 
             <div class="col-md-6 mt-3">
-                <label for="upload_ticket">Upload PNP</label>
+                <label for="upload_ticket">Upload PNR</label>
                 <div class="mt-2">
                     @if($upload_ticket)
                     <a id="ticketPreview-{{ $HumanResource->id }}" href="{{ $upload_ticket }}" target="_blank"
@@ -391,23 +450,23 @@
                         View Uploaded Ticket
                     </a>
                     @else
-                    <p class="text">No PNP Found</p>
+                    <p class="text">No PNR Found</p>
                     @endif
                 </div>
             </div>
 
             {{-- In Hand Checkbox --}}
-            {{-- <div class="col-md-12 mt-3">
+            <div class="col-md-12 mt-3">
                 <div class="form-check">
                     <input type="hidden" name="received_physically_air_booking" value="no">
                     <input type="checkbox" class="form-check-input" id="received_physically_air_booking"
                         name="received_physically_air_booking" value="yes"
-                        {{ strtolower($received_physically_air_booking) === 'yes' ? 'checked' : '' }}>
+                        {{ strtolower($received_physically_air_booking) === 'yes' ? 'checked' : '' }} disabled>
                     <label class="form-check-label font-weight-bold " for="received_physically_air_booking">
                         In Hand
                     </label>
                 </div>
-            </div> --}}
+            </div>
         </div>
                     </div>   
 

@@ -851,12 +851,12 @@
                 </div>
                 <div class="card">
                     <div class="card-header text-center d-flex justify-content-between align-items-center">
-                        @if ($nominat)
+                        {{-- @if ($nominat)
                             <a class="btn btn-primary" disabled title="Please Demob" onclick="showToaster()">Assign</a>
-                        @else
+                        @else --}}
                             <a class="btn btn-primary"
                                 onclick="showUserModel('createDriverModel', {{ $HumanResource->id }})">Assign</a>
-                        @endif
+                        {{-- @endif --}}
                         <h4 class="flex-grow-1 text-center m-0">Job History</h4>
                         <div style="width: 75px;"></div> <!-- Empty space to balance the button width -->
                     </div>
@@ -914,6 +914,11 @@
                                                     <button type="button" class="btn btn-primary editDriverBtn"
                                                         data-id="{{ $data->id }}"><span
                                                             class="fa fa-edit"></span></button>
+                                                            <button class="btn btn-sm btn-info editJobBtn"
+                                                                data-id="{{ $data->id }}">
+                                                                Edit
+                                                            </button>
+
                                                 </div>
                                                 {{-- <div class="col-md-6 mb-2">
                                                     <form action="{{ route('humanresource.destroy', $data->id) }}"
@@ -1049,7 +1054,89 @@
                 </div>
             </div>
         </div>
-        <!-- Edit Hobby Modal -->
+
+        <!-- Edit Job History Modal -->
+        <div class="modal fade" id="editJobHistoryModal" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header justify-content-center">
+                        <h5 class="modal-title">Edit Job History</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="editJobHistoryForm" method="POST" action="{{ route('jobHistoryupdate.update') }}">
+                            @csrf
+                            <input type="hidden" name="id" id="edit_id">
+                            <input type="hidden" name="human_resource_id" id="edit_human_resource_id">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Company</label>
+                                    <select id="edit_company_id" name="company_id" class="form-control" disabled>
+                                        <option value="">Select Company</option>
+                                        @foreach ($companies as $company)
+                                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Interview Location</label>
+                                    <select id="edit_city_of_interview" name="city_of_interview" class="form-control" disabled>
+                                        @foreach ($cities as $city)
+                                            <option value="{{ strtolower($city->name) }}">{{ $city->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label>Project</label>
+                                    <select id="edit_project_id" name="project_id" class="form-control" disabled></select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Demand</label>
+                                    <select id="edit_demand_id" name="demand_id" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label>Craft</label>
+                                    <select id="edit_craft" name="craft_id" class="form-control"></select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Sub Craft</label>
+                                    <select id="edit_sub_craft" name="sub_craft_id" class="form-control"></select>
+                                </div>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label>Application Date</label>
+                                    <input type="date" id="edit_application_date" name="application_date"
+                                        class="form-control" disabled>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- demob Modal -->
         <div class="modal fade" id="editDriverModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" id="mymodal" role="document">
@@ -1192,68 +1279,14 @@
             $('#editDriverModel').modal('show');
             getDemobData(id); // Now this will work
         });
-        // $('#company_id').on('change', function() {
-        //     var companyId = $(this).val();
-
-        //     $.ajax({
-        //         url: "{{ route('get-projects') }}",
-        //         type: "GET",
-        //         data: {
-        //             company_id: companyId
-        //         },
-        //         success: function(data) {
-        //             $('#project_id').empty();
-        //             $('#demand_id').empty();
-        //             $('#sub_craft').empty();
-        //             $('#project_id').append(
-        //                 '<option value="" selected disabled>Select Project</option>');
-        //             $('#demand_id').append(
-        //                 '<option value="" selected disabled>Select Demand</option>');
-        //             $('#sub_craft').append(
-        //                 '<option value="" selected disabled>Select Sub-Craft</option>');
-
-        //             $.each(data, function(key, value) {
-        //                 $('#project_id').append('<option value="' + value.id +
-        //                     '">' + value.project_name + '</option>');
-        //             });
-
-        //             if ($('#status option[value="3"]').length === 0) {
-        //                 $('#status').empty().append('<option value="3" selected>Assign</option>');
-        //             } else {
-        //                 $('#status').val('3');
-        //             }
-        //         }
-        //     });
-        // });
-
-        // $('#project_id').on('change', function() {
-        //     var projectId = $(this).val();
-
-        //     $.ajax({
-        //         url: "{{ route('get-demand') }}",
-        //         type: "GET",
-        //         data: {
-        //             project_id: projectId
-        //         },
-        //         success: function(data) {
-        //             $('#demand_id').empty();
-        //             $('#demand_id').append(
-        //                 '<option value="" selected disabled>Select Demand</option>');
-
-        //             $.each(data, function(key, value) {
-        //                 $('#demand_id').append('<option value="' + value.id +
-        //                     '">Man Power - ' + value.full_name + '</option>');
-        //             });
-        //         }
-        //     });
-        // });
     </script>
     <script>
         $(document).ready(function() {
             // When company is selected
             $('#company_id').on('change', function() {
-                var companyId = $(this).val();
 
+                var companyId = $(this).val();
+                
                 if (companyId) {
                     $('#project-group').removeClass('d-none');
                     $('#demand-group').removeClass('d-none');
@@ -1305,10 +1338,10 @@
                         data: {
                             project_id: projectId
                         },
-                        success: function(data) {
+                        success: function(data) { 
                             $.each(data, function(key, value) {
                                 $('#demand_id').append('<option value="' + value.id +
-                                    '">Man Power - ' + value.manpower + '</option>');
+                                    '">Man Power - ' + value.manpower +'</option>');
                             });
                         }
                     });
@@ -1369,83 +1402,142 @@
             });
         });
     </script>
-    {{-- <script>
-        $(document).ready(function() {
-            // Check if company_id is selected on page load
-            var selectedCompany = "{{ $HumanResource->company_id }}";
-    
-            if (selectedCompany) {
-                // If company is selected, show project and demand fields
-                $('#project-group').removeClass('d-none');
-                $('#demand-group').removeClass('d-none');
-                $('#craft').closest('.col-md-4').addClass('d-none');
-                $('#sub_craft').closest('.col-md-4').addClass('d-none');
-                loadProjects(selectedCompany); // Load the projects for the selected company
-            } else {
-                // If no company is selected, show craft and sub-craft fields
-                $('#project-group').addClass('d-none');
-                $('#demand-group').addClass('d-none');
-                $('#craft').closest('.col-md-4').removeClass('d-none');
-                $('#sub_craft').closest('.col-md-4').removeClass('d-none');
-            }
-    
-            // When company changes
-            $('#company_id').on('change', function() {
-                var companyId = $(this).val();
-                if (companyId) {
-                    // Show project and demand fields if company is selected
-                    $('#project-group').removeClass('d-none');
-                    $('#demand-group').removeClass('d-none');
-                    $('#craft').closest('.col-md-4').addClass('d-none');
-                    $('#sub_craft').closest('.col-md-4').addClass('d-none');
-                    loadProjects(companyId); // Load the projects for the selected company
-                } else {
-                    // Otherwise, show craft and sub-craft fields
-                    $('#project-group').addClass('d-none');
-                    $('#demand-group').addClass('d-none');
-                    $('#craft').closest('.col-md-4').removeClass('d-none');
-                    $('#sub_craft').closest('.col-md-4').removeClass('d-none');
-                }
-            });
-    
-            // When project changes
-            $('#project_id').on('change', function() {
-                var projectId = $(this).val();
-                loadDemands(projectId); // Load the demands for the selected project
-            });
-    
-            // Function to load projects based on company
-            function loadProjects(companyId) {
-                $.ajax({
-                    url: "{{ route('get-projects') }}",
+
+
+    <script>
+    $(document).on('click', '.editJobBtn', function () {
+        let id = $(this).data('id');
+        $.ajax({
+            url: "{{ route('get-demob-data') }}",
                     type: "GET",
-                    data: { company_id: companyId },
-                    success: function(data) {
-                        $('#project_id').empty().append('<option value="" disabled>Select Project</option>');
-                        $.each(data, function(key, value) {
-                            $('#project_id').append(`<option value="${value.id}">${value.project_name}</option>`);
+                    data: {
+                        id: id
+                    },
+            success: function (res) {
+
+                // Basic fields
+                $('#edit_id').val(res.id);
+                $('#edit_human_resource_id').val(res.human_resource_id);
+                $('#edit_application_date').val(res.application_date);
+                $('#edit_city_of_interview').val(res.city_of_interview);
+
+                // Company
+                $('#edit_company_id').val(res.company_id);
+
+                // 1️⃣ Load Projects
+                $.get("{{ route('get-projects') }}", { company_id: res.company_id }, function (projects) {
+                    $('#edit_project_id').empty();
+                    $.each(projects, function (_, p) {
+                        $('#edit_project_id').append(
+                            `<option value="${p.id}">${p.project_name}</option>`
+                        );
+                    });
+
+                    $('#edit_project_id').val(res.project_id);
+
+                    // 2️⃣ Load Demands
+                    $.get("{{ route('get-demand') }}", { project_id: res.project_id }, function (demands) {
+                        $('#edit_demand_id').empty();
+                        $.each(demands, function (_, d) {
+                            $('#edit_demand_id').append(
+                                `<option value="${d.id}">Man Power - ${d.manpower}</option>`
+                            );
                         });
-                    }
-                });
-            }
-    
-            // Function to load demands based on project
-            function loadDemands(projectId) {
-                $.ajax({
-                    url: "{{ route('get-demand') }}",
-                    type: "GET",
-                    data: { project_id: projectId },
-                    success: function(data) {
-                        $('#demand_id').empty().append('<option value="" disabled>Select Demand</option>');
-                        $.each(data, function(key, value) {
-                            $('#demand_id').append(`<option value="${value.id}">Man Power ${value.manpower}</option>`);
+
+                        $('#edit_demand_id').val(res.demand_id);
+                        if (res.demobe_date !== null && res.demobe_date !== '' || res.mob_date !== null && res.mob_date !== '') {
+                            $('#edit_demand_id').prop('disabled', true);
+                        } else {
+                            $('#edit_demand_id').prop('disabled', false);
+                        }
+
+                        // 3️⃣ Load Crafts
+                        $.get("{{ route('get-crafts-by-demand') }}", { demand_id: res.demand_id }, function (crafts) {
+                            $('#edit_craft').empty();
+                            $.each(crafts, function (_, c) {
+                                $('#edit_craft').append(
+                                    `<option value="${c.id}">${c.name}</option>`
+                                );
+                            });
+
+                            $('#edit_craft').val(res.craft_id);
+                            if (res.demobe_date !== null && res.demobe_date !== '' || res.mob_date !== null && res.mob_date !== '') {
+                            $('#edit_craft').prop('disabled', true);
+                            } else {
+                                $('#edit_craft').prop('disabled', false);
+                            }
+                            // 4️⃣ Load Sub Crafts
+                            $.get("{{ route('get-sub-crafts') }}", { craft_id: res.craft_id }, function (subs) {
+                                $('#edit_sub_craft').empty();
+                                $.each(subs, function (_, s) {
+                                    $('#edit_sub_craft').append(
+                                        `<option value="${s.id}">${s.name}</option>`
+                                    );
+                                });
+
+                                $('#edit_sub_craft').val(res.sub_craft_id);
+                                if (res.demobe_date !== null && res.demobe_date !== '' || res.mob_date !== null && res.mob_date !== '') {
+                                $('#edit_sub_craft').prop('disabled', true);
+                                } else {
+                                    $('#edit_sub_craft').prop('disabled', false);
+                                }
+                            });
                         });
-                    }
+                    });
                 });
+
+                $('#editJobHistoryModal').modal('show');
             }
         });
-    </script> --}}
+        $('#edit_demand_id').on('change', function () {
 
+            let demandId = $(this).val();
 
+            $('#edit_craft').empty();
+            $('#edit_sub_craft').empty();
 
+            if (!demandId) return;
+
+            // 1️⃣ Load Crafts by Demand
+            $.get("{{ route('get-crafts-by-demand') }}", { demand_id: demandId }, function (crafts) {
+
+                if (crafts.length === 0) return;
+
+                $.each(crafts, function (_, c) {
+                    $('#edit_craft').append(
+                        `<option value="${c.id}">${c.name}</option>`
+                    );
+                });
+
+                // 2️⃣ Auto select FIRST craft
+                let firstCraftId = crafts[0].id;
+                $('#edit_craft').val(firstCraftId);
+
+                // 3️⃣ Load Sub Crafts for selected craft
+                loadEditSubCrafts(firstCraftId);
+            });
+        });
+        $('#edit_craft').on('change', function () {
+            let craftId = $(this).val();
+            loadEditSubCrafts(craftId);
+        });
+        function loadEditSubCrafts(craftId) {
+
+            $('#edit_sub_craft').empty();
+
+            if (!craftId) return;
+
+            $.get("{{ route('get-sub-crafts') }}", { craft_id: craftId }, function (subs) {
+
+                if (subs.length === 0) return;
+
+                $.each(subs, function (_, s) {
+                    $('#edit_sub_craft').append(
+                        `<option value="${s.id}">${s.name}</option>`
+                    );
+                });
+            });
+        }
+    });
+    </script>
 @endsection

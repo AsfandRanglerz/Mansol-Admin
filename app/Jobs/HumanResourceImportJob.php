@@ -4,6 +4,7 @@ namespace App\Jobs;
  
 use App\Models\{HumanResource, Company, Project, Demand, MainCraft, SubCraft, Nominate, JobHistory};
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -131,12 +132,12 @@ class HumanResourceImportJob implements ShouldQueue
                 // $maxValue = !empty($integerValues) ? max($integerValues) : 1000;
                 // $registration = $maxValue >= 1000 ? $maxValue + 1 : 1001;
 
-                 $maxValue = HumanResource::whereNotNull('registration')
-                ->whereRaw('registration REGEXP "^[0-9]+$"')
-                ->max('registration');
+                //  $maxValue = HumanResource::whereNotNull('registration')
+                // ->whereRaw('registration REGEXP "^[0-9]+$"')
+                // ->max('registration');
 
-                // Next number (start at 1001 if NONE)
-                $registration = $maxValue ? $maxValue + 1 : 1001;
+                // // Next number (start at 1001 if NONE)
+                // $registration = $maxValue ? $maxValue + 1 : 1001;
 
                 // Convert date fields to Y-m-d format
                 $applicationDate = null;
@@ -211,61 +212,187 @@ class HumanResourceImportJob implements ShouldQueue
                         $doe = $dt ? $dt->format('Y-m-d') : null;
                     }
                 }
+                // $hr = HumanResource::updateOrCreate(
+                //     ['cnic' => $this->sanitizeCnic($row['cnic'] ?? null)], // Find by sanitized CNIC
+                //     [
+                //         'name' => $row['name'] ?? '',
+                //         'status' => $company ? 3 : 1,
+                //         'email' => $row['email'] ?? null,
+                //         'approvals' => strtolower($row['approvals'] ?? null),
+                //         'password' => bcrypt($password),
+                //         'registration' => $registration ?? null,
+                //         'application_date' => $applicationDate,
+                //         'experience_local' => $row['experience_local'] ?? null,
+                //         'experience_gulf' => $row['experience_gulf'] ?? null,
+                //         'son_of' => $row['son_of'] ?? null,
+                //         'mother_name' => $row['mother_name'] ?? null,
+                //         'blood_group' => strtolower($row['blood_group'] ?? null),
+                //         'date_of_birth' => $dateOfBirth,
+                //         'city_of_birth' => $row['city_of_birth'] ?? null,
+                //         'city_of_interview' => strtolower($row['city_of_interview'] ?? null),
+                //         'cnic_expiry_date' => $cnicExpiryDate,
+                //         'doi' => $doi,
+                //         'doe' => $doe,
+                //         'passport' => $row['passport'] ?? null,
+                //         'passport_issue_place' => strtolower($row['passport_issue_place'] ?? null),
+                //         'religion' => strtolower($row['religion'] ?? null),
+                //         'martial_status' => strtolower($row['martial_status'] ?? null),
+                //         'next_of_kin' => $row['next_of_kin'] ?? null,
+                //         'relation' => strtolower($row['relation'] ?? null),
+                //         'kin_cnic' => $row['kin_cnic'] ?? null,
+                //         'shoe_size' => strtolower($row['shoe_size'] ?? null),
+                //         'cover_size' => $row['cover_size'] ?? null,
+                //         'acdemic_qualification' => strtolower($row['academic_qualification'] ?? null),
+                //         'technical_qualification' => $row['technical_qualification'] ?? null,
+                //         'district_of_domicile' => $row['district_of_domicile'] ?? null,
+                //         'present_address' => $row['present_address'] ?? null,
+                //         'present_address_phone' => $row['present_address_phone'] ?? null,
+                //         'present_address_mobile' => $row['present_address_mobile'] ?? null,
+                //         'present_address_city' => strtolower($row['present_address_city'] ?? null),
+                //         'permanent_address' => $row['permanent_address'] ?? null,
+                //         'permanent_address_phone' => $row['permanent_address_phone'] ?? null,
+                //         'permanent_address_mobile' => $row['permanent_address_mobile'] ?? null,
+                //         'permanent_address_city' => strtolower($row['permanent_address_city'] ?? null),
+                //         'permanent_address_province' => $row['permanent_address_province'] ?? null,
+                //         'gender' => strtolower($row['gender'] ?? null),
+                //         'citizenship' => $row['citizenship'] ?? null,
+                //         'refference' => $row['refference'] ?? null,
+                //         'performance_appraisal' => $row['performance_appraisal'] ?? null,
+                //         'min_salary' => $row['min_salary'] ?? null,
+                //         'comment' => $row['comment'] ?? null,
+                //         'image' => 'public/admin/assets/images/users/avatar.png',
+                //         'currancy' => $row['currancy'] ?? null,
+                //         'craft_id' => $craft->id,
+                //         'sub_craft_id' => $subCraft->id,
+                //     ]
+                // );
+                DB::transaction(function () use ($row, $craft, $subCraft, $company, $password, $applicationDate, $dateOfBirth, $cnicExpiryDate, $doi, $doe) {
 
-                $hr = HumanResource::updateOrCreate(
-                    ['cnic' => $this->sanitizeCnic($row['cnic'] ?? null)], // Find by sanitized CNIC
-                    [
-                        'name' => $row['name'] ?? '',
-                        'status' => $company ? 3 : 1,
-                        'email' => $row['email'] ?? null,
-                        'approvals' => strtolower($row['approvals'] ?? null),
-                        'password' => bcrypt($password),
-                        'registration' => $registration ?? null,
-                        'application_date' => $applicationDate,
-                        'experience_local' => $row['experience_local'] ?? null,
-                        'experience_gulf' => $row['experience_gulf'] ?? null,
-                        'son_of' => $row['son_of'] ?? null,
-                        'mother_name' => $row['mother_name'] ?? null,
-                        'blood_group' => strtolower($row['blood_group'] ?? null),
-                        'date_of_birth' => $dateOfBirth,
-                        'city_of_birth' => $row['city_of_birth'] ?? null,
-                        'city_of_interview' => strtolower($row['city_of_interview'] ?? null),
-                        'cnic_expiry_date' => $cnicExpiryDate,
-                        'doi' => $doi,
-                        'doe' => $doe,
-                        'passport' => $row['passport'] ?? null,
-                        'passport_issue_place' => strtolower($row['passport_issue_place'] ?? null),
-                        'religion' => strtolower($row['religion'] ?? null),
-                        'martial_status' => strtolower($row['martial_status'] ?? null),
-                        'next_of_kin' => $row['next_of_kin'] ?? null,
-                        'relation' => strtolower($row['relation'] ?? null),
-                        'kin_cnic' => $row['kin_cnic'] ?? null,
-                        'shoe_size' => strtolower($row['shoe_size'] ?? null),
-                        'cover_size' => $row['cover_size'] ?? null,
-                        'acdemic_qualification' => strtolower($row['academic_qualification'] ?? null),
-                        'technical_qualification' => $row['technical_qualification'] ?? null,
-                        'district_of_domicile' => $row['district_of_domicile'] ?? null,
-                        'present_address' => $row['present_address'] ?? null,
-                        'present_address_phone' => $row['present_address_phone'] ?? null,
-                        'present_address_mobile' => $row['present_address_mobile'] ?? null,
-                        'present_address_city' => strtolower($row['present_address_city'] ?? null),
-                        'permanent_address' => $row['permanent_address'] ?? null,
-                        'permanent_address_phone' => $row['permanent_address_phone'] ?? null,
-                        'permanent_address_mobile' => $row['permanent_address_mobile'] ?? null,
-                        'permanent_address_city' => strtolower($row['permanent_address_city'] ?? null),
-                        'permanent_address_province' => $row['permanent_address_province'] ?? null,
-                        'gender' => strtolower($row['gender'] ?? null),
-                        'citizenship' => $row['citizenship'] ?? null,
-                        'refference' => $row['refference'] ?? null,
-                        'performance_appraisal' => $row['performance_appraisal'] ?? null,
-                        'min_salary' => $row['min_salary'] ?? null,
-                        'comment' => $row['comment'] ?? null,
-                        'image' => 'public/admin/assets/images/users/avatar.png',
-                        'currancy' => $row['currancy'] ?? null,
-                        'craft_id' => $craft->id,
-                        'sub_craft_id' => $subCraft->id,
-                    ]
-                );
+                    $hr = HumanResource::where('cnic', $this->sanitizeCnic($row['cnic'] ?? null))
+                        ->lockForUpdate() // 🔒 IMPORTANT
+                        ->first();
+                    
+                    if ($hr) {
+                        // ✅ EXISTING → only update (NO registration touch)
+                        $hr->update([
+                            'name' => $row['name'] ?? '',
+                            'status' => $company ? 3 : 1,
+                            'email' => $row['email'] ?? null,
+                            'approvals' => strtolower($row['approvals'] ?? null),
+                            'password' => bcrypt($password),
+                            'application_date' => $applicationDate,
+                            'experience_local' => $row['experience_local'] ?? null,
+                            'experience_gulf' => $row['experience_gulf'] ?? null,
+                            'son_of' => $row['son_of'] ?? null,
+                            'mother_name' => $row['mother_name'] ?? null,
+                            'blood_group' => strtolower($row['blood_group'] ?? null),
+                            'date_of_birth' => $dateOfBirth,
+                            'city_of_birth' => $row['city_of_birth'] ?? null,
+                            'city_of_interview' => strtolower($row['city_of_interview'] ?? null),
+                            'cnic_expiry_date' => $cnicExpiryDate,
+                            'doi' => $doi,
+                            'doe' => $doe,
+                            'passport' => $row['passport'] ?? null,
+                            'passport_issue_place' => strtolower($row['passport_issue_place'] ?? null),
+                            'religion' => strtolower($row['religion'] ?? null),
+                            'martial_status' => strtolower($row['martial_status'] ?? null),
+                            'next_of_kin' => $row['next_of_kin'] ?? null,
+                            'relation' => strtolower($row['relation'] ?? null),
+                            'kin_cnic' => $row['kin_cnic'] ?? null,
+                            'shoe_size' => strtolower($row['shoe_size'] ?? null),
+                            'cover_size' => $row['cover_size'] ?? null,
+                            'acdemic_qualification' => strtolower($row['academic_qualification'] ?? null),
+                            'technical_qualification' => $row['technical_qualification'] ?? null,
+                            'district_of_domicile' => $row['district_of_domicile'] ?? null,
+                            'present_address' => $row['present_address'] ?? null,
+                            'present_address_phone' => $row['present_address_phone'] ?? null,
+                            'present_address_mobile' => $row['present_address_mobile'] ?? null,
+                            'present_address_city' => strtolower($row['present_address_city'] ?? null),
+                            'permanent_address' => $row['permanent_address'] ?? null,
+                            'permanent_address_phone' => $row['permanent_address_phone'] ?? null,
+                            'permanent_address_mobile' => $row['permanent_address_mobile'] ?? null,
+                            'permanent_address_city' => strtolower($row['permanent_address_city'] ?? null),
+                            'permanent_address_province' => $row['permanent_address_province'] ?? null,
+                            'gender' => strtolower($row['gender'] ?? null),
+                            'citizenship' => $row['citizenship'] ?? null,
+                            'refference' => $row['refference'] ?? null,
+                            'performance_appraisal' => $row['performance_appraisal'] ?? null,
+                            'min_salary' => $row['min_salary'] ?? null,
+                            'comment' => $row['comment'] ?? null,
+                            'image' => 'public/admin/assets/images/users/avatar.png',
+                            'currancy' => $row['currancy'] ?? null,
+                            'craft_id' => $craft->id,
+                            'sub_craft_id' => $subCraft->id,
+                        ]);
+
+                    } else { 
+                        // 🆕 NEW RECORD → generate registration safely
+                        $maxValue = HumanResource::whereNotNull('registration')
+                            ->whereRaw('registration REGEXP "^[0-9]+$"')
+                            ->lockForUpdate() // 🔒 CRITICAL
+                            ->max('registration');
+
+Log::info('Max registration', ['value' => $maxValue]);
+
+                        $registration = $maxValue ? $maxValue + 1 : 1001;
+                        Log::info('maxvalue add kr diya 1:', array_keys($registration));
+
+                        $hr = HumanResource::create([
+                            'cnic' => $this->sanitizeCnic($row['cnic']),
+                            'name' => $row['name'] ?? '',
+                            'status' => $company ? 3 : 1,
+                            'email' => $row['email'] ?? null,
+                            'approvals' => strtolower($row['approvals'] ?? null),
+                            'password' => bcrypt($password),
+                            'application_date' => $applicationDate,
+                            'experience_local' => $row['experience_local'] ?? null,
+                            'experience_gulf' => $row['experience_gulf'] ?? null,
+                            'son_of' => $row['son_of'] ?? null,
+                            'mother_name' => $row['mother_name'] ?? null,
+                            'blood_group' => strtolower($row['blood_group'] ?? null),
+                            'date_of_birth' => $dateOfBirth,
+                            'city_of_birth' => $row['city_of_birth'] ?? null,
+                            'city_of_interview' => strtolower($row['city_of_interview'] ?? null),
+                            'cnic_expiry_date' => $cnicExpiryDate,
+                            'doi' => $doi,
+                            'doe' => $doe,
+                            'passport' => $row['passport'] ?? null,
+                            'passport_issue_place' => strtolower($row['passport_issue_place'] ?? null),
+                            'religion' => strtolower($row['religion'] ?? null),
+                            'martial_status' => strtolower($row['martial_status'] ?? null),
+                            'next_of_kin' => $row['next_of_kin'] ?? null,
+                            'relation' => strtolower($row['relation'] ?? null),
+                            'kin_cnic' => $row['kin_cnic'] ?? null,
+                            'shoe_size' => strtolower($row['shoe_size'] ?? null),
+                            'cover_size' => $row['cover_size'] ?? null,
+                            'acdemic_qualification' => strtolower($row['academic_qualification'] ?? null),
+                            'technical_qualification' => $row['technical_qualification'] ?? null,
+                            'district_of_domicile' => $row['district_of_domicile'] ?? null,
+                            'present_address' => $row['present_address'] ?? null,
+                            'present_address_phone' => $row['present_address_phone'] ?? null,
+                            'present_address_mobile' => $row['present_address_mobile'] ?? null,
+                            'present_address_city' => strtolower($row['present_address_city'] ?? null),
+                            'permanent_address' => $row['permanent_address'] ?? null,
+                            'permanent_address_phone' => $row['permanent_address_phone'] ?? null,
+                            'permanent_address_mobile' => $row['permanent_address_mobile'] ?? null,
+                            'permanent_address_city' => strtolower($row['permanent_address_city'] ?? null),
+                            'permanent_address_province' => $row['permanent_address_province'] ?? null,
+                            'gender' => strtolower($row['gender'] ?? null),
+                            'citizenship' => $row['citizenship'] ?? null,
+                            'refference' => $row['refference'] ?? null,
+                            'performance_appraisal' => $row['performance_appraisal'] ?? null,
+                            'min_salary' => $row['min_salary'] ?? null,
+                            'comment' => $row['comment'] ?? null,
+                            'image' => 'public/admin/assets/images/users/avatar.png',
+                            'currancy' => $row['currancy'] ?? null,
+                            'craft_id' => $craft->id,
+                            'sub_craft_id' => $subCraft->id,
+                            'password' => bcrypt(12345678),
+                            'registration' => $registration,
+                        ]);
+                    }
+
+                });
 
 
                 if (!empty($company->id)) {
