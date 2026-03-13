@@ -1027,7 +1027,7 @@
                                                     <!-- Currency Dropdown -->
                                                     <select name="currancy" class="form-control" id="currancy">
                                                         <option value="" disabled
-                                                            {{ old('currancy', $HumanResource->currancy ?? '') == '' ? 'selected' : '' }}>
+                                                            {{ old('currancy',  $HumanResource->currancy ?? '') == '' ? 'selected' : '' }}>
                                                             Currency</option>
                                                         @foreach ($curencies as $country)
                                                             <option value="{{ strtolower($country->currency_code) }}"

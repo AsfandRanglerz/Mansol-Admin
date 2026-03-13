@@ -203,7 +203,7 @@
                                             <th>Sr.</th>
                                             <th>Craft</th>
                                             <th>Assigned Resources</th>
-                                            <th>Human Resources</th>
+                                            {{-- <th>Human Resources</th> --}}
                                             <th>Man Power</th>
                                             <th>Salary</th>
                                             <th>Mobilization</th>
@@ -219,12 +219,12 @@
                                                 <td>{{ $demand->craft->name }}</td>
                                                 <td>
                                                     <a class="btn btn-primary" href="{{ route('nominate.index', ['craft_id' => $demand->craft->id, 'demand_id' => $demand->id, 'project_id' => $project->id]) }}">View</a>
-                                                </td>
-                                                <td><a class="btn btn-primary" href="{{ route('humanresource.create', [
+                                                 </td>
+                                                {{-- <td><a class="btn btn-primary" href="{{ route('humanresource.create', [
                                                         'demand_id' => $demand->id,
                                                         'project_id' => $project->id,
                                                         'company_id' => $project->company_id
-                                                ]) }}">Assign</a></td>
+                                                ]) }}">Assign</a></td> --}}
                                                 <td>{{ $demand->manpower }}</td>
                                                 <td>{{ $demand->salary }} {{ strtoupper($demand->project->project_currency) }}</td>
                                                 <td>{{ $demand->mobilization }}</td>

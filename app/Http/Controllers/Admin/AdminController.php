@@ -142,4 +142,9 @@ class AdminController extends Controller
         return redirect('admin-login')->with('message', 'Log Out Successfully');
     }
 
+    public function excel()
+    {
+        return view('admin.excelSheetInfo.index');
+    }
+
 }

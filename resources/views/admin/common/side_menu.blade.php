@@ -149,6 +149,14 @@
                 </a>
             </li>
             @endif
+
+            {{-- project reports --}}
+            <li class="dropdown {{ request()->is('admin/excel-sheet-info*') ? 'active' : '' }}">
+                <a href="{{ route('sheet-info') }}" class="nav-link">
+                    <span><i data-feather="bar-chart-2"></i>Excel Sheet Protocol</span>
+                </a>
+            </li>
+
             {{-- <li class="dropdown {{ request()->is('admin/about*') ? 'active' : '' }}">
                 <a href="{{ route('about.index') }}" class="nav-link"><span><i data-feather="info"></i>About
                         Us</span></a>

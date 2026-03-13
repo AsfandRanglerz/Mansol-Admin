@@ -60,6 +60,7 @@ Route::prefix('admin')->middleware('admin')->group(function () {
     Route::get('dashboard', [AdminController::class, 'getdashboard']);
     Route::get('profile', [AdminController::class, 'getProfile']);
     Route::post('update-profile', [AdminController::class, 'update_profile']);
+    Route::get('excel-sheet-info', [AdminController::class, 'excel'])->name('sheet-info');
     Route::get('logout', [AdminController::class, 'logout']);
     /**officer */
     Route::get('officer/status/{id}', [OfficerController::class, 'status'])->name('officer.status');

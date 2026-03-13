@@ -22,7 +22,7 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
     public function chunkSize(): int
     {
         return 500;   // e.g., 1,000 rows per job
-    }
+    } 
     /**
      * This method is called for each chunk of rows (size defined in chunkSize()).
      *

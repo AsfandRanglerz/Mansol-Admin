@@ -1113,11 +1113,52 @@
                 },
                 error: function (xhr) {
                     let message = 'Something went wrong.';
-                    if (xhr.responseJSON?.message) {
-                        message = xhr.responseJSON.message;
+                    let duplicateCnics = [];
+
+                    // Remove old alerts
+                    $('#importErrorAlert').remove();
+                    $('#importSuccessAlert').remove();
+
+                    if (xhr.responseJSON) {
+                        message = xhr.responseJSON.message || message;
+                        duplicateCnics = xhr.responseJSON.duplicate_cnics || [];
                     }
-                    toastr.error(message);
-                }, 
+                    if (duplicateCnics.length > 0) {
+
+                        let cnicListHtml = '';
+                        duplicateCnics.forEach(function (cnic, index) {
+                            cnicListHtml += `<li><strong>${cnic}</strong></li>`;
+                        });
+
+                        $('#table_id_events').before(`
+                            <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm border-0 px-4 py-3" 
+                                role="alert" id="importErrorAlert" style="font-size:1.05rem;">
+                                
+                                <div class="d-flex align-items-start">
+                                    <div>
+                                        <strong>Duplicate CNICs Found in Excel File!</strong><br>
+                                        <span class="text-muted">
+                                            The following CNICs are duplicated in the uploaded file. 
+                                            Please remove duplicates and upload again:
+                                        </span>
+                                        <ul class="mt-2 mb-0">
+                                            ${cnicListHtml}
+                                        </ul>
+                                    </div>
+                                    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close" style="font-size:1.5rem;">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `);
+
+                        toastr.error('Duplicate CNICs detected in Excel file.');
+
+                    } else {
+                        // Normal error
+                        toastr.error(message);
+                    }
+                },
                 complete: function () {
                     // Reset button
                     $('#importBtn').prop('disabled', false);

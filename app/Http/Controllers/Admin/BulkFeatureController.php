@@ -33,6 +33,112 @@ class BulkFeatureController extends Controller
     //         return back()->with('error', 'Import failed: ' . $e->getMessage());
     //     }
     // }
+    // public function import(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required|mimes:xlsx,xls,csv',
+    //     ]);
+
+    //     try {
+    //         Log::info('Starting Excel import.');
+    //         $start = now();
+    //         Log::info("Import started at: $start");
+    //             $expectedHeaders = [
+    //                 'NAME',
+    //                 'SON_OF',
+    //                 'CNIC',
+    //                 'RELIGION',
+    //                 'EXPERIENCE_GULF',
+    //                 'MARTIAL_STATUS',
+    //                 'ACADEMIC_QUALIFICATION',
+    //                 'TECHNICAL_QUALIFICATION',
+    //                 'GENDER',
+    //                 'CITIZENSHIP', 
+    //             ];
+ 
+    //             $spreadsheet = IOFactory::load($request->file('file')->getPathname());
+    //             $worksheet = $spreadsheet->getActiveSheet();
+
+    //             // Get the calculated values, not formulas
+    //             $headerRow = [];
+    //             foreach ($worksheet->getColumnIterator() as $column) {
+    //                 $cell = $worksheet->getCell($column->getColumnIndex() . '1');
+    //                 $value = $cell->getCalculatedValue(); // ✅ This ensures formulas are evaluated
+    //                 $headerRow[] = strtoupper(trim((string)$value)); // ✅ Normalize
+    //             }
+
+    //             // Normalize expected headers too
+    //             $expectedHeaders = array_map('strtoupper', $expectedHeaders);
+
+    //             // Compare
+    //             $missingHeaders = array_diff($expectedHeaders, $headerRow);
+
+    //             if (!empty($missingHeaders)) {
+    //                 $errorMsg = 'Missing Required Columns: ' . implode(', ', $missingHeaders);
+    //                 Log::error($errorMsg);
+
+    //                 if ($request->ajax()) {
+    //                     return response()->json(['message' => $errorMsg], 422);
+    //                 }
+    //                 return back()->with('error', $errorMsg);
+    //             }
+    //            $cnicColumnIndex = array_search('CNIC', $headerRow);
+
+    //         if ($cnicColumnIndex === false) {
+    //             throw new \Exception("CNIC column not found.");
+    //         }
+
+    //         // Convert index → Excel letter (0 = A, 1 = B, 2 = C ...)
+    //         $cnicColumnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($cnicColumnIndex + 1);
+
+    //         $cnicList = [];
+
+    //         foreach ($worksheet->getRowIterator(2) as $row) {
+    //             $rowIndex = $row->getRowIndex();
+    //             $cell = $worksheet->getCell($cnicColumnLetter . $rowIndex);
+
+    //             $cnic = trim((string)$cell->getCalculatedValue());
+
+    //             if ($cnic !== '') {
+    //                 $cnicList[] = $cnic;
+    //             }
+    //         }
+
+
+    //     $duplicates = array_unique(array_diff_assoc($cnicList, array_unique($cnicList)));
+
+    //     if (!empty($duplicates)) {
+
+    //         $message = "Duplicate CNIC found ";
+
+    //         Log::error($message);
+
+    //         if ($request->ajax()) {
+    //             return response()->json(['message' => $message], 422);
+    //         }
+
+    //         return back()->with('error', $message);
+    //     }
+    //         Excel::queueImport(new HumanResourceImport, $request->file('file'));
+    //         $end = now();
+    //         Log::info("Import completed at: $end");
+
+    //         if ($request->ajax()) {
+    //             return response()->json(['message' => 'Excel file imported successfully. The data is now being processed.']);
+    //         }
+
+    //         return back()->with('message', 'Excel file imported successfully. The data is now being processed.');
+    //     } catch (\Throwable $e) {
+    //         Log::error('Import failed: ' . $e->getMessage());
+
+    //         if ($request->ajax()) {
+    //             return response()->json(['message' => 'Import failed: ' . $e->getMessage()], 500);
+    //         }
+
+    //         return back()->with('error', 'Import failed: ' . $e->getMessage());
+    //     }
+    // }
+
     public function import(Request $request)
     {
         $request->validate([
@@ -42,100 +148,93 @@ class BulkFeatureController extends Controller
         try {
             Log::info('Starting Excel import.');
             $start = now();
-            Log::info("Import started at: $start");
-                $expectedHeaders = [
-                    'NAME',
-                    'SON_OF',
-                    'CNIC',
-                    'RELIGION',
-                    'EXPERIENCE_GULF',
-                    'MARTIAL_STATUS',
-                    'ACADEMIC_QUALIFICATION',
-                    'TECHNICAL_QUALIFICATION',
-                    'GENDER',
-                    'CITIZENSHIP', 
-                ];
- 
-                $spreadsheet = IOFactory::load($request->file('file')->getPathname());
-                $worksheet = $spreadsheet->getActiveSheet();
 
-                // Get the calculated values, not formulas
-                $headerRow = [];
-                foreach ($worksheet->getColumnIterator() as $column) {
-                    $cell = $worksheet->getCell($column->getColumnIndex() . '1');
-                    $value = $cell->getCalculatedValue(); // ✅ This ensures formulas are evaluated
-                    $headerRow[] = strtoupper(trim((string)$value)); // ✅ Normalize
-                }
+            $expectedHeaders = [
+                'NAME',
+                'SON_OF',
+                'CNIC',
+                'RELIGION',
+                'EXPERIENCE_GULF',
+                'MARTIAL_STATUS',
+                'ACADEMIC_QUALIFICATION',
+                'TECHNICAL_QUALIFICATION',
+                'GENDER',
+                'CITIZENSHIP',
+            ];
 
-                // Normalize expected headers too
-                $expectedHeaders = array_map('strtoupper', $expectedHeaders);
+            $spreadsheet = IOFactory::load($request->file('file')->getPathname());
+            $worksheet = $spreadsheet->getActiveSheet();
 
-                // Compare
-                $missingHeaders = array_diff($expectedHeaders, $headerRow);
+            // 🔹 Get header row
+            $headerRow = [];
+            foreach ($worksheet->getColumnIterator() as $column) {
+                $cell = $worksheet->getCell($column->getColumnIndex() . '1');
+                $value = $cell->getCalculatedValue();
+                $headerRow[] = strtoupper(trim((string)$value));
+            }
 
-                if (!empty($missingHeaders)) {
-                    $errorMsg = 'Missing Required Columns: ' . implode(', ', $missingHeaders);
-                    Log::error($errorMsg);
+            $expectedHeaders = array_map('strtoupper', $expectedHeaders);
+            $missingHeaders = array_diff($expectedHeaders, $headerRow);
 
-                    if ($request->ajax()) {
-                        return response()->json(['message' => $errorMsg], 422);
-                    }
-                    return back()->with('error', $errorMsg);
-                }
-               $cnicColumnIndex = array_search('CNIC', $headerRow);
+            if (!empty($missingHeaders)) {
+                $errorMsg = 'Missing Required Columns: ' . implode(', ', $missingHeaders);
+                return response()->json(['message' => $errorMsg], 422);
+            }
+
+            // ===============================
+            // CNIC DUPLICATE CHECK (EXCEL FILE)
+            // ===============================
+            $cnicColumnIndex = array_search('CNIC', $headerRow);
 
             if ($cnicColumnIndex === false) {
-                throw new \Exception("CNIC column not found.");
+                return response()->json(['message' => 'CNIC column not found'], 422);
             }
 
-            // Convert index → Excel letter (0 = A, 1 = B, 2 = C ...)
-            $cnicColumnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($cnicColumnIndex + 1);
+            $cnics = [];
+            $duplicateCnics = [];
 
-            $cnicList = [];
+            $highestRow = $worksheet->getHighestRow();
+            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($cnicColumnIndex + 1);
 
-            foreach ($worksheet->getRowIterator(2) as $row) {
-                $rowIndex = $row->getRowIndex();
-                $cell = $worksheet->getCell($cnicColumnLetter . $rowIndex);
+            for ($row = 2; $row <= $highestRow; $row++) {
+                $cnic = trim((string) $worksheet->getCell($columnLetter . $row)->getCalculatedValue());
 
-                $cnic = trim((string)$cell->getCalculatedValue());
+                if (empty($cnic)) {
+                    continue;
+                }
 
-                if ($cnic !== '') {
-                    $cnicList[] = $cnic;
+                if (isset($cnics[$cnic])) {
+                    $duplicateCnics[] = $cnic;
+                } else {
+                    $cnics[$cnic] = true;
                 }
             }
 
+            // Remove duplicate duplicate values (unique list)
+            $duplicateCnics = array_unique($duplicateCnics);
 
-        $duplicates = array_unique(array_diff_assoc($cnicList, array_unique($cnicList)));
-
-        if (!empty($duplicates)) {
-
-            $message = "Duplicate CNIC found ";
-
-            Log::error($message);
-
-            if ($request->ajax()) {
-                return response()->json(['message' => $message], 422);
+            if (!empty($duplicateCnics)) {
+                return response()->json([
+                    'message' => 'Duplicate CNICs found in Excel file.',
+                    'duplicate_cnics' => $duplicateCnics
+                ], 422);
             }
 
-            return back()->with('error', $message);
-        }
+            // ✅ If no duplicates, start queue import
             Excel::queueImport(new HumanResourceImport, $request->file('file'));
-            $end = now();
-            Log::info("Import completed at: $end");
 
-            if ($request->ajax()) {
-                return response()->json(['message' => 'Excel file imported successfully. The data is now being processed.']);
-            }
+            Log::info("Import completed at: " . now());
 
-            return back()->with('message', 'Excel file imported successfully. The data is now being processed.');
+            return response()->json([
+                'message' => 'Excel file imported successfully. Data is now being processed.'
+            ]);
+
         } catch (\Throwable $e) {
             Log::error('Import failed: ' . $e->getMessage());
 
-            if ($request->ajax()) {
-                return response()->json(['message' => 'Import failed: ' . $e->getMessage()], 500);
-            }
-
-            return back()->with('error', 'Import failed: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Import failed: ' . $e->getMessage()
+            ], 500);
         }
     }
  
