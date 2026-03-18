@@ -62,7 +62,11 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
         $duplicateList = implode(', ', $duplicates);
 
         // ❌ Stop the import and return JSON error message
-        throw new \Exception("Duplicate CNIC found in Excel: $duplicateList");
+        // throw new \Exception("Duplicate CNIC found in Excel: $duplicateList");
+        throw new \Exception(json_encode([
+            'message' => 'Duplicate CNICs found in Excel file.',
+            'duplicate_cnics' => array_values($duplicates)
+        ]));
      } 
 
         if (!empty($cleanRows)) {

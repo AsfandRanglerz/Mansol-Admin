@@ -1123,37 +1123,41 @@
                         message = xhr.responseJSON.message || message;
                         duplicateCnics = xhr.responseJSON.duplicate_cnics || [];
                     }
-                    if (duplicateCnics.length > 0) {
+                    if (duplicateCnics && Object.keys(duplicateCnics).length > 0) {
 
                         let cnicListHtml = '';
-                        duplicateCnics.forEach(function (cnic, index) {
-                            cnicListHtml += `<li><strong>${cnic}</strong></li>`;
+
+                        Object.entries(duplicateCnics).forEach(function ([cnic, count]) {
+                            cnicListHtml += `
+                                <li>
+                                    <strong>${cnic}</strong> 
+                                    <span class="badge badge-danger ml-2"></span>
+                                </li>
+                            `;
                         });
 
                         $('#table_id_events').before(`
                             <div class="alert alert-danger alert-dismissible fade show mt-3 shadow-sm border-0 px-4 py-3" 
-                                role="alert" id="importErrorAlert" style="font-size:1.05rem;">
+                                role="alert" id="importErrorAlert" style="font-size:1.05rem; max-height:300px; overflow-y:auto;">
                                 
                                 <div class="d-flex align-items-start">
                                     <div>
                                         <strong>Duplicate CNICs Found in Excel File!</strong><br>
-                                        <span class="text-muted">
-                                            The following CNICs are duplicated in the uploaded file. 
+                                        <span class="">
                                             Please remove duplicates and upload again:
                                         </span>
                                         <ul class="mt-2 mb-0">
                                             ${cnicListHtml}
                                         </ul>
                                     </div>
-                                    <button type="button" class="close ml-auto" data-dismiss="alert" aria-label="Close" style="font-size:1.5rem;">
-                                        <span aria-hidden="true">&times;</span>
+                                    <button type="button" class="close ml-auto" data-dismiss="alert">
+                                        <span>&times;</span>
                                     </button>
                                 </div>
                             </div>
                         `);
 
                         toastr.error('Duplicate CNICs detected in Excel file.');
-
                     } else {
                         // Normal error
                         toastr.error(message);

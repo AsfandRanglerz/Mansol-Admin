@@ -25,6 +25,7 @@
                                 <li><strong>Sub-Craft name</strong> in the sheet must exactly match the sub-craft name available in the <strong>Admin Panel</strong>.</li>
                                 <li><strong>Demand</strong> will only be used if it exists for the selected <strong>Company + Project</strong> in the Admin Panel.</li>
                                 <li>All fields that are <strong>mandatory in the Admin Panel</strong> must also be <strong>filled in the Excel sheet</strong> and cannot be empty.</li>
+                                <li>For unassigned human resources, <strong>the company, project, demand, craft, and sub-craft</strong> fields should be left blank.</li>
                             </ul>
                         </div>
 

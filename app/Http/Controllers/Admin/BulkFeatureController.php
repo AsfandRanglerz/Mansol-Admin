@@ -8,6 +8,8 @@ use App\Imports\HumanResourceImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+
 
 class BulkFeatureController extends Controller
 {
@@ -139,6 +141,105 @@ class BulkFeatureController extends Controller
     //     }
     // }
 
+    // public function import(Request $request)
+    // {
+    //     $request->validate([
+    //         'file' => 'required|mimes:xlsx,xls,csv',
+    //     ]);
+
+    //     try {
+    //         Log::info('Starting Excel import.');
+    //         $start = now();
+
+    //         $expectedHeaders = [
+    //             'NAME',
+    //             'SON_OF',
+    //             'CNIC',
+    //             'RELIGION',
+    //             'EXPERIENCE_GULF',
+    //             'MARTIAL_STATUS',
+    //             'ACADEMIC_QUALIFICATION',
+    //             'TECHNICAL_QUALIFICATION',
+    //             'GENDER',
+    //             'CITIZENSHIP',
+    //         ];
+
+    //         $spreadsheet = IOFactory::load($request->file('file')->getPathname());
+    //         $worksheet = $spreadsheet->getActiveSheet();
+
+    //         // 🔹 Get header row
+    //         $headerRow = [];
+    //         foreach ($worksheet->getColumnIterator() as $column) {
+    //             $cell = $worksheet->getCell($column->getColumnIndex() . '1');
+    //             $value = $cell->getCalculatedValue();
+    //             $headerRow[] = strtoupper(trim((string)$value));
+    //         }
+
+    //         $expectedHeaders = array_map('strtoupper', $expectedHeaders);
+    //         $missingHeaders = array_diff($expectedHeaders, $headerRow);
+
+    //         if (!empty($missingHeaders)) {
+    //             $errorMsg = 'Missing Required Columns: ' . implode(', ', $missingHeaders);
+    //             return response()->json(['message' => $errorMsg], 422);
+    //         }
+
+    //         // ===============================
+    //         // CNIC DUPLICATE CHECK (EXCEL FILE)
+    //         // ===============================
+    //         $cnicColumnIndex = array_search('CNIC', $headerRow);
+
+    //         if ($cnicColumnIndex === false) {
+    //             return response()->json(['message' => 'CNIC column not found'], 422);
+    //         }
+
+    //         $cnics = [];
+    //         $duplicateCnics = [];
+
+    //         $highestRow = $worksheet->getHighestRow();
+    //         $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($cnicColumnIndex + 1);
+
+    //         for ($row = 2; $row <= $highestRow; $row++) {
+    //             $cnic = trim((string) $worksheet->getCell($columnLetter . $row)->getCalculatedValue());
+
+    //             if (empty($cnic)) {
+    //                 continue;
+    //             }
+
+    //             if (isset($cnics[$cnic])) {
+    //                 $duplicateCnics[] = $cnic;
+    //             } else {
+    //                 $cnics[$cnic] = true;
+    //             }
+    //         }
+
+    //         // Remove duplicate duplicate values (unique list)
+    //         $duplicateCnics = array_unique($duplicateCnics);
+
+    //         if (!empty($duplicateCnics)) {
+    //             return response()->json([
+    //                 'message' => 'Duplicate CNICs found in Excel file.',
+    //                 'duplicate_cnics' => $duplicateCnics
+    //             ], 422);
+    //         }
+
+    //         // ✅ If no duplicates, start queue import
+    //         Excel::queueImport(new HumanResourceImport, $request->file('file'));
+
+    //         Log::info("Import completed at: " . now());
+
+    //         return response()->json([
+    //             'message' => 'Excel file imported successfully. Data is now being processed.'
+    //         ]);
+
+    //     } catch (\Throwable $e) {
+    //         Log::error('Import failed: ' . $e->getMessage());
+
+    //         return response()->json([
+    //             'message' => 'Import failed: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
     public function import(Request $request)
     {
         $request->validate([
@@ -149,6 +250,7 @@ class BulkFeatureController extends Controller
             Log::info('Starting Excel import.');
             $start = now();
 
+            // ✅ Expected Headers
             $expectedHeaders = [
                 'NAME',
                 'SON_OF',
@@ -165,7 +267,9 @@ class BulkFeatureController extends Controller
             $spreadsheet = IOFactory::load($request->file('file')->getPathname());
             $worksheet = $spreadsheet->getActiveSheet();
 
-            // 🔹 Get header row
+            // ===============================
+            // ✅ HEADER VALIDATION
+            // ===============================
             $headerRow = [];
             foreach ($worksheet->getColumnIterator() as $column) {
                 $cell = $worksheet->getCell($column->getColumnIndex() . '1');
@@ -177,12 +281,13 @@ class BulkFeatureController extends Controller
             $missingHeaders = array_diff($expectedHeaders, $headerRow);
 
             if (!empty($missingHeaders)) {
-                $errorMsg = 'Missing Required Columns: ' . implode(', ', $missingHeaders);
-                return response()->json(['message' => $errorMsg], 422);
+                return response()->json([
+                    'message' => 'Missing Required Columns: ' . implode(', ', $missingHeaders)
+                ], 422);
             }
 
             // ===============================
-            // CNIC DUPLICATE CHECK (EXCEL FILE)
+            // ✅ CNIC DUPLICATE CHECK (EXCEL)
             // ===============================
             $cnicColumnIndex = array_search('CNIC', $headerRow);
 
@@ -193,43 +298,56 @@ class BulkFeatureController extends Controller
             $cnics = [];
             $duplicateCnics = [];
 
+            // ✅ FIXED (important line)
             $highestRow = $worksheet->getHighestRow();
-            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($cnicColumnIndex + 1);
+
+            $columnLetter = Coordinate::stringFromColumnIndex($cnicColumnIndex + 1);
 
             for ($row = 2; $row <= $highestRow; $row++) {
+
                 $cnic = trim((string) $worksheet->getCell($columnLetter . $row)->getCalculatedValue());
 
                 if (empty($cnic)) {
                     continue;
                 }
 
-                if (isset($cnics[$cnic])) {
-                    $duplicateCnics[] = $cnic;
+                if (!isset($cnics[$cnic])) {
+                    $cnics[$cnic] = [
+                        'count' => 1,
+                        'rows' => [$row],
+                    ];
                 } else {
-                    $cnics[$cnic] = true;
+                    $cnics[$cnic]['count']++;
+                    $cnics[$cnic]['rows'][] = $row;
                 }
             }
 
-            // Remove duplicate duplicate values (unique list)
-            $duplicateCnics = array_unique($duplicateCnics);
+            // Filter only duplicates
+            $duplicateCnics = array_filter($cnics, function ($item) {
+                return $item['count'] > 1;
+            });
 
             if (!empty($duplicateCnics)) {
+
                 return response()->json([
                     'message' => 'Duplicate CNICs found in Excel file.',
                     'duplicate_cnics' => $duplicateCnics
                 ], 422);
             }
 
-            // ✅ If no duplicates, start queue import
+            // ===============================
+            // ✅ START QUEUE IMPORT
+            // ===============================
             Excel::queueImport(new HumanResourceImport, $request->file('file'));
 
-            Log::info("Import completed at: " . now());
+            Log::info("Import queued successfully at: " . now());
 
             return response()->json([
-                'message' => 'Excel file imported successfully. Data is now being processed.'
+                'message' => 'Excel uploaded successfully. Data is being processed in background.'
             ]);
 
         } catch (\Throwable $e) {
+
             Log::error('Import failed: ' . $e->getMessage());
 
             return response()->json([

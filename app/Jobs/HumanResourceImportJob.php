@@ -95,13 +95,15 @@ class HumanResourceImportJob implements ShouldQueue
                 //     continue;
                 // }
                 
-                $craft = MainCraft::firstOrCreate(['name' => $row['craft_name']]);
+                $craft = null;
+                $subCraft = null;
+                if($company){
+                                    $craft = MainCraft::firstOrCreate(['name' => $row['craft_name']]);
                 Log::info('craft_name: ' . $craft->name, ['row' => $row['craft_name']]);
                 $subCraft = SubCraft::firstOrCreate([
                     'name' => $row['sub_craft_name'] ?? null,
                     'craft_id' => $craft->id,
                 ]);
-                if($company){
                     // Compute registration/project_code logic safely
                     $lastReg = Project::pluck('project_code')->filter()->map(fn($v) => intval($v))->toArray();
                     $maxValue = !empty($lastReg) ? max($lastReg) : 2000;
@@ -471,8 +473,8 @@ class HumanResourceImportJob implements ShouldQueue
                         'comment' => $row['comment'] ?? null,
                         'image' => 'public/admin/assets/images/users/avatar.png',
                         'currancy' => $row['currancy'] ?? null,
-                        'craft_id' => $craft->id,
-                        'sub_craft_id' => $subCraft->id,
+                        'craft_id' => $craft?->id,
+                        'sub_craft_id' => $subCraft?->id,
                     ]
                 );
 
