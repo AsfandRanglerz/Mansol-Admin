@@ -9,6 +9,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Models\ImportDuplicateCnic;
+use Illuminate\Support\Facades\DB;
 
 
 class BulkFeatureController extends Controller
@@ -326,13 +328,35 @@ class BulkFeatureController extends Controller
             $duplicateCnics = array_filter($cnics, function ($item) {
                 return $item['count'] > 1;
             });
-
+// return response()->json([
+//                     'message' => 'Duplicate CNICs found in Excel file.',
+//                     'duplicate_cnics' => $duplicateCnics
+//                 ], 422);
+            // file name (important)
+            $fileName = $request->file('file')->getClientOriginalName();
             if (!empty($duplicateCnics)) {
-
-                return response()->json([
-                    'message' => 'Duplicate CNICs found in Excel file.',
-                    'duplicate_cnics' => $duplicateCnics
-                ], 422);
+                DB::beginTransaction();
+                try {
+                    foreach ($duplicateCnics as $cnic => $data) {
+                        ImportDuplicateCnic::updateOrCreate([
+                            'file_name' => $fileName,
+                            'cnic'      => $cnic,
+                        ],
+                        [
+                            'count' => $data['count'],
+                            'rows'  => json_encode($data['rows']),
+                        ]
+                        );
+                    }
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'Error saving duplicate CNICs',
+                        'error'   => $e->getMessage()
+                    ], 500);
+                }
+                
             }
 
             // ===============================

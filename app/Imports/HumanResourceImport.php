@@ -22,7 +22,7 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
     public function chunkSize(): int
     {
         return 500;   // e.g., 1,000 rows per job
-    } 
+    }
     /**
      * This method is called for each chunk of rows (size defined in chunkSize()).
      *
@@ -32,7 +32,6 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
     public function collection(Collection $rows)
     {
         $cleanRows = [];
-        $cnicList = [];
         foreach ($rows as $row) {
             if (!is_array($row) && method_exists($row, 'toArray')) {
                 $row = $row->toArray();
@@ -46,29 +45,8 @@ class HumanResourceImport implements ToCollection, WithHeadingRow, WithChunkRead
                 $cleanKey = trim(strtolower($key));
                 $cleanRow[$cleanKey] = $value;
             }
-            // Collect CNIC if exists
-            if (isset($cleanRow['cnic'])) {
-                $cnicList[] = trim($cleanRow['cnic']);
-            }
             $cleanRows[] = $cleanRow;
         }
-        // Check for duplicate CNICs
-        $duplicates = array_unique(
-            array_diff_assoc($cnicList, array_unique($cnicList))
-        );
-       if (!empty($duplicates)) {
-
-        // Convert duplicates to a readable string
-        $duplicateList = implode(', ', $duplicates);
-
-        // ❌ Stop the import and return JSON error message
-        // throw new \Exception("Duplicate CNIC found in Excel: $duplicateList");
-        throw new \Exception(json_encode([
-            'message' => 'Duplicate CNICs found in Excel file.',
-            'duplicate_cnics' => array_values($duplicates)
-        ]));
-     } 
-
         if (!empty($cleanRows)) {
             Log::info('Dispatching batch of rows', ['count' => count($cleanRows)]);
             HumanResourceImportJob::dispatch($cleanRows);

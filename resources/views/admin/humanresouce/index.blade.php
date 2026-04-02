@@ -1127,11 +1127,11 @@
 
                         let cnicListHtml = '';
 
-                        Object.entries(duplicateCnics).forEach(function ([cnic, count]) {
+                       Object.entries(duplicateCnics).forEach(function ([cnic, data], index) {
                             cnicListHtml += `
                                 <li>
-                                    <strong>${cnic}</strong> 
-                                    <span class="badge badge-danger ml-2"></span>
+                                    ${index + 1}. <strong></strong> 
+                                    <span class="badge badge-danger ml-2">${data.count}</span>
                                 </li>
                             `;
                         });

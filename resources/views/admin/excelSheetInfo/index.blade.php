@@ -17,6 +17,7 @@
 
                         <div class="card-body text-danger">
                             <ul>
+                                <li>The Excel file must not contain more than 10,000 entries.</li>
                                 <li><strong>CNIC</strong> must be <strong>13 digits</strong> and must be <strong>unique for each record</strong>.</li>
                                 <li><strong>Passport number</strong> must also be <strong>unique for each record</strong>.</li>
                                 <li><strong>Company name</strong> in the sheet must exactly match the company name available in the <strong>Admin Panel</strong>.</li>
