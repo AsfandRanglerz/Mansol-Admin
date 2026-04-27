@@ -182,7 +182,7 @@
                 dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excelHtml5',
-                    title: 'MANSOLSOFT - PROJECTS REPORT',
+                    title: 'Mansoft - Project Report',
                     text: 'Generate Excel Report',
                     className: 'btn-export-excel', // hide built-in button
                     exportOptions: {
@@ -196,7 +196,7 @@
                         },
                         pageSize: 'A4', // Portrait by default
                         className: 'btn-export-pdf',
-                        title: 'MANSOLSOFT - PROJECTS REPORT',
+                        title: 'Mansoft - Project Report',
                         text: 'Generate PDF Report',
 
                         // Export all rows (not just visible)
@@ -333,7 +333,7 @@
                             );
                         });
                     });
-                } 
+                }
             });
 
             // Clear filters

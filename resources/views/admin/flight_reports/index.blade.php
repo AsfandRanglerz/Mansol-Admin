@@ -132,7 +132,7 @@
                 dom: 'Bfrtip',
                 buttons: [{
                     extend: 'excelHtml5',
-                    title: 'MANSOLSOFT - FLIGHT REPORT',
+                    title: 'Mansoft - Flight Report',
                     text: 'Export to Excel',
                     className: 'btn-export-excel',
                 },
@@ -143,7 +143,7 @@
                     },
                     pageSize: 'A4',
                     className: 'btn-export-pdf',
-                    title: 'MANSOLSOFT - FLIGHT REPORT',
+                    title: 'Mansoft - Flight Report',
                     text: 'Generate PDF Report',
 
                     action: function (e, dt, button, config) {

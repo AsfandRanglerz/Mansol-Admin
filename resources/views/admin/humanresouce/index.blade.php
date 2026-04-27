@@ -381,9 +381,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-
-                                            {{-- ========== NEW RECEIVED PHYSICALLY FILTERS ========== --}}
-								 {{-- CNIC Taken Filter --}}
+                                             {{-- CNIC Taken Filter --}}
                                 <div class="col-md-3">
                                     <div class="form-group"> 
                                         <label for="passport_in_hand">Passport In Hand</label>
@@ -454,10 +452,6 @@
                                         </select>
                                     </div>
                                 </div>
-                                        
-                                    </div>
-                                </div>      
-                                {{-- ========== END NEW RECEIVED PHYSICALLY FILTERS ========== --}}
 
                                             {{-- Filter Button --}}
                                             <div class="col-md-12 d-flex justify-content-end align-items-end mb-3">
@@ -750,7 +744,7 @@
             ajax: {
                 url: "{{ route('humanresource.ajax') }}",
                 type: "POST",
-             data: function (d) {
+                data: function (d) {
                     d._token = "{{ csrf_token() }}";
                     d.company_id = $('#company_id').val();
                     d.project_id = $('#project_id').val();
@@ -778,7 +772,7 @@
 					d.visa_form_in_hand = $('#visa_form_in_hand').val();
 					d.medical_report_in_hand = $('#medical_report_in_hand').val();
 					d.air_booking_in_hand = $('#air_booking_in_hand').val();
-                }   
+                }
             },
             columns: [
                 { render: function (data, type, row, meta) { return meta.row + meta.settings._iDisplayStart + 1; } },
@@ -788,7 +782,6 @@
                 { data: "passport" },
                 { data: "cnic" },
                 { data: "passport_photo", render: function (data) {
-                     let defaultImg = "{{ asset('admin/assets/images/avator.png') }}";
                     if (!data) return '<img src="{{ asset('public/admin/assets/images/avator.png') }}" width="50" height="50">';
                     return '<img src="{{ asset('') }}' + data + '" width="50" height="50">';
                 }},
@@ -796,18 +789,13 @@
                 data: "id",
                 render: function (data) {
                     return `
-                   <div class="text-center">
-                    <button 
-                        class="btn btn-primary text-white justify-content-center align-items-center open-modal-btn px-3 py-2"
-                        data-id="${data}"
-                        data-toggle="modal"
-                        data-target="#dynamicHRModal"
-                        style="font-size: 18px; border-radius: 8px;"
-                    >
-                        <i class="fa fa-file"></i>
-                    </button>
-                </div>
-                `;
+                    <button class="btn btn-primary text-white justify-content-center align-items-center open-modal-btn px-3 py-2"
+                            data-id="${data}"
+                            data-toggle="modal"
+                            data-target="#dynamicHRModal"
+                            style="font-size: 18px; border-radius: 8px;">
+                        <span class="fa fa-file"></span>
+                    </button>`;
                 }
                 },
                 { data: "email", render: function (data) {
@@ -921,7 +909,6 @@
                 '#approvals',
                 '#interview_location',
                 '#craft',
-                // New Received Physically Filters
                 '#passport_in_hand',
 				'#police_verfication_in_hand',
 				'#cnic_verfication_in_hand',
@@ -937,8 +924,9 @@
                 toastr.error('Please select at least one filter first');
                 return;                            
             }
+            // toastr.warning('Somthing went wrong');
             toastr.success('Filters Applied Successfully');
-            table.ajax.reload();
+            table.ajax.reload(); 
         });
 
         // Clear filter button
@@ -963,8 +951,7 @@
             $('#religion').val('');
             $('#approvals').val('');
             $('#interview_location').val('');
-            // New Received Physically Filters clear
-           $('#passport_in_hand').val('');
+            $('#passport_in_hand').val('');
 			$('#police_verfication_in_hand').val('');
 			$('#cnic_verfication_in_hand').val('');
 			$('#medical_report_in_hand').val('');
@@ -1127,11 +1114,11 @@
 
                         let cnicListHtml = '';
 
-                       Object.entries(duplicateCnics).forEach(function ([cnic, data], index) {
+                        Object.entries(duplicateCnics).forEach(function ([cnic, count]) {
                             cnicListHtml += `
                                 <li>
-                                    ${index + 1}. <strong></strong> 
-                                    <span class="badge badge-danger ml-2">${data.count}</span>
+                                    <strong>${cnic}</strong> 
+                                    <span class="badge badge-danger ml-2"></span>
                                 </li>
                             `;
                         });
